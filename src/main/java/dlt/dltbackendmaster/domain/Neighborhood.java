@@ -1,5 +1,5 @@
 package dlt.dltbackendmaster.domain;
-// Generated Jan 17, 2022, 9:40:21 PM by Hibernate Tools 5.2.12.Final
+// Generated Jan 18, 2022, 1:26:18 PM by Hibernate Tools 5.2.12.Final
 
 import java.util.Date;
 import javax.persistence.Column;

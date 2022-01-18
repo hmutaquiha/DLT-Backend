@@ -1,5 +1,5 @@
 package dlt.dltbackendmaster.domain;
-// Generated Jan 17, 2022, 9:40:21 PM by Hibernate Tools 5.2.12.Final
+// Generated Jan 18, 2022, 1:26:18 PM by Hibernate Tools 5.2.12.Final
 
 import java.util.Date;
 import java.util.HashSet;
@@ -31,8 +31,8 @@ public class Locality implements java.io.Serializable {
 	private Date dateCreated;
 	private Integer updatedBy;
 	private Date dateUpdated;
-	private Set neighborhoods = new HashSet(0);
-	private Set users = new HashSet(0);
+	private Set<Neighborhood> neighborhoods = new HashSet<Neighborhood>(0);
+	private Set<User> users = new HashSet<User>(0);
 
 	public Locality() {
 	}
@@ -47,7 +47,7 @@ public class Locality implements java.io.Serializable {
 	}
 
 	public Locality(int id, District district, String name, String description, int status, int createdBy,
-			Date dateCreated, Integer updatedBy, Date dateUpdated, Set neighborhoods, Set users) {
+			Date dateCreated, Integer updatedBy, Date dateUpdated, Set<Neighborhood> neighborhoods, Set<User> users) {
 		this.id = id;
 		this.district = district;
 		this.name = name;
@@ -148,20 +148,20 @@ public class Locality implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "locality")
-	public Set getNeighborhoods() {
+	public Set<Neighborhood> getNeighborhoods() {
 		return this.neighborhoods;
 	}
 
-	public void setNeighborhoods(Set neighborhoods) {
+	public void setNeighborhoods(Set<Neighborhood> neighborhoods) {
 		this.neighborhoods = neighborhoods;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "locality")
-	public Set getUsers() {
+	public Set<User> getUsers() {
 		return this.users;
 	}
 
-	public void setUsers(Set users) {
+	public void setUsers(Set<User> users) {
 		this.users = users;
 	}
 

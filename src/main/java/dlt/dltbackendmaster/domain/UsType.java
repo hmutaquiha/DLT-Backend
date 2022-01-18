@@ -1,5 +1,5 @@
 package dlt.dltbackendmaster.domain;
-// Generated Jan 17, 2022, 10:49:25 AM by Hibernate Tools 5.2.12.Final
+// Generated Jan 18, 2022, 1:26:18 PM by Hibernate Tools 5.2.12.Final
 
 import java.util.Date;
 import java.util.HashSet;
@@ -8,8 +8,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -23,41 +21,41 @@ import javax.persistence.TemporalType;
 public class UsType implements java.io.Serializable {
 
 	private int id;
-	private User userByUpdatedBy;
-	private User userByCreatedBy;
 	private String name;
 	private String level;
 	private String type;
 	private String description;
 	private int status;
+	private int createdBy;
 	private Date dateCreated;
+	private Integer updatedBy;
 	private Date dateUpdated;
-	private Set uses = new HashSet(0);
+	private Set<Us> uses = new HashSet<Us>(0);
 
 	public UsType() {
 	}
 
-	public UsType(int id, User userByCreatedBy, String name, String level, String type, int status, Date dateCreated) {
+	public UsType(int id, String name, String level, String type, int status, int createdBy, Date dateCreated) {
 		this.id = id;
-		this.userByCreatedBy = userByCreatedBy;
 		this.name = name;
 		this.level = level;
 		this.type = type;
 		this.status = status;
+		this.createdBy = createdBy;
 		this.dateCreated = dateCreated;
 	}
 
-	public UsType(int id, User userByUpdatedBy, User userByCreatedBy, String name, String level, String type,
-			String description, int status, Date dateCreated, Date dateUpdated, Set uses) {
+	public UsType(int id, String name, String level, String type, String description, int status, int createdBy,
+			Date dateCreated, Integer updatedBy, Date dateUpdated, Set<Us> uses) {
 		this.id = id;
-		this.userByUpdatedBy = userByUpdatedBy;
-		this.userByCreatedBy = userByCreatedBy;
 		this.name = name;
 		this.level = level;
 		this.type = type;
 		this.description = description;
 		this.status = status;
+		this.createdBy = createdBy;
 		this.dateCreated = dateCreated;
+		this.updatedBy = updatedBy;
 		this.dateUpdated = dateUpdated;
 		this.uses = uses;
 	}
@@ -71,26 +69,6 @@ public class UsType implements java.io.Serializable {
 
 	public void setId(int id) {
 		this.id = id;
-	}
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "updated_by")
-	public User getUserByUpdatedBy() {
-		return this.userByUpdatedBy;
-	}
-
-	public void setUserByUpdatedBy(User userByUpdatedBy) {
-		this.userByUpdatedBy = userByUpdatedBy;
-	}
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "created_by", nullable = false)
-	public User getUserByCreatedBy() {
-		return this.userByCreatedBy;
-	}
-
-	public void setUserByCreatedBy(User userByCreatedBy) {
-		this.userByCreatedBy = userByCreatedBy;
 	}
 
 	@Column(name = "name", nullable = false, length = 50)
@@ -138,6 +116,15 @@ public class UsType implements java.io.Serializable {
 		this.status = status;
 	}
 
+	@Column(name = "created_by", nullable = false)
+	public int getCreatedBy() {
+		return this.createdBy;
+	}
+
+	public void setCreatedBy(int createdBy) {
+		this.createdBy = createdBy;
+	}
+
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "date_created", nullable = false, length = 19)
 	public Date getDateCreated() {
@@ -146,6 +133,15 @@ public class UsType implements java.io.Serializable {
 
 	public void setDateCreated(Date dateCreated) {
 		this.dateCreated = dateCreated;
+	}
+
+	@Column(name = "updated_by")
+	public Integer getUpdatedBy() {
+		return this.updatedBy;
+	}
+
+	public void setUpdatedBy(Integer updatedBy) {
+		this.updatedBy = updatedBy;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
@@ -159,11 +155,11 @@ public class UsType implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "usType")
-	public Set getUses() {
+	public Set<Us> getUses() {
 		return this.uses;
 	}
 
-	public void setUses(Set uses) {
+	public void setUses(Set<Us> uses) {
 		this.uses = uses;
 	}
 

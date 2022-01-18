@@ -1,5 +1,5 @@
 package dlt.dltbackendmaster.domain;
-// Generated Jan 17, 2022, 9:40:21 PM by Hibernate Tools 5.2.12.Final
+// Generated Jan 18, 2022, 1:26:18 PM by Hibernate Tools 5.2.12.Final
 
 import java.util.Date;
 import java.util.HashSet;
@@ -28,7 +28,7 @@ public class Province implements java.io.Serializable {
 	private Date createDate;
 	private Integer updatedBy;
 	private Date updateDate;
-	private Set districts = new HashSet(0);
+	private Set<District> districts = new HashSet<District>(0);
 
 	public Province() {
 	}
@@ -43,7 +43,7 @@ public class Province implements java.io.Serializable {
 	}
 
 	public Province(int id, String code, String name, int status, int createdBy, Date createDate, Integer updatedBy,
-			Date updateDate, Set districts) {
+			Date updateDate, Set<District> districts) {
 		this.id = id;
 		this.code = code;
 		this.name = name;
@@ -132,11 +132,11 @@ public class Province implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "province")
-	public Set getDistricts() {
+	public Set<District> getDistricts() {
 		return this.districts;
 	}
 
-	public void setDistricts(Set districts) {
+	public void setDistricts(Set<District> districts) {
 		this.districts = districts;
 	}
 

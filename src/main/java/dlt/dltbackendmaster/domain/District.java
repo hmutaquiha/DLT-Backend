@@ -1,5 +1,5 @@
 package dlt.dltbackendmaster.domain;
-// Generated Jan 17, 2022, 9:40:21 PM by Hibernate Tools 5.2.12.Final
+// Generated Jan 18, 2022, 1:26:18 PM by Hibernate Tools 5.2.12.Final
 
 import java.util.Date;
 import java.util.HashSet;
@@ -31,8 +31,8 @@ public class District implements java.io.Serializable {
 	private Date dateCreated;
 	private Integer updatedBy;
 	private Date dateUpdated;
-	private Set partners = new HashSet(0);
-	private Set localities = new HashSet(0);
+	private Set<Partner> partners = new HashSet<Partner>(0);
+	private Set<Locality> localities = new HashSet<Locality>(0);
 
 	public District() {
 	}
@@ -48,7 +48,7 @@ public class District implements java.io.Serializable {
 	}
 
 	public District(int id, Province province, String code, String name, int status, int createdBy, Date dateCreated,
-			Integer updatedBy, Date dateUpdated, Set partners, Set localities) {
+			Integer updatedBy, Date dateUpdated, Set<Partner> partners, Set<Locality> localities) {
 		this.id = id;
 		this.province = province;
 		this.code = code;
@@ -149,20 +149,20 @@ public class District implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "district")
-	public Set getPartners() {
+	public Set<Partner> getPartners() {
 		return this.partners;
 	}
 
-	public void setPartners(Set partners) {
+	public void setPartners(Set<Partner> partners) {
 		this.partners = partners;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "district")
-	public Set getLocalities() {
+	public Set<Locality> getLocalities() {
 		return this.localities;
 	}
 
-	public void setLocalities(Set localities) {
+	public void setLocalities(Set<Locality> localities) {
 		this.localities = localities;
 	}
 

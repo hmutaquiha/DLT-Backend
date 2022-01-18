@@ -1,5 +1,5 @@
 package dlt.dltbackendmaster.domain;
-// Generated Jan 17, 2022, 9:40:21 PM by Hibernate Tools 5.2.12.Final
+// Generated Jan 18, 2022, 1:26:18 PM by Hibernate Tools 5.2.12.Final
 
 import java.util.Date;
 import java.util.HashSet;
@@ -34,7 +34,7 @@ public class Partner implements java.io.Serializable {
 	private Date dateCreated;
 	private Integer updatedBy;
 	private Date dateUpdated;
-	private Set users = new HashSet(0);
+	private Set<User> users = new HashSet<User>(0);
 
 	public Partner() {
 	}
@@ -49,7 +49,8 @@ public class Partner implements java.io.Serializable {
 	}
 
 	public Partner(int id, District district, String name, String abbreviation, String description, String partnerType,
-			String logo, int status, int createdBy, Date dateCreated, Integer updatedBy, Date dateUpdated, Set users) {
+			String logo, int status, int createdBy, Date dateCreated, Integer updatedBy, Date dateUpdated,
+			Set<User> users) {
 		this.id = id;
 		this.district = district;
 		this.name = name;
@@ -179,11 +180,11 @@ public class Partner implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "partner")
-	public Set getUsers() {
+	public Set<User> getUsers() {
 		return this.users;
 	}
 
-	public void setUsers(Set users) {
+	public void setUsers(Set<User> users) {
 		this.users = users;
 	}
 

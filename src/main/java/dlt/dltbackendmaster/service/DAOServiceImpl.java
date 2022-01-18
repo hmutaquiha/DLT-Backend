@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import dlt.dltbackendmaster.repository.Repository;
+import dlt.dltbackendmaster.repository.DAORepository;
 
 /**
  * This class implements the Service interface
@@ -16,10 +16,10 @@ import dlt.dltbackendmaster.repository.Repository;
  *
  */
 @Service
-public class ServiceImpl implements Service{
+public class DAOServiceImpl implements DAOService{
 
 	@Autowired
-	private Repository repository;
+	private DAORepository repository;
 
 	@Transactional(readOnly = true)
 	public <T> List<T> getAll(Class<T> klass) {
@@ -32,8 +32,8 @@ public class ServiceImpl implements Service{
 	}
 
 	@Transactional
-	public <T> void Save(T klass) {
-		repository.Save(klass);
+	public <T> T Save(T klass) {
+		return repository.Save(klass);
 	}
 
 	@Transactional

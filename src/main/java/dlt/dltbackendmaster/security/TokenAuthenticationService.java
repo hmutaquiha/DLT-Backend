@@ -45,7 +45,8 @@ public class TokenAuthenticationService {
         
         if (authorizationHandler != null && authorizationHandler.startsWith("Bearer ")) {
         	token = authorizationHandler.substring(7);
-            final Users account = serviceImpl.loadUserByUsername(tokenHandler.parseUserFromToken(token));
+        	username = tokenHandler.parseUserFromToken(token);
+            final Users account = serviceImpl.loadUserByUsername(username);
             if (account != null) {
                 return new UserAuthentication(account);
             }

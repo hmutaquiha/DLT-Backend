@@ -1,5 +1,5 @@
 package dlt.dltbackendmaster.domain;
-// Generated Jan 18, 2022, 1:26:18 PM by Hibernate Tools 5.2.12.Final
+// Generated Jan 19, 2022, 10:19:45 PM by Hibernate Tools 5.2.12.Final
 
 import java.util.Date;
 import java.util.HashSet;

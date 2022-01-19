@@ -1,5 +1,5 @@
 package dlt.dltbackendmaster.domain;
-// Generated Jan 18, 2022, 1:26:18 PM by Hibernate Tools 5.2.12.Final
+// Generated Jan 19, 2022, 10:19:45 PM by Hibernate Tools 5.2.12.Final
 
 import java.util.Date;
 import java.util.HashSet;
@@ -35,7 +35,7 @@ public class Us implements java.io.Serializable {
 	private Date dateCreated;
 	private Integer updatedBy;
 	private Date dateUpdated;
-	private Set<User> users = new HashSet<User>(0);
+	private Set<Users> userses = new HashSet<Users>(0);
 
 	public Us() {
 	}
@@ -54,7 +54,7 @@ public class Us implements java.io.Serializable {
 
 	public Us(int id, UsType usType, String code, String name, String description, Float latitude, Float longitude,
 			int localityId, int status, int createdBy, Date dateCreated, Integer updatedBy, Date dateUpdated,
-			Set<User> users) {
+			Set<Users> userses) {
 		this.id = id;
 		this.usType = usType;
 		this.code = code;
@@ -68,7 +68,7 @@ public class Us implements java.io.Serializable {
 		this.dateCreated = dateCreated;
 		this.updatedBy = updatedBy;
 		this.dateUpdated = dateUpdated;
-		this.users = users;
+		this.userses = userses;
 	}
 
 	@Id
@@ -194,12 +194,12 @@ public class Us implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "us")
-	public Set<User> getUsers() {
-		return this.users;
+	public Set<Users> getUserses() {
+		return this.userses;
 	}
 
-	public void setUsers(Set<User> users) {
-		this.users = users;
+	public void setUserses(Set<Users> userses) {
+		this.userses = userses;
 	}
 
 }

@@ -46,14 +46,18 @@ public class TokenAuthenticationService {
         final String authorizationHandler = request.getHeader(AUTH_HEADER_NAME);
         String token = null;
         String username = null;
-        
+
         if (authorizationHandler != null && authorizationHandler.startsWith("Bearer ")) {
         	token = authorizationHandler.substring(7);
-        	username = tokenHandler.parseUserFromToken(token);
-            final Account account = serviceImpl.loadUserByUsername(username);
-            if (account != null) {
-                return new UserAuthentication(account);
-            }
+        	
+        	if(token != "" && token != "undefined") { //validate if token was provided or is valid
+        		username = tokenHandler.parseUserFromToken(token);
+                final Account account = serviceImpl.loadUserByUsername(username);
+                if (account != null) {
+                    return new UserAuthentication(account);
+                }
+        	}
+        	
         }
         return null;
     }

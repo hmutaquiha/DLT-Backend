@@ -1,6 +1,6 @@
 package dlt.dltbackendmaster.security;
 
-import dlt.dltbackendmaster.domain.Users;
+import dlt.dltbackendmaster.domain.Account;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
@@ -26,7 +26,7 @@ public class TokenHandler {
         return username;
     }
     
-    public String createTokenForUser(Users account) {
+    public String createTokenForUser(Account account) {
         return Jwts.builder()
                 .setSubject(account.getUsername())
                 .signWith(SignatureAlgorithm.HS512, secret)

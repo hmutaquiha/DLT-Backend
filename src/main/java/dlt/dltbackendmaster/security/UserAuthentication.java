@@ -5,6 +5,7 @@ import java.util.Collection;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
+import dlt.dltbackendmaster.domain.Account;
 import dlt.dltbackendmaster.domain.Users;
 
 /**
@@ -15,10 +16,10 @@ import dlt.dltbackendmaster.domain.Users;
 public class UserAuthentication implements Authentication{
 	
 	private static final long serialVersionUID = 1L;
-	private final Users account;
+	private final Account account;
 	private boolean authenticated = true;
 
-    public UserAuthentication(Users account) {
+    public UserAuthentication(Account account) {
         this.account = account;
     }
 

@@ -15,7 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import dlt.dltbackendmaster.domain.Users;
+import dlt.dltbackendmaster.domain.Account;
 
 /**
  * 
@@ -48,7 +48,7 @@ public class StatelessLoginFilter extends AbstractAuthenticationProcessingFilter
 	
 	@Override
 	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
-		final Users authenticatedUser = userServiceImpl.loadUserByUsername(authResult.getName());
+		final Account authenticatedUser = userServiceImpl.loadUserByUsername(authResult.getName());
 		final UserAuthentication userAuthentication = new UserAuthentication(authenticatedUser);
 		tokenAuthenticationService.addAuthentication(response, userAuthentication);
 		SecurityContextHolder.getContext().setAuthentication(userAuthentication);

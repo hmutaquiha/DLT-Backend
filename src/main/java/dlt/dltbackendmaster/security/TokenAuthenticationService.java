@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
-import dlt.dltbackendmaster.domain.Users;
+import dlt.dltbackendmaster.domain.Account;
 
 
 /**
@@ -34,7 +34,7 @@ public class TokenAuthenticationService {
 	
 	@SuppressWarnings("unchecked")
 	public void addAuthentication(HttpServletResponse response, UserAuthentication authentication) throws IOException {
-        final Users account = (Users) authentication.getDetails();
+        final Account account = (Account) authentication.getDetails();
         //account.setExpires(System.currentTimeMillis() + ONE_HOUR);
         response.addHeader(AUTH_HEADER_NAME, "Bearer " + tokenHandler.createTokenForUser(account));
 		List<GrantedAuthority> auths = (List<GrantedAuthority>) account.getAuthorities();
@@ -50,7 +50,7 @@ public class TokenAuthenticationService {
         if (authorizationHandler != null && authorizationHandler.startsWith("Bearer ")) {
         	token = authorizationHandler.substring(7);
         	username = tokenHandler.parseUserFromToken(token);
-            final Users account = serviceImpl.loadUserByUsername(username);
+            final Account account = serviceImpl.loadUserByUsername(username);
             if (account != null) {
                 return new UserAuthentication(account);
             }

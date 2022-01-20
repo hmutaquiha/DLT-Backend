@@ -13,7 +13,11 @@ import org.springframework.security.core.GrantedAuthority;
 import dlt.dltbackendmaster.domain.Users;
 
 
-
+/**
+ * 
+ * @author derciobucuane
+ *
+ */
 public class TokenAuthenticationService {
 	private static final String SECRET = "9SyECk96oDsTmXfosdieDI0cD/8FpnojlYSUJT5U9I/FGVmBz5oskmjOR8cbXTvoPjX+Pq/T/b1PqpHX0lYm1oCBjXWICA==";
 	private static final String AUTH_HEADER_NAME = "Authorization";

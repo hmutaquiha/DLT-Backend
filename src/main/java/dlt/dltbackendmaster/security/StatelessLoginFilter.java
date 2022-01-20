@@ -17,6 +17,11 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import dlt.dltbackendmaster.domain.Users;
 
+/**
+ * 
+ * @author derciobucuane
+ *
+ */
 public class StatelessLoginFilter extends AbstractAuthenticationProcessingFilter{
 
 	private final TokenAuthenticationService tokenAuthenticationService;

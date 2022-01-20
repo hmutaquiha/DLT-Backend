@@ -4,6 +4,11 @@ import dlt.dltbackendmaster.domain.Users;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
+/**
+ * 
+ * @author derciobucuane
+ *
+ */
 public class TokenHandler {
 
 	private final String secret;

@@ -7,11 +7,13 @@ import org.springframework.security.core.GrantedAuthority;
 
 import dlt.dltbackendmaster.domain.Users;
 
+/**
+ * 
+ * @author derciobucuane
+ *
+ */
 public class UserAuthentication implements Authentication{
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private final Users account;
 	private boolean authenticated = true;

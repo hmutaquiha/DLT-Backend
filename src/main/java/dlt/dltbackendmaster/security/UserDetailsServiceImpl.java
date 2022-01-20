@@ -14,6 +14,11 @@ import org.springframework.stereotype.Component;
 import dlt.dltbackendmaster.domain.Users;
 import dlt.dltbackendmaster.service.DAOService;
 
+/**
+ * 
+ * @author derciobucuane
+ *
+ */
 @Component
 public class UserDetailsServiceImpl implements UserDetailsService{
 	private static final String QUERY_FIND_USER_BY_USERNAME = "select aa from Users aa where aa.username = :username";

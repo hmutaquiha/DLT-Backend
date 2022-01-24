@@ -62,17 +62,17 @@ public class Account extends Users implements Serializable, UserDetails {
 
 	@Override
 	public boolean isAccountNonExpired() {
-		return isaccountexpired;
+		return !isaccountexpired;
 	}
 
 	@Override
 	public boolean isAccountNonLocked() {
-		return isaccountlocked;
+		return !isaccountlocked;
 	}
 
 	@Override
 	public boolean isCredentialsNonExpired() {
-		return iscredentialsexpired;
+		return !iscredentialsexpired;
 	}
 
 	@Override
@@ -82,7 +82,6 @@ public class Account extends Users implements Serializable, UserDetails {
 
 
 	@Override
-	//@ElementCollection(targetClass=GrantedAuthority.class)
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		GrantedAuthority authority = () -> getProfiles().getName();
 		ArrayList<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();

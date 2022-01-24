@@ -1,7 +1,9 @@
 package dlt.dltbackendmaster.security;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -9,6 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dlt.dltbackendmaster.domain.Account;
 
@@ -36,9 +40,14 @@ public class TokenAuthenticationService {
 	public void addAuthentication(HttpServletResponse response, UserAuthentication authentication) throws IOException {
         final Account account = (Account) authentication.getDetails();
         //account.setExpires(System.currentTimeMillis() + ONE_HOUR);
-        response.addHeader(AUTH_HEADER_NAME, "Bearer " + tokenHandler.createTokenForUser(account));
+        //response.addHeader(AUTH_HEADER_NAME, tokenHandler.createTokenForUser(account));
 		List<GrantedAuthority> auths = (List<GrantedAuthority>) account.getAuthorities();
-        response.addHeader("User-Agent", auths.get(0).getAuthority()); 
+        //response.addHeader("User-Agent", auths.get(0).getAuthority()); 
+        Map<String, String> mapResponse = new HashMap<>();
+        mapResponse.put("token", tokenHandler.createTokenForUser(account));
+        mapResponse.put("role", auths.get(0).getAuthority());
+        response.setContentType("application/json");
+        new ObjectMapper().writeValue(response.getOutputStream(), mapResponse);
         
     }
     

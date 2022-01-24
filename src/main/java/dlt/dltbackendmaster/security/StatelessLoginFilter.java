@@ -7,6 +7,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -48,6 +49,7 @@ public class StatelessLoginFilter extends AbstractAuthenticationProcessingFilter
 	
 	@Override
 	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
+
 		final Account authenticatedUser = userServiceImpl.loadUserByUsername(authResult.getName());
 		final UserAuthentication userAuthentication = new UserAuthentication(authenticatedUser);
 		tokenAuthenticationService.addAuthentication(response, userAuthentication);

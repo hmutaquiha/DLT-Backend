@@ -22,7 +22,7 @@ import dlt.dltbackendmaster.service.DAOService;
  */
 @Component
 public class UserDetailsServiceImpl implements UserDetailsService{
-	private static final String QUERY_FIND_USER_BY_USERNAME = "select aa from Users aa where aa.username = :username";
+	private static final String QUERY_FIND_USER_BY_USERNAME = "select u from Users u where u.username = :username";
 	
 	private final AccountStatusUserDetailsChecker detailsChecker = new AccountStatusUserDetailsChecker();
 	
@@ -33,9 +33,10 @@ public class UserDetailsServiceImpl implements UserDetailsService{
 	public Account loadUserByUsername(String username) throws UsernameNotFoundException {
 		Map<String, Object> todo = new HashMap<String, Object>();
         todo.put("username", username);
-        
+ 
 		try {
 			List<Users> users = service.findByJPQuery(QUERY_FIND_USER_BY_USERNAME, todo);
+			
 			if(users != null && !users.isEmpty()) {
 				Account account = new Account(users.get(0));
 				detailsChecker.check(account);
@@ -43,6 +44,7 @@ public class UserDetailsServiceImpl implements UserDetailsService{
 			}
 			
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new UsernameNotFoundException(e.getMessage());
 		}
 		throw new UsernameNotFoundException("no user found with " + username);

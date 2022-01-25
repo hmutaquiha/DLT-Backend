@@ -23,7 +23,7 @@ import dlt.dltbackendmaster.domain.Account;
  *
  */
 public class TokenAuthenticationService {
-	private static final String SECRET = "9SyECk96oDsTmXfosdieDI0cD/8FpnojlYSUJT5U9I/FGVmBz5oskmjOR8cbXTvoPjX+Pq/T/b1PqpHX0lYm1oCBjXWICA==";
+	private static final String SECRET = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0In0.B_rfuYrsvIkgwz2HB8QzzmFJY4d9xPruIuGN21hFr9Sp1FsliZi-HNZUqEkcXkikvOHiJDBHKQQLO6SdYwMJ8g";
 	private static final String AUTH_HEADER_NAME = "Authorization";
 
 	private final TokenHandler tokenHandler;
@@ -40,12 +40,11 @@ public class TokenAuthenticationService {
 	public void addAuthentication(HttpServletResponse response, UserAuthentication authentication) throws IOException {
         final Account account = (Account) authentication.getDetails();
         //account.setExpires(System.currentTimeMillis() + ONE_HOUR);
-        //response.addHeader(AUTH_HEADER_NAME, tokenHandler.createTokenForUser(account));
+        
 		List<GrantedAuthority> auths = (List<GrantedAuthority>) account.getAuthorities();
-        //response.addHeader("User-Agent", auths.get(0).getAuthority()); 
-        Map<String, String> mapResponse = new HashMap<>();
+        Map<String, Object> mapResponse = new HashMap<>();
         mapResponse.put("token", tokenHandler.createTokenForUser(account));
-        mapResponse.put("role", auths.get(0).getAuthority());
+        mapResponse.put("account", account.toUser());
         response.setContentType("application/json");
         new ObjectMapper().writeValue(response.getOutputStream(), mapResponse);
         

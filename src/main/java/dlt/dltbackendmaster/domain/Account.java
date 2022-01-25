@@ -89,6 +89,14 @@ public class Account extends Users implements Serializable, UserDetails {
 		return authorities;
 	}
 
+	
+	public Users toUser() {
+	
+		return new Users(getId(), getLocality(), getPartner(), getProfiles(), getUs(), 
+				getSurname(), getName(), getPhoneNumber(), getEmail(), getUsername(), getPassword(), 
+				getEntryPoint(), getStatus(), getIsLocked(), getIsExpired(), getIsCredentialsExpired(), 
+				getIsEnabled(), getCreatedBy(), getDateCreated(), getUpdatedBy(), getDateUpdated());
+	}
 
 
 }

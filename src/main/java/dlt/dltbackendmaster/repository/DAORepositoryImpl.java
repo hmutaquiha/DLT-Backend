@@ -245,6 +245,25 @@ public class DAORepositoryImpl implements DAORepository{
 		}
 		
 	}
+	
+	@Override
+	public <T> T find(Class<T> klass, Object id) {
+		Session session = sessionFactory.openSession();
+		Transaction tx = null;
+
+		try {
+			tx = session.beginTransaction();
+			
+			return session.find(klass, id);
+		}
+		catch (Exception e) {
+			if (tx!=null) tx.rollback();
+			throw e;
+		}
+		finally {
+			session.close();
+		}
+	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public <T> List<T> findByQuery(String hql, Map<String, Object> entidade, Map<String, Object> namedParams) {
@@ -415,5 +434,5 @@ public class DAORepositoryImpl implements DAORepository{
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	
 }

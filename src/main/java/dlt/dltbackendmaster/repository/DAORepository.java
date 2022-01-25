@@ -11,29 +11,31 @@ import java.util.Map;
 public interface DAORepository {
 	<T> List<T> getAll(Class<T> klass);
 
-    <T> List<T> getAllQuery(String s);
+	<T> List<T> getAllQuery(String s);
 
-    <T> void update(T klass);
+	<T> void update(T klass);
 
-    <T> boolean exist(T klass);
-    
-    <T> int updateQuery(String query, Object... params);
-    
-    <T> int count(Class<T> klass);
+	<T> boolean exist(T klass);
 
-    <T> T Save(T klass);
+	<T> int updateQuery(String query, Object... params);
 
-    <T> T GetUniqueEntityByNamedQuery(String query, Object... params);
-    
-    <T> List<T> GetAllEntityByNamedQuery(String query, Object... params);
+	<T> int count(Class<T> klass);
 
-    <T> List<T> findByQuery(String hql, Map<String, Object> entidade, Map<String, Object> namedParams);
-    
-    <T> List<T> findByQueryFilter(String hql, Map<String, Object> entidade, Map<String, Object> namedParams, int f, int m);
-    
-    <T> List<T> findByJPQuery(String hql,Map<String, Object> namedParams);
-    
-    <T> List<T> findByJPQueryFilter(String hql, Map<String, Object> namedParams, int f, int m);
+	<T> T Save(T klass);
 
-    <T> void delete(T klass);
+	<T> T GetUniqueEntityByNamedQuery(String query, Object... params);
+
+	<T> List<T> GetAllEntityByNamedQuery(String query, Object... params);
+
+	<T> T find(Class<T> klass, Object id);
+
+	<T> List<T> findByQuery(String hql, Map<String, Object> entidade, Map<String, Object> namedParams);
+
+	<T> List<T> findByQueryFilter(String hql, Map<String, Object> entidade, Map<String, Object> namedParams, int f, int m);
+
+	<T> List<T> findByJPQuery(String hql,Map<String, Object> namedParams);
+
+	<T> List<T> findByJPQueryFilter(String hql, Map<String, Object> namedParams, int f, int m);
+
+	<T> void delete(T klass);
 }

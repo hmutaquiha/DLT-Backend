@@ -71,6 +71,11 @@ public class DAOServiceImpl implements DAOService{
 		return repository.GetAllEntityByNamedQuery(query, params);
 	}
 
+	@Override
+	public <T> T find(Class<T> klass, Object id) {
+		return repository.find(klass, id);
+	}
+
 	@Transactional
 	public <T> List<T> findByQuery(String hql, Map<String, Object> entidade, Map<String, Object> namedParams) {
 		return repository.findByQuery(hql, entidade, namedParams);
@@ -92,13 +97,13 @@ public class DAOServiceImpl implements DAOService{
 		return repository.findByJPQueryFilter(hql, namedParams, f, m);
 	}
 
-	
+
 	public Class<? extends Annotation> annotationType() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	
+
 	public String value() {
 		// TODO Auto-generated method stub
 		return null;

@@ -28,6 +28,8 @@ public interface DAOService {
 	<T> T GetUniqueEntityByNamedQuery(String query, Object... params);
 
 	<T> List<T> GetAllEntityByNamedQuery(String query, Object... params);
+	
+	<T> T find(Class<T> klass, Object id);
 
 	<T> List<T> findByQuery(String hql, Map<String, Object> entidade, Map<String, Object> namedParams);
 

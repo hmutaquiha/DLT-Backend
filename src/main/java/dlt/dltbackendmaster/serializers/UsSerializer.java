@@ -17,6 +17,13 @@ public class UsSerializer extends JsonSerializer<Us>{
 		us.setCode(value.getCode());
 		us.setDescription(value.getDescription());
 		us.setName(value.getName());
+		us.setLatitude(value.getLatitude());
+		us.setLongitude(value.getLongitude());
+		us.setStatus(value.getStatus());
+		us.setDateCreated(value.getDateCreated());
+		us.setDateUpdated(value.getDateUpdated());
+		us.setUpdatedBy(value.getUpdatedBy());
+		us.setCreatedBy(value.getCreatedBy());
 		gen.writeObject(us);
 		
 	}

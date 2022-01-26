@@ -1,10 +1,12 @@
 package dlt.dltbackendmaster.domain;
-// Generated Jan 20, 2022, 4:57:19 PM by Hibernate Tools 5.2.12.Final
+// Generated Jan 25, 2022, 4:05:43 PM by Hibernate Tools 5.2.12.Final
 
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -16,7 +18,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import dlt.dltbackendmaster.serializers.LocalitySerializer;
-import dlt.dltbackendmaster.serializers.PartnerSerializer;
+import dlt.dltbackendmaster.serializers.PartnersSerializer;
 import dlt.dltbackendmaster.serializers.ProfilesSerializer;
 import dlt.dltbackendmaster.serializers.UsSerializer;
 
@@ -27,12 +29,9 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 @Table(name = "users", catalog = "dreams_db")
 public class Users implements java.io.Serializable {
 
-	
-	private static final long serialVersionUID = 1L;
-	
-	private int id;
+	private Integer id;
 	private Locality locality;
-	private Partner partner;
+	private Partners partners;
 	private Profiles profiles;
 	private Us us;
 	private String surname;
@@ -55,10 +54,9 @@ public class Users implements java.io.Serializable {
 	public Users() {
 	}
 
-	public Users(int id, Partner partner, Profiles profiles, String surname, String name, String phoneNumber,
-			String email, String username, String password, int status, int createdBy, Date dateCreated) {
-		this.id = id;
-		this.partner = partner;
+	public Users(Partners partner, Profiles profiles, String surname, String name, String phoneNumber, String email,
+			String username, String password, int status, int createdBy, Date dateCreated) {
+		this.partners = partner;
 		this.profiles = profiles;
 		this.surname = surname;
 		this.name = name;
@@ -71,13 +69,41 @@ public class Users implements java.io.Serializable {
 		this.dateCreated = dateCreated;
 	}
 
-	public Users(int id, Locality locality, Partner partner, Profiles profiles, Us us, String surname, String name,
+	public Users(Locality locality, Partners partner, Profiles profiles, Us us, String surname, String name,
 			String phoneNumber, String email, String username, String password, String entryPoint, int status,
 			Byte isLocked, Byte isExpired, Byte isCredentialsExpired, Byte isEnabled, int createdBy, Date dateCreated,
 			Integer updatedBy, Date dateUpdated) {
+		this.locality = locality;
+		this.partners = partner;
+		this.profiles = profiles;
+		this.us = us;
+		this.surname = surname;
+		this.name = name;
+		this.phoneNumber = phoneNumber;
+		this.email = email;
+		this.username = username;
+		this.password = password;
+		this.entryPoint = entryPoint;
+		this.status = status;
+		this.isLocked = isLocked;
+		this.isExpired = isExpired;
+		this.isCredentialsExpired = isCredentialsExpired;
+		this.isEnabled = isEnabled;
+		this.createdBy = createdBy;
+		this.dateCreated = dateCreated;
+		this.updatedBy = updatedBy;
+		this.dateUpdated = dateUpdated;
+	}
+	
+
+	public Users(Integer id, Locality locality, Partners partner, Profiles profiles, Us us, String surname, String name,
+			String phoneNumber, String email, String username, String password, String entryPoint, int status,
+			Byte isLocked, Byte isExpired, Byte isCredentialsExpired, Byte isEnabled, int createdBy, Date dateCreated,
+			Integer updatedBy, Date dateUpdated) {
+		super();
 		this.id = id;
 		this.locality = locality;
-		this.partner = partner;
+		this.partners = partner;
 		this.profiles = profiles;
 		this.us = us;
 		this.surname = surname;
@@ -99,13 +125,14 @@ public class Users implements java.io.Serializable {
 	}
 
 	@Id
+	@GeneratedValue(strategy = IDENTITY)
 
 	@Column(name = "id", unique = true, nullable = false)
-	public int getId() {
+	public Integer getId() {
 		return this.id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
@@ -121,16 +148,16 @@ public class Users implements java.io.Serializable {
 		this.locality = locality;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "partner_id", nullable = false)
-	@JsonProperty("partner")
-	@JsonSerialize(using=PartnerSerializer.class)
-	public Partner getPartner() {
-		return this.partner;
+	@JsonProperty("partners")
+	@JsonSerialize(using=PartnersSerializer.class)
+	public Partners getPartners() {
+		return this.partners;
 	}
 
-	public void setPartner(Partner partner) {
-		this.partner = partner;
+	public void setPartners(Partners partner) {
+		this.partners = partner;
 	}
 
 	@ManyToOne(fetch = FetchType.EAGER)

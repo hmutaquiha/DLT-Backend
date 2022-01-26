@@ -1,5 +1,5 @@
 package dlt.dltbackendmaster.domain;
-// Generated Jan 20, 2022, 4:57:19 PM by Hibernate Tools 5.2.12.Final
+// Generated Jan 25, 2022, 4:05:43 PM by Hibernate Tools 5.2.12.Final
 
 import java.util.Date;
 import java.util.HashSet;
@@ -7,6 +7,8 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -22,7 +24,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Table(name = "province", catalog = "dreams_db")
 public class Province implements java.io.Serializable {
 
-	private int id;
+	private Integer id;
 	private String code;
 	private String name;
 	private int status;
@@ -35,8 +37,7 @@ public class Province implements java.io.Serializable {
 	public Province() {
 	}
 
-	public Province(int id, String code, String name, int status, int createdBy, Date createDate) {
-		this.id = id;
+	public Province(String code, String name, int status, int createdBy, Date createDate) {
 		this.code = code;
 		this.name = name;
 		this.status = status;
@@ -44,9 +45,8 @@ public class Province implements java.io.Serializable {
 		this.createDate = createDate;
 	}
 
-	public Province(int id, String code, String name, int status, int createdBy, Date createDate, Integer updatedBy,
+	public Province(String code, String name, int status, int createdBy, Date createDate, Integer updatedBy,
 			Date updateDate, Set<District> districts) {
-		this.id = id;
 		this.code = code;
 		this.name = name;
 		this.status = status;
@@ -58,13 +58,14 @@ public class Province implements java.io.Serializable {
 	}
 
 	@Id
+	@GeneratedValue(strategy = IDENTITY)
 
 	@Column(name = "id", unique = true, nullable = false)
-	public int getId() {
+	public Integer getId() {
 		return this.id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 

@@ -1,10 +1,12 @@
 package dlt.dltbackendmaster.domain;
-// Generated Jan 20, 2022, 4:57:19 PM by Hibernate Tools 5.2.12.Final
+// Generated Jan 25, 2022, 4:05:43 PM by Hibernate Tools 5.2.12.Final
 
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -19,7 +21,7 @@ import javax.persistence.TemporalType;
 @Table(name = "neighborhood", catalog = "dreams_db")
 public class Neighborhood implements java.io.Serializable {
 
-	private int id;
+	private Integer id;
 	private Locality locality;
 	private String name;
 	private String description;
@@ -32,8 +34,7 @@ public class Neighborhood implements java.io.Serializable {
 	public Neighborhood() {
 	}
 
-	public Neighborhood(int id, Locality locality, String name, int status, int createdBy, Date dateCreated) {
-		this.id = id;
+	public Neighborhood(Locality locality, String name, int status, int createdBy, Date dateCreated) {
 		this.locality = locality;
 		this.name = name;
 		this.status = status;
@@ -41,9 +42,8 @@ public class Neighborhood implements java.io.Serializable {
 		this.dateCreated = dateCreated;
 	}
 
-	public Neighborhood(int id, Locality locality, String name, String description, int status, int createdBy,
-			Date dateCreated, Integer updatedBy, Date dateUpdated) {
-		this.id = id;
+	public Neighborhood(Locality locality, String name, String description, int status, int createdBy, Date dateCreated,
+			Integer updatedBy, Date dateUpdated) {
 		this.locality = locality;
 		this.name = name;
 		this.description = description;
@@ -55,13 +55,14 @@ public class Neighborhood implements java.io.Serializable {
 	}
 
 	@Id
+	@GeneratedValue(strategy = IDENTITY)
 
 	@Column(name = "id", unique = true, nullable = false)
-	public int getId() {
+	public Integer getId() {
 		return this.id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 

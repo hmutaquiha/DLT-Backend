@@ -1,5 +1,5 @@
 package dlt.dltbackendmaster.domain;
-// Generated Jan 20, 2022, 4:57:19 PM by Hibernate Tools 5.2.12.Final
+// Generated Jan 25, 2022, 4:05:43 PM by Hibernate Tools 5.2.12.Final
 
 import java.util.Date;
 import java.util.HashSet;
@@ -7,6 +7,8 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -24,7 +26,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Table(name = "locality", catalog = "dreams_db")
 public class Locality implements java.io.Serializable {
 
-	private int id;
+	private Integer id;
 	private District district;
 	private String name;
 	private String description;
@@ -39,8 +41,7 @@ public class Locality implements java.io.Serializable {
 	public Locality() {
 	}
 
-	public Locality(int id, District district, String name, int status, int createdBy, Date dateCreated) {
-		this.id = id;
+	public Locality(District district, String name, int status, int createdBy, Date dateCreated) {
 		this.district = district;
 		this.name = name;
 		this.status = status;
@@ -48,10 +49,8 @@ public class Locality implements java.io.Serializable {
 		this.dateCreated = dateCreated;
 	}
 
-	public Locality(int id, District district, String name, String description, int status, int createdBy,
-			Date dateCreated, Integer updatedBy, Date dateUpdated, Set<Neighborhood> neighborhoods,
-			Set<Users> userses) {
-		this.id = id;
+	public Locality(District district, String name, String description, int status, int createdBy, Date dateCreated,
+			Integer updatedBy, Date dateUpdated, Set<Neighborhood> neighborhoods, Set<Users> userses) {
 		this.district = district;
 		this.name = name;
 		this.description = description;
@@ -65,13 +64,14 @@ public class Locality implements java.io.Serializable {
 	}
 
 	@Id
+	@GeneratedValue(strategy = IDENTITY)
 
 	@Column(name = "id", unique = true, nullable = false)
-	public int getId() {
+	public Integer getId() {
 		return this.id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
@@ -151,7 +151,6 @@ public class Locality implements java.io.Serializable {
 		this.dateUpdated = dateUpdated;
 	}
 
-	@JsonIgnore
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "locality")
 	public Set<Neighborhood> getNeighborhoods() {
 		return this.neighborhoods;

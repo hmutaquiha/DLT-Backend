@@ -6,17 +6,17 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 
-import dlt.dltbackendmaster.domain.Partner;
+import dlt.dltbackendmaster.domain.Partners;
 
-public class PartnerSerializer extends JsonSerializer<Partner>{
+public class PartnersSerializer extends JsonSerializer<Partners>{
 
 	@Override
-	public void serialize(Partner value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
-		Partner partner = new Partner();
-		partner.setId(partner.getId());
-		partner.setName(partner.getName());
-		partner.setDescription(partner.getDescription());
-		partner.setAbbreviation(partner.getAbbreviation());
+	public void serialize(Partners value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+		Partners partner = new Partners();
+		partner.setId(value.getId());
+		partner.setName(value.getName());
+		partner.setDescription(value.getDescription());
+		partner.setAbbreviation(value.getAbbreviation());
 		gen.writeObject(partner);
 		
 	}

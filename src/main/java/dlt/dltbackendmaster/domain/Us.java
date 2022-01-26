@@ -1,5 +1,5 @@
 package dlt.dltbackendmaster.domain;
-// Generated Jan 20, 2022, 4:57:19 PM by Hibernate Tools 5.2.12.Final
+// Generated Jan 25, 2022, 4:05:43 PM by Hibernate Tools 5.2.12.Final
 
 import java.util.Date;
 import java.util.HashSet;
@@ -7,6 +7,8 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -24,7 +26,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Table(name = "us", catalog = "dreams_db")
 public class Us implements java.io.Serializable {
 
-	private int id;
+	private Integer id;
 	private UsType usType;
 	private String code;
 	private String name;
@@ -42,9 +44,7 @@ public class Us implements java.io.Serializable {
 	public Us() {
 	}
 
-	public Us(int id, UsType usType, String code, String name, int localityId, int status, int createdBy,
-			Date dateCreated) {
-		this.id = id;
+	public Us(UsType usType, String code, String name, int localityId, int status, int createdBy, Date dateCreated) {
 		this.usType = usType;
 		this.code = code;
 		this.name = name;
@@ -54,10 +54,9 @@ public class Us implements java.io.Serializable {
 		this.dateCreated = dateCreated;
 	}
 
-	public Us(int id, UsType usType, String code, String name, String description, Float latitude, Float longitude,
+	public Us(UsType usType, String code, String name, String description, Float latitude, Float longitude,
 			int localityId, int status, int createdBy, Date dateCreated, Integer updatedBy, Date dateUpdated,
 			Set<Users> userses) {
-		this.id = id;
 		this.usType = usType;
 		this.code = code;
 		this.name = name;
@@ -74,13 +73,14 @@ public class Us implements java.io.Serializable {
 	}
 
 	@Id
+	@GeneratedValue(strategy = IDENTITY)
 
 	@Column(name = "id", unique = true, nullable = false)
-	public int getId() {
+	public Integer getId() {
 		return this.id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 

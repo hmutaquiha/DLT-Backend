@@ -45,7 +45,6 @@ public class TokenAuthenticationService {
         Map<String, Object> mapResponse = new HashMap<>();
         mapResponse.put("token", tokenHandler.createTokenForUser(account));
         mapResponse.put("account", account.toUser());
-        response.setContentType("application/json");
         new ObjectMapper().writeValue(response.getOutputStream(), mapResponse);
         
     }

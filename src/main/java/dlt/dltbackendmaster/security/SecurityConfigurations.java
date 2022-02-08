@@ -1,5 +1,10 @@
 package dlt.dltbackendmaster.security;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +19,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.header.Header;
+import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter.ReferrerPolicy;
+import org.springframework.security.web.header.writers.StaticHeadersWriter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 /**
  * 
@@ -45,6 +56,13 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter{
 	
 	@Override
 	protected void configure(HttpSecurity http)throws Exception{
+		List<Header> httpheaders = new ArrayList<Header>();
+		httpheaders.add(new Header("Access-Control-Allow-Origin", "*"));
+		httpheaders.add(new Header("Access-Control-Allow-Methods", "POST, GET, PUT, OPTIONS, DELETE"));
+		httpheaders.add(new Header("Access-Control-Allow-Headers", "*"));
+		httpheaders.add(new Header("Access-Control-Max-Age", "3600"));
+		
+		
 		http.csrf().disable()
 			.exceptionHandling().authenticationEntryPoint(entryPointUnauthorizedHandler).and()
 			.anonymous().and()
@@ -71,8 +89,10 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter{
             		UsernamePasswordAuthenticationFilter.class)
             	// custom Token based authentication based on the header previously given to the client
             .addFilterBefore(new StatelessAuthenticationFilter(tokenAuthenticationService), UsernamePasswordAuthenticationFilter.class)
-            .headers().cacheControl().and();
-            
+            .headers()
+    		.referrerPolicy(ReferrerPolicy.SAME_ORIGIN).and()
+    		.addHeaderWriter(new StaticHeadersWriter(httpheaders));
+		
 	}
 	
 	@Bean
@@ -95,4 +115,5 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter{
 	public PasswordEncoder passwordEncoder() {
 		return NoOpPasswordEncoder.getInstance();
 	}
+	
 }

@@ -1,10 +1,12 @@
 package dlt.dltbackendmaster.controller;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -68,6 +70,12 @@ public class UserController {
 		}
 
 		try {
+			user.setDateCreated(new Date());
+			user.setIsCredentialsExpired(Byte.valueOf("0"));
+			user.setIsExpired(Byte.valueOf("0"));
+			user.setIsLocked(Byte.valueOf("0"));
+			user.setIsEnabled(Byte.valueOf("0"));
+			
 			service.Save(user);
 
 			return new ResponseEntity<>("Saved Successfully!", HttpStatus.OK);
@@ -88,6 +96,7 @@ public class UserController {
 		}
 
 		try {
+			user.setDateUpdated(new Date());
 			service.update(user);
 
 			return new ResponseEntity<>("Updated Successfully!", HttpStatus.OK);

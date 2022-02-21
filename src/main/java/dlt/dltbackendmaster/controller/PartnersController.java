@@ -27,9 +27,9 @@ public class PartnersController {
 	@GetMapping(produces = "application/json")
 	public ResponseEntity<List<Partners>> getAll() {
 		try {
-			List<Partners> localities = service.getAll(Partners.class);
+			List<Partners> partners = service.getAll(Partners.class);
 
-			return new ResponseEntity<>(localities, HttpStatus.OK);
+			return new ResponseEntity<>(partners, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -42,9 +42,9 @@ public class PartnersController {
 		}	
 		
 		try {
-			Partners Partners = service.find(Partners.class, id);
+			Partners partner = service.find(Partners.class, id);
 
-			return new ResponseEntity<>(Partners, HttpStatus.OK);
+			return new ResponseEntity<>(partner, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}

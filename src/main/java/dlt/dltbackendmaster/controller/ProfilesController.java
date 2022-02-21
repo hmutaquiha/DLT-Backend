@@ -42,9 +42,9 @@ public class ProfilesController {
 		}	
 		
 		try {
-			Profiles profiles = service.find(Profiles.class, id);
+			Profiles profile = service.find(Profiles.class, id);
 
-			return new ResponseEntity<>(profiles, HttpStatus.OK);
+			return new ResponseEntity<>(profile, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}

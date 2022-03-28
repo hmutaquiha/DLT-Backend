@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -33,81 +34,25 @@ public class DAORepositoryImpl implements DAORepository {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public <T> List<T> getAll(Class<T> klass) {
-		Session session = sessionFactory.openSession();
-		Transaction tx = null;
-
-		try {
-			tx = session.beginTransaction();
-			Query query = session.createQuery("from " + klass.getName());
-			List<T> returnList = query.list();
-
-			return returnList;
-		} catch (Exception e) {
-			if (tx != null)
-				tx.rollback();
-			throw e;
-		} finally {
-			if (tx != null)
-				tx.commit();
-			session.close();
-		}
+		return getCurrentSession().createQuery("from " + klass.getName())
+                .list();
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public <T> List<T> getAllQuery(String s) {
-		Session session = sessionFactory.openSession();
-		Transaction tx = null;
-
-		try {
-			tx = session.beginTransaction();
-			Query query = session.createQuery(s);
-			List<T> returnList = query.list();
-
-			return returnList;
-		} catch (Exception e) {
-			if (tx != null)
-				tx.rollback();
-			throw e;
-		} finally {
-			session.close();
-		}
+		return getCurrentSession().createQuery(s)
+                .list();
 	}
 
 	@SuppressWarnings("unchecked")
 	public <T> T update(T klass) {
-		Session session = sessionFactory.openSession();
-		Transaction tx = null;
-
-		try {
-			tx = session.beginTransaction();
-			T updatedKlass = (T) session.merge(klass);
-			tx.commit();
-			return updatedKlass;
-		} catch (Exception e) {
-			if (tx != null)
-				tx.rollback();
-			throw e;
-		} finally {
-			session.close();
-		}
+		T updatedKlass = (T) getCurrentSession().merge(klass);
+		return updatedKlass;
+		
 	}
 
 	public <T> boolean exist(T klass) {
-		Session session = sessionFactory.openSession();
-		Transaction tx = null;
-
-		try {
-			tx = session.beginTransaction();
-			boolean result = session.contains(klass);
-
-			return result;
-		} catch (Exception e) {
-			if (tx != null)
-				tx.rollback();
-			throw e;
-		} finally {
-			session.close();
-		}
+		return getCurrentSession().contains(klass);
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -157,135 +102,74 @@ public class DAORepositoryImpl implements DAORepository {
 	}
 
 	public <T> Serializable Save(T klass) {
-		Session session = sessionFactory.openSession();
-		Transaction tx = null;
-
-		try {
-			tx = session.beginTransaction();
-			Serializable savedKlassId = session.save(klass);
-			tx.commit();
-			return savedKlassId;
-		} catch (Exception e) {
-			if (tx != null)
-				tx.rollback();
-			throw e;
-		} finally {
-			session.close();
-		}
+		Serializable savedKlassId = getCurrentSession().save(klass);
+		return savedKlassId;
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public <T> T GetUniqueEntityByNamedQuery(String query, Object... params) {
-		Session session = sessionFactory.openSession();
-		Transaction tx = null;
+		Query q = getCurrentSession().getNamedQuery(query);
+        int i = 0;
 
-		try {
-			tx = session.beginTransaction();
+        for (Object o : params) {
+            q.setParameter(i, o);
+            i++;//new
+        }
 
-			Query q = session.getNamedQuery(query);
-			int i = 0;
+        List<T> results = q.list();
 
-			for (Object o : params) {
-				q.setParameter(i, o);
-				i++;// new
-			}
-
-			List<T> results = q.list();
-
-			T foundentity = null;
-			if (!results.isEmpty()) {
-				// ignores multiple results
-				foundentity = results.get(0);
-			}
-			return foundentity;
-		} catch (Exception e) {
-			if (tx != null)
-				tx.rollback();
-			throw e;
-		} finally {
-			session.close();
-		}
-
+        T foundentity = null;
+        if (!results.isEmpty()) {
+            // ignores multiple results
+            foundentity = results.get(0);
+        }
+        return foundentity;
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public <T> List<T> GetAllEntityByNamedQuery(String query, Object... params) {
-		Session session = sessionFactory.openSession();
-		Transaction tx = null;
+		Query q = getCurrentSession().getNamedQuery(query);
+        int i = 0;
 
-		try {
-			tx = session.beginTransaction();
-			Query q = session.getNamedQuery(query);
-			int i = 0;
+        for (Object o : params) {
+            q.setParameter(i, o);
+            i++;//new
+        }
 
-			for (Object o : params) {
-				q.setParameter(i, o);
-				i++;// new
-			}
+        List<T> results = q.list();
 
-			List<T> results = q.list();
-
-			return results;
-		} catch (Exception e) {
-			if (tx != null)
-				tx.rollback();
-			throw e;
-		} finally {
-			session.close();
-		}
+        return results;
 
 	}
 
 	@Override
 	public <T> T find(Class<T> klass, Object id) {
-		Session session = sessionFactory.openSession();
-		Transaction tx = null;
-
-		try {
-			tx = session.beginTransaction();
-
-			return session.find(klass, id);
-		} catch (Exception e) {
-			if (tx != null)
-				tx.rollback();
-			throw e;
-		} finally {
-			session.close();
-		}
+	
+		return getCurrentSession().find(klass, id);
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public <T> List<T> findByQuery(String hql, Map<String, Object> entidade, Map<String, Object> namedParams) {
-		Session session = sessionFactory.openSession();
-		Transaction tx = null;
+		SQLQuery query = getCurrentSession().createSQLQuery(hql);
+        if (entidade != null) {
+            Entry mapEntry;
+            for (Iterator it = entidade.entrySet().iterator(); it
+                    .hasNext(); query.addEntity(
+                            (String) mapEntry.getKey(), (Class) mapEntry.getValue())) {
+                mapEntry = (Entry) it.next();
+            }
+        }
+        if (namedParams != null) {
+            Entry mapEntry;
+            for (Iterator it = namedParams.entrySet().iterator(); it
+                    .hasNext(); query.setParameter(
+                            (String) mapEntry.getKey(), mapEntry.getValue())) {
+                mapEntry = (Entry) it.next();
+            }
+        }
+        List returnList = query.list();
 
-		try {
-			tx = session.beginTransaction();
-			NativeQuery query = session.createSQLQuery(hql);
-			if (entidade != null) {
-				Entry mapEntry;
-				for (Iterator it = entidade.entrySet().iterator(); it.hasNext(); query
-						.addEntity((String) mapEntry.getKey(), (Class) mapEntry.getValue())) {
-					mapEntry = (Entry) it.next();
-				}
-			}
-			if (namedParams != null) {
-				Entry mapEntry;
-				for (Iterator it = namedParams.entrySet().iterator(); it.hasNext(); query
-						.setParameter((String) mapEntry.getKey(), mapEntry.getValue())) {
-					mapEntry = (Entry) it.next();
-				}
-			}
-			List returnList = query.list();
-
-			return returnList;
-		} catch (Exception e) {
-			if (tx != null)
-				tx.rollback();
-			throw e;
-		} finally {
-			session.close();
-		}
+        return returnList;
 
 	}
 
@@ -293,116 +177,67 @@ public class DAORepositoryImpl implements DAORepository {
 	public <T> List<T> findByQueryFilter(String hql, Map<String, Object> entidade, Map<String, Object> namedParams,
 			int f, int m) {
 
-		Session session = sessionFactory.openSession();
-		Transaction tx = null;
+		SQLQuery query = getCurrentSession().createSQLQuery(hql);
+        if (entidade != null) {
+            Entry mapEntry;
+            for (Iterator it = entidade.entrySet().iterator(); it
+                    .hasNext(); query.addEntity(
+                            (String) mapEntry.getKey(), (Class) mapEntry.getValue())) {
+                mapEntry = (Entry) it.next();
+            }
+        }
+        if (namedParams != null) {
+            Entry mapEntry;
+            for (Iterator it = namedParams.entrySet().iterator(); it
+                    .hasNext(); query.setParameter(
+                            (String) mapEntry.getKey(), mapEntry.getValue())) {
+                mapEntry = (Entry) it.next();
+            }
+        }
+        query.setFirstResult(f);
+        query.setMaxResults(m);
+        List returnList = query.list();
 
-		try {
-			tx = session.beginTransaction();
-			NativeQuery query = session.createSQLQuery(hql);
-			if (entidade != null) {
-				Entry mapEntry;
-				for (Iterator it = entidade.entrySet().iterator(); it.hasNext(); query
-						.addEntity((String) mapEntry.getKey(), (Class) mapEntry.getValue())) {
-					mapEntry = (Entry) it.next();
-				}
-			}
-			if (namedParams != null) {
-				Entry mapEntry;
-				for (Iterator it = namedParams.entrySet().iterator(); it.hasNext(); query
-						.setParameter((String) mapEntry.getKey(), mapEntry.getValue())) {
-					mapEntry = (Entry) it.next();
-				}
-			}
-			query.setFirstResult(f);
-			query.setMaxResults(m);
-			List returnList = query.list();
-
-			return returnList;
-		} catch (Exception e) {
-			if (tx != null)
-				tx.rollback();
-			throw e;
-		} finally {
-			if (tx != null)
-				tx.commit();
-			session.close();
-		}
+        return returnList;
 
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public <T> List<T> findByJPQuery(String hql, Map<String, Object> namedParams) {
-		Session session = sessionFactory.openSession();
-		Transaction tx = null;
+		Query query = getCurrentSession().createQuery(hql);
+        if (namedParams != null) {
+            Entry mapEntry;
+            for (Iterator it = namedParams.entrySet().iterator(); it
+                    .hasNext(); query.setParameter(
+                            (String) mapEntry.getKey(), mapEntry.getValue())) {
+                mapEntry = (Entry) it.next();
+            }
+        }
+        List returnList = query.list();
 
-		try {
-			tx = session.beginTransaction();
-			Query query = session.createQuery(hql);
-			if (namedParams != null) {
-				Entry mapEntry;
-				for (Iterator it = namedParams.entrySet().iterator(); it.hasNext(); query
-						.setParameter((String) mapEntry.getKey(), mapEntry.getValue())) {
-					mapEntry = (Entry) it.next();
-				}
-			}
-			List returnList = query.list();
-
-			return returnList;
-		} catch (Exception e) {
-			if (tx != null)
-				tx.rollback();
-			throw e;
-		} finally {
-			if (tx != null)
-				tx.commit();
-			session.close();
-		}
+        return returnList;
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public <T> List<T> findByJPQueryFilter(String hql, Map<String, Object> namedParams, int f, int m) {
-		Session session = sessionFactory.openSession();
-		Transaction tx = null;
+		Query query = getCurrentSession().createQuery(hql);
+        if (namedParams != null) {
+            Entry mapEntry;
+            for (Iterator it = namedParams.entrySet().iterator(); it
+                    .hasNext(); query.setParameter(
+                            (String) mapEntry.getKey(), mapEntry.getValue())) {
+                mapEntry = (Entry) it.next();
+            }
+        }
+        query.setFirstResult(f);
+        query.setMaxResults(m);
+        List returnList = query.list();
 
-		try {
-			tx = session.beginTransaction();
-			Query query = session.createQuery(hql);
-			if (namedParams != null) {
-				Entry mapEntry;
-				for (Iterator it = namedParams.entrySet().iterator(); it.hasNext(); query
-						.setParameter((String) mapEntry.getKey(), mapEntry.getValue())) {
-					mapEntry = (Entry) it.next();
-				}
-			}
-			query.setFirstResult(f);
-			query.setMaxResults(m);
-			List returnList = query.list();
-
-			return returnList;
-		} catch (Exception e) {
-			if (tx != null)
-				tx.rollback();
-			throw e;
-		} finally {
-			session.close();
-		}
+        return returnList;
 	}
 
 	public <T> void delete(T klass) {
-		Session session = sessionFactory.openSession();
-		Transaction tx = null;
-
-		try {
-			tx = session.beginTransaction();
-			session.delete(klass);
-			tx.commit();
-		} catch (Exception e) {
-			if (tx != null)
-				tx.rollback();
-			throw e;
-		} finally {
-			session.close();
-		}
+		getCurrentSession().delete(klass);
 	}
 
 	public Class<? extends Annotation> annotationType() {

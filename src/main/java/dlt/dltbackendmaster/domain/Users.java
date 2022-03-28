@@ -136,7 +136,7 @@ public class Users implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "locality_id")
 	@JsonProperty("locality")
 	@JsonSerialize(using=LocalitySerializer.class)
@@ -172,7 +172,7 @@ public class Users implements java.io.Serializable {
 		this.profiles = profiles;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "us_id")
 	@JsonProperty("us")
 	@JsonSerialize(using=UsSerializer.class)

@@ -69,9 +69,12 @@ public class UserController
             user.setIsLocked(Byte.valueOf("0"));
             user.setIsEnabled(Byte.valueOf("0"));
             Integer userId = (Integer) service.Save(user);
-            user.setId(userId);
-            return new ResponseEntity<>(user, HttpStatus.OK);
+            
+            Users createdUser = service.find(Users.class, userId);
+            
+            return new ResponseEntity<>(createdUser, HttpStatus.OK);
         } catch (Exception e) {
+        	System.out.println(e.getMessage());
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

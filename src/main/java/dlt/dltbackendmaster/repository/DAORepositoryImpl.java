@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.transaction.Transactional;
+
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -22,6 +24,7 @@ import org.springframework.stereotype.Repository;
  * @author derciobucuane
  *
  */
+@Transactional
 @Repository
 public class DAORepositoryImpl implements DAORepository {
 
@@ -100,6 +103,7 @@ public class DAORepositoryImpl implements DAORepository {
 		}
 
 	}
+
 
 	public <T> Serializable Save(T klass) {
 		Serializable savedKlassId = getCurrentSession().save(klass);

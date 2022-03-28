@@ -50,6 +50,7 @@ public class Users implements java.io.Serializable {
 	private Date dateCreated;
 	private Integer updatedBy;
 	private Date dateUpdated;
+	private String offlineId;
 
 	public Users() {
 	}
@@ -329,5 +330,16 @@ public class Users implements java.io.Serializable {
 	public void setDateUpdated(Date dateUpdated) {
 		this.dateUpdated = dateUpdated;
 	}
+
+	@Column(name = "offline_id", nullable = true, length = 45)
+	public String getOfflineId() {
+		return offlineId;
+	}
+
+	public void setOfflineId(String offlineId) {
+		this.offlineId = offlineId;
+	}
+	
+	
 
 }

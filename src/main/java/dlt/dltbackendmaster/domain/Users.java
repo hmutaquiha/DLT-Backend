@@ -341,7 +341,7 @@ public class Users implements java.io.Serializable {
 	public void setOfflineId(String offlineId) {
 		this.offlineId = offlineId;
 	}
-	
+
 	public ObjectNode toObjectNode() {
 		ObjectMapper mapper = new ObjectMapper();
 		

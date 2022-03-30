@@ -15,7 +15,9 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import dlt.dltbackendmaster.serializers.LocalitySerializer;
 import dlt.dltbackendmaster.serializers.PartnersSerializer;
@@ -340,6 +342,24 @@ public class Users implements java.io.Serializable {
 		this.offlineId = offlineId;
 	}
 	
-	
-
+	public ObjectNode toObjectNode() {
+		ObjectMapper mapper = new ObjectMapper();
+		
+		ObjectNode user = mapper.createObjectNode();
+	    user.put("id", id);
+	    user.put("name", name);
+	    user.put("surname", surname);
+	    user.put("phone_number", phoneNumber);
+	    user.put("email", email);
+	    user.put("username", username);
+	    user.put("password", password);
+	    user.put("name", name);
+	    user.put("entryPoint", entryPoint);
+	    user.put("status", status);
+	    user.put("locality_id", locality.getId());
+	    user.put("partner_id", partners.getId());
+	    user.put("profile_id", profiles.getId());
+	    user.put("us_id", us.getId());
+		return user;
+	}
 }

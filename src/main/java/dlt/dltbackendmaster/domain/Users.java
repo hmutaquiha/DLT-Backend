@@ -341,7 +341,8 @@ public class Users implements java.io.Serializable {
 	public void setOfflineId(String offlineId) {
 		this.offlineId = offlineId;
 	}
-
+	
+	
 	public ObjectNode toObjectNode() {
 		ObjectMapper mapper = new ObjectMapper();
 		
@@ -360,6 +361,7 @@ public class Users implements java.io.Serializable {
 	    user.put("partner_id", partners.getId());
 	    user.put("profile_id", profiles.getId());
 	    user.put("us_id", us.getId());
+	    user.put("online_id", id); // flag to control if entity is synchronized with the backend
 		return user;
 	}
 }

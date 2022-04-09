@@ -32,6 +32,10 @@ public class Profiles implements java.io.Serializable {
 	public Profiles(String name) {
 		this.name = name;
 	}
+	
+	public Profiles(Integer id) {
+		this.id = id;
+	}
 
 	public Profiles(String name, String description, Set<Users> userses) {
 		this.name = name;

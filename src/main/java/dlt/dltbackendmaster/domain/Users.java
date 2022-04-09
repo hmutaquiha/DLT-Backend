@@ -19,6 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import dlt.dltbackendmaster.domain.watermelondb.UsersSyncModel;
 import dlt.dltbackendmaster.serializers.LocalitySerializer;
 import dlt.dltbackendmaster.serializers.PartnersSerializer;
 import dlt.dltbackendmaster.serializers.ProfilesSerializer;
@@ -125,6 +126,27 @@ public class Users implements java.io.Serializable {
 		this.dateCreated = dateCreated;
 		this.updatedBy = updatedBy;
 		this.dateUpdated = dateUpdated;
+	}
+	
+	public Users(UsersSyncModel model) {
+		this.locality = new Locality(model.getLocality_id());
+		this.partners = new Partners(model.getPartner_id());
+		this.profiles = new Profiles(model.getProfile_id());
+		this.us = new Us(model.getUs_id());
+		this.surname = model.getSurname();
+		this.name = model.getName();
+		this.phoneNumber = model.getPhone_number();
+		this.email = model.getEmail();
+		this.username = model.getUsername();
+		this.password = model.getPassword();
+		this.entryPoint = model.getEntry_point();
+		this.status = 1;
+		this.isLocked = 0;
+		this.isExpired = 0;
+		this.isCredentialsExpired = 0;
+		this.isEnabled = 1;
+		this.offlineId = model.getId();
+		this.dateCreated = new Date();
 	}
 
 	@Id
@@ -364,4 +386,6 @@ public class Users implements java.io.Serializable {
 	    user.put("online_id", id); // flag to control if entity is synchronized with the backend
 		return user;
 	}
+	
+	
 }

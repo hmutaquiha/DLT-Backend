@@ -67,6 +67,10 @@ public class Partners implements java.io.Serializable {
 		this.dateUpdated = dateUpdated;
 		this.userses = userses;
 	}
+	
+	public Partners(Integer id) {
+		this.id = id;
+	}
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)

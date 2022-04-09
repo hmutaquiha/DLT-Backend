@@ -50,6 +50,10 @@ public class Us implements java.io.Serializable {
 	public Us() {
 	}
 
+	public Us(Integer id) {
+		this.id = id;
+	}
+	
 	public Us(UsType usType, String code, String name, int localityId, int status, int createdBy, Date dateCreated) {
 		this.usType = usType;
 		this.code = code;

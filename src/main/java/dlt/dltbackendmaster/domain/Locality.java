@@ -62,6 +62,10 @@ public class Locality implements java.io.Serializable {
 		this.neighborhoods = neighborhoods;
 		this.userses = userses;
 	}
+	
+	public Locality(Integer id) {
+		this.id = id;
+	}
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)

@@ -7,11 +7,15 @@ import java.util.Date;
 import java.util.List;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import dlt.dltbackendmaster.domain.Users;
+import dlt.dltbackendmaster.domain.watermelondb.SyncObject;
+import dlt.dltbackendmaster.domain.watermelondb.UsersSyncModel;
 
 public class SyncSerializer {
 
@@ -49,6 +53,22 @@ public class SyncSerializer {
 		rootNode.put("timestamp",timestamp.getTime());
 		
 		return  mapper.writerWithDefaultPrettyPrinter().writeValueAsString(rootNode);
+	}
+	
+	public static SyncObject readUsersSyncObject(String changes) throws JsonMappingException, JsonProcessingException {
+		ObjectMapper mapper = new ObjectMapper();
+		
+		JsonNode root = mapper.readTree(changes);
+		JsonNode changesNode = root.path("changes");
+		
+		if(!changesNode.isMissingNode()) {
+			JsonNode usersNode = changesNode.path("users");
+			SyncObject users = mapper.treeToValue(usersNode, SyncObject.class);
+			
+			return users;
+		}
+		
+		return null;
 	}
 	
 	

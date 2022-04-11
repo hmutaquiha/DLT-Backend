@@ -10,6 +10,8 @@ import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -30,6 +32,10 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
  */
 @Entity
 @Table(name = "users", catalog = "dreams_db")
+@NamedQueries({
+    @NamedQuery(name = "Users.findAll", query = "SELECT c FROM Users c"),
+    @NamedQuery(name = "Users.findByDateCreated", query = "select u from Users u where u.dateCreated > :lastpulledat"),
+    @NamedQuery(name = "Users.findByDateUpdated", query = "select u from Users u where u.dateUpdated > :lastpulledat")})
 public class Users implements java.io.Serializable {
 
 	private Integer id;
@@ -376,7 +382,6 @@ public class Users implements java.io.Serializable {
 	    user.put("email", email);
 	    user.put("username", username);
 	    user.put("password", password);
-	    user.put("name", name);
 	    user.put("entryPoint", entryPoint);
 	    user.put("status", status);
 	    user.put("locality_id", locality.getId());

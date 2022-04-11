@@ -2,31 +2,39 @@ package dlt.dltbackendmaster.domain.watermelondb;
 
 import java.util.List;
 
-import dlt.dltbackendmaster.domain.watermelondb.*;
+import dlt.dltbackendmaster.domain.Locality;
+import dlt.dltbackendmaster.domain.Users;
 
-public class SyncObject {
-	private List<UsersSyncModel> created;
-	private List<UsersSyncModel> updated;
-	private List<UsersSyncModel> deleted;
+public class SyncObject<T> {
+	private List<T> created;
+	private List<T> updated;
+	private List<T> deleted;
 	
-	public SyncObject() {}
+	public SyncObject() {
+	}
 	
-	public List<UsersSyncModel> getCreated() {
+	public SyncObject(List<T> created, List<T> updated, List<Integer> deleted){
+		this.created = created;
+		this.updated = updated;
+		this.deleted = updated;
+	}
+	
+	public List<T> getCreated() {
 		return created;
 	}
-	public void setCreated(List<UsersSyncModel> created) {
+	public void setCreated(List<T> created) {
 		this.created = created;
 	}
-	public List<UsersSyncModel> getUpdated() {
+	public List<T> getUpdated() {
 		return updated;
 	}
-	public void setUpdated(List<UsersSyncModel> updated) {
+	public void setUpdated(List<T> updated) {
 		this.updated = updated;
 	}
-	public List<UsersSyncModel> getDeleted() {
+	public List<T> getDeleted() {
 		return deleted;
 	}
-	public void setDeleted(List<UsersSyncModel> deleted) {
+	public void setDeleted(List<T> deleted) {
 		this.deleted = deleted;
 	}
 	

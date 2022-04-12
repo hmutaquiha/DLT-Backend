@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.persistence.Parameter;
 import javax.transaction.Transactional;
 
 import org.hibernate.SQLQuery;
@@ -27,7 +28,7 @@ import org.springframework.stereotype.Repository;
 @Transactional
 @Repository
 public class DAORepositoryImpl implements DAORepository {
-
+	
 	@Autowired
 	private SessionFactory sessionFactory;
 
@@ -135,15 +136,19 @@ public class DAORepositoryImpl implements DAORepository {
 		Query q = getCurrentSession().getNamedQuery(query);
         int i = 0;
 
-        for (Object o : params) {
+        /*for (Object o : params) {
             q.setParameter(i, o);
             i++;//new
+        }*/
+        
+        for (Parameter param : q.getParameters()) {
+            q.setParameter(param, params[0]);
+            i++;
         }
 
-        List<T> results = q.list();
-
+        List<T> results = q.getResultList();
+        
         return results;
-
 	}
 
 	@Override

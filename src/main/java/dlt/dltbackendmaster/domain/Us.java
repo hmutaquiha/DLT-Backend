@@ -14,6 +14,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -21,7 +23,9 @@ import javax.persistence.TemporalType;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import dlt.dltbackendmaster.serializers.UsTypeSerializer;
 
@@ -30,6 +34,10 @@ import dlt.dltbackendmaster.serializers.UsTypeSerializer;
  */
 @Entity
 @Table(name = "us", catalog = "dreams_db")
+@NamedQueries({
+    @NamedQuery(name = "Us.findAll", query = "SELECT c FROM Us c"),
+    @NamedQuery(name = "Us.findByDateCreated", query = "SELECT c FROM Us c WHERE c.dateCreated = :lastpulledat"),
+    @NamedQuery(name = "Us.findByDateUpdated", query = "SELECT c FROM Us c WHERE c.dateUpdated = :lastpulledat")})
 public class Us implements java.io.Serializable {
 
 	private Integer id;
@@ -50,6 +58,10 @@ public class Us implements java.io.Serializable {
 	public Us() {
 	}
 
+	public Us(Integer id) {
+		this.id = id;
+	}
+	
 	public Us(UsType usType, String code, String name, int localityId, int status, int createdBy, Date dateCreated) {
 		this.usType = usType;
 		this.code = code;
@@ -90,7 +102,7 @@ public class Us implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "us_type_id", nullable = false)
 	@JsonProperty("usType")
 	@JsonSerialize(using=UsTypeSerializer.class)
@@ -204,7 +216,7 @@ public class Us implements java.io.Serializable {
 	}
 
 	@JsonIgnore
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "us")
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "us")
 	public Set<Users> getUserses() {
 		return this.userses;
 	}
@@ -212,5 +224,17 @@ public class Us implements java.io.Serializable {
 	public void setUserses(Set<Users> userses) {
 		this.userses = userses;
 	}
+	
+	public ObjectNode toObjectNode() {
+		ObjectMapper mapper = new ObjectMapper();
+		
+		ObjectNode profile = mapper.createObjectNode();
+		profile.put("id", id);
+		profile.put("name", name);
+		profile.put("description", description);
+		profile.put("status", status);
+		profile.put("online_id", id); // flag to control if entity is synchronized with the backend
+		return profile;
+	} 
 
 }

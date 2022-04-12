@@ -10,13 +10,18 @@ import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import dlt.dltbackendmaster.domain.watermelondb.UsersSyncModel;
 import dlt.dltbackendmaster.serializers.LocalitySerializer;
 import dlt.dltbackendmaster.serializers.PartnersSerializer;
 import dlt.dltbackendmaster.serializers.ProfilesSerializer;
@@ -27,6 +32,10 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
  */
 @Entity
 @Table(name = "users", catalog = "dreams_db")
+@NamedQueries({
+    @NamedQuery(name = "Users.findAll", query = "SELECT c FROM Users c"),
+    @NamedQuery(name = "Users.findByDateCreated", query = "select u from Users u where u.dateCreated > :lastpulledat"),
+    @NamedQuery(name = "Users.findByDateUpdated", query = "select u from Users u where u.dateUpdated > :lastpulledat")})
 public class Users implements java.io.Serializable {
 
 	private Integer id;
@@ -123,6 +132,27 @@ public class Users implements java.io.Serializable {
 		this.dateCreated = dateCreated;
 		this.updatedBy = updatedBy;
 		this.dateUpdated = dateUpdated;
+	}
+	
+	public Users(UsersSyncModel model) {
+		this.locality = new Locality(model.getLocality_id());
+		this.partners = new Partners(model.getPartner_id());
+		this.profiles = new Profiles(model.getProfile_id());
+		this.us = new Us(model.getUs_id());
+		this.surname = model.getSurname();
+		this.name = model.getName();
+		this.phoneNumber = model.getPhone_number();
+		this.email = model.getEmail();
+		this.username = model.getUsername();
+		this.password = model.getPassword();
+		this.entryPoint = model.getEntry_point();
+		this.status = 1;
+		this.isLocked = 0;
+		this.isExpired = 0;
+		this.isCredentialsExpired = 0;
+		this.isEnabled = 1;
+		this.offlineId = model.getId();
+		this.dateCreated = new Date();
 	}
 
 	@Id
@@ -341,5 +371,26 @@ public class Users implements java.io.Serializable {
 	}
 	
 	
-
+	public ObjectNode toObjectNode() {
+		ObjectMapper mapper = new ObjectMapper();
+		
+		ObjectNode user = mapper.createObjectNode();
+	    user.put("id", id);
+	    user.put("name", name);
+	    user.put("surname", surname);
+	    user.put("phone_number", phoneNumber);
+	    user.put("email", email);
+	    user.put("username", username);
+	    user.put("password", password);
+	    user.put("entryPoint", entryPoint);
+	    user.put("status", status);
+	    user.put("locality_id", locality.getId());
+	    user.put("partner_id", partners.getId());
+	    user.put("profile_id", profiles.getId());
+	    user.put("us_id", us.getId());
+	    user.put("online_id", id); // flag to control if entity is synchronized with the backend
+		return user;
+	}
+	
+	
 }

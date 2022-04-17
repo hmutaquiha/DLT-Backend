@@ -1,6 +1,8 @@
 package dlt.dltbackendmaster.serializers;
 
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -53,11 +55,11 @@ public class SyncSerializer {
 		changesNode.set("users", userNode);
 		
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-		
+	
 		ObjectNode rootNode = mapper.createObjectNode();
 		rootNode.set("changes", changesNode);
 		rootNode.put("timestamp",timestamp.getTime());
-		
+
 		return  mapper.writerWithDefaultPrettyPrinter().writeValueAsString(rootNode);
 	}
 	
@@ -74,11 +76,11 @@ public class SyncSerializer {
 		changesNode.set("partners", createPartnersSyncObject(partners));
 		changesNode.set("profiles", createProfilesSyncObject(profiles));
 		changesNode.set("us", createUsSyncObject(us));
-		 
-		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 		
 		ObjectNode rootNode = mapper.createObjectNode();
 		rootNode.set("changes", changesNode);
+		
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 		rootNode.put("timestamp",timestamp.getTime());
 		
 		return  mapper.writerWithDefaultPrettyPrinter().writeValueAsString(rootNode);
@@ -104,8 +106,10 @@ public class SyncSerializer {
 		arrayUpdated.addAll(updatedlist);
 		
 		// deleted users
-		List<Integer> deletedUsers = mapper.convertValue(users.getDeleted(), new TypeReference<List<Integer>>() {});
-		ArrayNode arrayDeleted= mapper.valueToTree(deletedUsers);
+		
+		//List<Integer> deletedUsers = mapper.convertValue(users.getDeleted(), new TypeReference<List<Integer>>() {});
+		ArrayNode arrayDeleted= mapper.createArrayNode();
+		//arrayDeleted.addAll(deletedUsers.toArray());
 		
 		ObjectNode userNode = mapper.createObjectNode();
 		userNode.set("created", arrayCreated);
@@ -251,6 +255,20 @@ public class SyncSerializer {
 			SyncObject<UsersSyncModel> users = mapper.treeToValue(usersNode, (Class<SyncObject<UsersSyncModel>>)(Object)SyncObject.class);
 			
 			return users;
+		}
+		
+		return null;
+	}
+	
+	public static String readLastPulledAt(String changes) throws JsonMappingException, JsonProcessingException {
+		ObjectMapper mapper = new ObjectMapper();
+		
+		JsonNode root = mapper.readTree(changes);
+		JsonNode lastPulledAtNode = root.path("lastPulledAt");
+		
+		if(!lastPulledAtNode.isMissingNode()) {
+			
+			return mapper.treeToValue(lastPulledAtNode, String.class);
 		}
 		
 		return null;

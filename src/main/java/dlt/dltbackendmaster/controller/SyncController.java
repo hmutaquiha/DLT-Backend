@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dlt.dltbackendmaster.domain.Locality;
@@ -86,12 +88,19 @@ public class SyncController {
 			
 		}else {
 			Long t = Long.valueOf(lastPulledAt);
-			validatedDate = new Date(t);
+			//validatedDate = new Date(t);
+			
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTimeInMillis(t);
+			calendar.set(Calendar.MILLISECOND, 0); // remove milliseconds to avoid wrongly adding entities to created list
+			validatedDate = calendar.getTime();
+			
 			
 			// users
 			usersCreated = service.GetAllEntityByNamedQuery("Users.findByDateCreated", validatedDate);
 			usersUpdated = service.GetAllEntityByNamedQuery("Users.findByDateUpdated", validatedDate);
 			listDeleted = new ArrayList<Integer>();
+
 			// localities
 			localityCreated = service.GetAllEntityByNamedQuery("Locality.findByDateCreated", validatedDate);
 			localityUpdated = service.GetAllEntityByNamedQuery("Locality.findByDateUpdated", validatedDate);
@@ -115,7 +124,7 @@ public class SyncController {
 			
         	//String object = SyncSerializer.createUsersSyncObject(usersCreated, usersUpdated, new ArrayList<Integer>());
 			String object = SyncSerializer.createSyncObject(usersSO, localitySO, profilesSO, partnersSO, usSO);
-			//System.out.println(object);
+
         	return new ResponseEntity<>(object, HttpStatus.OK);
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -130,27 +139,49 @@ public class SyncController {
 	@SuppressWarnings("unchecked")
 	@PostMapping(consumes = "application/json")
 	public ResponseEntity post(@RequestBody String changes,
-								@RequestParam(name = "username") String username) throws ParseException {
+								@RequestParam(name = "username") String username) throws ParseException, JsonMappingException, JsonProcessingException {
+		
+		String lastPulledAt = SyncSerializer.readLastPulledAt(changes);
+		
 		ObjectMapper mapper = new ObjectMapper();
 		SyncObject<UsersSyncModel> users;
 		try {
 			users = SyncSerializer.readUsersSyncObject(changes);
 			
+			// created entities
 			if(users != null && users.getCreated().size() > 0) {
 				
-				//List<UsersSyncModel> createdList = (List<UsersSyncModel>)users.getCreated();
 				List<UsersSyncModel> createdList = mapper.convertValue(users.getCreated(), new TypeReference<List<UsersSyncModel>>() {});
-				//System.out.println(createdList);
 				
 				for (UsersSyncModel created : createdList) {
-					
+
 					if(created.getOnline_id() == null) {
-						Users newUser = new Users(created);
+						Users newUser = new Users(created, lastPulledAt);
 						Integer savedId = (Integer) service.Save(newUser);
-						
 					}
 				}
 			}
+
+			// updated entities
+			if(users != null && users.getUpdated().size() > 0) {
+				List<UsersSyncModel> updatedList = mapper.convertValue(users.getUpdated(), new TypeReference<List<UsersSyncModel>>() {});
+
+				for (UsersSyncModel updated : updatedList) {
+					
+					if(updated.getOnline_id() == null) {
+						Users newUser = new Users(updated, lastPulledAt);
+						Integer savedId = (Integer) service.Save(newUser);
+						
+					} else {
+						Users updateu = service.find(Users.class, updated.getOnline_id());
+						updateu.update(updated, lastPulledAt);
+						
+						Users savedId = service.update(updateu);
+					}
+				}
+			}
+			
+			
 			
 			
 		} catch (JsonProcessingException e) {

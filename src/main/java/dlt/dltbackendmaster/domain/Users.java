@@ -37,6 +37,7 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
     @NamedQuery(name = "Users.findByDateCreated", query = "select u from Users u where u.dateUpdated is null and u.dateCreated > :lastpulledat"),
     //@NamedQuery(name = "Users.findByDateUpdated", query = "select u from Users u where u.dateUpdated > :lastpulledat")})
 	@NamedQuery(name = "Users.findByDateUpdated", query = "select u from Users u where (u.dateUpdated >= :lastpulledat) or (u.dateUpdated >= :lastpulledat and u.dateCreated = u.dateUpdated)")})
+
 public class Users implements java.io.Serializable {
 
 	private Integer id;
@@ -134,7 +135,7 @@ public class Users implements java.io.Serializable {
 		this.updatedBy = updatedBy;
 		this.dateUpdated = dateUpdated;
 	}
-	
+
 	public Users(UsersSyncModel model, String timestamp) {
 		Long t = Long.valueOf(timestamp);
 		Date regDate = new Date(t);
@@ -158,6 +159,7 @@ public class Users implements java.io.Serializable {
 		this.offlineId = model.getId();
 		this.dateCreated = regDate;
 		this.dateUpdated = regDate;
+
 	}
 
 	@Id
@@ -380,6 +382,7 @@ public class Users implements java.io.Serializable {
 		ObjectMapper mapper = new ObjectMapper();
 		
 		ObjectNode user = mapper.createObjectNode();
+
 		if(offlineId != null) {
 			user.put("id", offlineId);
 		}else {

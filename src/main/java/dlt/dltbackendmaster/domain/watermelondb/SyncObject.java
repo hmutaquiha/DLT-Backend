@@ -9,6 +9,7 @@ public class SyncObject<T> {
 	private List<T> created;
 	private List<T> updated;
 	private List<Integer> deleted;
+
 	
 	public SyncObject() {
 	}
@@ -17,6 +18,7 @@ public class SyncObject<T> {
 		this.created = created;
 		this.updated = updated;
 		this.deleted = deleted;
+
 	}
 	
 	public List<T> getCreated() {
@@ -31,6 +33,7 @@ public class SyncObject<T> {
 	public void setUpdated(List<T> updated) {
 		this.updated = updated;
 	}
+
 	public List<Integer> getDeleted() {
 		return deleted;
 	}

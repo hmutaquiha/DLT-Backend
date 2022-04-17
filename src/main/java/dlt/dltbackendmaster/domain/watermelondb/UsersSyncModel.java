@@ -117,4 +117,23 @@ public class UsersSyncModel {
 		this.online_id = online_id;
 	}
 	
+	public String toString() {
+		String object = ""
+				+ "id: " + id + "\n"
+				+ "name: " + name + "\n"
+				+ "surname: " + surname + "\n"
+				+ "phone_number: " + phone_number + "\n"
+				+ "email: " + email + "\n"
+				+ "username: " + username + "\n"
+				+ "password: " + password + "\n"
+				+ "entry_point: " + entry_point + "\n"
+				+ "status: " + status + "\n"
+				+ "locality_id: " + locality_id + "\n"
+				+ "partner_id" + partner_id + "\n"
+				+ "profile_id: " + profile_id + "\n"
+				+ "us_id: " + us_id + "\n"
+				+ "online_id: " + online_id + "\n";
+		return object;
+	}
+	
 }

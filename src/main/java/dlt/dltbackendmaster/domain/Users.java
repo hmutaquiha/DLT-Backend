@@ -34,8 +34,10 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 @Table(name = "users", catalog = "dreams_db")
 @NamedQueries({
     @NamedQuery(name = "Users.findAll", query = "SELECT c FROM Users c"),
-    @NamedQuery(name = "Users.findByDateCreated", query = "select u from Users u where u.dateCreated > :lastpulledat"),
-    @NamedQuery(name = "Users.findByDateUpdated", query = "select u from Users u where u.dateUpdated > :lastpulledat")})
+    @NamedQuery(name = "Users.findByDateCreated", query = "select u from Users u where u.dateUpdated is null and u.dateCreated > :lastpulledat"),
+    //@NamedQuery(name = "Users.findByDateUpdated", query = "select u from Users u where u.dateUpdated > :lastpulledat")})
+	@NamedQuery(name = "Users.findByDateUpdated", query = "select u from Users u where (u.dateUpdated >= :lastpulledat) or (u.dateUpdated >= :lastpulledat and u.dateCreated = u.dateUpdated)")})
+
 public class Users implements java.io.Serializable {
 
 	private Integer id;
@@ -133,8 +135,11 @@ public class Users implements java.io.Serializable {
 		this.updatedBy = updatedBy;
 		this.dateUpdated = dateUpdated;
 	}
-	
-	public Users(UsersSyncModel model) {
+
+	public Users(UsersSyncModel model, String timestamp) {
+		Long t = Long.valueOf(timestamp);
+		Date regDate = new Date(t);
+		
 		this.locality = new Locality(model.getLocality_id());
 		this.partners = new Partners(model.getPartner_id());
 		this.profiles = new Profiles(model.getProfile_id());
@@ -152,7 +157,9 @@ public class Users implements java.io.Serializable {
 		this.isCredentialsExpired = 0;
 		this.isEnabled = 1;
 		this.offlineId = model.getId();
-		this.dateCreated = new Date();
+		this.dateCreated = regDate;
+		this.dateUpdated = regDate;
+
 	}
 
 	@Id
@@ -233,7 +240,7 @@ public class Users implements java.io.Serializable {
 		this.name = name;
 	}
 
-	@Column(name = "phone_number", nullable = false, length = 50)
+	@Column(name = "phone_number", length = 50)
 	public String getPhoneNumber() {
 		return this.phoneNumber;
 	}
@@ -242,7 +249,7 @@ public class Users implements java.io.Serializable {
 		this.phoneNumber = phoneNumber;
 	}
 
-	@Column(name = "email", nullable = false, length = 150)
+	@Column(name = "email", length = 150)
 	public String getEmail() {
 		return this.email;
 	}
@@ -375,21 +382,49 @@ public class Users implements java.io.Serializable {
 		ObjectMapper mapper = new ObjectMapper();
 		
 		ObjectNode user = mapper.createObjectNode();
-	    user.put("id", id);
-	    user.put("name", name);
-	    user.put("surname", surname);
-	    user.put("phone_number", phoneNumber);
-	    user.put("email", email);
-	    user.put("username", username);
-	    user.put("password", password);
-	    user.put("entryPoint", entryPoint);
-	    user.put("status", status);
-	    user.put("locality_id", locality.getId());
-	    user.put("partner_id", partners.getId());
-	    user.put("profile_id", profiles.getId());
-	    user.put("us_id", us.getId());
-	    user.put("online_id", id); // flag to control if entity is synchronized with the backend
+
+		if(offlineId != null) {
+			user.put("id", offlineId);
+		}else {
+			user.put("id", id);
+		}
+		
+		if(dateUpdated == null || dateUpdated.after(dateCreated)) { 
+			user.put("name", name);
+		    user.put("surname", surname);
+		    user.put("phone_number", phoneNumber);
+		    user.put("email", email);
+		    user.put("username", username);
+		    user.put("password", password);
+		    user.put("entryPoint", entryPoint);
+		    user.put("status", status);
+		    user.put("locality_id", locality.getId());
+		    user.put("partner_id", partners.getId());
+		    user.put("profile_id", profiles.getId());
+		    user.put("us_id", us.getId());
+		    user.put("online_id", id); // flag to control if entity is synchronized with the backend
+			
+		}else { // ensure online_id is updated first
+			user.put("online_id", id);
+		}
 		return user;
+	}
+	
+	public void update(UsersSyncModel model, String timestamp) {
+		Long t = Long.valueOf(timestamp);
+		
+		this.offlineId = model.getId();
+		this.dateUpdated = new Date(t);
+		this.name = model.getName();
+		this.surname = model.getSurname();
+		this.phoneNumber = model.getPhone_number();
+		this.username = model.getUsername();
+		this.password = model.getPassword();
+		this.entryPoint = model.getEntry_point();
+		this.locality.setId(model.getLocality_id());
+		this.partners.setId(model.getPartner_id());
+		this.profiles.setId(model.getProfile_id());
+		this.us.setId(model.getUs_id());
 	}
 	
 	

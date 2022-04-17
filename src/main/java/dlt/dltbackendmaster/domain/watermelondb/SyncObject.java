@@ -8,7 +8,8 @@ import dlt.dltbackendmaster.domain.Users;
 public class SyncObject<T> {
 	private List<T> created;
 	private List<T> updated;
-	private List<T> deleted;
+	private List<Integer> deleted;
+
 	
 	public SyncObject() {
 	}
@@ -16,7 +17,8 @@ public class SyncObject<T> {
 	public SyncObject(List<T> created, List<T> updated, List<Integer> deleted){
 		this.created = created;
 		this.updated = updated;
-		this.deleted = updated;
+		this.deleted = deleted;
+
 	}
 	
 	public List<T> getCreated() {
@@ -31,10 +33,11 @@ public class SyncObject<T> {
 	public void setUpdated(List<T> updated) {
 		this.updated = updated;
 	}
-	public List<T> getDeleted() {
+
+	public List<Integer> getDeleted() {
 		return deleted;
 	}
-	public void setDeleted(List<T> deleted) {
+	public void setDeleted(List<Integer> deleted) {
 		this.deleted = deleted;
 	}
 	

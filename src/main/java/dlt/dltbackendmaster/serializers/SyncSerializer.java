@@ -27,7 +27,7 @@ import dlt.dltbackendmaster.domain.watermelondb.UsersSyncModel;
 
 public class SyncSerializer {
 
-	public static String createUsersSyncObject(List<Users> created, List<Users> updated, List<Integer> deleted) throws JsonProcessingException {
+	/*public static String createUsersSyncObject(List<Users> created, List<Users> updated, List<Integer> deleted) throws JsonProcessingException {
 		ObjectMapper mapper = new ObjectMapper();
 		List<ObjectNode> cretedlist = new ArrayList<ObjectNode>();
 		for (Users user : created) {
@@ -61,17 +61,18 @@ public class SyncSerializer {
 		rootNode.put("timestamp",timestamp.getTime());
 
 		return  mapper.writerWithDefaultPrettyPrinter().writeValueAsString(rootNode);
-	}
+	}*/
 	
 	public static String createSyncObject(SyncObject<Users> users, 
 												SyncObject<Locality> localities, 
 												SyncObject<Profiles> profiles,
 												SyncObject<Partners> partners,
-												SyncObject<Us> us) throws JsonProcessingException {
+												SyncObject<Us> us,
+												String lastPulledAt) throws JsonProcessingException {
 		
 		ObjectMapper mapper = new ObjectMapper();
 		ObjectNode changesNode = mapper.createObjectNode();
-		changesNode.set("users", createUserSyncObject(users));
+		changesNode.set("users", createUserSyncObject(users, lastPulledAt));
 		changesNode.set("localities", createLocalitySyncObject(localities));
 		changesNode.set("partners", createPartnersSyncObject(partners));
 		changesNode.set("profiles", createProfilesSyncObject(profiles));
@@ -86,13 +87,13 @@ public class SyncSerializer {
 		return  mapper.writerWithDefaultPrettyPrinter().writeValueAsString(rootNode);
 	}
 	
-	public static ObjectNode createUserSyncObject(SyncObject<Users> users) throws JsonProcessingException {
+	public static ObjectNode createUserSyncObject(SyncObject<Users> users, String lastPulledAt) throws JsonProcessingException {
 		ObjectMapper mapper = new ObjectMapper();
 		
 		// created users
 		List<Users> createdUsers = mapper.convertValue(users.getCreated(), new TypeReference<List<Users>>() {});
 		List<ObjectNode> createdlist = createdUsers.stream()
-												.map((Users element) -> element.toObjectNode())
+												.map((Users element) -> element.toObjectNode(lastPulledAt))
 												.collect(Collectors.toList());
 		ArrayNode arrayCreated = mapper.createArrayNode();
 		arrayCreated.addAll(createdlist);
@@ -100,7 +101,7 @@ public class SyncSerializer {
 		// updated users
 		List<Users> updatedUsers = mapper.convertValue(users.getUpdated(), new TypeReference<List<Users>>() {});
 		List<ObjectNode> updatedlist = updatedUsers.stream()
-												.map((Users element) -> element.toObjectNode())
+												.map((Users element) -> element.toObjectNode(lastPulledAt))
 												.collect(Collectors.toList());
 		ArrayNode arrayUpdated = mapper.createArrayNode();
 		arrayUpdated.addAll(updatedlist);

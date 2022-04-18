@@ -1,6 +1,7 @@
 package dlt.dltbackendmaster.serializers;
 
 import java.sql.Timestamp;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -55,7 +56,7 @@ public class SyncSerializer {
 		changesNode.set("users", userNode);
 		
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-	
+    
 		ObjectNode rootNode = mapper.createObjectNode();
 		rootNode.set("changes", changesNode);
 		rootNode.put("timestamp",timestamp.getTime());
@@ -77,6 +78,7 @@ public class SyncSerializer {
 		changesNode.set("partners", createPartnersSyncObject(partners));
 		changesNode.set("profiles", createProfilesSyncObject(profiles));
 		changesNode.set("us", createUsSyncObject(us));
+
 		
 		ObjectNode rootNode = mapper.createObjectNode();
 		rootNode.set("changes", changesNode);
@@ -274,7 +276,6 @@ public class SyncSerializer {
 		
 		return null;
 	}
-	
 	
 	 
 }

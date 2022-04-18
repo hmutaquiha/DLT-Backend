@@ -122,10 +122,10 @@ public class SyncController {
 			SyncObject<Profiles> profilesSO = new SyncObject<Profiles>(profilesCreated, profilesUpdated, listDeleted);
 			SyncObject<Us> usSO = new SyncObject<Us>(usCreated, usUpdated, listDeleted);
 			
-        	//String object = SyncSerializer.createUsersSyncObject(usersCreated, usersUpdated, new ArrayList<Integer>());
+      //String object = SyncSerializer.createUsersSyncObject(usersCreated, usersUpdated, new ArrayList<Integer>());
 			String object = SyncSerializer.createSyncObject(usersSO, localitySO, profilesSO, partnersSO, usSO, lastPulledAt);
 			System.out.println("PULLING " + object);
-        	return new ResponseEntity<>(object, HttpStatus.OK);
+      return new ResponseEntity<>(object, HttpStatus.OK);
 		} catch (Exception e) {
 			// TODO: handle exception
 

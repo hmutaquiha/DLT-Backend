@@ -390,6 +390,7 @@ public class Users implements java.io.Serializable {
 		}
 		
 		if(dateUpdated == null || dateUpdated.after(dateCreated) || lastPulledAt.equals("null") || lastPulledAt == null) { 
+
 			user.put("name", name);
 		    user.put("surname", surname);
 		    user.put("phone_number", phoneNumber);

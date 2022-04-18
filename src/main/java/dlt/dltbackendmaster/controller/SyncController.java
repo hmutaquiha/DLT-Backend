@@ -123,8 +123,10 @@ public class SyncController {
 			SyncObject<Us> usSO = new SyncObject<Us>(usCreated, usUpdated, listDeleted);
 			
       //String object = SyncSerializer.createUsersSyncObject(usersCreated, usersUpdated, new ArrayList<Integer>());
+
 			String object = SyncSerializer.createSyncObject(usersSO, localitySO, profilesSO, partnersSO, usSO, lastPulledAt);
 			System.out.println("PULLING " + object);
+
       return new ResponseEntity<>(object, HttpStatus.OK);
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -143,6 +145,7 @@ public class SyncController {
 		
 		String lastPulledAt = SyncSerializer.readLastPulledAt(changes);
 		
+
 		ObjectMapper mapper = new ObjectMapper();
 		SyncObject<UsersSyncModel> users;
 		try {
@@ -170,7 +173,25 @@ public class SyncController {
 					
 					if(updated.getOnline_id() == null) {
 						Users newUser = new Users(updated, lastPulledAt);
+
 						Integer savedId = (Integer) service.Save(newUser);
+					}
+				}
+			}
+
+			// updated entities
+			if(users != null && users.getUpdated().size() > 0) {
+				List<UsersSyncModel> updatedList = mapper.convertValue(users.getUpdated(), new TypeReference<List<UsersSyncModel>>() {});
+
+				for (UsersSyncModel updated : updatedList) {
+					
+					if(updated.getOnline_id() == null) {
+						Users newUser = new Users(updated, lastPulledAt);
+						Integer savedId = (Integer) service.Save(newUser);
+						
+					} else {
+						Users updateu = service.find(Users.class, updated.getOnline_id());
+						updateu.update(updated, lastPulledAt);
 						
 					} else {
 						Users updateu = service.find(Users.class, updated.getOnline_id());

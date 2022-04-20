@@ -219,7 +219,7 @@ public class Beneficiary extends BasicLifeCycle implements Serializable
         this.grade = grade;
     }
 
-    @Column(name = "name")
+    @Column(name = "school_name")
     public String getSchoolName() {
         return schoolName;
     }

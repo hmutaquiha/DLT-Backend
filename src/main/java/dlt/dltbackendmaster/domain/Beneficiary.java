@@ -1,6 +1,8 @@
 package dlt.dltbackendmaster.domain;
 
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Set;
 
@@ -11,19 +13,28 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import dlt.dltbackendmaster.serializers.NeighborhoodSerializer;
 
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "beneficiaries", catalog = "dreams_db")
+@NamedQueries({ @NamedQuery(name = "Beneficiary.findAll", query = "SELECT b FROM Beneficiary b"),
+                @NamedQuery(name = "Beneficiary.findByDateCreated",
+                            query = "select b from Beneficiary b where b.dateUpdated is null and b.dateCreated > :lastpulledat"),
+                @NamedQuery(name = "Beneficiary.findByDateUpdated",
+                            query = "select b from Beneficiary b where (b.dateUpdated >= :lastpulledat) or (b.dateUpdated >= :lastpulledat and b.dateCreated = b.dateUpdated)") })
 public class Beneficiary extends BasicLifeCycle implements Serializable
 {
     private String nui;
@@ -285,5 +296,46 @@ public class Beneficiary extends BasicLifeCycle implements Serializable
 
     public void setVulnerabilities(Set<Vulnerability> vulnerabilities) {
         this.vulnerabilities = vulnerabilities;
+    }
+
+    public ObjectNode toObjectNode() {
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode beneficiary = mapper.createObjectNode();
+        
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd"); 
+
+        if (offlineId != null) {
+            beneficiary.put("id", offlineId);
+        } else {
+            beneficiary.put("id", id);
+        }
+
+        if (dateUpdated == null || dateUpdated.after(dateCreated)) {
+            beneficiary.put("nui", nui);
+            beneficiary.put("name", name);
+            beneficiary.put("surname", surname);
+            beneficiary.put("nickname", nickName);
+            beneficiary.put("dateOfBirth", dateFormat.format(dateOfBirth));
+            beneficiary.put("gender", String.valueOf(gender));
+            beneficiary.put("adress", address);
+            beneficiary.put("phone_number", phoneNumber);
+            beneficiary.put("email", email);
+            beneficiary.put("livesWith", livesWith.toString());
+            beneficiary.put("isOrphan", isOrphan);
+            beneficiary.put("via", via);
+            beneficiary.put("partner_id", partner == null ? null : partner.getId());
+            beneficiary.put("isStudent", isStudent);
+            beneficiary.put("grade", grade);
+            beneficiary.put("schoolName", schoolName);
+            beneficiary.put("isDeficient", isDeficient);
+            beneficiary.put("deficiencyType", deficiencyType == null ? null : deficiencyType.toString());
+            beneficiary.put("entryPoint", entryPoint);
+            beneficiary.put("neighborhood_id", neighborhood.getId());
+            beneficiary.put("us_id", usId);
+            beneficiary.put("online_id", id); // flag to control if entity is synchronized with the backend
+        } else { // ensure online_id is updated first
+            beneficiary.put("online_id", id);
+        }
+        return beneficiary;
     }
 }

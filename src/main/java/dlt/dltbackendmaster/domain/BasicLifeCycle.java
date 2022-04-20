@@ -11,13 +11,14 @@ import javax.persistence.MappedSuperclass;
 @MappedSuperclass
 public abstract class BasicLifeCycle
 {
-    private int id;
-    private String name;
+    protected int id;
+    protected String name;
     private Integer status;
     private Integer createdBy;
-    private Date dateCreated;
+    protected Date dateCreated;
     private Integer updatedBy;
-    private Date dateUpdated;
+    protected Date dateUpdated;
+    protected String offlineId;
 
     public BasicLifeCycle() {}
 

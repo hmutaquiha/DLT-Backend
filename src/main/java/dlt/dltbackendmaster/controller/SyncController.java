@@ -1,21 +1,16 @@
 package dlt.dltbackendmaster.controller;
 
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +22,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import dlt.dltbackendmaster.domain.Beneficiary;
 import dlt.dltbackendmaster.domain.Locality;
 import dlt.dltbackendmaster.domain.Partners;
 import dlt.dltbackendmaster.domain.Profiles;
@@ -66,7 +62,10 @@ public class SyncController {
 		List<Us> usCreated;
 		List<Us> usUpdated;
 		
-		if(lastPulledAt.equals("null") || lastPulledAt == null ) {
+		List<Beneficiary> beneficiariesCreated;
+		List<Beneficiary> beneficiariesUpdated;
+		
+		if(lastPulledAt == null || lastPulledAt.equals("null") ) {
 
 			//users
 			usersCreated = service.GetAllEntityByNamedQuery("Users.findAll");
@@ -85,6 +84,9 @@ public class SyncController {
 			
 			usCreated = service.GetAllEntityByNamedQuery("Us.findAll");
 			usUpdated = new ArrayList<Us>();
+			
+			beneficiariesCreated = service.GetAllEntityByNamedQuery("Beneficiary.findAll");
+			beneficiariesUpdated = new ArrayList<Beneficiary>();
 			
 		}else {
 			Long t = Long.valueOf(lastPulledAt);
@@ -113,6 +115,9 @@ public class SyncController {
 			// us			
 			usCreated = service.GetAllEntityByNamedQuery("Us.findByDateCreated",validatedDate);
 			usUpdated = service.GetAllEntityByNamedQuery("Us.findByDateUpdated",validatedDate);
+			
+			beneficiariesCreated = service.GetAllEntityByNamedQuery("Beneficiary.findByDateCreated", validatedDate);
+            beneficiariesUpdated = service.GetAllEntityByNamedQuery("Beneficiary.findByDateUpdated", validatedDate);
 		}
 		
 		try {
@@ -122,10 +127,12 @@ public class SyncController {
 			SyncObject<Profiles> profilesSO = new SyncObject<Profiles>(profilesCreated, profilesUpdated, listDeleted);
 			SyncObject<Us> usSO = new SyncObject<Us>(usCreated, usUpdated, listDeleted);
 			
-      //String object = SyncSerializer.createUsersSyncObject(usersCreated, usersUpdated, new ArrayList<Integer>());
-			String object = SyncSerializer.createSyncObject(usersSO, localitySO, profilesSO, partnersSO, usSO);
+			SyncObject<Beneficiary> beneficiarySO = new SyncObject<Beneficiary>(beneficiariesCreated, beneficiariesUpdated, listDeleted);
+			
+			//String object = SyncSerializer.createUsersSyncObject(usersCreated, usersUpdated, new ArrayList<Integer>());
+			String object = SyncSerializer.createSyncObject(usersSO, localitySO, profilesSO, partnersSO, usSO, beneficiarySO);
 
-      return new ResponseEntity<>(object, HttpStatus.OK);
+			return new ResponseEntity<>(object, HttpStatus.OK);
 		} catch (Exception e) {
 			// TODO: handle exception
 

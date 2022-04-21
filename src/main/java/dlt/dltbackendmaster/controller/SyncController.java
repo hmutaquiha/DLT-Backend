@@ -197,13 +197,7 @@ public class SyncController {
 					} else {
 						Users updateu = service.find(Users.class, updated.getOnline_id());
 						updateu.update(updated, lastPulledAt);
-						
-					} else {
-						Users updateu = service.find(Users.class, updated.getOnline_id());
-						updateu.update(updated, lastPulledAt);
-						
-						Users savedId = service.update(updateu);
-					}
+					} 
 				}
 			}
 			

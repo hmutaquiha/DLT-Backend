@@ -29,11 +29,6 @@ import dlt.dltbackendmaster.domain.watermelondb.UsersSyncModel;
 
 public class SyncSerializer
 {
-    public static String createUsersSyncObject(List<Users> created, List<Users> updated, List<Integer> deleted)
-                    throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        List<ObjectNode> cretedlist = new ArrayList<ObjectNode>();
-
 	/*public static String createUsersSyncObject(List<Users> created, List<Users> updated, List<Integer> deleted) throws JsonProcessingException {
 		ObjectMapper mapper = new ObjectMapper();
 		List<ObjectNode> cretedlist = new ArrayList<ObjectNode>();

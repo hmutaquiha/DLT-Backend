@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import dlt.dltbackendmaster.domain.Beneficiary;
 import dlt.dltbackendmaster.domain.Locality;
 import dlt.dltbackendmaster.domain.Partners;
 import dlt.dltbackendmaster.domain.Profiles;
@@ -26,7 +27,12 @@ import dlt.dltbackendmaster.domain.Users;
 import dlt.dltbackendmaster.domain.watermelondb.SyncObject;
 import dlt.dltbackendmaster.domain.watermelondb.UsersSyncModel;
 
-public class SyncSerializer {
+public class SyncSerializer
+{
+    public static String createUsersSyncObject(List<Users> created, List<Users> updated, List<Integer> deleted)
+                    throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        List<ObjectNode> cretedlist = new ArrayList<ObjectNode>();
 
 	/*public static String createUsersSyncObject(List<Users> created, List<Users> updated, List<Integer> deleted) throws JsonProcessingException {
 		ObjectMapper mapper = new ObjectMapper();
@@ -277,5 +283,4 @@ public class SyncSerializer {
 		return null;
 	}
 	
-	 
 }

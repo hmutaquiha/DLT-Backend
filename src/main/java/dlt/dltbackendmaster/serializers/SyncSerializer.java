@@ -1,12 +1,6 @@
 package dlt.dltbackendmaster.serializers;
 
 import java.sql.Timestamp;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -69,7 +63,8 @@ public class SyncSerializer
 												SyncObject<Locality> localities, 
 												SyncObject<Profiles> profiles,
 												SyncObject<Partners> partners,
-												SyncObject<Us> us,
+												SyncObject<Us> us, 
+												SyncObject<Beneficiary> beneficiaries,
 												String lastPulledAt) throws JsonProcessingException {
 		
 		ObjectMapper mapper = new ObjectMapper();
@@ -79,6 +74,7 @@ public class SyncSerializer
 		changesNode.set("partners", createPartnersSyncObject(partners));
 		changesNode.set("profiles", createProfilesSyncObject(profiles));
 		changesNode.set("us", createUsSyncObject(us));
+        changesNode.set("beneficiaries", createBeneficiarySyncObject(beneficiaries));
 
 		
 		ObjectNode rootNode = mapper.createObjectNode();
@@ -246,6 +242,33 @@ public class SyncSerializer
 				
 		return userNode;
 	}
+
+    private static ObjectNode createBeneficiarySyncObject(SyncObject<Beneficiary> beneficiaries)
+                    throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        List<Beneficiary> createdObjs = mapper.convertValue(beneficiaries.getCreated(),
+                                                            new TypeReference<List<Beneficiary>>() {});
+        List<ObjectNode> createdList = createdObjs.stream()
+                                                  .map((Beneficiary element) -> element.toObjectNode())
+                                                  .collect(Collectors.toList());
+        ArrayNode arrayCreated = mapper.createArrayNode();
+        arrayCreated.addAll(createdList);
+        List<Beneficiary> updatedObjs = mapper.convertValue(beneficiaries.getUpdated(),
+                                                            new TypeReference<List<Beneficiary>>() {});
+        List<ObjectNode> updatedList = updatedObjs.stream()
+                                                  .map((Beneficiary element) -> element.toObjectNode())
+                                                  .collect(Collectors.toList());
+        ArrayNode arrayUpdated = mapper.createArrayNode();
+        arrayUpdated.addAll(updatedList);
+        List<Integer> deletedObjs = mapper.convertValue(beneficiaries.getDeleted(),
+                                                        new TypeReference<List<Integer>>() {});
+        ArrayNode arrayDeleted = mapper.valueToTree(deletedObjs);
+        ObjectNode beneficiaryNode = mapper.createObjectNode();
+        beneficiaryNode.set("created", arrayCreated);
+        beneficiaryNode.set("updated", arrayUpdated);
+        beneficiaryNode.set("deleted", arrayDeleted);
+        return beneficiaryNode;
+    }
 	
 	public static SyncObject readUsersSyncObject(String changes) throws JsonMappingException, JsonProcessingException {
 		ObjectMapper mapper = new ObjectMapper();

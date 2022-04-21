@@ -378,7 +378,7 @@ public class Users implements java.io.Serializable {
 	}
 	
 	
-	public ObjectNode toObjectNode() {
+	public ObjectNode toObjectNode(String lastPulledAt) {
 		ObjectMapper mapper = new ObjectMapper();
 		
 		ObjectNode user = mapper.createObjectNode();
@@ -389,14 +389,15 @@ public class Users implements java.io.Serializable {
 			user.put("id", id);
 		}
 		
-		if(dateUpdated == null || dateUpdated.after(dateCreated)) { 
+		if(dateUpdated == null || dateUpdated.after(dateCreated) || lastPulledAt.equals("null") || lastPulledAt == null) { 
+
 			user.put("name", name);
 		    user.put("surname", surname);
 		    user.put("phone_number", phoneNumber);
 		    user.put("email", email);
 		    user.put("username", username);
 		    user.put("password", password);
-		    user.put("entryPoint", entryPoint);
+		    user.put("entry_point", entryPoint);
 		    user.put("status", status);
 		    user.put("locality_id", locality.getId());
 		    user.put("partner_id", partners.getId());

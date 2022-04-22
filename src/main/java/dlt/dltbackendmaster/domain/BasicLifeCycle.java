@@ -13,7 +13,7 @@ public abstract class BasicLifeCycle
 {
     protected int id;
     protected String name;
-    private Integer status;
+    protected Integer status;
     private Integer createdBy;
     protected Date dateCreated;
     private Integer updatedBy;

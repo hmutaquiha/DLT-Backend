@@ -10,16 +10,16 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -57,8 +57,8 @@ public class Beneficiary extends BasicLifeCycle implements Serializable
     private String entryPoint;
     private Neighborhood neighborhood;
     private Integer usId;
-    private Set<SubService> subServices;
-    private Set<Vulnerability> vulnerabilities;
+    private Set<BeneficiaryIntervention> interventions;
+    private Set<BeneficiaryVulnerability> vulnerabilities;
 
     public Beneficiary() {}
 
@@ -276,33 +276,32 @@ public class Beneficiary extends BasicLifeCycle implements Serializable
         this.usId = usId;
     }
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "beneficiaries_interventions", joinColumns = @JoinColumn(name = "beneficiary_id"),
-               inverseJoinColumns = @JoinColumn(name = "sub_service_id"))
-    public Set<SubService> getSubServices() {
-        return subServices;
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name = "beneficiary_id")
+    @JsonManagedReference
+    public Set<BeneficiaryIntervention> getInterventions() {
+        return interventions;
     }
 
-    public void setSubServices(Set<SubService> subServices) {
-        this.subServices = subServices;
+    public void setInterventions(Set<BeneficiaryIntervention> interventions) {
+        this.interventions = interventions;
     }
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "beneficiaries_vulnerabilities", joinColumns = @JoinColumn(name = "beneficiary_id"),
-               inverseJoinColumns = @JoinColumn(name = "vulnerability_id"))
-    public Set<Vulnerability> getVulnerabilities() {
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name = "beneficiary_id")
+    @JsonManagedReference
+    public Set<BeneficiaryVulnerability> getVulnerabilities() {
         return vulnerabilities;
     }
 
-    public void setVulnerabilities(Set<Vulnerability> vulnerabilities) {
+    public void setVulnerabilities(Set<BeneficiaryVulnerability> vulnerabilities) {
         this.vulnerabilities = vulnerabilities;
     }
 
     public ObjectNode toObjectNode() {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode beneficiary = mapper.createObjectNode();
-        
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd"); 
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
         if (offlineId != null) {
             beneficiary.put("id", offlineId);
@@ -311,6 +310,7 @@ public class Beneficiary extends BasicLifeCycle implements Serializable
         }
 
         if (dateUpdated == null || dateUpdated.after(dateCreated)) {
+            beneficiary.put("id", id);
             beneficiary.put("nui", nui);
             beneficiary.put("name", name);
             beneficiary.put("surname", surname);

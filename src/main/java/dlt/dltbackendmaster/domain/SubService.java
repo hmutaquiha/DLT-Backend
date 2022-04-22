@@ -2,23 +2,29 @@ package dlt.dltbackendmaster.domain;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import dlt.dltbackendmaster.serializers.ServiceSerializer;
 
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "sub_services", catalog = "dreams_db")
+@NamedQueries({
+    @NamedQuery(name = "SubService.findAll", query = "SELECT c FROM SubService c"),
+    @NamedQuery(name = "SubService.findByDateCreated", query = "SELECT c FROM SubService c WHERE c.dateCreated = :lastpulledat"),
+    @NamedQuery(name = "SubService.findByDateUpdated", query = "SELECT c FROM SubService c WHERE c.dateUpdated = :lastpulledat")})
 public class SubService extends BasicLifeCycle implements Serializable
 {
     private Service service;
@@ -26,7 +32,8 @@ public class SubService extends BasicLifeCycle implements Serializable
     private Boolean isManandatory;
     private String remarks;
     private Integer sortOrder;
-    private Set<Beneficiary> beneficiaries;
+
+    public SubService() {}
 
     public SubService(int id, String name, Integer status, Integer createdBy, Date dateCreated, Integer updatedBy,
                       Date dateUpdated) {
@@ -92,12 +99,18 @@ public class SubService extends BasicLifeCycle implements Serializable
         this.sortOrder = sortOrder;
     }
 
-    @ManyToMany(mappedBy = "subServices")
-    public Set<Beneficiary> getBeneficiaries() {
-        return beneficiaries;
-    }
-
-    public void setBeneficiaries(Set<Beneficiary> beneficiaries) {
-        this.beneficiaries = beneficiaries;
+    public ObjectNode toObjectNode() {
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode subService = mapper.createObjectNode();
+        subService.put("id", id);
+        subService.put("name", name);
+        subService.put("service_id", service.id);
+        subService.put("is_mandatory", isManandatory);
+        subService.put("is_hidden", isHidden);
+        subService.put("remarks", remarks);
+        subService.put("sort_order", sortOrder);
+        subService.put("status", status);
+        subService.put("online_id", id); // flag to control if entity is synchronized with the backend
+        return subService;
     }
 }

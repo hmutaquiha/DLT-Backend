@@ -389,7 +389,7 @@ public class Users implements java.io.Serializable {
 			user.put("id", id);
 		}
 		
-		if(dateUpdated == null || dateUpdated.after(dateCreated) || lastPulledAt.equals("null") || lastPulledAt == null) { 
+		if(dateUpdated == null || dateUpdated.after(dateCreated) || lastPulledAt == null || lastPulledAt.equals("null")) { 
 
 			user.put("name", name);
 		    user.put("surname", surname);

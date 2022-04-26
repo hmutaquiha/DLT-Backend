@@ -278,7 +278,6 @@ public class Beneficiary extends BasicLifeCycle implements Serializable
 
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "beneficiary_id")
-    @JsonManagedReference
     public Set<BeneficiaryIntervention> getInterventions() {
         return interventions;
     }
@@ -289,7 +288,7 @@ public class Beneficiary extends BasicLifeCycle implements Serializable
 
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "beneficiary_id")
-    @JsonManagedReference
+//    @JsonManagedReference
     public Set<BeneficiaryVulnerability> getVulnerabilities() {
         return vulnerabilities;
     }

@@ -15,9 +15,13 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import dlt.dltbackendmaster.serializers.BeneficiarySerializer;
+import dlt.dltbackendmaster.serializers.SubServiceSerializer;
 
 @SuppressWarnings("serial")
 @Entity
@@ -73,7 +77,8 @@ public class BeneficiaryIntervention implements Serializable
     @Id
     @ManyToOne
     @MapsId("beneficiaryId")
-    @JsonBackReference
+    @JsonProperty("beneficiary")
+    @JsonSerialize(using = BeneficiarySerializer.class)
     public Beneficiary getBeneficiary() {
         return beneficiary;
     }
@@ -86,6 +91,8 @@ public class BeneficiaryIntervention implements Serializable
     @ManyToOne
     @MapsId("subServiceId")
     @JoinColumn(name = "sub_service_id")
+    @JsonProperty("subService")
+    @JsonSerialize(using = SubServiceSerializer.class)
     public SubService getSubService() {
         return subService;
     }

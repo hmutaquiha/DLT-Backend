@@ -15,6 +15,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -74,11 +75,12 @@ public class BeneficiaryIntervention implements Serializable
         this.offlineId = offlineId;
     }
 
+    @JsonIgnore
     @Id
     @ManyToOne
     @MapsId("beneficiaryId")
-    @JsonProperty("beneficiary")
-    @JsonSerialize(using = BeneficiarySerializer.class)
+    //@JsonProperty("beneficiary")
+    //@JsonSerialize(using = BeneficiarySerializer.class)
     public Beneficiary getBeneficiary() {
         return beneficiary;
     }

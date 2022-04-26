@@ -87,7 +87,7 @@ public class Locality implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@JsonIgnore
+
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "district_id", nullable = false)
 	public District getDistrict() {

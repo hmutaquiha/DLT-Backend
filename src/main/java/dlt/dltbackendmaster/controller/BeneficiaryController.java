@@ -29,6 +29,7 @@ public class BeneficiaryController
             List<Beneficiary> beneficiaries = service.getAll(Beneficiary.class);
             return new ResponseEntity<>(beneficiaries, HttpStatus.OK);
         } catch (Exception e) {
+        	e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

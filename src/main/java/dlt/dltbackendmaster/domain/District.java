@@ -76,7 +76,7 @@ public class District implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "province_id", nullable = false)
 	public Province getProvince() {
 		return this.province;
@@ -113,6 +113,7 @@ public class District implements java.io.Serializable {
 		this.status = status;
 	}
 
+	@JsonIgnore
 	@Column(name = "created_by", nullable = false)
 	public int getCreatedBy() {
 		return this.createdBy;
@@ -122,6 +123,7 @@ public class District implements java.io.Serializable {
 		this.createdBy = createdBy;
 	}
 
+	@JsonIgnore
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "date_created", nullable = false, length = 19)
 	public Date getDateCreated() {
@@ -132,6 +134,7 @@ public class District implements java.io.Serializable {
 		this.dateCreated = dateCreated;
 	}
 
+	@JsonIgnore
 	@Column(name = "updated_by")
 	public Integer getUpdatedBy() {
 		return this.updatedBy;
@@ -141,6 +144,7 @@ public class District implements java.io.Serializable {
 		this.updatedBy = updatedBy;
 	}
 
+	@JsonIgnore
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "date_updated", length = 19)
 	public Date getDateUpdated() {
@@ -151,6 +155,7 @@ public class District implements java.io.Serializable {
 		this.dateUpdated = dateUpdated;
 	}
 
+	@JsonIgnore
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "district")
 	public Set<Partners> getPartners() {
 		return this.partners;

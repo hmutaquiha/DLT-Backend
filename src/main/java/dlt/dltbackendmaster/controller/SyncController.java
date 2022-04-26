@@ -23,9 +23,14 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dlt.dltbackendmaster.domain.Beneficiary;
+import dlt.dltbackendmaster.domain.BeneficiaryIntervention;
+import dlt.dltbackendmaster.domain.BeneficiaryVulnerability;
 import dlt.dltbackendmaster.domain.Locality;
+import dlt.dltbackendmaster.domain.Neighborhood;
 import dlt.dltbackendmaster.domain.Partners;
 import dlt.dltbackendmaster.domain.Profiles;
+import dlt.dltbackendmaster.domain.Service;
+import dlt.dltbackendmaster.domain.SubService;
 import dlt.dltbackendmaster.domain.Us;
 import dlt.dltbackendmaster.domain.Users;
 import dlt.dltbackendmaster.domain.watermelondb.SyncObject;
@@ -64,6 +69,21 @@ public class SyncController {
 		
 		List<Beneficiary> beneficiariesCreated;
 		List<Beneficiary> beneficiariesUpdated;
+        
+        List<BeneficiaryIntervention> beneficiariesInterventionsCreated;
+        List<BeneficiaryIntervention> beneficiariesInterventionsUpdated;
+        
+        List<BeneficiaryVulnerability> beneficiariesVulnerabilitiesCreated;
+        List<BeneficiaryVulnerability> beneficiariesVulnerabilitiesUpdated;
+        
+        List<Neighborhood> neighborhoodsCreated;
+        List<Neighborhood> neighborhoodUpdated;
+        
+        List<Service> servicesCreated;
+        List<Service> servicesUpdated;
+        
+        List<SubService> subServicesCreated;
+        List<SubService> subServicesUpdated;
 		
 		if(lastPulledAt == null || lastPulledAt.equals("null") ) {
 
@@ -87,6 +107,21 @@ public class SyncController {
 			
 			beneficiariesCreated = service.GetAllEntityByNamedQuery("Beneficiary.findAll");
 			beneficiariesUpdated = new ArrayList<Beneficiary>();
+            
+            beneficiariesInterventionsCreated = service.GetAllEntityByNamedQuery("BeneficiaryIntervention.findAll");
+            beneficiariesInterventionsUpdated = new ArrayList<BeneficiaryIntervention>();
+            
+            beneficiariesVulnerabilitiesCreated = service.GetAllEntityByNamedQuery("BeneficiaryVulnerability.findAll");
+            beneficiariesVulnerabilitiesUpdated = new ArrayList<BeneficiaryVulnerability>();
+            
+            neighborhoodsCreated = service.GetAllEntityByNamedQuery("Neighborhood.findAll");
+            neighborhoodUpdated = new ArrayList<Neighborhood>();
+            
+            servicesCreated = service.GetAllEntityByNamedQuery("Service.findAll");
+            servicesUpdated = new ArrayList<Service>();
+            
+            subServicesCreated = service.GetAllEntityByNamedQuery("SubService.findAll");
+            subServicesUpdated = new ArrayList<SubService>();
 			
 		}else {
 			Long t = Long.valueOf(lastPulledAt);
@@ -118,6 +153,21 @@ public class SyncController {
 			
 			beneficiariesCreated = service.GetAllEntityByNamedQuery("Beneficiary.findByDateCreated", validatedDate);
             beneficiariesUpdated = service.GetAllEntityByNamedQuery("Beneficiary.findByDateUpdated", validatedDate);
+            
+            beneficiariesInterventionsCreated = service.GetAllEntityByNamedQuery("BeneficiaryIntervention.findByDateCreated", validatedDate);
+            beneficiariesInterventionsUpdated = service.GetAllEntityByNamedQuery("BeneficiaryIntervention.findByDateUpdated", validatedDate);
+            
+            beneficiariesVulnerabilitiesCreated = service.GetAllEntityByNamedQuery("BeneficiaryVulnerability.findByDateCreated", validatedDate);
+            beneficiariesVulnerabilitiesUpdated = service.GetAllEntityByNamedQuery("BeneficiaryVulnerability.findByDateUpdated", validatedDate);
+            
+            neighborhoodsCreated = service.GetAllEntityByNamedQuery("Neighborhood.findByDateCreated", validatedDate);
+            neighborhoodUpdated = service.GetAllEntityByNamedQuery("Neighborhood.findByDateUpdated", validatedDate);
+            
+            servicesCreated = service.GetAllEntityByNamedQuery("Service.findByDateCreated", validatedDate);
+            servicesUpdated = service.GetAllEntityByNamedQuery("Service.findByDateUpdated", validatedDate);
+            
+            subServicesCreated = service.GetAllEntityByNamedQuery("SubService.findByDateCreated", validatedDate);
+            subServicesUpdated = service.GetAllEntityByNamedQuery("SubService.findByDateUpdated", validatedDate);
 		}
 		
 		try {
@@ -126,10 +176,16 @@ public class SyncController {
 			SyncObject<Partners> partnersSO = new SyncObject<Partners>(partnersCreated, partnersUpdated, listDeleted);
 			SyncObject<Profiles> profilesSO = new SyncObject<Profiles>(profilesCreated, profilesUpdated, listDeleted);
 			SyncObject<Us> usSO = new SyncObject<Us>(usCreated, usUpdated, listDeleted);
+			SyncObject<Beneficiary> beneficiarySO = new SyncObject<Beneficiary>(beneficiariesCreated, beneficiariesUpdated, listDeleted);
+            SyncObject<BeneficiaryIntervention> beneficiaryInterventionSO = new SyncObject<BeneficiaryIntervention>(beneficiariesInterventionsCreated, beneficiariesInterventionsUpdated, listDeleted);
+            SyncObject<BeneficiaryVulnerability> beneficiaryVulnerabilitySO = new SyncObject<BeneficiaryVulnerability>(beneficiariesVulnerabilitiesCreated, beneficiariesVulnerabilitiesUpdated, listDeleted);
+            SyncObject<Neighborhood> neighborhoodSO = new SyncObject<Neighborhood>(neighborhoodsCreated, neighborhoodUpdated, listDeleted);
+            SyncObject<Service> serviceSO = new SyncObject<Service>(servicesCreated, servicesUpdated, listDeleted);
+            SyncObject<SubService> subServiceSO = new SyncObject<SubService>(subServicesCreated, subServicesUpdated, listDeleted);
 
-      //String object = SyncSerializer.createUsersSyncObject(usersCreated, usersUpdated, new ArrayList<Integer>());
+			//String object = SyncSerializer.createUsersSyncObject(usersCreated, usersUpdated, new ArrayList<Integer>());
 
-			String object = SyncSerializer.createSyncObject(usersSO, localitySO, profilesSO, partnersSO, usSO, lastPulledAt);
+			String object = SyncSerializer.createSyncObject(usersSO, localitySO, profilesSO, partnersSO, usSO, beneficiarySO,  beneficiaryInterventionSO, beneficiaryVulnerabilitySO, neighborhoodSO, serviceSO, subServiceSO, lastPulledAt);
 			System.out.println("PULLING " + object);
 
 			return new ResponseEntity<>(object, HttpStatus.OK);
@@ -139,8 +195,6 @@ public class SyncController {
 			e.printStackTrace();
 			return new ResponseEntity<>("Parameter not present", HttpStatus.BAD_REQUEST);
 		}
-        
-		
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -150,7 +204,6 @@ public class SyncController {
 		
 		String lastPulledAt = SyncSerializer.readLastPulledAt(changes);
 		
-
 		ObjectMapper mapper = new ObjectMapper();
 		SyncObject<UsersSyncModel> users;
 		try {
@@ -200,19 +253,11 @@ public class SyncController {
 					} 
 				}
 			}
-			
-			
-			
-			
 		} catch (JsonProcessingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return new ResponseEntity<>("Json Processing Error!", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		
-		
         return new ResponseEntity<>(HttpStatus.OK);
 	}
-	
-	
 }

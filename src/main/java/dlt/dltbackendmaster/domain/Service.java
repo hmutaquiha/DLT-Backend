@@ -5,11 +5,21 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "services", catalog = "dreams_db")
+@NamedQueries({ @NamedQuery(name = "Service.findAll", query = "SELECT c FROM Service c"),
+                @NamedQuery(name = "Service.findByDateCreated",
+                            query = "SELECT c FROM Service c WHERE c.dateCreated = :lastpulledat"),
+                @NamedQuery(name = "Service.findByDateUpdated",
+                            query = "SELECT c FROM Service c WHERE c.dateUpdated = :lastpulledat") })
 public class Service extends BasicLifeCycle implements Serializable
 {
     private String description;
@@ -51,5 +61,18 @@ public class Service extends BasicLifeCycle implements Serializable
 
     public void setIsHidden(Boolean isHidden) {
         this.isHidden = isHidden;
+    }
+
+    public ObjectNode toObjectNode() {
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode service = mapper.createObjectNode();
+        service.put("id", id);
+        service.put("name", name);
+        service.put("description", description);
+        service.put("is_core_service", isCoreService);
+        service.put("is_hidden", isHidden);
+        service.put("status", status);
+        service.put("online_id", id); // flag to control if entity is synchronized with the backend
+        return service;
     }
 }

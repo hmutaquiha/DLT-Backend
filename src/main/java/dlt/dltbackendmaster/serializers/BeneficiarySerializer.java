@@ -18,6 +18,7 @@ public class BeneficiarySerializer extends JsonSerializer<Beneficiary>
         beneficiary.setSurname(value.getSurname());
         beneficiary.setName(value.getName());
         beneficiary.setNickName(value.getNickName());
+        beneficiary.setOrganization(value.getOrganization());
         beneficiary.setGender(value.getGender());
         beneficiary.setDateOfBirth(value.getDateOfBirth());
         beneficiary.setAddress(value.getAddress());

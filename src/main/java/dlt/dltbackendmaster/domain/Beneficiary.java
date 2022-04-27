@@ -26,6 +26,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import dlt.dltbackendmaster.domain.watermelondb.BeneficiarySyncModel;
 import dlt.dltbackendmaster.serializers.NeighborhoodSerializer;
+import dlt.dltbackendmaster.serializers.PartnersSerializer;
 
 @SuppressWarnings("serial")
 @Entity
@@ -40,6 +41,7 @@ public class Beneficiary extends BasicLifeCycle implements Serializable
     private String nui;
     private String surname;
     private String nickName;
+    private Partners organization;
     private Date dateOfBirth;
     private Character gender;
     private String address;
@@ -63,16 +65,17 @@ public class Beneficiary extends BasicLifeCycle implements Serializable
 
     public Beneficiary() {}
 
-    public Beneficiary(Integer id, String nui, String surname, String name, String nickName, Date dateOfBirth,
-                       Character gender, String address, String phoneNumber, String email, LivesWith livesWith,
-                       Boolean isOrphan, Boolean via, Beneficiary partner, Boolean isStudent, Integer grade,
-                       String schoolName, Boolean isDeficient, DeficiencyType deficiencyType, String entryPoint,
-                       Neighborhood neigbourhoodId, Integer usId, Integer status, Integer createdBy, Date dateCreated,
-                       Integer updatedBy, Date dateUpdated) {
+    public Beneficiary(Integer id, String nui, String surname, String name, String nickName, Partners organization,
+                       Date dateOfBirth, Character gender, String address, String phoneNumber, String email,
+                       LivesWith livesWith, Boolean isOrphan, Boolean via, Beneficiary partner, Boolean isStudent,
+                       Integer grade, String schoolName, Boolean isDeficient, DeficiencyType deficiencyType,
+                       String entryPoint, Neighborhood neigbourhoodId, Integer usId, Integer status, Integer createdBy,
+                       Date dateCreated, Integer updatedBy, Date dateUpdated) {
         super(id, name, status, createdBy, dateCreated, updatedBy, dateUpdated);
         this.nui = nui;
         this.surname = surname;
         this.nickName = nickName;
+        this.organization = organization;
         this.dateOfBirth = dateOfBirth;
         this.gender = gender;
         this.address = address;
@@ -99,6 +102,7 @@ public class Beneficiary extends BasicLifeCycle implements Serializable
         this.nui = model.getNui();
         this.surname = model.getSurname();
         this.nickName = model.getNickName();
+        this.organization = new Partners(model.getOrganization_id());
         this.dateOfBirth = model.getDateOfBirth();
         this.gender = model.getGender();
         this.address = model.getAddress();
@@ -150,6 +154,18 @@ public class Beneficiary extends BasicLifeCycle implements Serializable
 
     public void setNickName(String nickName) {
         this.nickName = nickName;
+    }
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "organization_id")
+    @JsonProperty("organization")
+    @JsonSerialize(using = PartnersSerializer.class)
+    public Partners getOrganization() {
+        return organization;
+    }
+
+    public void setOrganization(Partners organization) {
+        this.organization = organization;
     }
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -356,6 +372,7 @@ public class Beneficiary extends BasicLifeCycle implements Serializable
             beneficiary.put("name", name);
             beneficiary.put("surname", surname);
             beneficiary.put("nickname", nickName);
+            beneficiary.put("organization_id", organization.getId());
             beneficiary.put("dateOfBirth", dateFormat.format(dateOfBirth));
             beneficiary.put("gender", String.valueOf(gender));
             beneficiary.put("adress", address);
@@ -382,12 +399,12 @@ public class Beneficiary extends BasicLifeCycle implements Serializable
 
     public void update(BeneficiarySyncModel model, String timestamp) {
         Long t = Long.valueOf(timestamp);
-        
         this.offlineId = model.getId();
         this.dateUpdated = new Date(t);
         this.nui = model.getNui();
         this.surname = model.getSurname();
         this.nickName = model.getNickName();
+        this.organization.setId(model.getOrganization_id());
         this.dateOfBirth = model.getDateOfBirth();
         this.gender = model.getGender();
         this.address = model.getAddress();

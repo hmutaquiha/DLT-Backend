@@ -29,6 +29,8 @@ import dlt.dltbackendmaster.serializers.SubServiceSerializer;
 @Table(name = "beneficiaries_interventions")
 @NamedQueries({ @NamedQuery(name = "BeneficiaryIntervention.findAll",
                             query = "SELECT b FROM BeneficiaryIntervention b"),
+                @NamedQuery(name = "BeneficiaryIntervention.findByBeneficiaryAndSubService",
+                            query = "SELECT b FROM BeneficiaryIntervention b where b.beneficiary.id = :beneficiary_id and b.subService.id = :sub_service_id"),
                 @NamedQuery(name = "BeneficiaryIntervention.findByDateCreated",
                             query = "select b from BeneficiaryIntervention b where b.dateUpdated is null and b.dateCreated > :lastpulledat"),
                 @NamedQuery(name = "BeneficiaryIntervention.findByDateUpdated",
@@ -79,8 +81,8 @@ public class BeneficiaryIntervention implements Serializable
     @Id
     @ManyToOne
     @MapsId("beneficiaryId")
-    //@JsonProperty("beneficiary")
-    //@JsonSerialize(using = BeneficiarySerializer.class)
+    @JsonProperty("beneficiary")
+    @JsonSerialize(using = BeneficiarySerializer.class)
     public Beneficiary getBeneficiary() {
         return beneficiary;
     }

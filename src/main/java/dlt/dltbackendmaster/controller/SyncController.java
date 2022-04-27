@@ -33,6 +33,9 @@ import dlt.dltbackendmaster.domain.Service;
 import dlt.dltbackendmaster.domain.SubService;
 import dlt.dltbackendmaster.domain.Us;
 import dlt.dltbackendmaster.domain.Users;
+import dlt.dltbackendmaster.domain.watermelondb.BeneficiaryInterventionSyncModel;
+import dlt.dltbackendmaster.domain.watermelondb.BeneficiarySyncModel;
+import dlt.dltbackendmaster.domain.watermelondb.BeneficiaryVulnerabilitySyncModel;
 import dlt.dltbackendmaster.domain.watermelondb.SyncObject;
 import dlt.dltbackendmaster.domain.watermelondb.UsersSyncModel;
 import dlt.dltbackendmaster.serializers.SyncSerializer;
@@ -206,8 +209,14 @@ public class SyncController {
 		
 		ObjectMapper mapper = new ObjectMapper();
 		SyncObject<UsersSyncModel> users;
+		SyncObject<BeneficiarySyncModel> beneficiaries;
+		SyncObject<BeneficiaryInterventionSyncModel> interventions;
+		SyncObject<BeneficiaryVulnerabilitySyncModel> vulnerabilities;
 		try {
 			users = SyncSerializer.readUsersSyncObject(changes);
+			beneficiaries = SyncSerializer.readBeneficiariesSyncObject(changes);
+			interventions = SyncSerializer.readInterventionsSyncObject(changes);
+			vulnerabilities = SyncSerializer.readVulnerabilitiesSyncObject(changes);
 			
 			// created entities
 			if(users != null && users.getCreated().size() > 0) {
@@ -222,20 +231,36 @@ public class SyncController {
 					}
 				}
 			}
-
-			// updated entities
-			if(users != null && users.getUpdated().size() > 0) {
-				List<UsersSyncModel> updatedList = mapper.convertValue(users.getUpdated(), new TypeReference<List<UsersSyncModel>>() {});
-
-				for (UsersSyncModel updated : updatedList) {
-					
-					if(updated.getOnline_id() == null) {
-						Users newUser = new Users(updated, lastPulledAt);
-
-						Integer savedId = (Integer) service.Save(newUser);
-					}
-				}
+			if(beneficiaries!=null && beneficiaries.getCreated().size()>0) {
+			    List<BeneficiarySyncModel> createdList = mapper.convertValue(beneficiaries.getCreated(), new TypeReference<List<BeneficiarySyncModel>>() {});
+			    
+			    for (BeneficiarySyncModel created : createdList) {
+                    if(created.getOnline_id() == null) {
+                        Beneficiary beneficiary = new Beneficiary(created, lastPulledAt);
+                        service.Save(beneficiary);
+                    }
+                }
 			}
+            if(interventions!=null && interventions.getCreated().size()>0) {
+                List<BeneficiaryInterventionSyncModel> createdList = interventions.getCreated();
+                
+                for (BeneficiaryInterventionSyncModel created : createdList) {
+                    if(created.getOnline_id() == null) {
+                        BeneficiaryIntervention intervention = new BeneficiaryIntervention(created, lastPulledAt);
+                        service.Save(intervention);
+                    }
+                }
+            }
+            if(vulnerabilities!=null && vulnerabilities.getCreated().size()>0) {
+                List<BeneficiaryVulnerabilitySyncModel> createdList = vulnerabilities.getCreated();
+                
+                for (BeneficiaryVulnerabilitySyncModel created : createdList) {
+                    if(created.getOnline_id() == null) {
+                        BeneficiaryVulnerability vulnerability = new BeneficiaryVulnerability(created, lastPulledAt);
+                        service.Save(vulnerability);
+                    }
+                }
+            }
 
 			// updated entities
 			if(users != null && users.getUpdated().size() > 0) {
@@ -253,6 +278,51 @@ public class SyncController {
 					} 
 				}
 			}
+            if(beneficiaries != null && beneficiaries.getUpdated().size() > 0) {
+                List<BeneficiarySyncModel> updatedList = mapper.convertValue(users.getUpdated(), new TypeReference<List<BeneficiarySyncModel>>() {});
+
+                for (BeneficiarySyncModel updated : updatedList) {
+                    
+                    if(updated.getOnline_id() == null) {
+                        Beneficiary beneficiary = new Beneficiary(updated, lastPulledAt);
+                        service.Save(beneficiary);
+                        
+                    } else {
+                        Beneficiary beneficiary = service.find(Beneficiary.class, updated.getOnline_id());
+                        beneficiary.update(updated, lastPulledAt);
+                    } 
+                }
+            }
+            if(interventions != null && interventions.getUpdated().size() > 0) {
+                List<BeneficiaryInterventionSyncModel> updatedList = mapper.convertValue(interventions.getUpdated(), new TypeReference<List<BeneficiaryInterventionSyncModel>>() {});
+
+                for (BeneficiaryInterventionSyncModel updated : updatedList) {
+                    
+                    if(updated.getOnline_id() == null) {
+                        BeneficiaryIntervention intervention = new BeneficiaryIntervention(updated, lastPulledAt);
+                        service.Save(intervention);
+                        
+                    } else {
+                        BeneficiaryIntervention intervention = service.find(BeneficiaryIntervention.class, updated.getOnline_id());
+                        intervention.update(updated, lastPulledAt);
+                    } 
+                }
+            }
+            if(vulnerabilities != null && vulnerabilities.getUpdated().size() > 0) {
+                List<BeneficiaryVulnerabilitySyncModel> updatedList = mapper.convertValue(vulnerabilities.getUpdated(), new TypeReference<List<BeneficiaryVulnerabilitySyncModel>>() {});
+
+                for (BeneficiaryVulnerabilitySyncModel updated : updatedList) {
+                    
+                    if(updated.getOnline_id() == null) {
+                        BeneficiaryVulnerability vulnerability = new BeneficiaryVulnerability(updated, lastPulledAt);
+                        service.Save(vulnerability);
+                        
+                    } else {
+                        BeneficiaryVulnerability vulnerability = service.find(BeneficiaryVulnerability.class, updated.getOnline_id());
+                        vulnerability.update(updated, lastPulledAt);
+                    } 
+                }
+            }
 		} catch (JsonProcessingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

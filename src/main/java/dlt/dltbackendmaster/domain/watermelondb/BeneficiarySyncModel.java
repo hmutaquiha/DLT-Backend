@@ -11,6 +11,7 @@ public class BeneficiarySyncModel extends BasicLifeCycleSyncModel
     private String nui;
     private String surname;
     private String nickName;
+    private Integer organization_id;
     private Date dateOfBirth;
     private Character gender;
     private String address;
@@ -49,6 +50,14 @@ public class BeneficiarySyncModel extends BasicLifeCycleSyncModel
 
     public String getNickName() {
         return nickName;
+    }
+
+    public Integer getOrganization_id() {
+        return organization_id;
+    }
+
+    public void setOrganization_id(Integer organization_id) {
+        this.organization_id = organization_id;
     }
 
     public void setNickName(String nickName) {

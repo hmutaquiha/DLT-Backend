@@ -22,8 +22,8 @@ public abstract class BasicLifeCycle
 
     public BasicLifeCycle() {}
 
-    public BasicLifeCycle(int id, String name, Integer status, Integer createdBy,
-                          Date dateCreated, Integer updatedBy, Date dateUpdated) {
+    public BasicLifeCycle(int id, String name, Integer status, Integer createdBy, Date dateCreated, Integer updatedBy,
+                          Date dateUpdated) {
         super();
         this.id = id;
         this.name = name;
@@ -32,6 +32,11 @@ public abstract class BasicLifeCycle
         this.dateCreated = dateCreated;
         this.updatedBy = updatedBy;
         this.dateUpdated = dateUpdated;
+    }
+
+    public BasicLifeCycle(String name, Integer status) {
+        this.name = name;
+        this.status = status;
     }
 
     @Id

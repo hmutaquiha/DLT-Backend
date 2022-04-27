@@ -69,6 +69,10 @@ public class Neighborhood implements java.io.Serializable
         this.dateUpdated = dateUpdated;
     }
 
+    public Neighborhood(Integer id) {
+        this.id = id;
+    }
+
     @Id
     @GeneratedValue(strategy = IDENTITY)
     @Column(name = "id", unique = true, nullable = false)

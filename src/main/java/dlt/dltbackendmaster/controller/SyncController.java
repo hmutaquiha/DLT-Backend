@@ -207,6 +207,8 @@ public class SyncController {
 		
 		String lastPulledAt = SyncSerializer.readLastPulledAt(changes);
 		
+		Users user = (Users) service.GetAllEntityByNamedQuery("Users.findByUsername", username).get(0);
+		
 		ObjectMapper mapper = new ObjectMapper();
 		SyncObject<UsersSyncModel> users;
 		SyncObject<BeneficiarySyncModel> beneficiaries;
@@ -227,6 +229,7 @@ public class SyncController {
 
 					if(created.getOnline_id() == null) {
 						Users newUser = new Users(created, lastPulledAt);
+						newUser.setCreatedBy(user.getId());
 						Integer savedId = (Integer) service.Save(newUser);
 					}
 				}
@@ -237,26 +240,29 @@ public class SyncController {
 			    for (BeneficiarySyncModel created : createdList) {
                     if(created.getOnline_id() == null) {
                         Beneficiary beneficiary = new Beneficiary(created, lastPulledAt);
+                        beneficiary.setCreatedBy(user.getId());
                         service.Save(beneficiary);
                     }
                 }
 			}
             if(interventions!=null && interventions.getCreated().size()>0) {
-                List<BeneficiaryInterventionSyncModel> createdList = interventions.getCreated();
+                List<BeneficiaryInterventionSyncModel> createdList = mapper.convertValue(interventions.getCreated(), new TypeReference<List<BeneficiaryInterventionSyncModel>>() {});
                 
                 for (BeneficiaryInterventionSyncModel created : createdList) {
                     if(created.getOnline_id() == null) {
                         BeneficiaryIntervention intervention = new BeneficiaryIntervention(created, lastPulledAt);
+                        intervention.setCreatedBy(user.getId());
                         service.Save(intervention);
                     }
                 }
             }
             if(vulnerabilities!=null && vulnerabilities.getCreated().size()>0) {
-                List<BeneficiaryVulnerabilitySyncModel> createdList = vulnerabilities.getCreated();
+                List<BeneficiaryVulnerabilitySyncModel> createdList = mapper.convertValue(vulnerabilities.getCreated(), new TypeReference<List<BeneficiaryVulnerabilitySyncModel>>() {});
                 
                 for (BeneficiaryVulnerabilitySyncModel created : createdList) {
                     if(created.getOnline_id() == null) {
                         BeneficiaryVulnerability vulnerability = new BeneficiaryVulnerability(created, lastPulledAt);
+                        vulnerability.setCreatedBy(user.getId());
                         service.Save(vulnerability);
                     }
                 }
@@ -270,10 +276,12 @@ public class SyncController {
 					
 					if(updated.getOnline_id() == null) {
 						Users newUser = new Users(updated, lastPulledAt);
+                        newUser.setCreatedBy(user.getId());
 						Integer savedId = (Integer) service.Save(newUser);
 						
 					} else {
 						Users updateu = service.find(Users.class, updated.getOnline_id());
+						updateu.setUpdatedBy(user.getId());
 						updateu.update(updated, lastPulledAt);
 					} 
 				}
@@ -285,10 +293,12 @@ public class SyncController {
                     
                     if(updated.getOnline_id() == null) {
                         Beneficiary beneficiary = new Beneficiary(updated, lastPulledAt);
+                        beneficiary.setCreatedBy(user.getId());
                         service.Save(beneficiary);
                         
                     } else {
                         Beneficiary beneficiary = service.find(Beneficiary.class, updated.getOnline_id());
+                        beneficiary.setUpdatedBy(user.getId());
                         beneficiary.update(updated, lastPulledAt);
                     } 
                 }
@@ -300,10 +310,12 @@ public class SyncController {
                     
                     if(updated.getOnline_id() == null) {
                         BeneficiaryIntervention intervention = new BeneficiaryIntervention(updated, lastPulledAt);
+                        intervention.setCreatedBy(user.getId());
                         service.Save(intervention);
                         
                     } else {
                         BeneficiaryIntervention intervention = service.find(BeneficiaryIntervention.class, updated.getOnline_id());
+                        intervention.setUpdatedBy(user.getId());
                         intervention.update(updated, lastPulledAt);
                     } 
                 }
@@ -315,10 +327,12 @@ public class SyncController {
                     
                     if(updated.getOnline_id() == null) {
                         BeneficiaryVulnerability vulnerability = new BeneficiaryVulnerability(updated, lastPulledAt);
+                        vulnerability.setCreatedBy(user.getId());
                         service.Save(vulnerability);
                         
                     } else {
                         BeneficiaryVulnerability vulnerability = service.find(BeneficiaryVulnerability.class, updated.getOnline_id());
+                        vulnerability.setUpdatedBy(user.getId());
                         vulnerability.update(updated, lastPulledAt);
                     } 
                 }

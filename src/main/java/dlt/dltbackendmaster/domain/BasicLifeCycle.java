@@ -50,7 +50,7 @@ public abstract class BasicLifeCycle
         this.id = id;
     }
 
-    @Column(name = "name", nullable = false, insertable = false, updatable = false)
+    @Column(name = "name", nullable = false)
     public String getName() {
         return name;
     }

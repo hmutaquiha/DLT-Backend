@@ -402,6 +402,7 @@ public class Beneficiary extends BasicLifeCycle implements Serializable
         this.offlineId = model.getId();
         this.dateUpdated = new Date(t);
         this.nui = model.getNui();
+        this.name = model.getName();
         this.surname = model.getSurname();
         this.nickName = model.getNickName();
         this.organization.setId(model.getOrganization_id());
@@ -422,5 +423,6 @@ public class Beneficiary extends BasicLifeCycle implements Serializable
         this.entryPoint = model.getEntryPoint();
         this.neighborhood.setId(model.getNeighborhood_id());
         this.usId = model.getUs_id();
+        this.status = Integer.valueOf(model.getStatus());
     }
 }

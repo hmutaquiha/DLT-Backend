@@ -272,7 +272,7 @@ public class BeneficiaryIntervention implements Serializable
     public void update(BeneficiaryInterventionSyncModel model, String timestamp) {
         Long t = Long.valueOf(timestamp);
         
-        this.offlineId = model.getBeneficiary_id() + "" + model.getSubService_id();
+        this.offlineId = model.getId();
         this.dateUpdated = new Date(t);
         this.beneficiary.setId(model.getBeneficiary_id());
         this.subService.setId(model.getSubService_id());

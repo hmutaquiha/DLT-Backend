@@ -2,12 +2,12 @@ package dlt.dltbackendmaster.domain.watermelondb;
 
 public abstract class BasicLifeCycleSyncModel
 {
-    private String id;
-    private String _status;
-    private String _changed;
-    private String name;
-    private String status;
-    private Integer online_id;
+    protected String id;
+    protected String _status;
+    protected String _changed;
+    protected String name;
+    protected String status;
+    protected Integer online_id;
 
     public BasicLifeCycleSyncModel() {}
 

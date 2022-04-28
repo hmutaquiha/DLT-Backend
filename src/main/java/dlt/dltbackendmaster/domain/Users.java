@@ -34,6 +34,7 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 @Table(name = "users", catalog = "dreams_db")
 @NamedQueries({
     @NamedQuery(name = "Users.findAll", query = "SELECT c FROM Users c"),
+    @NamedQuery(name = "Users.findByUsername", query = "SELECT c FROM Users c where c.username = :username"),
     @NamedQuery(name = "Users.findByDateCreated", query = "select u from Users u where u.dateUpdated is null and u.dateCreated > :lastpulledat"),
     //@NamedQuery(name = "Users.findByDateUpdated", query = "select u from Users u where u.dateUpdated > :lastpulledat")})
 	@NamedQuery(name = "Users.findByDateUpdated", query = "select u from Users u where (u.dateUpdated >= :lastpulledat) or (u.dateUpdated >= :lastpulledat and u.dateCreated = u.dateUpdated)")})

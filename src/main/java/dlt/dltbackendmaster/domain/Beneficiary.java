@@ -26,6 +26,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import dlt.dltbackendmaster.serializers.NeighborhoodSerializer;
+import dlt.dltbackendmaster.serializers.PartnersSerializer;
 
 @SuppressWarnings("serial")
 @Entity
@@ -48,7 +49,7 @@ public class Beneficiary extends BasicLifeCycle implements Serializable
     private LivesWith livesWith;
     private Boolean isOrphan;
     private Boolean via;
-    private Beneficiary partner;
+    private Beneficiary partnerId;
     private Boolean isStudent;
     private Integer grade;
     private String schoolName;
@@ -57,6 +58,7 @@ public class Beneficiary extends BasicLifeCycle implements Serializable
     private String entryPoint;
     private Neighborhood neighborhood;
     private Integer usId;
+    private Partners partner;
     private Set<BeneficiaryIntervention> interventions;
     private Set<BeneficiaryVulnerability> vulnerabilities;
 
@@ -66,9 +68,10 @@ public class Beneficiary extends BasicLifeCycle implements Serializable
                        Character gender, String address, String phoneNumber, String email, LivesWith livesWith,
                        Boolean isOrphan, Boolean via, Beneficiary partner, Boolean isStudent, Integer grade,
                        String schoolName, Boolean isDeficient, DeficiencyType deficiencyType, String entryPoint,
-                       Neighborhood neigbourhoodId, Integer usId, Integer status, Integer createdBy, Date dateCreated,
-                       Integer updatedBy, Date dateUpdated) {
-        super(id, name, status, createdBy, dateCreated, updatedBy, dateUpdated);
+                       Neighborhood neigbourhoodId, Integer usId, Integer status, Users createdBy, Date dateCreated,
+                       Users updatedBy, Date dateUpdated) {
+        super(id, name, status, 
+        		dateCreated, dateUpdated, createdBy, updatedBy);
         this.nui = nui;
         this.surname = surname;
         this.nickName = nickName;
@@ -80,7 +83,7 @@ public class Beneficiary extends BasicLifeCycle implements Serializable
         this.livesWith = livesWith;
         this.isOrphan = isOrphan;
         this.via = via;
-        this.partner = partner;
+        this.partnerId = partner;
         this.isStudent = isStudent;
         this.grade = grade;
         this.schoolName = schoolName;
@@ -193,12 +196,12 @@ public class Beneficiary extends BasicLifeCycle implements Serializable
 
     @OneToOne
     @JoinColumn(name = "partner_id")
-    public Beneficiary getPartner() {
-        return partner;
+    public Beneficiary getPartnerId() {
+        return partnerId;
     }
 
-    public void setPartner(Beneficiary partner) {
-        this.partner = partner;
+    public void setPartnerId(Beneficiary partner) {
+        this.partnerId = partner;
     }
 
     @Column(name = "is_student")
@@ -275,8 +278,20 @@ public class Beneficiary extends BasicLifeCycle implements Serializable
     public void setUsId(Integer usId) {
         this.usId = usId;
     }
+    
+    
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "partner")
+    @JsonProperty("partner")
+    public Partners getPartner() {
+		return partner;
+	}
 
-    @OneToMany(fetch = FetchType.EAGER)
+	public void setPartner(Partners partner) {
+		this.partner = partner;
+	}
+
+	@OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "beneficiary_id")
     public Set<BeneficiaryIntervention> getInterventions() {
         return interventions;
@@ -322,7 +337,7 @@ public class Beneficiary extends BasicLifeCycle implements Serializable
             beneficiary.put("livesWith", livesWith.toString());
             beneficiary.put("isOrphan", isOrphan);
             beneficiary.put("via", via);
-            beneficiary.put("partner_id", partner == null ? null : partner.getId());
+            beneficiary.put("partner_id", partnerId == null ? null : partnerId.getId());
             beneficiary.put("isStudent", isStudent);
             beneficiary.put("grade", grade);
             beneficiary.put("schoolName", schoolName);

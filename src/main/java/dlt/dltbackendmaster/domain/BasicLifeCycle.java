@@ -43,6 +43,11 @@ public abstract class BasicLifeCycle
         this.updatedBy = updatedBy;
     }
 
+    public BasicLifeCycle(String name, Integer status) {
+        this.name = name;
+        this.status = status;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
@@ -54,7 +59,7 @@ public abstract class BasicLifeCycle
         this.id = id;
     }
 
-    @Column(name = "name", nullable = false, insertable = false, updatable = false)
+    @Column(name = "name", nullable = false)
     public String getName() {
         return name;
     }

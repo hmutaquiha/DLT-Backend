@@ -21,10 +21,11 @@ import dlt.dltbackendmaster.serializers.ServiceSerializer;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "sub_services", catalog = "dreams_db")
-@NamedQueries({
-    @NamedQuery(name = "SubService.findAll", query = "SELECT c FROM SubService c"),
-    @NamedQuery(name = "SubService.findByDateCreated", query = "SELECT c FROM SubService c WHERE c.dateCreated = :lastpulledat"),
-    @NamedQuery(name = "SubService.findByDateUpdated", query = "SELECT c FROM SubService c WHERE c.dateUpdated = :lastpulledat")})
+@NamedQueries({ @NamedQuery(name = "SubService.findAll", query = "SELECT c FROM SubService c"),
+                @NamedQuery(name = "SubService.findByDateCreated",
+                            query = "SELECT c FROM SubService c WHERE c.dateCreated = :lastpulledat"),
+                @NamedQuery(name = "SubService.findByDateUpdated",
+                            query = "SELECT c FROM SubService c WHERE c.dateUpdated = :lastpulledat") })
 public class SubService extends BasicLifeCycle implements Serializable
 {
     private Service service;
@@ -50,6 +51,10 @@ public class SubService extends BasicLifeCycle implements Serializable
         this.remarks = remarks;
         this.sortOrder = sortOrder;
     }*/
+
+    public SubService(Integer id) {
+        this.id = id;
+    }
 
     @ManyToOne
     @JoinColumn(name = "service_id")

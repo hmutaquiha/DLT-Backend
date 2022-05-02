@@ -23,6 +23,9 @@ import dlt.dltbackendmaster.domain.Service;
 import dlt.dltbackendmaster.domain.SubService;
 import dlt.dltbackendmaster.domain.Us;
 import dlt.dltbackendmaster.domain.Users;
+import dlt.dltbackendmaster.domain.watermelondb.BeneficiaryInterventionSyncModel;
+import dlt.dltbackendmaster.domain.watermelondb.BeneficiarySyncModel;
+import dlt.dltbackendmaster.domain.watermelondb.BeneficiaryVulnerabilitySyncModel;
 import dlt.dltbackendmaster.domain.watermelondb.SyncObject;
 import dlt.dltbackendmaster.domain.watermelondb.UsersSyncModel;
 
@@ -408,6 +411,51 @@ public class SyncSerializer
                                                                   (Class<SyncObject<UsersSyncModel>>) (Object) SyncObject.class);
             return users;
         }
+        return null;
+    }
+    
+    public static SyncObject<BeneficiarySyncModel> readBeneficiariesSyncObject(String changes) throws JsonMappingException, JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode root = mapper.readTree(changes);
+        JsonNode changesNode = root.path("changes");
+        
+        if(!changesNode.isMissingNode()) {
+            JsonNode beneficiariesNode = changesNode.path("beneficiaries");
+            SyncObject<BeneficiarySyncModel> beneficiaries = mapper.treeToValue(beneficiariesNode, 
+                                                                                (Class<SyncObject<BeneficiarySyncModel>>) (Object) SyncObject.class);
+            return beneficiaries;
+        }
+        
+        return null;
+    }
+    
+    public static SyncObject<BeneficiaryInterventionSyncModel> readInterventionsSyncObject(String changes) throws JsonMappingException, JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode root = mapper.readTree(changes);
+        JsonNode changesNode = root.path("changes");
+        
+        if(!changesNode.isMissingNode()) {
+            JsonNode interventionsNode = changesNode.path("interventions");
+            SyncObject<BeneficiaryInterventionSyncModel> interventions = mapper.treeToValue(interventionsNode, 
+                                                                                (Class<SyncObject<BeneficiaryInterventionSyncModel>>) (Object) SyncObject.class);
+            return interventions;
+        }
+        
+        return null;
+    }
+    
+    public static SyncObject<BeneficiaryVulnerabilitySyncModel> readVulnerabilitiesSyncObject(String changes) throws JsonMappingException, JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode root = mapper.readTree(changes);
+        JsonNode changesNode = root.path("changes");
+        
+        if(!changesNode.isMissingNode()) {
+            JsonNode vulnerabilitiesNode = changesNode.path("vulnerabilities");
+            SyncObject<BeneficiaryVulnerabilitySyncModel> vulnerabilities = mapper.treeToValue(vulnerabilitiesNode, 
+                                                                                (Class<SyncObject<BeneficiaryVulnerabilitySyncModel>>) (Object) SyncObject.class);
+            return vulnerabilities;
+        }
+        
         return null;
     }
 

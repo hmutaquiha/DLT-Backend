@@ -21,6 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import dlt.dltbackendmaster.domain.watermelondb.BeneficiaryInterventionSyncModel;
 import dlt.dltbackendmaster.serializers.BeneficiarySerializer;
 import dlt.dltbackendmaster.serializers.SubServiceSerializer;
 
@@ -29,6 +30,8 @@ import dlt.dltbackendmaster.serializers.SubServiceSerializer;
 @Table(name = "beneficiaries_interventions")
 @NamedQueries({ @NamedQuery(name = "BeneficiaryIntervention.findAll",
                             query = "SELECT b FROM BeneficiaryIntervention b"),
+                @NamedQuery(name = "BeneficiaryIntervention.findByBeneficiaryAndSubService",
+                            query = "SELECT b FROM BeneficiaryIntervention b where b.beneficiary.id = :beneficiary_id and b.subService.id = :sub_service_id"),
                 @NamedQuery(name = "BeneficiaryIntervention.findByDateCreated",
                             query = "select b from BeneficiaryIntervention b where b.dateUpdated is null and b.dateCreated > :lastpulledat"),
                 @NamedQuery(name = "BeneficiaryIntervention.findByDateUpdated",
@@ -56,7 +59,7 @@ public class BeneficiaryIntervention implements Serializable
     public BeneficiaryIntervention(Beneficiary beneficiary, SubService subService, String result, Date date,
                                    Integer us_id, Integer activistId, Integer entryPoint, String provider,
                                    String remarks, Integer status, Integer createdBy, Date dateCreated,
-                                   Integer updatedBy, Date dateUpdated, String offlineId) {
+                                   Integer updatedBy, Date dateUpdated) {
         super();
         this.beneficiary = beneficiary;
         this.subService = subService;
@@ -72,7 +75,25 @@ public class BeneficiaryIntervention implements Serializable
         this.dateCreated = dateCreated;
         this.updatedBy = updatedBy;
         this.dateUpdated = dateUpdated;
-        this.offlineId = offlineId;
+    }
+
+
+    public BeneficiaryIntervention(BeneficiaryInterventionSyncModel model, String timestamp) {
+        Long t = Long.valueOf(timestamp);
+        Date regDate = new Date(t);
+        this.beneficiary = new Beneficiary(model.getBeneficiary_id());
+        this.subService = new SubService(model.getSubService_id());
+        this.result = model.getResult();
+        this.date = model.getDate();
+        this.us_id = model.getUs_id();
+        this.activistId = model.getActivist_id();
+        this.entryPoint = model.getEntryPoint();
+        this.provider = model.getProvider();
+        this.remarks = model.getRemarks();
+        this.status = model.getStatus();
+        this.offlineId = model.getBeneficiary_id() + "" + model.getSubService_id();
+        this.dateCreated = regDate;
+        this.dateUpdated = regDate;
     }
 
     @JsonIgnore
@@ -211,6 +232,15 @@ public class BeneficiaryIntervention implements Serializable
         this.dateUpdated = dateUpdated;
     }
 
+    @Column(name = "offline_id", nullable = true, length = 45)
+    public String getOfflineId() {
+        return offlineId;
+    }
+
+    public void setOfflineId(String offlineId) {
+        this.offlineId = offlineId;
+    }
+
     public ObjectNode toObjectNode() {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode beneficiaryIntervention = mapper.createObjectNode();
@@ -238,5 +268,22 @@ public class BeneficiaryIntervention implements Serializable
             beneficiaryIntervention.put("online_id", beneficiary.getId() + "" + subService.getId());
         }
         return beneficiaryIntervention;
+    }
+
+    public void update(BeneficiaryInterventionSyncModel model, String timestamp) {
+        Long t = Long.valueOf(timestamp);
+        
+        this.offlineId = model.getId();
+        this.dateUpdated = new Date(t);
+        this.beneficiary.setId(model.getBeneficiary_id());
+        this.subService.setId(model.getSubService_id());
+        this.result = model.getResult();
+        this.date = model.getDate();
+        this.us_id = model.getUs_id();
+        this.activistId = model.getActivist_id();
+        this.entryPoint = model.getEntryPoint();
+        this.provider = model.getProvider();
+        this.remarks = model.getRemarks();
+        this.status = model.getStatus();
     }
 }

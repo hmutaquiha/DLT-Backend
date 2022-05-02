@@ -19,12 +19,12 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import dlt.dltbackendmaster.domain.watermelondb.BeneficiarySyncModel;
 import dlt.dltbackendmaster.serializers.NeighborhoodSerializer;
 import dlt.dltbackendmaster.serializers.PartnersSerializer;
 
@@ -41,6 +41,7 @@ public class Beneficiary extends BasicLifeCycle implements Serializable
     private String nui;
     private String surname;
     private String nickName;
+    private Partners organization;
     private Date dateOfBirth;
     private Character gender;
     private String address;
@@ -61,6 +62,7 @@ public class Beneficiary extends BasicLifeCycle implements Serializable
     private Partners partner;
     private Set<BeneficiaryIntervention> interventions;
     private Set<BeneficiaryVulnerability> vulnerabilities;
+    private String offlineId;
 
     public Beneficiary() {}
 
@@ -72,9 +74,11 @@ public class Beneficiary extends BasicLifeCycle implements Serializable
                        Users updatedBy, Date dateUpdated) {
         super(id, name, status, 
         		dateCreated, dateUpdated, createdBy, updatedBy);
+
         this.nui = nui;
         this.surname = surname;
         this.nickName = nickName;
+        this.organization = organization;
         this.dateOfBirth = dateOfBirth;
         this.gender = gender;
         this.address = address;
@@ -92,6 +96,40 @@ public class Beneficiary extends BasicLifeCycle implements Serializable
         this.entryPoint = entryPoint;
         this.neighborhood = neigbourhoodId;
         this.usId = usId;
+    }
+
+    public Beneficiary(BeneficiarySyncModel model, String timestamp) {
+        super(model.getName(), Integer.valueOf(model.getStatus()));
+        Long t = Long.valueOf(timestamp);
+        Date regDate = new Date(t);
+        this.nui = model.getNui();
+        this.surname = model.getSurname();
+        this.nickName = model.getNickName();
+        this.organization = new Partners(model.getOrganization_id());
+        this.dateOfBirth = model.getDateOfBirth();
+        this.gender = model.getGender();
+        this.address = model.getAddress();
+        this.phoneNumber = model.getPhoneNumber();
+        this.email = model.getEmail();
+        this.livesWith = model.getLivesWith();
+        this.isOrphan = model.getIsOrphan();
+        this.via = model.getVia();
+        this.partner = model.getPartner();
+        this.isStudent = model.getIsStudent();
+        this.grade = model.getGrade();
+        this.schoolName = model.getSchoolName();
+        this.isDeficient = model.getIsDeficient();
+        this.deficiencyType = model.getDeficiencyType();
+        this.entryPoint = model.getEntryPoint();
+        this.neighborhood = new Neighborhood(model.getNeighborhood_id());
+        this.usId = model.getUs_id();
+        this.offlineId = model.getId();
+        this.dateCreated = regDate;
+        this.dateUpdated = regDate;
+    }
+
+    public Beneficiary(Integer id) {
+        this.id = id;
     }
 
     @Column(name = "nui", unique = true, nullable = false)
@@ -119,6 +157,18 @@ public class Beneficiary extends BasicLifeCycle implements Serializable
 
     public void setNickName(String nickName) {
         this.nickName = nickName;
+    }
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "organization_id")
+    @JsonProperty("organization")
+    @JsonSerialize(using = PartnersSerializer.class)
+    public Partners getOrganization() {
+        return organization;
+    }
+
+    public void setOrganization(Partners organization) {
+        this.organization = organization;
     }
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -303,13 +353,21 @@ public class Beneficiary extends BasicLifeCycle implements Serializable
 
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "beneficiary_id")
-//    @JsonManagedReference
     public Set<BeneficiaryVulnerability> getVulnerabilities() {
         return vulnerabilities;
     }
 
     public void setVulnerabilities(Set<BeneficiaryVulnerability> vulnerabilities) {
         this.vulnerabilities = vulnerabilities;
+    }
+
+    @Column(name = "offline_id", nullable = true, length = 45)
+    public String getOfflineId() {
+        return offlineId;
+    }
+
+    public void setOfflineId(String offlineId) {
+        this.offlineId = offlineId;
     }
 
     public ObjectNode toObjectNode() {
@@ -329,6 +387,7 @@ public class Beneficiary extends BasicLifeCycle implements Serializable
             beneficiary.put("name", name);
             beneficiary.put("surname", surname);
             beneficiary.put("nickname", nickName);
+            beneficiary.put("organization_id", organization.getId());
             beneficiary.put("dateOfBirth", dateFormat.format(dateOfBirth));
             beneficiary.put("gender", String.valueOf(gender));
             beneficiary.put("adress", address);
@@ -351,5 +410,34 @@ public class Beneficiary extends BasicLifeCycle implements Serializable
             beneficiary.put("online_id", id);
         }
         return beneficiary;
+    }
+
+    public void update(BeneficiarySyncModel model, String timestamp) {
+        Long t = Long.valueOf(timestamp);
+        this.offlineId = model.getId();
+        this.dateUpdated = new Date(t);
+        this.nui = model.getNui();
+        this.name = model.getName();
+        this.surname = model.getSurname();
+        this.nickName = model.getNickName();
+        this.organization.setId(model.getOrganization_id());
+        this.dateOfBirth = model.getDateOfBirth();
+        this.gender = model.getGender();
+        this.address = model.getAddress();
+        this.phoneNumber = model.getPhoneNumber();
+        this.email = model.getEmail();
+        this.livesWith = model.getLivesWith();
+        this.isOrphan = model.getIsOrphan();
+        this.via = model.getVia();
+        this.partner.setId(model.getPartner().getId());
+        this.isStudent = model.getIsStudent();
+        this.grade = model.getGrade();
+        this.schoolName = model.getSchoolName();
+        this.isDeficient = model.getIsDeficient();
+        this.deficiencyType = model.getDeficiencyType();
+        this.entryPoint = model.getEntryPoint();
+        this.neighborhood.setId(model.getNeighborhood_id());
+        this.usId = model.getUs_id();
+        this.status = Integer.valueOf(model.getStatus());
     }
 }

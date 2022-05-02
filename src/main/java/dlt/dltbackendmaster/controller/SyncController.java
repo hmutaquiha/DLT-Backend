@@ -33,6 +33,9 @@ import dlt.dltbackendmaster.domain.Service;
 import dlt.dltbackendmaster.domain.SubService;
 import dlt.dltbackendmaster.domain.Us;
 import dlt.dltbackendmaster.domain.Users;
+import dlt.dltbackendmaster.domain.watermelondb.BeneficiaryInterventionSyncModel;
+import dlt.dltbackendmaster.domain.watermelondb.BeneficiarySyncModel;
+import dlt.dltbackendmaster.domain.watermelondb.BeneficiaryVulnerabilitySyncModel;
 import dlt.dltbackendmaster.domain.watermelondb.SyncObject;
 import dlt.dltbackendmaster.domain.watermelondb.UsersSyncModel;
 import dlt.dltbackendmaster.serializers.SyncSerializer;
@@ -204,10 +207,18 @@ public class SyncController {
 		
 		String lastPulledAt = SyncSerializer.readLastPulledAt(changes);
 		
+		Users user = (Users) service.GetAllEntityByNamedQuery("Users.findByUsername", username).get(0);
+		
 		ObjectMapper mapper = new ObjectMapper();
 		SyncObject<UsersSyncModel> users;
+		SyncObject<BeneficiarySyncModel> beneficiaries;
+		SyncObject<BeneficiaryInterventionSyncModel> interventions;
+		SyncObject<BeneficiaryVulnerabilitySyncModel> vulnerabilities;
 		try {
 			users = SyncSerializer.readUsersSyncObject(changes);
+			beneficiaries = SyncSerializer.readBeneficiariesSyncObject(changes);
+			interventions = SyncSerializer.readInterventionsSyncObject(changes);
+			vulnerabilities = SyncSerializer.readVulnerabilitiesSyncObject(changes);
 			
 			// created entities
 			if(users != null && users.getCreated().size() > 0) {
@@ -218,10 +229,44 @@ public class SyncController {
 
 					if(created.getOnline_id() == null) {
 						Users newUser = new Users(created, lastPulledAt);
+						newUser.setCreatedBy(user.getId());
 						Integer savedId = (Integer) service.Save(newUser);
 					}
 				}
 			}
+			if(beneficiaries!=null && beneficiaries.getCreated().size()>0) {
+			    List<BeneficiarySyncModel> createdList = mapper.convertValue(beneficiaries.getCreated(), new TypeReference<List<BeneficiarySyncModel>>() {});
+			    
+			    for (BeneficiarySyncModel created : createdList) {
+                    if(created.getOnline_id() == null) {
+                        Beneficiary beneficiary = new Beneficiary(created, lastPulledAt);
+                        beneficiary.setCreatedBy(user.getId());
+                        service.Save(beneficiary);
+                    }
+                }
+			}
+            if(interventions!=null && interventions.getCreated().size()>0) {
+                List<BeneficiaryInterventionSyncModel> createdList = mapper.convertValue(interventions.getCreated(), new TypeReference<List<BeneficiaryInterventionSyncModel>>() {});
+                
+                for (BeneficiaryInterventionSyncModel created : createdList) {
+                    if(created.getOnline_id() == null) {
+                        BeneficiaryIntervention intervention = new BeneficiaryIntervention(created, lastPulledAt);
+                        intervention.setCreatedBy(user.getId());
+                        service.Save(intervention);
+                    }
+                }
+            }
+            if(vulnerabilities!=null && vulnerabilities.getCreated().size()>0) {
+                List<BeneficiaryVulnerabilitySyncModel> createdList = mapper.convertValue(vulnerabilities.getCreated(), new TypeReference<List<BeneficiaryVulnerabilitySyncModel>>() {});
+                
+                for (BeneficiaryVulnerabilitySyncModel created : createdList) {
+                    if(created.getOnline_id() == null) {
+                        BeneficiaryVulnerability vulnerability = new BeneficiaryVulnerability(created, lastPulledAt);
+                        vulnerability.setCreatedBy(user.getId());
+                        service.Save(vulnerability);
+                    }
+                }
+            }
 
 			// updated entities
 			if(users != null && users.getUpdated().size() > 0) {
@@ -231,28 +276,67 @@ public class SyncController {
 					
 					if(updated.getOnline_id() == null) {
 						Users newUser = new Users(updated, lastPulledAt);
-
-						Integer savedId = (Integer) service.Save(newUser);
-					}
-				}
-			}
-
-			// updated entities
-			if(users != null && users.getUpdated().size() > 0) {
-				List<UsersSyncModel> updatedList = mapper.convertValue(users.getUpdated(), new TypeReference<List<UsersSyncModel>>() {});
-
-				for (UsersSyncModel updated : updatedList) {
-					
-					if(updated.getOnline_id() == null) {
-						Users newUser = new Users(updated, lastPulledAt);
+                        newUser.setCreatedBy(user.getId());
 						Integer savedId = (Integer) service.Save(newUser);
 						
 					} else {
 						Users updateu = service.find(Users.class, updated.getOnline_id());
+						updateu.setUpdatedBy(user.getId());
 						updateu.update(updated, lastPulledAt);
 					} 
 				}
 			}
+            if(beneficiaries != null && beneficiaries.getUpdated().size() > 0) {
+                List<BeneficiarySyncModel> updatedList = mapper.convertValue(users.getUpdated(), new TypeReference<List<BeneficiarySyncModel>>() {});
+
+                for (BeneficiarySyncModel updated : updatedList) {
+                    
+                    if(updated.getOnline_id() == null) {
+                        Beneficiary beneficiary = new Beneficiary(updated, lastPulledAt);
+                        beneficiary.setCreatedBy(user.getId());
+                        service.Save(beneficiary);
+                        
+                    } else {
+                        Beneficiary beneficiary = service.find(Beneficiary.class, updated.getOnline_id());
+                        beneficiary.setUpdatedBy(user.getId());
+                        beneficiary.update(updated, lastPulledAt);
+                    } 
+                }
+            }
+            if(interventions != null && interventions.getUpdated().size() > 0) {
+                List<BeneficiaryInterventionSyncModel> updatedList = mapper.convertValue(interventions.getUpdated(), new TypeReference<List<BeneficiaryInterventionSyncModel>>() {});
+
+                for (BeneficiaryInterventionSyncModel updated : updatedList) {
+                    
+                    if(updated.getOnline_id() == null) {
+                        BeneficiaryIntervention intervention = new BeneficiaryIntervention(updated, lastPulledAt);
+                        intervention.setCreatedBy(user.getId());
+                        service.Save(intervention);
+                        
+                    } else {
+                        BeneficiaryIntervention intervention = service.find(BeneficiaryIntervention.class, updated.getOnline_id());
+                        intervention.setUpdatedBy(user.getId());
+                        intervention.update(updated, lastPulledAt);
+                    } 
+                }
+            }
+            if(vulnerabilities != null && vulnerabilities.getUpdated().size() > 0) {
+                List<BeneficiaryVulnerabilitySyncModel> updatedList = mapper.convertValue(vulnerabilities.getUpdated(), new TypeReference<List<BeneficiaryVulnerabilitySyncModel>>() {});
+
+                for (BeneficiaryVulnerabilitySyncModel updated : updatedList) {
+                    
+                    if(updated.getOnline_id() == null) {
+                        BeneficiaryVulnerability vulnerability = new BeneficiaryVulnerability(updated, lastPulledAt);
+                        vulnerability.setCreatedBy(user.getId());
+                        service.Save(vulnerability);
+                        
+                    } else {
+                        BeneficiaryVulnerability vulnerability = service.find(BeneficiaryVulnerability.class, updated.getOnline_id());
+                        vulnerability.setUpdatedBy(user.getId());
+                        vulnerability.update(updated, lastPulledAt);
+                    } 
+                }
+            }
 		} catch (JsonProcessingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

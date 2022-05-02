@@ -4,6 +4,7 @@ import java.util.Date;
 
 public class BeneficiaryInterventionSyncModel
 {
+    private String id;
     private Integer beneficiary_id;
     private Integer subService_id;
     private String result;
@@ -19,6 +20,14 @@ public class BeneficiaryInterventionSyncModel
     private Integer online_id;
 
     public BeneficiaryInterventionSyncModel() {}
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public Integer getBeneficiary_id() {
         return beneficiary_id;

@@ -114,7 +114,7 @@ public class Beneficiary extends BasicLifeCycle implements Serializable
         this.livesWith = model.getLivesWith();
         this.isOrphan = model.getIsOrphan();
         this.via = model.getVia();
-        this.partner = model.getPartner();
+        this.partnerId = model.getPartner();
         this.isStudent = model.getIsStudent();
         this.grade = model.getGrade();
         this.schoolName = model.getSchoolName();

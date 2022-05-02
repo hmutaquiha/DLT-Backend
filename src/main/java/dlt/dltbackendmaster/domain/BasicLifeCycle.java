@@ -46,6 +46,8 @@ public abstract class BasicLifeCycle
     public BasicLifeCycle(String name, Integer status) {
         this.name = name;
         this.status = status;
+        this.createdBy = new Users();
+        this.updatedBy = new Users();
     }
 
     @Id

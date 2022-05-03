@@ -1,7 +1,6 @@
 package dlt.dltbackendmaster.domain;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,22 +18,35 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
                 @NamedQuery(name = "Service.findByDateCreated",
                             query = "SELECT c FROM Service c WHERE c.dateCreated = :lastpulledat"),
                 @NamedQuery(name = "Service.findByDateUpdated",
-                            query = "SELECT c FROM Service c WHERE c.dateUpdated = :lastpulledat") })
+                            query = "SELECT c FROM Service c WHERE c.dateUpdated = :lastpulledat"),
+                @NamedQuery(name = "Service.findByServiceType",
+                            query = "SELECT c FROM Service c WHERE c.serviceType = :serviceType") })
 public class Service extends BasicLifeCycle implements Serializable
 {
+    private ServiceType serviceType;
     private String description;
     private Boolean isCoreService;
     private Boolean isHidden;
 
     public Service() {}
-/*
-    public Service(int id, String name, String description, Boolean isCoreService, Boolean isHidden, Integer status,
-                   Integer createdBy, Date dateCreated, Integer updatedBy, Date dateUpdated) {
-        super(id, name, status, createdBy, dateCreated, updatedBy, dateUpdated);
-        this.description = description;
-        this.isCoreService = isCoreService;
-        this.isHidden = isHidden;
-    }*/
+    /*
+     * public Service(int id, String name, String description, Boolean isCoreService, Boolean isHidden, Integer status,
+     * Integer createdBy, Date dateCreated, Integer updatedBy, Date dateUpdated) {
+     * super(id, name, status, createdBy, dateCreated, updatedBy, dateUpdated);
+     * this.description = description;
+     * this.isCoreService = isCoreService;
+     * this.isHidden = isHidden;
+     * }
+     */
+
+    @Column(name = "service_type")
+    public ServiceType getServiceType() {
+        return serviceType;
+    }
+
+    public void setServiceType(ServiceType serviceType) {
+        this.serviceType = serviceType;
+    }
 
     @Column(name = "description")
     public String getDescription() {

@@ -77,6 +77,7 @@ public class BeneficiaryIntervention implements Serializable
         this.dateUpdated = dateUpdated;
     }
 
+
     public BeneficiaryIntervention(BeneficiaryInterventionSyncModel model, String timestamp) {
         Long t = Long.valueOf(timestamp);
         Date regDate = new Date(t);
@@ -99,8 +100,8 @@ public class BeneficiaryIntervention implements Serializable
     @Id
     @ManyToOne
     @MapsId("beneficiaryId")
-    @JsonProperty("beneficiary")
-    @JsonSerialize(using = BeneficiarySerializer.class)
+    //@JsonProperty("beneficiary")
+    //@JsonSerialize(using = BeneficiarySerializer.class)
     public Beneficiary getBeneficiary() {
         return beneficiary;
     }

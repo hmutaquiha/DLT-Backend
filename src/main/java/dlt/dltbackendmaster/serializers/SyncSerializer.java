@@ -399,7 +399,7 @@ public class SyncSerializer
     }
 
 
-    public static SyncObject<UsersSyncModel> readUsersSyncObject(String changes) throws JsonMappingException, JsonProcessingException {
+    public static SyncObject readUsersSyncObject(String changes) throws JsonMappingException, JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode root = mapper.readTree(changes);
         JsonNode changesNode = root.path("changes");

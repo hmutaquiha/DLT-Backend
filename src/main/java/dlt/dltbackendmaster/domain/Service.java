@@ -27,14 +27,14 @@ public class Service extends BasicLifeCycle implements Serializable
     private Boolean isHidden;
 
     public Service() {}
-
+/*
     public Service(int id, String name, String description, Boolean isCoreService, Boolean isHidden, Integer status,
                    Integer createdBy, Date dateCreated, Integer updatedBy, Date dateUpdated) {
         super(id, name, status, createdBy, dateCreated, updatedBy, dateUpdated);
         this.description = description;
         this.isCoreService = isCoreService;
         this.isHidden = isHidden;
-    }
+    }*/
 
     @Column(name = "description")
     public String getDescription() {

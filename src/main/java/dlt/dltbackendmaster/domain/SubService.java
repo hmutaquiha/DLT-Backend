@@ -35,7 +35,7 @@ public class SubService extends BasicLifeCycle implements Serializable
     private Integer sortOrder;
 
     public SubService() {}
-
+/*
     public SubService(int id, String name, Integer status, Integer createdBy, Date dateCreated, Integer updatedBy,
                       Date dateUpdated) {
         super(id, name, status, createdBy, dateCreated, updatedBy, dateUpdated);
@@ -50,7 +50,7 @@ public class SubService extends BasicLifeCycle implements Serializable
         this.isManandatory = isMandatory;
         this.remarks = remarks;
         this.sortOrder = sortOrder;
-    }
+    }*/
 
     public SubService(Integer id) {
         this.id = id;

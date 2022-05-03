@@ -240,7 +240,8 @@ public class SyncController {
 			    for (BeneficiarySyncModel created : createdList) {
                     if(created.getOnline_id() == null) {
                         Beneficiary beneficiary = new Beneficiary(created, lastPulledAt);
-                        beneficiary.setCreatedBy(user.getId());
+                        beneficiary.getCreatedBy().setId(user.getId());
+                        //beneficiary.setCreatedBy(user.getId());
                         service.Save(beneficiary);
                     }
                 }
@@ -293,12 +294,14 @@ public class SyncController {
                     
                     if(updated.getOnline_id() == null) {
                         Beneficiary beneficiary = new Beneficiary(updated, lastPulledAt);
-                        beneficiary.setCreatedBy(user.getId());
+                        beneficiary.getCreatedBy().setId(user.getId());
+                        //beneficiary.setCreatedBy(user.getId());
                         service.Save(beneficiary);
                         
                     } else {
                         Beneficiary beneficiary = service.find(Beneficiary.class, updated.getOnline_id());
-                        beneficiary.setUpdatedBy(user.getId());
+                        beneficiary.getUpdatedBy().setId(user.getId());
+                        //beneficiary.setUpdatedBy(user.getId());
                         beneficiary.update(updated, lastPulledAt);
                     } 
                 }

@@ -1,7 +1,6 @@
 package dlt.dltbackendmaster.domain;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -25,7 +24,9 @@ import dlt.dltbackendmaster.serializers.ServiceSerializer;
                 @NamedQuery(name = "SubService.findByDateCreated",
                             query = "SELECT c FROM SubService c WHERE c.dateCreated = :lastpulledat"),
                 @NamedQuery(name = "SubService.findByDateUpdated",
-                            query = "SELECT c FROM SubService c WHERE c.dateUpdated = :lastpulledat") })
+                            query = "SELECT c FROM SubService c WHERE c.dateUpdated = :lastpulledat"),
+                @NamedQuery(name = "SubService.findByService",
+                            query = "SELECT c FROM SubService c WHERE c.service.id = :serviceId") })
 public class SubService extends BasicLifeCycle implements Serializable
 {
     private Service service;
@@ -35,22 +36,22 @@ public class SubService extends BasicLifeCycle implements Serializable
     private Integer sortOrder;
 
     public SubService() {}
-/*
-    public SubService(int id, String name, Integer status, Integer createdBy, Date dateCreated, Integer updatedBy,
-                      Date dateUpdated) {
-        super(id, name, status, createdBy, dateCreated, updatedBy, dateUpdated);
-    }
-
-    public SubService(int id, String name, String description, Integer status, Integer createdBy, Date dateCreated,
-                      Integer updatedBy, Date dateUpdated, Service service, Boolean isHidden, Boolean isMandatory,
-                      String remarks, Integer sortOrder) {
-        this(id, name, status, createdBy, dateCreated, updatedBy, dateUpdated);
-        this.service = service;
-        this.isHidden = isHidden;
-        this.isManandatory = isMandatory;
-        this.remarks = remarks;
-        this.sortOrder = sortOrder;
-    }*/
+    /*
+     * public SubService(int id, String name, Integer status, Integer createdBy, Date dateCreated, Integer updatedBy,
+     * Date dateUpdated) {
+     * super(id, name, status, createdBy, dateCreated, updatedBy, dateUpdated);
+     * }
+     * public SubService(int id, String name, String description, Integer status, Integer createdBy, Date dateCreated,
+     * Integer updatedBy, Date dateUpdated, Service service, Boolean isHidden, Boolean isMandatory,
+     * String remarks, Integer sortOrder) {
+     * this(id, name, status, createdBy, dateCreated, updatedBy, dateUpdated);
+     * this.service = service;
+     * this.isHidden = isHidden;
+     * this.isManandatory = isMandatory;
+     * this.remarks = remarks;
+     * this.sortOrder = sortOrder;
+     * }
+     */
 
     public SubService(Integer id) {
         this.id = id;

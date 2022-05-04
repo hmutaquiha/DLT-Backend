@@ -1,5 +1,7 @@
 package dlt.dltbackendmaster.domain;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 public enum DeficiencyType {
     NO_WALK("Não Anda"),
     NO_TALK("Não fala"),
@@ -15,5 +17,16 @@ public enum DeficiencyType {
 
     public String getDescription() {
         return description;
+    }
+    
+    @JsonCreator
+    public static DeficiencyType forName(String name) {
+        for(DeficiencyType c: values()) {
+            if(c.name().equals(name)) {
+                return c;
+            }
+        }
+
+        return null;
     }
 }

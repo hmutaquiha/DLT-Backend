@@ -3,8 +3,8 @@ package dlt.dltbackendmaster.domain.watermelondb;
 public class ServiceSyncModel extends BasicLifeCycleSyncModel
 {
     private String description;
-    private Boolean isCoreService;
-    private Boolean isHidden;
+    private Boolean is_core_service;
+    private Boolean is_hidden;
 
     public ServiceSyncModel() {}
 
@@ -16,19 +16,19 @@ public class ServiceSyncModel extends BasicLifeCycleSyncModel
         this.description = description;
     }
 
-    public Boolean getIsCoreService() {
-        return isCoreService;
+    public Boolean getIs_core_service() {
+        return is_core_service;
     }
 
-    public void setIsCoreService(Boolean isCoreService) {
-        this.isCoreService = isCoreService;
+    public void setIs_core_service(Boolean isCoreService) {
+        this.is_core_service = isCoreService;
     }
 
-    public Boolean getIsHidden() {
-        return isHidden;
+    public Boolean getIs_hidden() {
+        return is_hidden;
     }
 
-    public void setIsHidden(Boolean isHidden) {
-        this.isHidden = isHidden;
+    public void setIs_hidden(Boolean isHidden) {
+        this.is_hidden = isHidden;
     }
 }

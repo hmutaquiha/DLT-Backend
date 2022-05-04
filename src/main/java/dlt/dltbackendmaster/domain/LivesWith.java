@@ -1,5 +1,7 @@
 package dlt.dltbackendmaster.domain;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 public enum LivesWith {
     PARENTS("Pais"),
     GRAND_PARENTS("Avós"),
@@ -15,5 +17,16 @@ public enum LivesWith {
 
     public String getDescription() {
         return this.description;
+    }
+    
+    @JsonCreator
+    public static LivesWith forName(String name) {
+        for(LivesWith c: values()) {
+            if(c.name().equals(name)) {
+                return c;
+            }
+        }
+
+        return null;
     }
 }

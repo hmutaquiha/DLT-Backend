@@ -3,10 +3,10 @@ package dlt.dltbackendmaster.domain.watermelondb;
 public class SubServiceSyncModel extends BasicLifeCycleSyncModel
 {
     private Integer service_id;
-    private Boolean isHidden;
-    private Boolean isManandatory;
+    private Boolean is_hidden;
+    private Boolean is_manandatory;
     private String remarks;
-    private Integer sortOrder;
+    private Integer sort_order;
 
     public SubServiceSyncModel() {}
 
@@ -18,20 +18,20 @@ public class SubServiceSyncModel extends BasicLifeCycleSyncModel
         this.service_id = service_id;
     }
 
-    public Boolean getIsHidden() {
-        return isHidden;
+    public Boolean getIs_hidden() {
+        return is_hidden;
     }
 
-    public void setIsHidden(Boolean isHidden) {
-        this.isHidden = isHidden;
+    public void setIs_hidden(Boolean isHidden) {
+        this.is_hidden = isHidden;
     }
 
-    public Boolean getIsManandatory() {
-        return isManandatory;
+    public Boolean getIs_manandatory() {
+        return is_manandatory;
     }
 
-    public void setIsManandatory(Boolean isManandatory) {
-        this.isManandatory = isManandatory;
+    public void setIs_manandatory(Boolean isManandatory) {
+        this.is_manandatory = isManandatory;
     }
 
     public String getRemarks() {
@@ -42,11 +42,11 @@ public class SubServiceSyncModel extends BasicLifeCycleSyncModel
         this.remarks = remarks;
     }
 
-    public Integer getSortOrder() {
-        return sortOrder;
+    public Integer getSort_order() {
+        return sort_order;
     }
 
-    public void setSortOrder(Integer sortOrder) {
-        this.sortOrder = sortOrder;
+    public void setSort_order(Integer sortOrder) {
+        this.sort_order = sortOrder;
     }
 }

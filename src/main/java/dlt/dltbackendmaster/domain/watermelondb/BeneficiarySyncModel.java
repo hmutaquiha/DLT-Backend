@@ -2,7 +2,6 @@ package dlt.dltbackendmaster.domain.watermelondb;
 
 import java.util.Date;
 
-import dlt.dltbackendmaster.domain.Beneficiary;
 import dlt.dltbackendmaster.domain.DeficiencyType;
 import dlt.dltbackendmaster.domain.LivesWith;
 
@@ -10,24 +9,24 @@ public class BeneficiarySyncModel extends BasicLifeCycleSyncModel
 {
     private String nui;
     private String surname;
-    private String nickName;
+    private String nick_name;
     private Integer organization_id;
-    private Date dateOfBirth;
+    private Date date_of_birth;
     private Character gender;
     private String address;
-    private String phoneNumber;
-    private String email;
-    private LivesWith livesWith;
-    private Boolean isOrphan;
+    private String phone_number;
+    private String e_mail;
+    private LivesWith lives_with;
+    private Boolean is_orphan;
     private Boolean via;
-    private Beneficiary partner;
-    private Boolean isStudent;
+    private Integer partner_id;
+    private Boolean is_student;
     private Integer grade;
-    private String schoolName;
-    private Boolean isDeficient;
-    private DeficiencyType deficiencyType;
-    private String entryPoint;
-    private Integer neighborhood_id;
+    private String school_name;
+    private Boolean is_deficient;
+    private DeficiencyType deficiency_type;
+    private String entry_point;
+    private Integer neighbourhood_id;
     private Integer us_id;
 
     public BeneficiarySyncModel() {}
@@ -48,8 +47,12 @@ public class BeneficiarySyncModel extends BasicLifeCycleSyncModel
         this.surname = surname;
     }
 
-    public String getNickName() {
-        return nickName;
+    public String getNick_name() {
+        return nick_name;
+    }
+
+    public void setNick_name(String nick_name) {
+        this.nick_name = nick_name;
     }
 
     public Integer getOrganization_id() {
@@ -60,16 +63,12 @@ public class BeneficiarySyncModel extends BasicLifeCycleSyncModel
         this.organization_id = organization_id;
     }
 
-    public void setNickName(String nickName) {
-        this.nickName = nickName;
+    public Date getDate_of_birth() {
+        return date_of_birth;
     }
 
-    public Date getDateOfBirth() {
-        return dateOfBirth;
-    }
-
-    public void setDateOfBirth(Date dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
+    public void setDate_of_birth(Date date_of_birth) {
+        this.date_of_birth = date_of_birth;
     }
 
     public Character getGender() {
@@ -88,36 +87,36 @@ public class BeneficiarySyncModel extends BasicLifeCycleSyncModel
         this.address = address;
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
+    public String getPhone_number() {
+        return phone_number;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public void setPhone_number(String phone_number) {
+        this.phone_number = phone_number;
     }
 
-    public String getEmail() {
-        return email;
+    public String getE_mail() {
+        return e_mail;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setE_mail(String email) {
+        this.e_mail = email;
     }
 
-    public LivesWith getLivesWith() {
-        return livesWith;
+    public LivesWith getLives_with() {
+        return lives_with;
     }
 
-    public void setLivesWith(LivesWith livesWith) {
-        this.livesWith = livesWith;
+    public void setLives_with(LivesWith lives_with) {
+        this.lives_with = lives_with;
     }
 
-    public Boolean getIsOrphan() {
-        return isOrphan;
+    public Boolean getIs_orphan() {
+        return is_orphan;
     }
 
-    public void setIsOrphan(Boolean isOrphan) {
-        this.isOrphan = isOrphan;
+    public void setIs_orphan(Boolean is_orphan) {
+        this.is_orphan = is_orphan;
     }
 
     public Boolean getVia() {
@@ -128,20 +127,20 @@ public class BeneficiarySyncModel extends BasicLifeCycleSyncModel
         this.via = via;
     }
 
-    public Beneficiary getPartner() {
-        return partner;
+    public Integer getPartner_id() {
+        return partner_id;
     }
 
-    public void setPartner(Beneficiary partner) {
-        this.partner = partner;
+    public void setPartner_id(Integer partner_id) {
+        this.partner_id = partner_id;
     }
 
-    public Boolean getIsStudent() {
-        return isStudent;
+    public Boolean getIs_student() {
+        return is_student;
     }
 
-    public void setIsStudent(Boolean isStudent) {
-        this.isStudent = isStudent;
+    public void setIs_student(Boolean is_student) {
+        this.is_student = is_student;
     }
 
     public Integer getGrade() {
@@ -152,44 +151,44 @@ public class BeneficiarySyncModel extends BasicLifeCycleSyncModel
         this.grade = grade;
     }
 
-    public String getSchoolName() {
-        return schoolName;
+    public String getSchool_name() {
+        return school_name;
     }
 
-    public void setSchoolName(String schoolName) {
-        this.schoolName = schoolName;
+    public void setSchool_name(String school_name) {
+        this.school_name = school_name;
     }
 
-    public Boolean getIsDeficient() {
-        return isDeficient;
+    public Boolean getIs_deficient() {
+        return is_deficient;
     }
 
-    public void setIsDeficient(Boolean isDeficient) {
-        this.isDeficient = isDeficient;
+    public void setIs_deficient(Boolean is_deficient) {
+        this.is_deficient = is_deficient;
     }
 
-    public DeficiencyType getDeficiencyType() {
-        return deficiencyType;
+    public DeficiencyType getDeficiency_type() {
+        return deficiency_type;
     }
 
-    public void setDeficiencyType(DeficiencyType deficiencyType) {
-        this.deficiencyType = deficiencyType;
+    public void setDeficiency_type(DeficiencyType deficiency_type) {
+        this.deficiency_type = deficiency_type;
     }
 
-    public String getEntryPoint() {
-        return entryPoint;
+    public String getEntry_point() {
+        return entry_point;
     }
 
-    public void setEntryPoint(String entryPoint) {
-        this.entryPoint = entryPoint;
+    public void setEntry_point(String entry_point) {
+        this.entry_point = entry_point;
     }
 
-    public Integer getNeighborhood_id() {
-        return neighborhood_id;
+    public Integer getNeighbourhood_id() {
+        return neighbourhood_id;
     }
 
-    public void setNeighborhood_id(Integer neighborhood_id) {
-        this.neighborhood_id = neighborhood_id;
+    public void setNeighbourhood_id(Integer neighborhood_id) {
+        this.neighbourhood_id = neighborhood_id;
     }
 
     public Integer getUs_id() {

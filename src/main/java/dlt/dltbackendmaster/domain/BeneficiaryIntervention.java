@@ -254,7 +254,7 @@ public class BeneficiaryIntervention implements Serializable
 
         if (dateUpdated == null || dateUpdated.after(dateCreated)) {
             beneficiaryIntervention.put("beneficiary_id", beneficiary.getId());
-            beneficiaryIntervention.put("subService_id", subService.getId());
+            beneficiaryIntervention.put("sub_service_id", subService.getId());
             beneficiaryIntervention.put("result", result);
             beneficiaryIntervention.put("date", dateFormat.format(date));
             beneficiaryIntervention.put("us_id", us_id);

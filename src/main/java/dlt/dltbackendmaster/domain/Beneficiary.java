@@ -393,15 +393,15 @@ public class Beneficiary extends BasicLifeCycle implements Serializable
             beneficiary.put("adress", address);
             beneficiary.put("phone_number", phoneNumber);
             beneficiary.put("email", email);
-            beneficiary.put("livesWith", livesWith.toString());
+            beneficiary.put("lives_with", livesWith.toString());
             beneficiary.put("is_orphan", isOrphan);
             beneficiary.put("via", via);
             beneficiary.put("partner_id", partnerId == null ? null : partnerId.getId());
             beneficiary.put("is_student", isStudent);
             beneficiary.put("grade", grade);
-            beneficiary.put("schoolName", schoolName);
+            beneficiary.put("school_name", schoolName);
             beneficiary.put("is_deficient", isDeficient);
-            beneficiary.put("deficiencyType", deficiencyType == null ? null : deficiencyType.toString());
+            beneficiary.put("deficiency_type", deficiencyType == null ? null : deficiencyType.toString());
             beneficiary.put("entry_point", entryPoint);
             beneficiary.put("neighborhood_id", neighborhood.getId());
             beneficiary.put("us_id", usId);

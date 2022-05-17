@@ -44,7 +44,7 @@ public class ServiceController
         }
 
         try {
-            List<Service> services = service.GetAllEntityByNamedQuery("Service.findByServiceType", serviceType);
+            List<Service> services = service.GetAllEntityByNamedQuery("Service.findByServiceType", serviceType.ordinal()+1);
             return new ResponseEntity<>(services, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);

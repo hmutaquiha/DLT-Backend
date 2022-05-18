@@ -41,6 +41,9 @@ public class BeneficiaryInterventionController
 
         if (intervention == null || intervention.getBeneficiary() == null || intervention.getSubService() == null
             || intervention.getUs_id() == null) {
+        	System.out.println(intervention.getBeneficiary());
+        	System.out.println(intervention.getSubService());
+        	System.out.println(intervention.getUs_id());
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
 
@@ -55,6 +58,7 @@ public class BeneficiaryInterventionController
                                                                    .get(0);
             return new ResponseEntity<>(createdIntervention, HttpStatus.OK);
         } catch (Exception e) {
+        	e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

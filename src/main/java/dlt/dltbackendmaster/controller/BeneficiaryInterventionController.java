@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import dlt.dltbackendmaster.domain.BeneficiaryIntervention;
+import dlt.dltbackendmaster.domain.SubService;
 import dlt.dltbackendmaster.service.DAOService;
 
 @RestController
@@ -50,12 +51,8 @@ public class BeneficiaryInterventionController
         try {
             intervention.setDateCreated(new Date());
             BeneficiaryIntervention createdIntervention = (BeneficiaryIntervention) service.Save(intervention);
-            createdIntervention = (BeneficiaryIntervention) service.GetAllEntityByNamedQuery("BeneficiaryIntervention.findByBeneficiaryAndSubService",
-                                                                                             createdIntervention.getBeneficiary()
-                                                                                                                .getId(),
-                                                                                             createdIntervention.getSubService()
-                                                                                                                .getId())
-                                                                   .get(0);
+            SubService subService = service.find(SubService.class, intervention.getSubService().getId());
+            createdIntervention.setSubService(subService);
             return new ResponseEntity<>(createdIntervention, HttpStatus.OK);
         } catch (Exception e) {
         	e.printStackTrace();

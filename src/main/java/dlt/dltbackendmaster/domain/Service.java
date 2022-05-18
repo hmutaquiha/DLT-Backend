@@ -23,7 +23,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
                             query = "SELECT c FROM Service c WHERE c.serviceType = :serviceType") })
 public class Service extends BasicLifeCycle implements Serializable
 {
-    private ServiceType serviceType;
+    private Integer serviceType;
     private String description;
     private Boolean isCoreService;
     private Boolean isHidden;
@@ -40,11 +40,11 @@ public class Service extends BasicLifeCycle implements Serializable
      */
 
     @Column(name = "service_type")
-    public ServiceType getServiceType() {
+    public Integer getServiceType() {
         return serviceType;
     }
 
-    public void setServiceType(ServiceType serviceType) {
+    public void setServiceType(Integer serviceType) {
         this.serviceType = serviceType;
     }
 

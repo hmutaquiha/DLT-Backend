@@ -79,6 +79,7 @@ public class Service extends BasicLifeCycle implements Serializable
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode service = mapper.createObjectNode();
         service.put("id", id);
+        service.put("service_type", serviceType);
         service.put("name", name);
         service.put("description", description);
         service.put("is_core_service", isCoreService);

@@ -435,11 +435,11 @@ public class SyncSerializer
         JsonNode changesNode = root.path("changes");
         
         if(!changesNode.isMissingNode()) {
-            JsonNode interventionsNode = changesNode.path("interventions");
-            if(!interventionsNode.isMissingNode()) {
-            	SyncObject<BeneficiaryInterventionSyncModel> interventions = mapper.treeToValue(interventionsNode, 
+            JsonNode beneficiaries_interventionsNode = changesNode.path("beneficiaries_interventions");
+            if(!beneficiaries_interventionsNode.isMissingNode()) {
+            	SyncObject<BeneficiaryInterventionSyncModel> beneficiaries_interventions = mapper.treeToValue(beneficiaries_interventionsNode, 
                         (Class<SyncObject<BeneficiaryInterventionSyncModel>>) (Object) SyncObject.class);
-            	return interventions;
+            	return beneficiaries_interventions;
             }
             
             

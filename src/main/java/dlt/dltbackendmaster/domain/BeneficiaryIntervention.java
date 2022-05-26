@@ -2,6 +2,7 @@ package dlt.dltbackendmaster.domain;
 
 import java.io.Serializable;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -78,20 +79,22 @@ public class BeneficiaryIntervention implements Serializable
     }
 
 
-    public BeneficiaryIntervention(BeneficiaryInterventionSyncModel model, String timestamp) {
+    public BeneficiaryIntervention(BeneficiaryInterventionSyncModel model, String timestamp) throws ParseException {
         Long t = Long.valueOf(timestamp);
         Date regDate = new Date(t);
         this.beneficiary = new Beneficiary(model.getBeneficiary_id());
-        this.subService = new SubService(model.getSubService_id());
+        this.subService = new SubService(model.getSub_service_id());
         this.result = model.getResult();
-        this.date = model.getDate();
+        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+        Date date1=dateFormatter.parse(model.getDate());  
+        this.date = date1; 
         this.us_id = model.getUs_id();
         this.activistId = model.getActivist_id();
-        this.entryPoint = model.getEntryPoint();
+        this.entryPoint = model.getEntry_point();
         this.provider = model.getProvider();
         this.remarks = model.getRemarks();
         this.status = model.getStatus();
-        this.offlineId = model.getBeneficiary_id() + "" + model.getSubService_id();
+        this.offlineId = model.getBeneficiary_id() + "" + model.getSub_service_id();
         this.dateCreated = regDate;
         this.dateUpdated = regDate;
     }
@@ -270,18 +273,20 @@ public class BeneficiaryIntervention implements Serializable
         return beneficiaryIntervention;
     }
 
-    public void update(BeneficiaryInterventionSyncModel model, String timestamp) {
+    public void update(BeneficiaryInterventionSyncModel model, String timestamp) throws ParseException {
         Long t = Long.valueOf(timestamp);
         
         this.offlineId = model.getId();
         this.dateUpdated = new Date(t);
         this.beneficiary.setId(model.getBeneficiary_id());
-        this.subService.setId(model.getSubService_id());
+        this.subService.setId(model.getSub_service_id());
         this.result = model.getResult();
-        this.date = model.getDate();
+        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+        Date date1=dateFormatter.parse(model.getDate());  
+        this.date = date1;
         this.us_id = model.getUs_id();
         this.activistId = model.getActivist_id();
-        this.entryPoint = model.getEntryPoint();
+        this.entryPoint = model.getEntry_point();
         this.provider = model.getProvider();
         this.remarks = model.getRemarks();
         this.status = model.getStatus();

@@ -1,17 +1,15 @@
 package dlt.dltbackendmaster.domain.watermelondb;
 
-import java.util.Date;
-
 public class BeneficiaryInterventionSyncModel
 {
     private String id;
     private Integer beneficiary_id;
-    private Integer subService_id;
+    private Integer sub_service_id;
     private String result;
-    private Date date;
+    private String date;
     private Integer us_id;
     private Integer activist_id;
-    private Integer entryPoint;
+    private Integer entry_point;
     private String provider;
     private String remarks;
     private Integer status;
@@ -37,12 +35,12 @@ public class BeneficiaryInterventionSyncModel
         this.beneficiary_id = beneficiary_id;
     }
 
-    public Integer getSubService_id() {
-        return subService_id;
+    public Integer getSub_service_id() {
+        return sub_service_id;
     }
 
-    public void setSubService_id(Integer subService_id) {
-        this.subService_id = subService_id;
+    public void setSub_service_id(Integer sub_service_id) {
+        this.sub_service_id = sub_service_id;
     }
 
     public String getResult() {
@@ -53,11 +51,11 @@ public class BeneficiaryInterventionSyncModel
         this.result = result;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 
@@ -77,12 +75,12 @@ public class BeneficiaryInterventionSyncModel
         this.activist_id = activist_id;
     }
 
-    public Integer getEntryPoint() {
-        return entryPoint;
+    public Integer getEntry_point() {
+        return entry_point;
     }
 
-    public void setEntryPoint(Integer entryPoint) {
-        this.entryPoint = entryPoint;
+    public void setEntry_point(Integer entry_point) {
+        this.entry_point = entry_point;
     }
 
     public String getProvider() {

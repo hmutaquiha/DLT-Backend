@@ -27,6 +27,7 @@ public class Service extends BasicLifeCycle implements Serializable
     private String description;
     private Boolean isCoreService;
     private Boolean isHidden;
+    private String ageBands;
 
     public Service() {}
     /*
@@ -74,8 +75,17 @@ public class Service extends BasicLifeCycle implements Serializable
     public void setIsHidden(Boolean isHidden) {
         this.isHidden = isHidden;
     }
+    
+    @Column(name = "age_bands", nullable = true, length = 254)
+    public String getAgeBands() {
+		return ageBands;
+	}
 
-    public ObjectNode toObjectNode() {
+	public void setAgeBands(String ageBands) {
+		this.ageBands = ageBands;
+	}
+
+	public ObjectNode toObjectNode() {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode service = mapper.createObjectNode();
         service.put("id", id);
@@ -84,6 +94,7 @@ public class Service extends BasicLifeCycle implements Serializable
         service.put("description", description);
         service.put("is_core_service", isCoreService);
         service.put("is_hidden", isHidden);
+        service.put("age_bands", ageBands);
         service.put("status", status);
         service.put("online_id", id); // flag to control if entity is synchronized with the backend
         return service;

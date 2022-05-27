@@ -126,6 +126,16 @@ public class BeneficiaryIntervention implements Serializable
     public void setSubService(SubService subService) {
         this.subService = subService;
     }
+    
+    @Id
+    @Column(name = "date")
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
 
     @Column(name = "result")
     public String getResult() {
@@ -135,15 +145,7 @@ public class BeneficiaryIntervention implements Serializable
     public void setResult(String result) {
         this.result = result;
     }
-
-    @Column(name = "date")
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
+    
 
     @Column(name = "us_id")
     public Integer getUs_id() {

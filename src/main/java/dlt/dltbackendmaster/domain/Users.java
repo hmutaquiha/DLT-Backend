@@ -10,13 +10,18 @@ import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import dlt.dltbackendmaster.domain.watermelondb.UsersSyncModel;
 import dlt.dltbackendmaster.serializers.LocalitySerializer;
 import dlt.dltbackendmaster.serializers.PartnersSerializer;
 import dlt.dltbackendmaster.serializers.ProfilesSerializer;
@@ -27,6 +32,13 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
  */
 @Entity
 @Table(name = "users", catalog = "dreams_db")
+@NamedQueries({
+    @NamedQuery(name = "Users.findAll", query = "SELECT c FROM Users c"),
+    @NamedQuery(name = "Users.findByUsername", query = "SELECT c FROM Users c where c.username = :username"),
+    @NamedQuery(name = "Users.findByDateCreated", query = "select u from Users u where u.dateUpdated is null and u.dateCreated > :lastpulledat"),
+    //@NamedQuery(name = "Users.findByDateUpdated", query = "select u from Users u where u.dateUpdated > :lastpulledat")})
+	@NamedQuery(name = "Users.findByDateUpdated", query = "select u from Users u where (u.dateUpdated >= :lastpulledat) or (u.dateUpdated >= :lastpulledat and u.dateCreated = u.dateUpdated)")})
+
 public class Users implements java.io.Serializable {
 
 	private Integer id;
@@ -50,6 +62,7 @@ public class Users implements java.io.Serializable {
 	private Date dateCreated;
 	private Integer updatedBy;
 	private Date dateUpdated;
+	private String offlineId;
 
 	public Users() {
 	}
@@ -124,6 +137,32 @@ public class Users implements java.io.Serializable {
 		this.dateUpdated = dateUpdated;
 	}
 
+	public Users(UsersSyncModel model, String timestamp) {
+		Long t = Long.valueOf(timestamp);
+		Date regDate = new Date(t);
+		
+		this.locality = new Locality(model.getLocality_id());
+		this.partners = new Partners(model.getPartner_id());
+		this.profiles = new Profiles(model.getProfile_id());
+		this.us = new Us(model.getUs_id());
+		this.surname = model.getSurname();
+		this.name = model.getName();
+		this.phoneNumber = model.getPhone_number();
+		this.email = model.getEmail();
+		this.username = model.getUsername();
+		this.password = model.getPassword();
+		this.entryPoint = model.getEntry_point();
+		this.status = 1;
+		this.isLocked = 0;
+		this.isExpired = 0;
+		this.isCredentialsExpired = 0;
+		this.isEnabled = 1;
+		this.offlineId = model.getId();
+		this.dateCreated = regDate;
+		this.dateUpdated = regDate;
+
+	}
+
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 
@@ -136,7 +175,7 @@ public class Users implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "locality_id")
 	@JsonProperty("locality")
 	@JsonSerialize(using=LocalitySerializer.class)
@@ -172,7 +211,7 @@ public class Users implements java.io.Serializable {
 		this.profiles = profiles;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "us_id")
 	@JsonProperty("us")
 	@JsonSerialize(using=UsSerializer.class)
@@ -202,7 +241,7 @@ public class Users implements java.io.Serializable {
 		this.name = name;
 	}
 
-	@Column(name = "phone_number", nullable = false, length = 50)
+	@Column(name = "phone_number", length = 50)
 	public String getPhoneNumber() {
 		return this.phoneNumber;
 	}
@@ -211,7 +250,7 @@ public class Users implements java.io.Serializable {
 		this.phoneNumber = phoneNumber;
 	}
 
-	@Column(name = "email", nullable = false, length = 150)
+	@Column(name = "email", length = 150)
 	public String getEmail() {
 		return this.email;
 	}
@@ -330,4 +369,65 @@ public class Users implements java.io.Serializable {
 		this.dateUpdated = dateUpdated;
 	}
 
+	@Column(name = "offline_id", nullable = true, length = 45)
+	public String getOfflineId() {
+		return offlineId;
+	}
+
+	public void setOfflineId(String offlineId) {
+		this.offlineId = offlineId;
+	}
+	
+	
+	public ObjectNode toObjectNode(String lastPulledAt) {
+		ObjectMapper mapper = new ObjectMapper();
+		
+		ObjectNode user = mapper.createObjectNode();
+
+		if(offlineId != null) {
+			user.put("id", offlineId);
+		}else {
+			user.put("id", id);
+		}
+		
+		if(dateUpdated == null || dateUpdated.after(dateCreated) || lastPulledAt == null || lastPulledAt.equals("null")) { 
+
+			user.put("name", name);
+		    user.put("surname", surname);
+		    user.put("phone_number", phoneNumber);
+		    user.put("email", email);
+		    user.put("username", username);
+		    user.put("password", password);
+		    user.put("entry_point", entryPoint);
+		    user.put("status", status);
+		    user.put("locality_id", locality.getId());
+		    user.put("partner_id", partners.getId());
+		    user.put("profile_id", profiles.getId());
+		    user.put("us_id", us.getId());
+		    user.put("online_id", id); // flag to control if entity is synchronized with the backend
+			
+		}else { // ensure online_id is updated first
+			user.put("online_id", id);
+		}
+		return user;
+	}
+	
+	public void update(UsersSyncModel model, String timestamp) {
+		Long t = Long.valueOf(timestamp);
+		
+		this.offlineId = model.getId();
+		this.dateUpdated = new Date(t);
+		this.name = model.getName();
+		this.surname = model.getSurname();
+		this.phoneNumber = model.getPhone_number();
+		this.username = model.getUsername();
+		this.password = model.getPassword();
+		this.entryPoint = model.getEntry_point();
+		this.locality.setId(model.getLocality_id());
+		this.partners.setId(model.getPartner_id());
+		this.profiles.setId(model.getProfile_id());
+		this.us.setId(model.getUs_id());
+	}
+	
+	
 }

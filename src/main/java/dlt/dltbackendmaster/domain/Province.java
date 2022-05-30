@@ -96,6 +96,7 @@ public class Province implements java.io.Serializable {
 		this.status = status;
 	}
 
+	@JsonIgnore
 	@Column(name = "created_by", nullable = false)
 	public int getCreatedBy() {
 		return this.createdBy;
@@ -105,6 +106,7 @@ public class Province implements java.io.Serializable {
 		this.createdBy = createdBy;
 	}
 
+	@JsonIgnore
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "create_date", nullable = false, length = 19)
 	public Date getCreateDate() {
@@ -115,6 +117,7 @@ public class Province implements java.io.Serializable {
 		this.createDate = createDate;
 	}
 
+	@JsonIgnore
 	@Column(name = "updated_by")
 	public Integer getUpdatedBy() {
 		return this.updatedBy;
@@ -124,6 +127,7 @@ public class Province implements java.io.Serializable {
 		this.updatedBy = updatedBy;
 	}
 
+	@JsonIgnore
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "update_date", length = 19)
 	public Date getUpdateDate() {

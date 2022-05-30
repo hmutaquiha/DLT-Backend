@@ -159,7 +159,7 @@ public class SyncController {
             servicesCreated = service.GetAllEntityByNamedQuery("Service.findByDateCreated", validatedDate);
             servicesUpdated = service.GetAllEntityByNamedQuery("Service.findByDateUpdated", validatedDate);
             
-            subServicesCreated = service.GetAllEntityByNamedQuery("SubService.findByDateCreated", validatedDate);
+            subServicesCreated = service.GetAllEntityByNamedQuery("SubService.findByDateCreated", validatedDate); 
             subServicesUpdated = service.GetAllEntityByNamedQuery("SubService.findByDateUpdated", validatedDate);
 		}
 		

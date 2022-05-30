@@ -24,7 +24,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dlt.dltbackendmaster.domain.Beneficiary;
 import dlt.dltbackendmaster.domain.BeneficiaryIntervention;
-import dlt.dltbackendmaster.domain.BeneficiaryVulnerability;
 import dlt.dltbackendmaster.domain.Locality;
 import dlt.dltbackendmaster.domain.Neighborhood;
 import dlt.dltbackendmaster.domain.Partners;
@@ -76,9 +75,6 @@ public class SyncController {
         List<BeneficiaryIntervention> beneficiariesInterventionsCreated;
         List<BeneficiaryIntervention> beneficiariesInterventionsUpdated;
         
-        List<BeneficiaryVulnerability> beneficiariesVulnerabilitiesCreated;
-        List<BeneficiaryVulnerability> beneficiariesVulnerabilitiesUpdated;
-        
         List<Neighborhood> neighborhoodsCreated;
         List<Neighborhood> neighborhoodUpdated;
         
@@ -113,9 +109,6 @@ public class SyncController {
             
             beneficiariesInterventionsCreated = service.GetAllEntityByNamedQuery("BeneficiaryIntervention.findAll");
             beneficiariesInterventionsUpdated = new ArrayList<BeneficiaryIntervention>();
-            
-            beneficiariesVulnerabilitiesCreated = service.GetAllEntityByNamedQuery("BeneficiaryVulnerability.findAll");
-            beneficiariesVulnerabilitiesUpdated = new ArrayList<BeneficiaryVulnerability>();
             
             neighborhoodsCreated = service.GetAllEntityByNamedQuery("Neighborhood.findAll");
             neighborhoodUpdated = new ArrayList<Neighborhood>();
@@ -160,9 +153,6 @@ public class SyncController {
             beneficiariesInterventionsCreated = service.GetAllEntityByNamedQuery("BeneficiaryIntervention.findByDateCreated", validatedDate);
             beneficiariesInterventionsUpdated = service.GetAllEntityByNamedQuery("BeneficiaryIntervention.findByDateUpdated", validatedDate);
             
-            beneficiariesVulnerabilitiesCreated = service.GetAllEntityByNamedQuery("BeneficiaryVulnerability.findByDateCreated", validatedDate);
-            beneficiariesVulnerabilitiesUpdated = service.GetAllEntityByNamedQuery("BeneficiaryVulnerability.findByDateUpdated", validatedDate);
-            
             neighborhoodsCreated = service.GetAllEntityByNamedQuery("Neighborhood.findByDateCreated", validatedDate);
             neighborhoodUpdated = service.GetAllEntityByNamedQuery("Neighborhood.findByDateUpdated", validatedDate);
             
@@ -181,14 +171,13 @@ public class SyncController {
 			SyncObject<Us> usSO = new SyncObject<Us>(usCreated, usUpdated, listDeleted);
 			SyncObject<Beneficiary> beneficiarySO = new SyncObject<Beneficiary>(beneficiariesCreated, beneficiariesUpdated, listDeleted);
             SyncObject<BeneficiaryIntervention> beneficiaryInterventionSO = new SyncObject<BeneficiaryIntervention>(beneficiariesInterventionsCreated, beneficiariesInterventionsUpdated, listDeleted);
-            SyncObject<BeneficiaryVulnerability> beneficiaryVulnerabilitySO = new SyncObject<BeneficiaryVulnerability>(beneficiariesVulnerabilitiesCreated, beneficiariesVulnerabilitiesUpdated, listDeleted);
             SyncObject<Neighborhood> neighborhoodSO = new SyncObject<Neighborhood>(neighborhoodsCreated, neighborhoodUpdated, listDeleted);
             SyncObject<Service> serviceSO = new SyncObject<Service>(servicesCreated, servicesUpdated, listDeleted);
             SyncObject<SubService> subServiceSO = new SyncObject<SubService>(subServicesCreated, subServicesUpdated, listDeleted);
 
 			//String object = SyncSerializer.createUsersSyncObject(usersCreated, usersUpdated, new ArrayList<Integer>());
 
-			String object = SyncSerializer.createSyncObject(usersSO, localitySO, profilesSO, partnersSO, usSO, beneficiarySO,  beneficiaryInterventionSO, beneficiaryVulnerabilitySO, neighborhoodSO, serviceSO, subServiceSO, lastPulledAt);
+			String object = SyncSerializer.createSyncObject(usersSO, localitySO, profilesSO, partnersSO, usSO, beneficiarySO,  beneficiaryInterventionSO, neighborhoodSO, serviceSO, subServiceSO, lastPulledAt);
 			System.out.println("PULLING " + object);
 
 			return new ResponseEntity<>(object, HttpStatus.OK);
@@ -257,17 +246,6 @@ public class SyncController {
                     }
                 }
             }
-            if(vulnerabilities!=null && vulnerabilities.getCreated().size()>0) {
-                List<BeneficiaryVulnerabilitySyncModel> createdList = mapper.convertValue(vulnerabilities.getCreated(), new TypeReference<List<BeneficiaryVulnerabilitySyncModel>>() {});
-                
-                for (BeneficiaryVulnerabilitySyncModel created : createdList) {
-                    if(created.getOnline_id() == null) {
-                        BeneficiaryVulnerability vulnerability = new BeneficiaryVulnerability(created, lastPulledAt);
-                        vulnerability.setCreatedBy(user.getId());
-                        service.Save(vulnerability);
-                    }
-                }
-            }
 
 			// updated entities
 			if(users != null && users.getUpdated().size() > 0) {
@@ -282,8 +260,10 @@ public class SyncController {
 						
 					} else {
 						Users updateu = service.find(Users.class, updated.getOnline_id());
-						updateu.setUpdatedBy(user.getId());
 						updateu.update(updated, lastPulledAt);
+						updateu.setUpdatedBy(user.getId());
+						service.update(updateu);
+						
 					} 
 				}
 			}
@@ -303,6 +283,7 @@ public class SyncController {
                         beneficiary.getUpdatedBy().setId(user.getId());
                         //beneficiary.setUpdatedBy(user.getId());
                         beneficiary.update(updated, lastPulledAt);
+                        service.update(beneficiary);
                     } 
                 }
             }
@@ -320,26 +301,11 @@ public class SyncController {
                         BeneficiaryIntervention intervention = service.find(BeneficiaryIntervention.class, updated.getOnline_id());
                         intervention.setUpdatedBy(user.getId());
                         intervention.update(updated, lastPulledAt);
+                        service.update(intervention);
                     } 
                 }
             }
-            if(vulnerabilities != null && vulnerabilities.getUpdated().size() > 0) {
-                List<BeneficiaryVulnerabilitySyncModel> updatedList = mapper.convertValue(vulnerabilities.getUpdated(), new TypeReference<List<BeneficiaryVulnerabilitySyncModel>>() {});
-
-                for (BeneficiaryVulnerabilitySyncModel updated : updatedList) {
-                    
-                    if(updated.getOnline_id() == null) {
-                        BeneficiaryVulnerability vulnerability = new BeneficiaryVulnerability(updated, lastPulledAt);
-                        vulnerability.setCreatedBy(user.getId());
-                        service.Save(vulnerability);
-                        
-                    } else {
-                        BeneficiaryVulnerability vulnerability = service.find(BeneficiaryVulnerability.class, updated.getOnline_id());
-                        vulnerability.setUpdatedBy(user.getId());
-                        vulnerability.update(updated, lastPulledAt);
-                    } 
-                }
-            }
+            
 		} catch (JsonProcessingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

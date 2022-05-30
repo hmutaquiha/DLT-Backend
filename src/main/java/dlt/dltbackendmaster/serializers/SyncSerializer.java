@@ -14,7 +14,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import dlt.dltbackendmaster.domain.Beneficiary;
 import dlt.dltbackendmaster.domain.BeneficiaryIntervention;
-import dlt.dltbackendmaster.domain.BeneficiaryVulnerability;
 import dlt.dltbackendmaster.domain.Locality;
 import dlt.dltbackendmaster.domain.Neighborhood;
 import dlt.dltbackendmaster.domain.Partners;
@@ -68,7 +67,6 @@ public class SyncSerializer
                                           SyncObject<Us> us, 
                                           SyncObject<Beneficiary> beneficiaries, 
                                           SyncObject<BeneficiaryIntervention> beneficiariesInterventions, 
-                                          SyncObject<BeneficiaryVulnerability> beneficiariesVulnerabilities, 
                                           SyncObject<Neighborhood> neighborhoods, 
                                           SyncObject<Service> services, 
                                           SyncObject<SubService> subServices, 
@@ -84,8 +82,6 @@ public class SyncSerializer
         changesNode.set("beneficiaries", createBeneficiarySyncObject(beneficiaries));
         changesNode.set("beneficiaries_interventions",
                         createBeneficiaryInterventionSyncObject(beneficiariesInterventions));
-        changesNode.set("beneficiaries_vulnerabilities",
-                        createBeneficiaryVulnerabilitySyncObject(beneficiariesVulnerabilities));
         changesNode.set("neighborhoods", createNeighborhoodSyncObject(neighborhoods));
         changesNode.set("services", createServiceSyncObject(services));
         changesNode.set("sub_services", createSubServiceSyncObject(subServices));
@@ -289,7 +285,7 @@ public class SyncSerializer
         return beneficiaryInterventionNode;
     }
 
-    private static ObjectNode createBeneficiaryVulnerabilitySyncObject(SyncObject<BeneficiaryVulnerability> beneficiariesVulnerabilities)
+    /*private static ObjectNode createBeneficiaryVulnerabilitySyncObject(SyncObject<BeneficiaryVulnerability> beneficiariesVulnerabilities)
                     throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         
@@ -320,7 +316,7 @@ public class SyncSerializer
         beneficiaryVulnerabilityNode.set("updated", arrayUpdated);
         beneficiaryVulnerabilityNode.set("deleted", arrayDeleted);
         return beneficiaryVulnerabilityNode;
-    }
+    }*/
 
     private static ObjectNode createNeighborhoodSyncObject(SyncObject<Neighborhood> neighborhood)
                     throws JsonProcessingException {

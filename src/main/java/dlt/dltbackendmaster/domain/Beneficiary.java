@@ -79,7 +79,6 @@ public class Beneficiary extends BasicLifeCycle implements Serializable
     private Boolean vbltStiHistory;
     private Boolean vbltSexWorker;
     private Boolean vbltHouseSustainer;
-    
     private Set<BeneficiaryIntervention> interventions;
    
 
@@ -392,6 +391,7 @@ public class Beneficiary extends BasicLifeCycle implements Serializable
 
 
 	public void setVbltPregnantBefore(Boolean vbltPregnantBefore) {
+
 		this.vbltPregnantBefore = vbltPregnantBefore;
 	}
 
@@ -402,6 +402,7 @@ public class Beneficiary extends BasicLifeCycle implements Serializable
 
 
 	public void setVbltChildren(Boolean vbltChildren) {
+
 		this.vbltChildren = vbltChildren;
 	}
 

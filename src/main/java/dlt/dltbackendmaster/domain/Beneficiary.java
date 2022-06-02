@@ -53,32 +53,32 @@ public class Beneficiary extends BasicLifeCycle implements Serializable
     private Neighborhood neighborhood;
     private Integer usId;
     private Partners partner;
-    private String VbltLivesWith;
-    private Boolean VbltIsOrphan;
-    private Boolean VbltIsStudent;
-    private Integer VbltSchoolGrade;
-    private String VbltSchoolName;
-    private Boolean VbltIsDeficient;
-    private String VbltDeficiencyType;
-    private Boolean VbltMarriedBefore;
-    private Boolean VbltPregnantBefore;
-    private Boolean VbltChildren;
-    private Boolean VbltPregnantOrBreastfeeding;
-    private Boolean VbltIsEmployed;
-    private Boolean VbltTestedHiv;
-    private Boolean VbltSexuallyActive;
-    private Boolean VbltMultiplePartners;
-    private Boolean VbltIsMigrant;
-    private Boolean VbltTraffickingVictim;
-    private Boolean VbltSexualExploitation;
-    private String VbltSexploitationTime;
-    private Boolean VbltVbgVictim;
-    private String VbltVgbType;
-    private String VbltVbgTime;
-    private Boolean VbltAlcoholDrugsUse;
-    private Boolean VbltStiHistory;
-    private Boolean VbltSexWorker;
-    private Boolean VbltHouseSustainer;
+    private String vbltLivesWith;
+    private Boolean vbltIsOrphan;
+    private Boolean vbltIsStudent;
+    private Integer vbltSchoolGrade;
+    private String vbltSchoolName;
+    private Boolean vbltIsDeficient;
+    private String vbltDeficiencyType;
+    private Boolean vbltMarriedBefore;
+    private Boolean vbltPregnantBefore;
+    private Boolean vbltChildren;
+    private Boolean vbltPregnantOrBreastfeeding;
+    private Boolean vbltIsEmployed;
+    private Boolean vbltTestedHiv;
+    private Boolean vbltSexuallyActive;
+    private Boolean vbltMultiplePartners;
+    private Boolean vbltIsMigrant;
+    private Boolean vbltTraffickingVictim;
+    private Boolean vbltSexualExploitation;
+    private String vbltSexploitationTime;
+    private Boolean vbltVbgVictim;
+    private String vbltVgbType;
+    private String vbltVbgTime;
+    private Boolean vbltAlcoholDrugsUse;
+    private Boolean vbltStiHistory;
+    private Boolean vbltSexWorker;
+    private Boolean vbltHouseSustainer;
     
     private Set<BeneficiaryIntervention> interventions;
    
@@ -107,32 +107,32 @@ public class Beneficiary extends BasicLifeCycle implements Serializable
         this.offlineId = model.getId();
         this.dateCreated = regDate;
         this.dateUpdated = regDate;
-        this.VbltLivesWith = model.getVblt_lives_with();
-        this.VbltIsOrphan = model.getVblt_is_orphan();
-        this.VbltIsStudent = model.getVblt_is_student();
-        this.VbltSchoolGrade = model.getVblt_school_grade();
-        this.VbltSchoolName = model.getVblt_school_name();
-        this.VbltIsDeficient = model.getVblt_is_deficient();
-        this.VbltDeficiencyType = model.getVblt_deficiency_type();
-        this.VbltMarriedBefore = model.getVblt_married_before();
-        this.VbltPregnantBefore = model.getVblt_pregnant_before();
-        this.VbltChildren = model.getVblt_children();
-        this.VbltPregnantOrBreastfeeding = model.getVblt_pregnant_or_breastfeeding();
-        this.VbltIsEmployed = model.getVblt_is_employed();
-        this.VbltTestedHiv = model.getVblt_tested_hiv();
-        this.VbltSexuallyActive = model.getVblt_sexually_active();
-        this.VbltMultiplePartners = model.getVblt_multiple_partners();
-        this.VbltIsMigrant = model.getVblt_is_migrant();
-        this.VbltTraffickingVictim = model.getVblt_trafficking_victim();
-        this.VbltSexualExploitation = model.getVblt_sexual_exploitation();
-        this.VbltSexploitationTime = model.getVblt_sexploitation_time();
-        this.VbltVbgVictim = model.getVblt_vbg_victim();
-        this.VbltVgbType = model.getVblt_vbg_type();
-        this.VbltVbgTime = model.getVblt_vbg_time();
-        this.VbltAlcoholDrugsUse = model.getVblt_alcohol_drugs_use();
-        this.VbltStiHistory = model.getVblt_sti_history();
-        this.VbltSexWorker = model.getVblt_sex_worker();
-        this.VbltHouseSustainer = model.getVblt_house_sustainer();
+        this.vbltLivesWith = model.getVblt_lives_with();
+        this.vbltIsOrphan = model.getVblt_is_orphan();
+        this.vbltIsStudent = model.getVblt_is_student();
+        this.vbltSchoolGrade = model.getVblt_school_grade();
+        this.vbltSchoolName = model.getVblt_school_name();
+        this.vbltIsDeficient = model.getVblt_is_deficient();
+        this.vbltDeficiencyType = model.getVblt_deficiency_type();
+        this.vbltMarriedBefore = model.getVblt_married_before();
+        this.vbltPregnantBefore = model.getVblt_pregnant_before();
+        this.vbltChildren = model.getVblt_children();
+        this.vbltPregnantOrBreastfeeding = model.getVblt_pregnant_or_breastfeeding();
+        this.vbltIsEmployed = model.getVblt_is_employed();
+        this.vbltTestedHiv = model.getVblt_tested_hiv();
+        this.vbltSexuallyActive = model.getVblt_sexually_active();
+        this.vbltMultiplePartners = model.getVblt_multiple_partners();
+        this.vbltIsMigrant = model.getVblt_is_migrant();
+        this.vbltTraffickingVictim = model.getVblt_trafficking_victim();
+        this.vbltSexualExploitation = model.getVblt_sexual_exploitation();
+        this.vbltSexploitationTime = model.getVblt_sexploitation_time();
+        this.vbltVbgVictim = model.getVblt_vbg_victim();
+        this.vbltVgbType = model.getVblt_vbg_type();
+        this.vbltVbgTime = model.getVblt_vbg_time();
+        this.vbltAlcoholDrugsUse = model.getVblt_alcohol_drugs_use();
+        this.vbltStiHistory = model.getVblt_sti_history();
+        this.vbltSexWorker = model.getVblt_sex_worker();
+        this.vbltHouseSustainer = model.getVblt_house_sustainer();
         
     }
 
@@ -307,262 +307,262 @@ public class Beneficiary extends BasicLifeCycle implements Serializable
     
     @Column(name = "vblt_lives_with", nullable = true, length = 45)
     public String getVbltLivesWith() {
-		return VbltLivesWith;
+		return vbltLivesWith;
 	}
 
 
 	public void setVbltLivesWith(String vbltLivesWith) {
-		VbltLivesWith = vbltLivesWith;
+		this.vbltLivesWith = vbltLivesWith;
 	}
 
 	@Column(name = "vblt_is_orphan")
 	public Boolean getVbltIsOrphan() {
-		return VbltIsOrphan;
+		return vbltIsOrphan;
 	}
 
 
 	public void setVbltIsOrphan(Boolean vbltIsOrphan) {
-		VbltIsOrphan = vbltIsOrphan;
+		this.vbltIsOrphan = vbltIsOrphan;
 	}
 
 	@Column(name = "vblt_is_student")
 	public Boolean getVbltIsStudent() {
-		return VbltIsStudent;
+		return this.vbltIsStudent;
 	}
 
 
 	public void setVbltIsStudent(Boolean vbltIsStudent) {
-		VbltIsStudent = vbltIsStudent;
+		this.vbltIsStudent = vbltIsStudent;
 	}
 
 	@Column(name = "vblt_school_grade")
 	public Integer getVbltSchoolGrade() {
-		return VbltSchoolGrade;
+		return this.vbltSchoolGrade;
 	}
 
 
 	public void setVbltSchoolGrade(Integer vbltSchoolGrade) {
-		VbltSchoolGrade = vbltSchoolGrade;
+		this.vbltSchoolGrade = vbltSchoolGrade;
 	}
 
 	@Column(name = "vblt_school_name", nullable = true, length = 45)
 	public String getVbltSchoolName() {
-		return VbltSchoolName;
+		return this.vbltSchoolName;
 	}
 
 
 	public void setVbltSchoolName(String vbltSchoolName) {
-		VbltSchoolName = vbltSchoolName;
+		this.vbltSchoolName = vbltSchoolName;
 	}
 
 	@Column(name = "vblt_is_deficient")
 	public Boolean getVbltIsDeficient() {
-		return VbltIsDeficient;
+		return this.vbltIsDeficient;
 	}
 
 
 	public void setVbltIsDeficient(Boolean vbltIsDeficient) {
-		VbltIsDeficient = vbltIsDeficient;
+		this.vbltIsDeficient = vbltIsDeficient;
 	}
 
 	@Column(name = "vblt_deficiency_type", nullable = true, length = 45)
 	public String getVbltDeficiencyType() {
-		return VbltDeficiencyType;
+		return this.vbltDeficiencyType;
 	}
 
 
 	public void setVbltDeficiencyType(String vbltDeficiencyType) {
-		VbltDeficiencyType = vbltDeficiencyType;
+		this.vbltDeficiencyType = vbltDeficiencyType;
 	}
 
 	@Column(name = "vblt_married_before")
 	public Boolean getVbltMarriedBefore() {
-		return VbltMarriedBefore;
+		return this.vbltMarriedBefore;
 	}
 
 
 	public void setVbltMarriedBefore(Boolean vbltMarriedBefore) {
-		VbltMarriedBefore = vbltMarriedBefore;
+		this.vbltMarriedBefore = vbltMarriedBefore;
 	}
 
 	@Column(name = "vblt_pregnant_before")
 	public Boolean getVbltPregnantBefore() {
-		return VbltPregnantBefore;
+		return this.vbltPregnantBefore;
 	}
 
 
 	public void setVbltPregnantBefore(Boolean vbltPregnantBefore) {
-		VbltPregnantBefore = vbltPregnantBefore;
+		this.vbltPregnantBefore = vbltPregnantBefore;
 	}
 
 	@Column(name = "vblt_children")
 	public Boolean getVbltChildren() {
-		return VbltChildren;
+		return this.vbltChildren;
 	}
 
 
 	public void setVbltChildren(Boolean vbltChildren) {
-		VbltChildren = vbltChildren;
+		this.vbltChildren = vbltChildren;
 	}
 
 	@Column(name = "vblt_pregnant_or_breastfeeding")
 	public Boolean getVbltPregnantOrBreastfeeding() {
-		return VbltPregnantOrBreastfeeding;
+		return this.vbltPregnantOrBreastfeeding;
 	}
 
 
 	public void setVbltPregnantOrBreastfeeding(Boolean vbltPregnantOrBreastfeeding) {
-		VbltPregnantOrBreastfeeding = vbltPregnantOrBreastfeeding;
+		this.vbltPregnantOrBreastfeeding = vbltPregnantOrBreastfeeding;
 	}
 
 	@Column(name = "vblt_is_employed")
 	public Boolean getVbltIsEmployed() {
-		return VbltIsEmployed;
+		return this.vbltIsEmployed;
 	}
 
 
 	public void setVbltIsEmployed(Boolean vbltIsEmployed) {
-		VbltIsEmployed = vbltIsEmployed;
+		this.vbltIsEmployed = vbltIsEmployed;
 	}
 
 	@Column(name = "vblt_tested_hiv")
 	public Boolean getVbltTestedHiv() {
-		return VbltTestedHiv;
+		return this.vbltTestedHiv;
 	}
 
 
 	public void setVbltTestedHiv(Boolean vbltTestedHiv) {
-		VbltTestedHiv = vbltTestedHiv;
+		this.vbltTestedHiv = vbltTestedHiv;
 	}
 
 	@Column(name = "vblt_sexually_active")
 	public Boolean getVbltSexuallyActive() {
-		return VbltSexuallyActive;
+		return this.vbltSexuallyActive;
 	}
 
 	
 	public void setVbltSexuallyActive(Boolean vbltSexuallyActive) {
-		VbltSexuallyActive = vbltSexuallyActive;
+		this.vbltSexuallyActive = vbltSexuallyActive;
 	}
 
 	@Column(name = "vblt_multiple_partners")
 	public Boolean getVbltMultiplePartners() {
-		return VbltMultiplePartners;
+		return this.vbltMultiplePartners;
 	}
 
 
 	public void setVbltMultiplePartners(Boolean vbltMultiplePartners) {
-		VbltMultiplePartners = vbltMultiplePartners;
+		this.vbltMultiplePartners = vbltMultiplePartners;
 	}
 
 	@Column(name = "vblt_is_migrant")
 	public Boolean getVbltIsMigrant() {
-		return VbltIsMigrant;
+		return this.vbltIsMigrant;
 	}
 
 
 	public void setVbltIsMigrant(Boolean vbltIsMigrant) {
-		VbltIsMigrant = vbltIsMigrant;
+		this.vbltIsMigrant = vbltIsMigrant;
 	}
 
 	@Column(name = "vblt_trafficking_victim")
 	public Boolean getVbltTraffickingVictim() {
-		return VbltTraffickingVictim;
+		return this.vbltTraffickingVictim;
 	}
 
 
 	public void setVbltTraffickingVictim(Boolean vbltTraffickingVictim) {
-		VbltTraffickingVictim = vbltTraffickingVictim;
+		this.vbltTraffickingVictim = vbltTraffickingVictim;
 	}
 
 	@Column(name = "vblt_sexual_exploitation")
 	public Boolean getVbltSexualExploitation() {
-		return VbltSexualExploitation;
+		return this.vbltSexualExploitation;
 	}
 
 
 	public void setVbltSexualExploitation(Boolean vbltSexualExploitation) {
-		VbltSexualExploitation = vbltSexualExploitation;
+		this.vbltSexualExploitation = vbltSexualExploitation;
 	}
 
 	@Column(name = "vblt_sexploitation_time", nullable = true, length = 45)
 	public String getVbltSexploitationTime() {
-		return VbltSexploitationTime;
+		return this.vbltSexploitationTime;
 	}
 
 
 	public void setVbltSexploitationTime(String vbltSexploitationTime) {
-		VbltSexploitationTime = vbltSexploitationTime;
+		this.vbltSexploitationTime = vbltSexploitationTime;
 	}
 
 	@Column(name = "vblt_vbg_victim")
 	public Boolean getVbltVbgVictim() {
-		return VbltVbgVictim;
+		return this.vbltVbgVictim;
 	}
 
 
 	public void setVbltVbgVictim(Boolean vbltVbgVictim) {
-		VbltVbgVictim = vbltVbgVictim;
+		this.vbltVbgVictim = vbltVbgVictim;
 	}
 
 	@Column(name = "vblt_vbg_type", nullable = true, length = 45)
 	public String getVbltVgbType() {
-		return VbltVgbType;
+		return this.vbltVgbType;
 	}
 
 
 	public void setVbltVgbType(String vbltVgbType) {
-		VbltVgbType = vbltVgbType;
+		this.vbltVgbType = vbltVgbType;
 	}
 
 	@Column(name = "vblt_vbg_time", nullable = true, length = 45)
 	public String getVbltVbgTime() {
-		return VbltVbgTime;
+		return this.vbltVbgTime;
 	}
 
 
 	public void setVbltVbgTime(String vbltVbgTime) {
-		VbltVbgTime = vbltVbgTime;
+		this.vbltVbgTime = vbltVbgTime;
 	}
 
 	@Column(name = "vblt_alcohol_drugs_use")
 	public Boolean getVbltAlcoholDrugsUse() {
-		return VbltAlcoholDrugsUse;
+		return this.vbltAlcoholDrugsUse;
 	}
 
 
 	public void setVbltAlcoholDrugsUse(Boolean vbltAlcoholDrugsUse) {
-		VbltAlcoholDrugsUse = vbltAlcoholDrugsUse;
+		this.vbltAlcoholDrugsUse = vbltAlcoholDrugsUse;
 	}
 
 	@Column(name = "vblt_sti_history")
 	public Boolean getVbltStiHistory() {
-		return VbltStiHistory;
+		return this.vbltStiHistory;
 	}
 
 
 	public void setVbltStiHistory(Boolean vbltStiHistory) {
-		VbltStiHistory = vbltStiHistory;
+		this.vbltStiHistory = vbltStiHistory;
 	}
 
 	@Column(name = "vblt_sex_worker")
 	public Boolean getVbltSexWorker() {
-		return VbltSexWorker;
+		return this.vbltSexWorker;
 	}
 
 
 	public void setVbltSexWorker(Boolean vbltSexWorker) {
-		VbltSexWorker = vbltSexWorker;
+		this.vbltSexWorker = vbltSexWorker;
 	}
 
 	@Column(name = "vblt_house_sustainer")
 	public Boolean getVbltHouseSustainer() {
-		return VbltHouseSustainer;
+		return this.vbltHouseSustainer;
 	}
 
 
 	public void setVbltHouseSustainer(Boolean vbltHouseSustainer) {
-		VbltHouseSustainer = vbltHouseSustainer;
+		this.vbltHouseSustainer = vbltHouseSustainer;
 	}
 
 
@@ -595,32 +595,32 @@ public class Beneficiary extends BasicLifeCycle implements Serializable
             beneficiary.put("neighborhood_id", neighborhood.getId());
             beneficiary.put("us_id", usId);
             beneficiary.put("online_id", id); // flag to control if entity is synchronized with the backend
-            beneficiary.put("vblt_lives_with", VbltLivesWith);
-            beneficiary.put("vblt_is_orphan", VbltIsOrphan);
-            beneficiary.put("vblt_is_student", VbltIsStudent);
-            beneficiary.put("vblt_school_grade", VbltSchoolGrade);
-            beneficiary.put("vblt_school_name", VbltSchoolName);
-            beneficiary.put("vblt_is_deficient", VbltIsDeficient);
-            beneficiary.put("vblt_deficiency_type", VbltDeficiencyType);
-            beneficiary.put("vblt_married_before", VbltMarriedBefore);
-            beneficiary.put("vblt_pregnant_before", VbltPregnantBefore);
-            beneficiary.put("vblt_children", VbltChildren);
-            beneficiary.put("vblt_pregnant_or_breastfeeding", VbltPregnantOrBreastfeeding);
-            beneficiary.put("vblt_is_employed", VbltIsEmployed);
-            beneficiary.put("vblt_tested_hiv", VbltTestedHiv);
-            beneficiary.put("vblt_sexually_active", VbltSexuallyActive);
-            beneficiary.put("vblt_multiple_partners", VbltMultiplePartners);
-            beneficiary.put("vblt_is_migrant", VbltIsMigrant);
-            beneficiary.put("vblt_trafficking_victim", VbltTraffickingVictim);
-            beneficiary.put("vblt_sexual_exploitation", VbltSexualExploitation);
-            beneficiary.put("vblt_sexploitation_time", VbltSexploitationTime);
-            beneficiary.put("vblt_vbg_victim", VbltVbgVictim);
-            beneficiary.put("vblt_vbg_type", VbltVgbType);
-            beneficiary.put("vblt_vbg_time", VbltVbgTime);
-            beneficiary.put("vblt_alcohol_drugs_use", VbltAlcoholDrugsUse);
-            beneficiary.put("vblt_sti_history", VbltStiHistory);
-            beneficiary.put("vblt_sex_worker", VbltSexWorker);
-            beneficiary.put("vblt_house_sustainer", VbltHouseSustainer);
+            beneficiary.put("vblt_lives_with", vbltLivesWith);
+            beneficiary.put("vblt_is_orphan", vbltIsOrphan);
+            beneficiary.put("vblt_is_student", vbltIsStudent);
+            beneficiary.put("vblt_school_grade", vbltSchoolGrade);
+            beneficiary.put("vblt_school_name", vbltSchoolName);
+            beneficiary.put("vblt_is_deficient", vbltIsDeficient);
+            beneficiary.put("vblt_deficiency_type", vbltDeficiencyType);
+            beneficiary.put("vblt_married_before", vbltMarriedBefore);
+            beneficiary.put("vblt_pregnant_before", vbltPregnantBefore);
+            beneficiary.put("vblt_children", vbltChildren);
+            beneficiary.put("vblt_pregnant_or_breastfeeding", vbltPregnantOrBreastfeeding);
+            beneficiary.put("vblt_is_employed", vbltIsEmployed);
+            beneficiary.put("vblt_tested_hiv", vbltTestedHiv);
+            beneficiary.put("vblt_sexually_active", vbltSexuallyActive);
+            beneficiary.put("vblt_multiple_partners", vbltMultiplePartners);
+            beneficiary.put("vblt_is_migrant", vbltIsMigrant);
+            beneficiary.put("vblt_trafficking_victim", vbltTraffickingVictim);
+            beneficiary.put("vblt_sexual_exploitation", vbltSexualExploitation);
+            beneficiary.put("vblt_sexploitation_time", vbltSexploitationTime);
+            beneficiary.put("vblt_vbg_victim", vbltVbgVictim);
+            beneficiary.put("vblt_vbg_type", vbltVgbType);
+            beneficiary.put("vblt_vbg_time", vbltVbgTime);
+            beneficiary.put("vblt_alcohol_drugs_use", vbltAlcoholDrugsUse);
+            beneficiary.put("vblt_sti_history", vbltStiHistory);
+            beneficiary.put("vblt_sex_worker", vbltSexWorker);
+            beneficiary.put("vblt_house_sustainer", vbltHouseSustainer);
         } else { // ensure online_id is updated first
             beneficiary.put("online_id", id);
         }
@@ -647,31 +647,31 @@ public class Beneficiary extends BasicLifeCycle implements Serializable
         this.neighborhood.setId(model.getNeighbourhood_id());
         this.usId = model.getUs_id();
         this.status = Integer.valueOf(model.getStatus());
-        this.VbltLivesWith = model.getVblt_lives_with();
-        this.VbltIsOrphan = model.getVblt_is_orphan();
-        this.VbltIsStudent = model.getVblt_is_student();
-        this.VbltSchoolGrade = model.getVblt_school_grade();
-        this.VbltSchoolName = model.getVblt_school_name();
-        this.VbltIsDeficient = model.getVblt_is_deficient();
-        this.VbltDeficiencyType = model.getVblt_deficiency_type();
-        this.VbltMarriedBefore = model.getVblt_married_before();
-        this.VbltPregnantBefore = model.getVblt_pregnant_before();
-        this.VbltChildren = model.getVblt_children();
-        this.VbltPregnantOrBreastfeeding = model.getVblt_pregnant_or_breastfeeding();
-        this.VbltIsEmployed = model.getVblt_is_employed();
-        this.VbltTestedHiv = model.getVblt_tested_hiv();
-        this.VbltSexuallyActive = model.getVblt_sexually_active();
-        this.VbltMultiplePartners = model.getVblt_multiple_partners();
-        this.VbltIsMigrant = model.getVblt_is_migrant();
-        this.VbltTraffickingVictim = model.getVblt_trafficking_victim();
-        this.VbltSexualExploitation = model.getVblt_sexual_exploitation();
-        this.VbltSexploitationTime = model.getVblt_sexploitation_time();
-        this.VbltVbgVictim = model.getVblt_vbg_victim();
-        this.VbltVgbType = model.getVblt_vbg_type();
-        this.VbltVbgTime = model.getVblt_vbg_time();
-        this.VbltAlcoholDrugsUse = model.getVblt_alcohol_drugs_use();
-        this.VbltStiHistory = model.getVblt_sti_history();
-        this.VbltSexWorker = model.getVblt_sex_worker();
-        this.VbltHouseSustainer = model.getVblt_house_sustainer();
+        this.vbltLivesWith = model.getVblt_lives_with();
+        this.vbltIsOrphan = model.getVblt_is_orphan();
+        this.vbltIsStudent = model.getVblt_is_student();
+        this.vbltSchoolGrade = model.getVblt_school_grade();
+        this.vbltSchoolName = model.getVblt_school_name();
+        this.vbltIsDeficient = model.getVblt_is_deficient();
+        this.vbltDeficiencyType = model.getVblt_deficiency_type();
+        this.vbltMarriedBefore = model.getVblt_married_before();
+        this.vbltPregnantBefore = model.getVblt_pregnant_before();
+        this.vbltChildren = model.getVblt_children();
+        this.vbltPregnantOrBreastfeeding = model.getVblt_pregnant_or_breastfeeding();
+        this.vbltIsEmployed = model.getVblt_is_employed();
+        this.vbltTestedHiv = model.getVblt_tested_hiv();
+        this.vbltSexuallyActive = model.getVblt_sexually_active();
+        this.vbltMultiplePartners = model.getVblt_multiple_partners();
+        this.vbltIsMigrant = model.getVblt_is_migrant();
+        this.vbltTraffickingVictim = model.getVblt_trafficking_victim();
+        this.vbltSexualExploitation = model.getVblt_sexual_exploitation();
+        this.vbltSexploitationTime = model.getVblt_sexploitation_time();
+        this.vbltVbgVictim = model.getVblt_vbg_victim();
+        this.vbltVgbType = model.getVblt_vbg_type();
+        this.vbltVbgTime = model.getVblt_vbg_time();
+        this.vbltAlcoholDrugsUse = model.getVblt_alcohol_drugs_use();
+        this.vbltStiHistory = model.getVblt_sti_history();
+        this.vbltSexWorker = model.getVblt_sex_worker();
+        this.vbltHouseSustainer = model.getVblt_house_sustainer();
     }
 }

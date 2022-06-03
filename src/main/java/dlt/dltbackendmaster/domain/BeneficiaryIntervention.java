@@ -94,7 +94,8 @@ public class BeneficiaryIntervention implements Serializable
         this.provider = model.getProvider();
         this.remarks = model.getRemarks();
         this.status = model.getStatus();
-        this.offlineId = model.getBeneficiary_id() + "" + model.getSub_service_id();
+        //this.offlineId = model.getBeneficiary_id() + "" + model.getSub_service_id();
+        this.offlineId = model.getId();
         this.dateCreated = regDate;
         this.dateUpdated = regDate;
     }
@@ -246,7 +247,7 @@ public class BeneficiaryIntervention implements Serializable
         this.offlineId = offlineId;
     }
 
-    public ObjectNode toObjectNode() {
+    public ObjectNode toObjectNode(String lastPulledAt) {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode beneficiaryIntervention = mapper.createObjectNode();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -255,9 +256,10 @@ public class BeneficiaryIntervention implements Serializable
             beneficiaryIntervention.put("id", offlineId);
         } else {
             beneficiaryIntervention.put("id", beneficiary.getId() + "" + subService.getId());
+        	//beneficiaryIntervention.put("id", "");
         }
 
-        if (dateUpdated == null || dateUpdated.after(dateCreated)) {
+        if (dateUpdated == null || dateUpdated.after(dateCreated) || lastPulledAt == null || lastPulledAt.equals("null")) {
             beneficiaryIntervention.put("beneficiary_id", beneficiary.getId());
             beneficiaryIntervention.put("sub_service_id", subService.getId());
             beneficiaryIntervention.put("result", result);

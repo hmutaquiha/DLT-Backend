@@ -202,12 +202,12 @@ public class SyncController {
 		SyncObject<UsersSyncModel> users;
 		SyncObject<BeneficiarySyncModel> beneficiaries;
 		SyncObject<BeneficiaryInterventionSyncModel> interventions;
-		SyncObject<BeneficiaryVulnerabilitySyncModel> vulnerabilities;
+		//SyncObject<BeneficiaryVulnerabilitySyncModel> vulnerabilities;
 		try {
 			users = SyncSerializer.readUsersSyncObject(changes);
 			beneficiaries = SyncSerializer.readBeneficiariesSyncObject(changes);
 			interventions = SyncSerializer.readInterventionsSyncObject(changes);
-			vulnerabilities = SyncSerializer.readVulnerabilitiesSyncObject(changes);
+			//vulnerabilities = SyncSerializer.readVulnerabilitiesSyncObject(changes);
 			
 			// created entities
 			if(users != null && users.getCreated().size() > 0) {

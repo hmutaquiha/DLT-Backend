@@ -48,7 +48,7 @@ public class Beneficiary extends BasicLifeCycle implements Serializable
     private String phoneNumber;
     private String email;
     private Boolean via;
-    private Beneficiary partnerId;
+    private Integer partnerId;
     private String entryPoint;
     private Neighborhood neighborhood;
     private Integer usId;
@@ -64,8 +64,8 @@ public class Beneficiary extends BasicLifeCycle implements Serializable
     private Boolean vbltPregnantBefore;
     private Boolean vbltChildren;
     private Boolean vbltPregnantOrBreastfeeding;
-    private Boolean vbltIsEmployed;
-    private Boolean vbltTestedHiv;
+    private String vbltIsEmployed;
+    private String vbltTestedHiv;
     private Boolean vbltSexuallyActive;
     private Boolean vbltMultiplePartners;
     private Boolean vbltIsMigrant;
@@ -99,7 +99,7 @@ public class Beneficiary extends BasicLifeCycle implements Serializable
         this.phoneNumber = model.getPhone_number();
         this.email = model.getE_mail();
         this.via = model.getVia();
-        this.partnerId = new Beneficiary(model.getPartner_id());
+        this.partnerId = model.getPartner_id();
         this.entryPoint = model.getEntry_point();
         this.neighborhood = new Neighborhood(model.getNeighbourhood_id());
         this.usId = model.getUs_id();
@@ -133,6 +133,50 @@ public class Beneficiary extends BasicLifeCycle implements Serializable
         this.vbltSexWorker = model.getVblt_sex_worker();
         this.vbltHouseSustainer = model.getVblt_house_sustainer();
         
+    }
+    
+    public Beneficiary(BeneficiarySyncModel model) {
+    	this.nui = model.getNui();
+        this.surname = model.getSurname();
+        this.nickName = model.getNick_name();
+        this.organization = new Partners(model.getOrganization_id());
+        this.dateOfBirth = model.getDate_of_birth();
+        this.gender = model.getGender();
+        this.address = model.getAddress();
+        this.phoneNumber = model.getPhone_number();
+        this.email = model.getE_mail();
+        this.via = model.getVia();
+        this.partnerId = model.getPartner_id();
+        this.entryPoint = model.getEntry_point();
+        this.neighborhood = new Neighborhood(model.getNeighbourhood_id());
+        this.usId = model.getUs_id();
+        this.offlineId = model.getId();
+        this.vbltLivesWith = model.getVblt_lives_with();
+        this.vbltIsOrphan = model.getVblt_is_orphan();
+        this.vbltIsStudent = model.getVblt_is_student();
+        this.vbltSchoolGrade = model.getVblt_school_grade();
+        this.vbltSchoolName = model.getVblt_school_name();
+        this.vbltIsDeficient = model.getVblt_is_deficient();
+        this.vbltDeficiencyType = model.getVblt_deficiency_type();
+        this.vbltMarriedBefore = model.getVblt_married_before();
+        this.vbltPregnantBefore = model.getVblt_pregnant_before();
+        this.vbltChildren = model.getVblt_children();
+        this.vbltPregnantOrBreastfeeding = model.getVblt_pregnant_or_breastfeeding();
+        this.vbltIsEmployed = model.getVblt_is_employed();
+        this.vbltTestedHiv = model.getVblt_tested_hiv();
+        this.vbltSexuallyActive = model.getVblt_sexually_active();
+        this.vbltMultiplePartners = model.getVblt_multiple_partners();
+        this.vbltIsMigrant = model.getVblt_is_migrant();
+        this.vbltTraffickingVictim = model.getVblt_trafficking_victim();
+        this.vbltSexualExploitation = model.getVblt_sexual_exploitation();
+        this.vbltSexploitationTime = model.getVblt_sexploitation_time();
+        this.vbltVbgVictim = model.getVblt_vbg_victim();
+        this.vbltVgbType = model.getVblt_vbg_type();
+        this.vbltVbgTime = model.getVblt_vbg_time();
+        this.vbltAlcoholDrugsUse = model.getVblt_alcohol_drugs_use();
+        this.vbltStiHistory = model.getVblt_sti_history();
+        this.vbltSexWorker = model.getVblt_sex_worker();
+        this.vbltHouseSustainer = model.getVblt_house_sustainer();
     }
 
     public Beneficiary(Integer id) {
@@ -263,13 +307,13 @@ public class Beneficiary extends BasicLifeCycle implements Serializable
         this.usId = usId;
     }
     
-    @OneToOne
-    @JoinColumn(name = "partner_id")
-    public Beneficiary getPartnerId() {
+
+    @Column(name = "partner_id")
+    public Integer getPartnerId() {
         return partnerId;
     }
 
-    public void setPartnerId(Beneficiary partner) {
+    public void setPartnerId(Integer partner) {
         this.partnerId = partner;
     }
     
@@ -417,22 +461,22 @@ public class Beneficiary extends BasicLifeCycle implements Serializable
 	}
 
 	@Column(name = "vblt_is_employed")
-	public Boolean getVbltIsEmployed() {
+	public String getVbltIsEmployed() {
 		return this.vbltIsEmployed;
 	}
 
 
-	public void setVbltIsEmployed(Boolean vbltIsEmployed) {
+	public void setVbltIsEmployed(String vbltIsEmployed) {
 		this.vbltIsEmployed = vbltIsEmployed;
 	}
 
 	@Column(name = "vblt_tested_hiv")
-	public Boolean getVbltTestedHiv() {
+	public String getVbltTestedHiv() {
 		return this.vbltTestedHiv;
 	}
 
 
-	public void setVbltTestedHiv(Boolean vbltTestedHiv) {
+	public void setVbltTestedHiv(String vbltTestedHiv) {
 		this.vbltTestedHiv = vbltTestedHiv;
 	}
 
@@ -591,7 +635,7 @@ public class Beneficiary extends BasicLifeCycle implements Serializable
             beneficiary.put("phone_number", phoneNumber);
             beneficiary.put("email", email);
             beneficiary.put("via", via);
-            beneficiary.put("partner_id", partnerId == null ? null : partnerId.getId());
+            beneficiary.put("partner_id", partnerId == null ? null : 1); //TODO
             beneficiary.put("entry_point", entryPoint);
             beneficiary.put("neighborhood_id", neighborhood.getId());
             beneficiary.put("us_id", usId);

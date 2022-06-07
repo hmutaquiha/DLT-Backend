@@ -81,7 +81,7 @@ public class SyncSerializer
         changesNode.set("us", createUsSyncObject(us));
         changesNode.set("beneficiaries", createBeneficiarySyncObject(beneficiaries));
         changesNode.set("beneficiaries_interventions",
-                        createBeneficiaryInterventionSyncObject(beneficiariesInterventions));
+                        createBeneficiaryInterventionSyncObject(beneficiariesInterventions, lastPulledAt));
         changesNode.set("neighborhoods", createNeighborhoodSyncObject(neighborhoods));
         changesNode.set("services", createServiceSyncObject(services));
         changesNode.set("sub_services", createSubServiceSyncObject(subServices));
@@ -252,7 +252,7 @@ public class SyncSerializer
         return beneficiaryNode;
     }
 
-    private static ObjectNode createBeneficiaryInterventionSyncObject(SyncObject<BeneficiaryIntervention> beneficiariesInterventions)
+    private static ObjectNode createBeneficiaryInterventionSyncObject(SyncObject<BeneficiaryIntervention> beneficiariesInterventions, String lastPulledAt)
                     throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         
@@ -261,7 +261,7 @@ public class SyncSerializer
         //                                                                        new TypeReference<List<BeneficiaryIntervention>>() {});
         List<BeneficiaryIntervention> createdObjs = beneficiariesInterventions.getCreated();
         List<ObjectNode> createdList = createdObjs.stream()
-                                                  .map((BeneficiaryIntervention element) -> element.toObjectNode())
+                                                  .map((BeneficiaryIntervention element) -> element.toObjectNode(lastPulledAt))
                                                   .collect(Collectors.toList());
         ArrayNode arrayCreated = mapper.createArrayNode();
         arrayCreated.addAll(createdList);
@@ -271,7 +271,7 @@ public class SyncSerializer
         //                                                                        new TypeReference<List<BeneficiaryIntervention>>() {});
         List<BeneficiaryIntervention> updatedObjs= beneficiariesInterventions.getUpdated();
         List<ObjectNode> updatedList = updatedObjs.stream()
-                                                  .map((BeneficiaryIntervention element) -> element.toObjectNode())
+                                                  .map((BeneficiaryIntervention element) -> element.toObjectNode(lastPulledAt))
                                                   .collect(Collectors.toList());
         ArrayNode arrayUpdated = mapper.createArrayNode();
         arrayUpdated.addAll(updatedList);

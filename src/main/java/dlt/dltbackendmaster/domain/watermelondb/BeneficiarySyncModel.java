@@ -32,8 +32,8 @@ public class BeneficiarySyncModel extends BasicLifeCycleSyncModel
     private Boolean vblt_pregnant_before;
     private Boolean vblt_children;
     private Boolean vblt_pregnant_or_breastfeeding;
-    private Boolean vblt_is_employed;
-    private Boolean vblt_tested_hiv;
+    private String vblt_is_employed;
+    private String vblt_tested_hiv;
     private Boolean vblt_sexually_active;
     private Boolean vblt_multiple_partners;
     private Boolean vblt_is_migrant;
@@ -246,19 +246,19 @@ public class BeneficiarySyncModel extends BasicLifeCycleSyncModel
 		this.vblt_pregnant_or_breastfeeding = vblt_pregnant_or_breastfeeding;
 	}
 
-	public Boolean getVblt_is_employed() {
+	public String getVblt_is_employed() {
 		return vblt_is_employed;
 	}
 
-	public void setVblt_is_employed(Boolean vblt_is_employed) {
+	public void setVblt_is_employed(String vblt_is_employed) {
 		this.vblt_is_employed = vblt_is_employed;
 	}
 
-	public Boolean getVblt_tested_hiv() {
+	public String getVblt_tested_hiv() {
 		return vblt_tested_hiv;
 	}
 
-	public void setVblt_tested_hiv(Boolean vblt_tested_hiv) {
+	public void setVblt_tested_hiv(String vblt_tested_hiv) {
 		this.vblt_tested_hiv = vblt_tested_hiv;
 	}
 

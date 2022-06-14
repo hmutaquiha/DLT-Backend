@@ -4,6 +4,8 @@ package dlt.dltbackendmaster.domain;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -24,6 +26,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
 import dlt.dltbackendmaster.domain.watermelondb.BeneficiaryInterventionSyncModel;
 import dlt.dltbackendmaster.serializers.BeneficiarySerializer;
@@ -62,6 +65,7 @@ public class BeneficiariesInterventions implements java.io.Serializable {
 	private String offlineId;
 
 	public BeneficiariesInterventions() {
+		id = new BeneficiariesInterventionsId();
 	}
 
 	public BeneficiariesInterventions(BeneficiariesInterventionsId id, Beneficiaries beneficiaries,
@@ -103,9 +107,8 @@ public class BeneficiariesInterventions implements java.io.Serializable {
         this.beneficiaries = new Beneficiaries(model.getBeneficiary_id());
         this.subServices = new SubServices(model.getSub_service_id());
         this.result = model.getResult();
-        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
-        Date date1=dateFormatter.parse(model.getDate());  
-        this.id.setDate(date1);
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        this.id.setDate(LocalDate.parse(model.getDate(), dtf));
         this.us = new Us(model.getUs_id());
         this.activistId = model.getActivist_id();
         this.entryPoint = model.getEntry_point();
@@ -145,7 +148,7 @@ public class BeneficiariesInterventions implements java.io.Serializable {
 		this.beneficiaries = beneficiaries;
 	}
 
-	@JsonIgnore
+	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "sub_service_id", nullable = false, insertable = false, updatable = false)
 	public SubServices getSubServices() {
@@ -306,9 +309,8 @@ public class BeneficiariesInterventions implements java.io.Serializable {
         this.dateUpdated = new Date(t);
         this.beneficiaries.setId(model.getBeneficiary_id());
         this.subServices.setId(model.getSub_service_id());
-        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
-        Date date1=dateFormatter.parse(model.getDate());  
-        this.id.setDate(date1);;
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        this.id.setDate(LocalDate.parse(model.getDate(), dtf));
         this.us = new Us(model.getUs_id());
         this.result = model.getResult();
         this.activistId = model.getActivist_id();

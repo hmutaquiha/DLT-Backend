@@ -18,6 +18,7 @@ import dlt.dltbackendmaster.domain.Locality;
 import dlt.dltbackendmaster.domain.Neighborhood;
 import dlt.dltbackendmaster.domain.Partners;
 import dlt.dltbackendmaster.domain.Profiles;
+import dlt.dltbackendmaster.domain.References;
 import dlt.dltbackendmaster.domain.Services;
 import dlt.dltbackendmaster.domain.SubServices;
 import dlt.dltbackendmaster.domain.Us;
@@ -70,6 +71,7 @@ public class SyncSerializer
                                           SyncObject<Neighborhood> neighborhoods, 
                                           SyncObject<Services> services, 
                                           SyncObject<SubServices> subServices, 
+                                          SyncObject<References> references, 
                                           String lastPulledAt)
                     throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
@@ -85,6 +87,7 @@ public class SyncSerializer
         changesNode.set("neighborhoods", createNeighborhoodSyncObject(neighborhoods));
         changesNode.set("services", createServiceSyncObject(services));
         changesNode.set("sub_services", createSubServiceSyncObject(subServices));
+        changesNode.set("references", createReferencesSyncObject(references));
         
         ObjectNode rootNode = mapper.createObjectNode();
         rootNode.set("changes", changesNode);
@@ -394,6 +397,31 @@ public class SyncSerializer
         subServiceNode.set("updated", arrayUpdated);
         subServiceNode.set("deleted", arrayDeleted);
         return subServiceNode;
+    }
+    
+    private static ObjectNode createReferencesSyncObject(SyncObject<References> references) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        List<References> createdObjects = mapper.convertValue(references.getCreated(), new TypeReference<List<References>>() {});
+        
+        List<ObjectNode> createdList = createdObjects.stream()
+                        .map((References element) -> element.toObjectNode())
+                        .collect(Collectors.toList());
+        ArrayNode arrayCreated = mapper.createArrayNode();
+        arrayCreated.addAll(createdList);
+        List<References> updatedObjs = mapper.convertValue(references.getUpdated(),
+                                                           new TypeReference<List<References>>() {});
+        List<ObjectNode> updatedList = updatedObjs.stream()
+                                                  .map((References element) -> element.toObjectNode())
+                                                  .collect(Collectors.toList());
+        ArrayNode arrayUpdated = mapper.createArrayNode();
+        arrayUpdated.addAll(updatedList);
+        List<Integer> deletedObjs = mapper.convertValue(references.getDeleted(), new TypeReference<List<Integer>>() {});
+        ArrayNode arrayDeleted = mapper.valueToTree(deletedObjs);
+        ObjectNode referencesNode = mapper.createObjectNode();
+        referencesNode.set("created", arrayCreated);
+        referencesNode.set("updated", arrayUpdated);
+        referencesNode.set("deleted", arrayDeleted);
+        return referencesNode;
     }
 
 

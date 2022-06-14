@@ -20,6 +20,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -63,6 +64,9 @@ public class BeneficiariesInterventions implements java.io.Serializable {
 	private String updatedBy;
 	private Date dateUpdated;
 	private String offlineId;
+
+	
+	private LocalDate date;
 
 	public BeneficiariesInterventions() {
 		id = new BeneficiariesInterventionsId();
@@ -214,6 +218,15 @@ public class BeneficiariesInterventions implements java.io.Serializable {
 
 	public void setRemarks(String remarks) {
 		this.remarks = remarks;
+	}
+
+	@Transient
+	public LocalDate getDate() {
+		return date;
+	}
+
+	public void setDate(LocalDate date) {
+		this.date = date;
 	}
 
 	@Column(name = "status", nullable = false)

@@ -308,7 +308,7 @@ public class SyncController {
                         
                     } else {
                     	String[] keys = updated.getOnline_id().split(",");
-                    	BeneficiariesInterventionsId bId = new BeneficiariesInterventionsId(Integer.valueOf(keys[0]), Integer.valueOf(keys[1]), LocalDate.parse(keys[1]));
+                    	BeneficiariesInterventionsId bId = new BeneficiariesInterventionsId(Integer.valueOf(keys[0]), Integer.valueOf(keys[1]), LocalDate.parse(keys[2]));
                         BeneficiariesInterventions intervention = service.find(BeneficiariesInterventions.class, bId);
                         if(intervention != null) {
                         	intervention.setUpdatedBy(String.valueOf(user.getId()));

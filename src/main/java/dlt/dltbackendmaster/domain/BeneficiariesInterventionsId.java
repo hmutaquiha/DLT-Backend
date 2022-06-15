@@ -90,4 +90,12 @@ public class BeneficiariesInterventionsId implements java.io.Serializable {
 		return result;
 	}
 
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return ""+beneficiaryId+","+subServiceId+","+date.toString();
+	}
+	
+	
+
 }

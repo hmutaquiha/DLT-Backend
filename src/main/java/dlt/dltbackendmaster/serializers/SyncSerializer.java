@@ -9,8 +9,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import dlt.dltbackendmaster.domain.Beneficiaries;
 import dlt.dltbackendmaster.domain.BeneficiariesInterventions;
@@ -227,7 +229,10 @@ public class SyncSerializer
 
     private static ObjectNode createBeneficiarySyncObject(SyncObject<Beneficiaries> beneficiaries)
                     throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
+        ObjectMapper mapper = new ObjectMapper()
+        					.registerModule(new JavaTimeModule())
+        					.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+        
         List<Beneficiaries> createdObjs = mapper.convertValue(beneficiaries.getCreated(),
                                                             new TypeReference<List<Beneficiaries>>() {});
         List<ObjectNode> createdList = createdObjs.stream()

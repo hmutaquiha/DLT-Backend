@@ -69,6 +69,7 @@ public class BeneficiariesInterventions implements java.io.Serializable {
 	private LocalDate date;
 
 	public BeneficiariesInterventions() {
+
 		this.id = new BeneficiariesInterventionsId();
 		this.beneficiaries = new Beneficiaries();
 		this.subServices = new SubServices();

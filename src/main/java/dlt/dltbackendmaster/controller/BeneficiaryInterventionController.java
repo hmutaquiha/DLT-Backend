@@ -62,14 +62,16 @@ public class BeneficiaryInterventionController
         }
     }
 
-    @PutMapping(consumes = "application/json", produces = "application/json")
-    public ResponseEntity<BeneficiariesInterventions> update(@RequestBody BeneficiariesInterventions intervention) {
+    @SuppressWarnings("unchecked")
+	@PutMapping(consumes = "application/json", produces = "application/json")
+    public ResponseEntity update(@RequestBody BeneficiariesInterventions intervention) {
 
         if (intervention.getId() == null || intervention.getId().getDate() == null) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
 
         try {
+
         	BeneficiariesInterventions currentIntervention = service.find(BeneficiariesInterventions.class, intervention.getId());
         	if(currentIntervention == null) {
         		return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
@@ -121,6 +123,7 @@ public class BeneficiaryInterventionController
         	currentIntervention.setActivistId(intervention.getActivistId());
         	currentIntervention.setDateUpdated(new Date());
         	currentIntervention.setUpdatedBy(intervention.getUpdatedBy());
+
         	
             BeneficiariesInterventions updatedIntervention = service.update(currentIntervention);
             return new ResponseEntity<>(updatedIntervention, HttpStatus.OK);

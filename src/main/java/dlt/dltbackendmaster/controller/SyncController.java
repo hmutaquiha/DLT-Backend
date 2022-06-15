@@ -30,13 +30,13 @@ import dlt.dltbackendmaster.domain.Locality;
 import dlt.dltbackendmaster.domain.Neighborhood;
 import dlt.dltbackendmaster.domain.Partners;
 import dlt.dltbackendmaster.domain.Profiles;
+import dlt.dltbackendmaster.domain.References;
 import dlt.dltbackendmaster.domain.Services;
 import dlt.dltbackendmaster.domain.SubServices;
 import dlt.dltbackendmaster.domain.Us;
 import dlt.dltbackendmaster.domain.Users;
 import dlt.dltbackendmaster.domain.watermelondb.BeneficiaryInterventionSyncModel;
 import dlt.dltbackendmaster.domain.watermelondb.BeneficiarySyncModel;
-import dlt.dltbackendmaster.domain.watermelondb.BeneficiaryVulnerabilitySyncModel;
 import dlt.dltbackendmaster.domain.watermelondb.SyncObject;
 import dlt.dltbackendmaster.domain.watermelondb.UsersSyncModel;
 import dlt.dltbackendmaster.serializers.SyncSerializer;
@@ -85,6 +85,9 @@ public class SyncController {
         
         List<SubServices> subServicesCreated;
         List<SubServices> subServicesUpdated;
+        
+        List<References> referencesCreated;
+        List<References> referencesUpdated;
 		
 		if(lastPulledAt == null || lastPulledAt.equals("null") ) {
 
@@ -120,6 +123,9 @@ public class SyncController {
             
             subServicesCreated = service.GetAllEntityByNamedQuery("SubService.findAll");
             subServicesUpdated = new ArrayList<SubServices>();
+            
+            referencesCreated = service.GetAllEntityByNamedQuery("References.findAll");
+            referencesUpdated = new ArrayList<References>();
 			
 		}else {
 			Long t = Long.valueOf(lastPulledAt);
@@ -163,6 +169,9 @@ public class SyncController {
             
             subServicesCreated = service.GetAllEntityByNamedQuery("SubService.findByDateCreated", validatedDate); 
             subServicesUpdated = service.GetAllEntityByNamedQuery("SubService.findByDateUpdated", validatedDate);
+            
+            referencesCreated = service.GetAllEntityByNamedQuery("References.findByDateCreated", validatedDate);
+            referencesUpdated = service.GetAllEntityByNamedQuery("References.findByDateUpdated", validatedDate);
 		}
 		
 		try {
@@ -176,10 +185,11 @@ public class SyncController {
             SyncObject<Neighborhood> neighborhoodSO = new SyncObject<Neighborhood>(neighborhoodsCreated, neighborhoodUpdated, listDeleted);
             SyncObject<Services> serviceSO = new SyncObject<Services>(servicesCreated, servicesUpdated, listDeleted);
             SyncObject<SubServices> subServiceSO = new SyncObject<SubServices>(subServicesCreated, subServicesUpdated, listDeleted);
+            SyncObject<References> referencesSO = new SyncObject<References>(referencesCreated, referencesUpdated, listDeleted);
 
 			//String object = SyncSerializer.createUsersSyncObject(usersCreated, usersUpdated, new ArrayList<Integer>());
 
-			String object = SyncSerializer.createSyncObject(usersSO, localitySO, profilesSO, partnersSO, usSO, beneficiarySO,  beneficiaryInterventionSO, neighborhoodSO, serviceSO, subServiceSO, lastPulledAt);
+			String object = SyncSerializer.createSyncObject(usersSO, localitySO, profilesSO, partnersSO, usSO, beneficiarySO,  beneficiaryInterventionSO, neighborhoodSO, serviceSO, subServiceSO, referencesSO, lastPulledAt);
 			//System.out.println("PULLING " + object);
 
 			return new ResponseEntity<>(object, HttpStatus.OK);

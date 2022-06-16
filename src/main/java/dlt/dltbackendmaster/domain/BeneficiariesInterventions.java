@@ -127,7 +127,6 @@ public class BeneficiariesInterventions implements java.io.Serializable {
         this.provider = model.getProvider();
         this.remarks = model.getRemarks();
         this.status = model.getStatus();
-        //this.offlineId = model.getBeneficiary_id() + "" + model.getSub_service_id();
         this.offlineId = model.getId();
         this.dateCreated = regDate;
         this.dateUpdated = regDate;

@@ -11,6 +11,8 @@ import javax.persistence.GeneratedValue;
 import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.NamedQueries;
@@ -34,6 +36,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
     @NamedQuery(name = "Locality.findByDateUpdated", query = "SELECT c FROM Locality c WHERE c.dateUpdated = :lastpulledat")})
 public class Locality implements java.io.Serializable {
 
+	private static final long serialVersionUID = 1L;
+	
 	private Integer id;
 	private District district;
 	private String name;
@@ -173,7 +177,10 @@ public class Locality implements java.io.Serializable {
 	}
 
 	@JsonIgnore
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "locality")
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name = "users_localities", catalog = "dreams_db", joinColumns = {
+			@JoinColumn(name = "locality_id", nullable = false, updatable = false) }, inverseJoinColumns = {
+					@JoinColumn(name = "user_id", nullable = false, updatable = false) })
 	public Set<Users> getUserses() {
 		return this.userses;
 	}

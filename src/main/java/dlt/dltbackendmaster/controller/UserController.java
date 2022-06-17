@@ -58,7 +58,7 @@ public class UserController
     @PostMapping(consumes = "application/json", produces = "application/json")
     public ResponseEntity<Users> save(@RequestBody Users user) {
 
-        if (user == null || user.getLocality() == null || user.getPartners() == null || user.getProfiles() == null
+        if (user == null || user.getPartners() == null || user.getProfiles() == null
             || user.getUs() == null) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
@@ -83,7 +83,7 @@ public class UserController
     @PutMapping(consumes = "application/json", produces = "application/json")
     public ResponseEntity<Users> update(@RequestBody Users user) {
 
-        if (user == null || user.getLocality() == null || user.getPartners() == null || user.getProfiles() == null
+        if (user == null || user.getPartners() == null || user.getProfiles() == null
             || user.getUs() == null) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }

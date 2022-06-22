@@ -1,21 +1,23 @@
 package dlt.dltbackendmaster.domain;
 // Generated Jun 13, 2022, 9:37:47 AM by Hibernate Tools 5.2.12.Final
 
+import static javax.persistence.GenerationType.IDENTITY;
+
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQuery;
 import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -28,7 +30,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import dlt.dltbackendmaster.domain.watermelondb.UsersSyncModel;
-import dlt.dltbackendmaster.serializers.LocalitySerializer;
 import dlt.dltbackendmaster.serializers.PartnersSerializer;
 import dlt.dltbackendmaster.serializers.ProfilesSerializer;
 import dlt.dltbackendmaster.serializers.UsSerializer;
@@ -40,8 +41,9 @@ import dlt.dltbackendmaster.serializers.UsersSerializer;
 @Entity
 @Table(name = "users", catalog = "dreams_db")
 @NamedQueries({
-    @NamedQuery(name = "Users.findAll", query = "SELECT c FROM Users c"),
-    @NamedQuery(name = "Users.findByUsername", query = "SELECT c FROM Users c where c.username = :username"),
+    @NamedQuery(name = "Users.findAll", query = "SELECT u FROM Users u"),
+    @NamedQuery(name = "Users.findByUsername", query = "SELECT u FROM Users u where u.username = :username"),
+    @NamedQuery(name = "Users.findByResetPasswordToken", query = "SELECT u FROM Users u where u.recoverPasswordToken = :recoverPasswordToken"),
     @NamedQuery(name = "Users.findByDateCreated", query = "select u from Users u where u.dateUpdated is null and u.dateCreated > :lastpulledat"),
 	@NamedQuery(name = "Users.findByDateUpdated", query = "select u from Users u where (u.dateUpdated >= :lastpulledat) or (u.dateUpdated >= :lastpulledat and u.dateCreated = u.dateUpdated)")})
 public class Users implements java.io.Serializable {
@@ -71,6 +73,7 @@ public class Users implements java.io.Serializable {
 	private String offlineId;
 	private Integer newPassword;
 	private String recoverPassword;
+	private String recoverPasswordToken;
 	private Set<Locality> localities = new HashSet<Locality>(0);
 	private Set<District> districts = new HashSet<District>(0);
 	private Set<Province> provinces = new HashSet<Province>(0);
@@ -406,7 +409,7 @@ public class Users implements java.io.Serializable {
 		this.newPassword = newPassword;
 	}
 
-	@Column(name = "recover_password", length = 45)
+	@Column(name = "recover_password", length = 150)
 	public String getRecoverPassword() {
 		return this.recoverPassword;
 	}
@@ -415,7 +418,16 @@ public class Users implements java.io.Serializable {
 		this.recoverPassword = recoverPassword;
 	}
 	
-	@ManyToMany(fetch = FetchType.EAGER)
+	@Column(name = "recover_password_token", length = 45)
+	public String getRecoverPasswordToken() {
+        return recoverPasswordToken;
+    }
+
+    public void setRecoverPasswordToken(String recoverPasswordToken) {
+        this.recoverPasswordToken = recoverPasswordToken;
+    }
+
+    @ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "users_localities", catalog = "dreams_db", joinColumns = {
 			@JoinColumn(name = "user_id", nullable = false, updatable = false) }, inverseJoinColumns = {
 					@JoinColumn(name = "locality_id", nullable = false, updatable = false) })

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import dlt.dltbackendmaster.domain.District;
+import dlt.dltbackendmaster.domain.Locality;
 import dlt.dltbackendmaster.domain.Province;
 import dlt.dltbackendmaster.service.DAOService;
 
@@ -54,6 +55,20 @@ public class ProvinceController {
 			
 			List<District> districts = service.GetAllEntityByNamedQuery("District.findByProvinces", provIds);
 			return ResponseEntity.ok(districts);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+	}
+	
+	@GetMapping("/distlocalities")
+	public ResponseEntity<List<Locality>> getLocatities(@RequestParam("districts") List<String> districts){
+		try {
+			List<Integer> distIds = districts.stream().map(Integer::parseInt).collect(Collectors.toList());
+			
+			List<Locality> localities = service.GetAllEntityByNamedQuery("Locality.findByDistricts", distIds);
+			return ResponseEntity.ok(localities);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);

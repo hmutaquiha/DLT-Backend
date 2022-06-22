@@ -87,12 +87,9 @@ public class UserController
             Integer userId = (Integer) service.Save(user);
             Users createdUser = service.find(Users.class, userId);
 
-            try {
-                String email = user.getEmail() != null ? user.getEmail() : user.getUsers().getEmail();
-                emailSender.sendEmail(user.getUsername(), password, email, null, true);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            String email = user.getEmail() != null ? user.getEmail() : user.getUsers().getEmail();
+            emailSender.sendEmail(user.getUsername(), password, email, null, true);
+            
             return new ResponseEntity<>(createdUser, HttpStatus.OK);
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -118,9 +115,8 @@ public class UserController
 
     @PutMapping(path = "/update-password", produces = "application/json")
     public ResponseEntity<Users> updatePassword(HttpServletRequest request, @Param(value = "username") String username, @Param(value = "newPassword") String newPassword) {
-        // FIXME: Corrigir o método comentado, que retorna apenas um elemento
-        // Users user = service.GetUniqueEntityByNamedQuery("Users.findByUsername", username);
-        Users user = (Users) service.GetAllEntityByNamedQuery("Users.findByUsername", username).get(0);
+
+        Users user = service.GetUniqueEntityByNamedQuery("Users.findByUsername", username);
 
         if (username == null || user == null) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
@@ -134,7 +130,7 @@ public class UserController
             user.setRecoverPasswordToken(token);
             Users updatedUser = service.update(user);
             // Generate reset confirmation Link
-            String confirmUpdatePasswordLink = Utility.getSiteURL(request) + "/api/users/confirm_update?token=" + token;
+            String confirmUpdatePasswordLink = Utility.getSiteURL(request) + "/api/users/confirm-update?token=" + token;
             // Send E-mail
             String email = user.getEmail() != null ? user.getEmail() : user.getUsers().getEmail();
             emailSender.sendEmail(user.getName() + " " + user.getSurname(),
@@ -150,8 +146,8 @@ public class UserController
 
     @PutMapping(path = "/confirm-update", produces = "application/json")
     public ResponseEntity<Users> confirmPasswordUpdate(HttpServletRequest request, @Param(value = "token") String token) {
-        // FIXME: Utilizar o método que retorna apenas um elemento depois de corrigido
-        Users user = (Users) service.GetAllEntityByNamedQuery("Users.findByResetPasswordToken", token).get(0);
+
+        Users user = service.GetUniqueEntityByNamedQuery("Users.findByResetPasswordToken", token);
 
         if (token == null || user == null) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
@@ -163,6 +159,26 @@ public class UserController
             user.setRecoverPassword(null);
             user.setRecoverPasswordToken(null);
             Users updatedUser = service.update(user);
+            return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping(path = "/change-password", produces = "application/json")
+    public ResponseEntity<Users> changePassword(HttpServletRequest request, @Param(value = "username") String username, @Param(value = "newPassword") String newPassword) {
+  
+        Users user = service.GetUniqueEntityByNamedQuery("Users.findByUsername", username);
+
+        if (username == null || user == null) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+
+        try {
+            user.setNewPassword(0);
+            user.setPassword(passwordEncoder.encode(newPassword));
+            Users updatedUser = service.update(user);
+            
             return new ResponseEntity<>(updatedUser, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);

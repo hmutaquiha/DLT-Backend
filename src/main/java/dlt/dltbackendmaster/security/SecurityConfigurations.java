@@ -76,6 +76,9 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter{
             .antMatchers(HttpMethod.POST, "/sync").permitAll()
             .antMatchers(HttpMethod.GET, "/sync").permitAll()
             .antMatchers(HttpMethod.OPTIONS, "/api/login").permitAll()
+            //allow anonymous to Confirm Update Password
+            .antMatchers(HttpMethod.PUT, "/api/users/confirm-update").permitAll()
+            .antMatchers(HttpMethod.OPTIONS, "/api/users/confirm-update").permitAll()
             	//allow anonymous POSTs to login
             .antMatchers(HttpMethod.POST, "/api/login").permitAll()
             .antMatchers(HttpMethod.OPTIONS, "/api/login").permitAll()

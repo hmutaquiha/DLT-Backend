@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import dlt.dltbackendmaster.domain.Users;
 import dlt.dltbackendmaster.security.EmailSender;
 import dlt.dltbackendmaster.security.utils.PasswordGenerator;
+import dlt.dltbackendmaster.security.utils.UsersParam;
 import dlt.dltbackendmaster.security.utils.Utility;
 import dlt.dltbackendmaster.service.DAOService;
 import net.bytebuddy.utility.RandomString;
@@ -69,14 +70,17 @@ public class UserController
 
     @PostMapping(consumes = "application/json", produces = "application/json")
     public ResponseEntity<Users> save(@RequestBody Users user) {
-
+    	
+    	
+    	//System.out.println("Password: " + user.toString());
+    	//return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         if (user == null || user.getPartners() == null || user.getProfiles() == null || user.getUs() == null) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
 
         try {
             String password = PasswordGenerator.generateStrongPassword();
-            System.out.println("Password: " + password);
+           // System.out.println("Password: " + password);
             user.setPassword(passwordEncoder.encode(password));
             user.setDateCreated(new Date());
             user.setIsCredentialsExpired(Byte.valueOf("0"));
@@ -87,12 +91,12 @@ public class UserController
             Integer userId = (Integer) service.Save(user);
             Users createdUser = service.find(Users.class, userId);
 
-            String email = user.getEmail() != null ? user.getEmail() : user.getUsers().getEmail();
-            emailSender.sendEmail(user.getUsername(), password, email, null, true);
+            //String email = user.getEmail() != null ? user.getEmail() : user.getUsers().getEmail();
+            //emailSender.sendEmail(user.getUsername(), password, email, null, true);
             
             return new ResponseEntity<>(createdUser, HttpStatus.OK);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            //System.out.println(e.getMessage());
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

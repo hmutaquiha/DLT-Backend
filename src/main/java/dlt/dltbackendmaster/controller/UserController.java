@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 import dlt.dltbackendmaster.domain.Users;
 import dlt.dltbackendmaster.security.EmailSender;
 import dlt.dltbackendmaster.security.utils.PasswordGenerator;
-import dlt.dltbackendmaster.security.utils.UsersParam;
 import dlt.dltbackendmaster.security.utils.Utility;
 import dlt.dltbackendmaster.service.DAOService;
 import net.bytebuddy.utility.RandomString;

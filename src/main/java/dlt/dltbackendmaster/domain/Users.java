@@ -274,7 +274,7 @@ public class Users implements java.io.Serializable {
 		this.phoneNumber2 = phoneNumber2;
 	}
 
-	@Column(name = "email", nullable = false, length = 150)
+	@Column(name = "email", nullable = true, length = 150)
 	public String getEmail() {
 		return this.email;
 	}

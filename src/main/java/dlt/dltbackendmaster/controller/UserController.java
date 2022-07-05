@@ -83,8 +83,10 @@ public class UserController
             Integer userId = (Integer) service.Save(user);
             Users createdUser = service.find(Users.class, userId);
 
-            String email = user.getEmail() != null ? user.getEmail() : user.getUsers().getEmail();
-            emailSender.sendEmail(user.getUsername(), password, email, null, true);
+            if(user.getEmail() != null) {
+            	String email = user.getEmail();
+            	emailSender.sendEmail(user.getUsername(), password, email, null, true);
+            }
             
             return new ResponseEntity<>(createdUser, HttpStatus.OK);
         } catch (Exception e) {

@@ -52,7 +52,6 @@ public class Users implements java.io.Serializable {
 	private Partners partners;
 	private Profiles profiles;
 	private Us us;
-	private Users users;
 	private String surname;
 	private String name;
 	private String phoneNumber;
@@ -226,18 +225,6 @@ public class Users implements java.io.Serializable {
 		this.us = us;
 	}
 	
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "supervisor_id")
-	@JsonProperty("supersivor")
-	@JsonSerialize(using=UsersSerializer.class)
-	public Users getUsers() {
-		return this.users;
-	}
-
-	public void setUsers(Users users) {
-		this.users = users;
-	}
-
 	@Column(name = "surname", nullable = false, length = 50)
 	public String getSurname() {
 		return this.surname;

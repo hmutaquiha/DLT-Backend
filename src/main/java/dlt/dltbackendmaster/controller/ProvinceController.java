@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import dlt.dltbackendmaster.domain.District;
 import dlt.dltbackendmaster.domain.Locality;
+import dlt.dltbackendmaster.domain.Neighborhood;
 import dlt.dltbackendmaster.domain.Province;
 import dlt.dltbackendmaster.service.DAOService;
 
@@ -75,4 +76,18 @@ public class ProvinceController {
 		}
 		
 	}
+    
+    @GetMapping("/localneighborhoods")
+    public ResponseEntity<List<Neighborhood>> getNeighborhoods(@RequestParam("localities") List<String> localities){
+        try {
+            List<Integer> localIds = localities.stream().map(Integer::parseInt).collect(Collectors.toList());
+            
+            List<Neighborhood> neighborhoods = service.GetAllEntityByNamedQuery("Neighborhood.findByLocalities", localIds);
+            return ResponseEntity.ok(neighborhoods);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        
+    }
 }

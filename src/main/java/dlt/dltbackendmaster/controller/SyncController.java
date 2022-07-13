@@ -23,6 +23,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import dlt.dltbackendmaster.domain.AlphanumericSequence;
 import dlt.dltbackendmaster.domain.Beneficiaries;
 import dlt.dltbackendmaster.domain.BeneficiariesInterventions;
 import dlt.dltbackendmaster.domain.BeneficiariesInterventionsId;
@@ -41,16 +42,19 @@ import dlt.dltbackendmaster.domain.watermelondb.SyncObject;
 import dlt.dltbackendmaster.domain.watermelondb.UsersSyncModel;
 import dlt.dltbackendmaster.serializers.SyncSerializer;
 import dlt.dltbackendmaster.service.DAOService;
+import dlt.dltbackendmaster.service.SequenceGenerator;
 
 @RestController
 @RequestMapping("/sync")
 public class SyncController {
 
 	private final DAOService service;
+	private SequenceGenerator generator;
 	
 	@Autowired
     public SyncController(DAOService service) {
         this.service = service;
+        this.generator = new SequenceGenerator(service);
     }
 	
 	@GetMapping(produces = "application/json")
@@ -199,6 +203,23 @@ public class SyncController {
 			e.printStackTrace();
 			return new ResponseEntity<>("Parameter not present", HttpStatus.BAD_REQUEST);
 		}
+	}
+	
+	
+	@GetMapping(path="/prefix", produces = "application/json")
+	public ResponseEntity getPrefix(@RequestParam(name = "username") String username) throws ParseException {
+
+		try {
+			AlphanumericSequence seq = generator.getNextAlphanumericSequence(username);
+			
+			return new ResponseEntity<>(seq, HttpStatus.OK);
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			return new ResponseEntity<>("Processing Error!", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		
 	}
 	
 	@SuppressWarnings("unchecked")

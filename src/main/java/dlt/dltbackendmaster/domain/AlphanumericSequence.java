@@ -1,4 +1,4 @@
-package domains;
+package dlt.dltbackendmaster.domain;
 // Generated Jul 12, 2022, 4:54:56 PM by Hibernate Tools 5.2.12.Final
 
 import java.util.Date;
@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -16,8 +18,12 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "alphanumeric_sequence", catalog = "dreams_db")
+@NamedQueries({ 
+	@NamedQuery(name = "AlphanumericSequence.find", query = "SELECT a FROM AlphanumericSequence a WHERE a.id = (SELECT MAX(id) FROM AlphanumericSequence)")})
 public class AlphanumericSequence implements java.io.Serializable {
 
+	private static final long serialVersionUID = 1L;
+		
 	private Integer id;
 	private String sequence;
 	private String username;

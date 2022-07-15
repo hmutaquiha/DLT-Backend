@@ -6,6 +6,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
 import javax.persistence.Table;
 
 /**
@@ -13,8 +15,12 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "numeric_sequence", catalog = "dreams_db")
+@NamedNativeQueries({
+	@NamedNativeQuery(name = "NumericSequence.generate", query = "CALL GetNextNUI()", resultClass = NumericSequence.class) })
 public class NumericSequence implements java.io.Serializable {
 
+	private static final long serialVersionUID = 1L;
+	
 	private Integer id;
 	private String sequence;
 

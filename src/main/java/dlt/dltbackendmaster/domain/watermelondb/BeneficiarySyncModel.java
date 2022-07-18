@@ -13,7 +13,9 @@ public class BeneficiarySyncModel extends BasicLifeCycleSyncModel
     private String address;
     private String phone_number;
     private String e_mail;
+    private Date enrollment_date;
     private int via;
+    private Integer nationality;
     private Integer partner_id;
     private String entry_point;
     private Integer neighbourhood_id;
@@ -114,6 +116,14 @@ public class BeneficiarySyncModel extends BasicLifeCycleSyncModel
     public String getE_mail() {
         return e_mail;
     }
+    
+    public Date getEnrollment_date() {
+        return enrollment_date;
+    }
+
+    public void setEnrollment_date(Date enrollment_date) {
+        this.enrollment_date = enrollment_date;
+    }
 
     public int getVia() {
         return via;
@@ -129,6 +139,14 @@ public class BeneficiarySyncModel extends BasicLifeCycleSyncModel
 
     public void setPartner_id(Integer partner_id) {
         this.partner_id = partner_id;
+    }
+
+    public Integer getNationality() {
+        return nationality;
+    }
+
+    public void setNationality(Integer nationality) {
+        this.nationality = nationality;
     }
 
     public String getEntry_point() {

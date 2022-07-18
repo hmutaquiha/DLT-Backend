@@ -2,9 +2,12 @@ package dlt.dltbackendmaster.service;
 
 import java.util.Date;
 
+import javax.sql.rowset.spi.SyncResolver;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import dlt.dltbackendmaster.domain.AlphanumericSequence;
+import dlt.dltbackendmaster.domain.NumericSequence;
 
 public class SequenceGenerator {
 
@@ -39,6 +42,21 @@ public class SequenceGenerator {
 		_service.Save(newSeq);
 		
 		return newSeq;
+	}
+	
+	public synchronized NumericSequence getNextNumericSequence() {
+		
+		NumericSequence newSequence = (NumericSequence)_service.GetUniqueEntityByNamedQuery("NumericSequence.generate");
+		
+		if(newSequence != null) {
+			
+			// extend to 10 chars
+			String s = ("0000000000" + newSequence.getSequence());
+	        s = s.substring (s.length() - 9);
+			newSequence.setSequence(s);
+			return newSequence;
+		}
+		return null;
 	}
 	
 	private String generateAlphanumericSequence(String s) {

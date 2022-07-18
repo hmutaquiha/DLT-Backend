@@ -14,16 +14,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import dlt.dltbackendmaster.domain.Beneficiaries;
+import dlt.dltbackendmaster.domain.NumericSequence;
 import dlt.dltbackendmaster.service.DAOService;
+import dlt.dltbackendmaster.service.SequenceGenerator;
 
 @RestController
 @RequestMapping("/api/beneficiaries")
 public class BeneficiaryController
 {
     private final DAOService service;
+    private SequenceGenerator generator;
 
     public BeneficiaryController(DAOService service) {
         this.service = service;
+        this.generator = new SequenceGenerator(service);
     }
 
     @GetMapping(produces = "application/json")
@@ -63,8 +67,10 @@ public class BeneficiaryController
 
         try {
             beneficiary.setDateCreated(new Date());
-            // TODO: Incluir algoritmo para geração de NUI
-            beneficiary.setNui("0401/0000000016");
+            
+            NumericSequence nextNUI = generator.getNextNumericSequence();
+            beneficiary.setNui(nextNUI.getSequence());
+            
             Integer beneficiaryId = (Integer) service.Save(beneficiary);
             Beneficiaries createdBeneficiary = service.find(Beneficiaries.class, beneficiaryId);
             return new ResponseEntity<>(createdBeneficiary, HttpStatus.OK);

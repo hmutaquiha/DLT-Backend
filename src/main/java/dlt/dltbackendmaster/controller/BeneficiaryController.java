@@ -35,6 +35,15 @@ public class BeneficiaryController
 
         try {
             List<Beneficiaries> beneficiaries = service.getAll(Beneficiaries.class);
+
+            for (Beneficiaries beneficiary : beneficiaries) {
+                Integer partnerId = beneficiary.getPartnerId();
+
+                if (partnerId != null) {
+                    Beneficiaries partner = service.find(Beneficiaries.class, partnerId);
+                    beneficiary.setPartnerNUI(partner.getNui());
+                }
+            }
             return new ResponseEntity<List<Beneficiaries>>(beneficiaries, HttpStatus.OK);
         } catch (Exception e) {
             // e.printStackTrace();
@@ -67,10 +76,16 @@ public class BeneficiaryController
 
         try {
             beneficiary.setDateCreated(new Date());
-            
+            String partnerNUI = beneficiary.getPartnerNUI();
+
+            if (partnerNUI != null && partnerNUI != "") {
+                Beneficiaries partner = service.GetUniqueEntityByNamedQuery("Beneficiary.findByNui", partnerNUI);
+                // TODO: Throw exception for NUI not found
+                if (partner != null)
+                    beneficiary.setPartnerId(partner.getId());
+            }
             NumericSequence nextNUI = generator.getNextNumericSequence();
             beneficiary.setNui(nextNUI.getSequence());
-            
             Integer beneficiaryId = (Integer) service.Save(beneficiary);
             Beneficiaries createdBeneficiary = service.find(Beneficiaries.class, beneficiaryId);
             return new ResponseEntity<>(createdBeneficiary, HttpStatus.OK);
@@ -89,6 +104,14 @@ public class BeneficiaryController
 
         try {
             beneficiary.setDateUpdated(new Date());
+            String partnerNUI = beneficiary.getPartnerNUI();
+
+            if (partnerNUI != null && partnerNUI != "") {
+                Beneficiaries partner = service.GetUniqueEntityByNamedQuery("Beneficiary.findByNui", partnerNUI);
+                // TODO: Throw exception for NUI not found
+                if (partner != null)
+                    beneficiary.setPartnerId(partner.getId());
+            }
             Beneficiaries updatedBeneficiary = service.update(beneficiary);
             return new ResponseEntity<>(updatedBeneficiary, HttpStatus.OK);
         } catch (Exception e) {

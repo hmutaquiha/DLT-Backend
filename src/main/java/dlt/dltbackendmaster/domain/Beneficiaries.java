@@ -22,6 +22,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -43,6 +44,7 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 @Entity
 @Table(name = "beneficiaries", catalog = "dreams_db", uniqueConstraints = @UniqueConstraint(columnNames = "nui"))
 @NamedQueries({ @NamedQuery(name = "Beneficiary.findAll", query = "SELECT b FROM Beneficiaries b"),
+                @NamedQuery(name = "Beneficiary.findByNui", query = "SELECT b FROM Beneficiaries b where nui = :nui"),
                 @NamedQuery(name = "Beneficiary.findByDateCreated",
                             query = "select b from Beneficiaries b where b.dateUpdated is null and b.dateCreated > :lastpulledat"),
                 @NamedQuery(name = "Beneficiary.findByDateUpdated",
@@ -69,6 +71,7 @@ public class Beneficiaries implements java.io.Serializable
     private Integer via;
     private Integer nationality;
     private Integer partnerId;
+    private String partnerNUI;
     private String entryPoint;
     private String vbltLivesWith;
     private Byte vbltIsOrphan;
@@ -457,6 +460,15 @@ public class Beneficiaries implements java.io.Serializable
 
     public void setPartnerId(Integer partnerId) {
         this.partnerId = partnerId;
+    }
+
+    @Transient
+    public String getPartnerNUI() {
+        return partnerNUI;
+    }
+
+    public void setPartnerNUI(String partnerNUI) {
+        this.partnerNUI = partnerNUI;
     }
 
     @Column(name = "nationality")

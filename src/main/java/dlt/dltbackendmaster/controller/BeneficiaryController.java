@@ -35,15 +35,6 @@ public class BeneficiaryController
 
         try {
             List<Beneficiaries> beneficiaries = service.getAll(Beneficiaries.class);
-
-            for (Beneficiaries beneficiary : beneficiaries) {
-                Integer partnerId = beneficiary.getPartnerId();
-
-                if (partnerId != null) {
-                    Beneficiaries partner = service.find(Beneficiaries.class, partnerId);
-                    beneficiary.setPartnerNUI(partner.getNui());
-                }
-            }
             return new ResponseEntity<List<Beneficiaries>>(beneficiaries, HttpStatus.OK);
         } catch (Exception e) {
             // e.printStackTrace();

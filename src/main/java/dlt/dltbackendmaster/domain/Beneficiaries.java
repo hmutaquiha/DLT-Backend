@@ -7,6 +7,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -25,10 +26,15 @@ import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonInclude.Value;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
@@ -799,8 +805,12 @@ public class Beneficiaries implements java.io.Serializable
     public ObjectNode toObjectNode() {
         ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule())
                                                 .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+        mapper.setSerializationInclusion(Include.NON_NULL);
+        //mapper.configOverride(Map.class).setInclude(Value.construct(JsonInclude.Include.NON_NULL, JsonInclude.Include.NON_NULL));  
+        
         ObjectNode beneficiary = mapper.createObjectNode();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        //String nullValue = null;
 
         if (offlineId != null) {
             beneficiary.put("id", offlineId);
@@ -827,32 +837,32 @@ public class Beneficiaries implements java.io.Serializable
             beneficiary.put("entry_point", entryPoint);
             beneficiary.put("neighborhood_id", neighborhood.getId());
             beneficiary.put("us_id", us.getId());
-            beneficiary.put("vblt_lives_with", vbltLivesWith);
-            beneficiary.put("vblt_is_orphan", vbltIsOrphan);
-            beneficiary.put("vblt_is_student", vbltIsStudent);
-            beneficiary.put("vblt_school_grade", vbltSchoolGrade);
-            beneficiary.put("vblt_school_name", vbltSchoolName);
-            beneficiary.put("vblt_is_deficient", vbltIsDeficient);
-            beneficiary.put("vblt_deficiency_type", vbltDeficiencyType);
-            beneficiary.put("vblt_married_before", vbltMarriedBefore);
-            beneficiary.put("vblt_pregnant_before", vbltPregnantBefore);
-            beneficiary.put("vblt_children", vbltChildren);
-            beneficiary.put("vblt_pregnant_or_breastfeeding", vbltPregnantOrBreastfeeding);
-            beneficiary.put("vblt_is_employed", vbltIsEmployed);
-            beneficiary.put("vblt_tested_hiv", vbltTestedHiv);
-            beneficiary.put("vblt_sexually_active", vbltSexuallyActive);
-            beneficiary.put("vblt_multiple_partners", vbltMultiplePartners);
-            beneficiary.put("vblt_is_migrant", vbltIsMigrant);
-            beneficiary.put("vblt_trafficking_victim", vbltTraffickingVictim);
-            beneficiary.put("vblt_sexual_exploitation", vbltSexualExploitation);
-            beneficiary.put("vblt_sexploitation_time", vbltSexploitationTime);
-            beneficiary.put("vblt_vbg_victim", vbltVbgVictim);
-            beneficiary.put("vblt_vbg_type", vbltVbgType);
-            beneficiary.put("vblt_vbg_time", vbltVbgTime);
-            beneficiary.put("vblt_alcohol_drugs_use", vbltAlcoholDrugsUse);
-            beneficiary.put("vblt_sti_history", vbltStiHistory);
-            beneficiary.put("vblt_sex_worker", vbltSexWorker);
-            beneficiary.put("vblt_house_sustainer", vbltHouseSustainer);
+            if(vbltLivesWith != null) beneficiary.put("vblt_lives_with", vbltLivesWith);
+            if(vbltIsOrphan != null) beneficiary.put("vblt_is_orphan", vbltIsOrphan);
+            if(vbltIsStudent != null) beneficiary.put("vblt_is_student", vbltIsStudent);
+            if(vbltSchoolGrade != null) beneficiary.put("vblt_school_grade", vbltSchoolGrade);
+            if(vbltSchoolName != null) beneficiary.put("vblt_school_name", vbltSchoolName);
+            if(vbltIsDeficient != null) beneficiary.put("vblt_is_deficient", vbltIsDeficient);
+            if(vbltDeficiencyType != null) beneficiary.put("vblt_deficiency_type", vbltDeficiencyType);
+            if(vbltMarriedBefore != null) beneficiary.put("vblt_married_before", vbltMarriedBefore);
+            if(vbltPregnantBefore != null) beneficiary.put("vblt_pregnant_before", vbltPregnantBefore);
+            if(vbltChildren != null) beneficiary.put("vblt_children", vbltChildren);
+            if(vbltPregnantOrBreastfeeding != null) beneficiary.put("vblt_pregnant_or_breastfeeding", vbltPregnantOrBreastfeeding);
+            if(vbltIsEmployed != null) beneficiary.put("vblt_is_employed", vbltIsEmployed);
+            if(vbltTestedHiv != null) beneficiary.put("vblt_tested_hiv", vbltTestedHiv);
+            if(vbltSexuallyActive != null) beneficiary.put("vblt_sexually_active", vbltSexuallyActive);
+            if(vbltMultiplePartners != null) beneficiary.put("vblt_multiple_partners", vbltMultiplePartners);
+            if(vbltIsMigrant != null) beneficiary.put("vblt_is_migrant", vbltIsMigrant);
+            if(vbltTraffickingVictim != null) beneficiary.put("vblt_trafficking_victim", vbltTraffickingVictim);
+            if(vbltSexualExploitation != null) beneficiary.put("vblt_sexual_exploitation", vbltSexualExploitation);
+            if(vbltSexploitationTime != null) beneficiary.put("vblt_sexploitation_time", vbltSexploitationTime);
+            if(vbltVbgVictim != null) beneficiary.put("vblt_vbg_victim", vbltVbgVictim);
+            if(vbltVbgType != null) beneficiary.put("vblt_vbg_type", vbltVbgType);
+            if(vbltVbgTime != null) beneficiary.put("vblt_vbg_time", vbltVbgTime);
+            if(vbltAlcoholDrugsUse != null) beneficiary.put("vblt_alcohol_drugs_use", vbltAlcoholDrugsUse);
+            if(vbltStiHistory != null) beneficiary.put("vblt_sti_history", vbltStiHistory);
+            if(vbltSexWorker != null) beneficiary.put("vblt_sex_worker", vbltSexWorker);
+            if(vbltHouseSustainer != null) beneficiary.put("vblt_house_sustainer", vbltHouseSustainer);
             beneficiary.put("online_id", id); // flag to control if entity is synchronized with the backend
         } else { // ensure online_id is updated first
             beneficiary.put("online_id", id);
@@ -909,4 +919,27 @@ public class Beneficiaries implements java.io.Serializable
         this.vbltSexWorker = (byte) model.getVblt_sex_worker();
         this.vbltHouseSustainer = (byte) model.getVblt_house_sustainer();
     }
+    
+    public void fill(ObjectNode obj, String field, Object value) {
+    	if(value == null) {
+    		return;
+    	}
+    	
+    	if(value instanceof String) {
+    		obj.put(field, (String)value);
+    	}
+    	if(value instanceof Byte) {
+    		obj.put(field, (Byte)value);
+    	}
+    	if(value instanceof Double) {
+    		obj.put(field, (Double)value);
+    	}
+    	if(value instanceof Integer) {
+    		obj.put(field, (Integer)value);
+    	}
+    	if(value instanceof Float) {
+    		obj.put(field, (Float)value);
+    	}
+    }
+
 }

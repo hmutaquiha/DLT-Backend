@@ -832,7 +832,7 @@ public class Beneficiaries implements java.io.Serializable
             beneficiary.put("adress", address);
             beneficiary.put("phone_number", phoneNumber);
             beneficiary.put("email", EMail);
-            beneficiary.put("enrollment_date", dateFormat.format(enrollmentDate));
+            beneficiary.put("enrollment_date", enrollmentDate != null ? dateFormat.format(enrollmentDate): null);
             beneficiary.put("via", via);
             beneficiary.put("partner_id", partnerId == null ? null : 1); // TODO
             beneficiary.put("nationality", nationality);

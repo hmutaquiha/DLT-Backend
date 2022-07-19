@@ -98,7 +98,7 @@ public class DAOServiceImpl implements DAOService{
 		return repository.findByJPQueryFilter(hql, namedParams, f, m);
 	}
 
-
+	
 	public Class<? extends Annotation> annotationType() {
 		// TODO Auto-generated method stub
 		return null;
@@ -108,6 +108,12 @@ public class DAOServiceImpl implements DAOService{
 	public String value() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public <T> int UpdateEntitiesByNamedQuery(String query, Object... params) {
+		// TODO Auto-generated method stub
+		return repository.UpdateEntitiesByNamedQuery(query, params);
 	}
 
 }

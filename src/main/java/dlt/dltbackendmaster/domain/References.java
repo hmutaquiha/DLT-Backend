@@ -21,7 +21,6 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -301,6 +300,7 @@ public class References implements java.io.Serializable {
         reference.put("cancel_reason", cancelReason);
         reference.put("other_reason", otherReason);
         reference.put("online_id", id);
+        reference.put("created_by", createdBy);
         
         return reference;
     }

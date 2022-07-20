@@ -250,4 +250,27 @@ public class DAORepositoryImpl implements DAORepository {
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> int UpdateEntitiesByNamedQuery(String query, Object... params) {
+		// TODO Auto-generated method stub
+		
+        
+        try {
+        	Query q = getCurrentSession().getNamedQuery(query);
+            
+            for (@SuppressWarnings("rawtypes") Parameter param : q.getParameters()) {
+                q.setParameter(param, params[0]);
+            }
+        	
+			int r = q.executeUpdate();
+	
+			return r;
+		} catch (Exception e) {
+			throw e;
+		} 
+        
+        
+	}
+
 }

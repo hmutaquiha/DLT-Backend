@@ -10,6 +10,10 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -26,8 +30,12 @@ import dlt.dltbackendmaster.serializers.ServiceSerializer;
  */
 @Entity
 @Table(name = "references_services", catalog = "dreams_db")
+@NamedNativeQueries({ 
+	@NamedNativeQuery(name = "ReferencesServices.removeByReferenceId", query = "DELETE FROM references_services WHERE reference_id = :referenceId") })
 public class ReferencesServices implements java.io.Serializable {
 
+	private static final long serialVersionUID = 1L;
+	
 	private ReferencesServicesId id;
 	private References references;
 	private Services services;

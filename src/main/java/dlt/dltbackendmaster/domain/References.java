@@ -273,7 +273,6 @@ public class References implements java.io.Serializable {
 		this.dateUpdated = dateUpdated;
 	}
 
-	@JsonIgnore
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "references")
 	public Set<ReferencesServices> getReferencesServiceses() {
 		return this.referencesServiceses;

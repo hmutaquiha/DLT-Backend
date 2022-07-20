@@ -67,10 +67,16 @@ public class BeneficiaryController
 
         try {
             beneficiary.setDateCreated(new Date());
-            
+            String partnerNUI = beneficiary.getPartnerNUI();
+
+            if (partnerNUI != null && partnerNUI != "") {
+                Beneficiaries partner = service.GetUniqueEntityByNamedQuery("Beneficiary.findByNui", partnerNUI);
+                // TODO: Throw exception for NUI not found
+                if (partner != null)
+                    beneficiary.setPartnerId(partner.getId());
+            }
             NumericSequence nextNUI = generator.getNextNumericSequence();
             beneficiary.setNui(nextNUI.getSequence());
-            
             Integer beneficiaryId = (Integer) service.Save(beneficiary);
             Beneficiaries createdBeneficiary = service.find(Beneficiaries.class, beneficiaryId);
             return new ResponseEntity<>(createdBeneficiary, HttpStatus.OK);
@@ -89,6 +95,14 @@ public class BeneficiaryController
 
         try {
             beneficiary.setDateUpdated(new Date());
+            String partnerNUI = beneficiary.getPartnerNUI();
+
+            if (partnerNUI != null && partnerNUI != "") {
+                Beneficiaries partner = service.GetUniqueEntityByNamedQuery("Beneficiary.findByNui", partnerNUI);
+                // TODO: Throw exception for NUI not found
+                if (partner != null)
+                    beneficiary.setPartnerId(partner.getId());
+            }
             Beneficiaries updatedBeneficiary = service.update(beneficiary);
             return new ResponseEntity<>(updatedBeneficiary, HttpStatus.OK);
         } catch (Exception e) {

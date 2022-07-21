@@ -46,6 +46,7 @@ public class BeneficiarySyncModel extends BasicLifeCycleSyncModel
     private int vblt_sti_history;
     private int vblt_sex_worker;
     private int vblt_house_sustainer;
+    private String references;
 
     public BeneficiarySyncModel() {}
 
@@ -384,5 +385,19 @@ public class BeneficiarySyncModel extends BasicLifeCycleSyncModel
 	public void setE_mail(String e_mail) {
 		this.e_mail = e_mail;
 	}
+
+	public String getReferences() {
+		return references;
+	}
+
+	public void setReferences(String references) {
+		this.references = references;
+	}
+
+	public void setVblt_school_grade(Integer vblt_school_grade) {
+		this.vblt_school_grade = vblt_school_grade;
+	}
+	
+	
 
 }

@@ -5,6 +5,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
@@ -875,6 +876,12 @@ public class Beneficiaries implements java.io.Serializable
             if(vbltStiHistory != null) beneficiary.put("vblt_sti_history", vbltStiHistory);
             if(vbltSexWorker != null) beneficiary.put("vblt_sex_worker", vbltSexWorker);
             if(vbltHouseSustainer != null) beneficiary.put("vblt_house_sustainer", vbltHouseSustainer);
+            
+            int[] ids = referenceses.stream()
+                    .mapToInt(References::getId)
+                    .toArray();
+       
+            beneficiary.put("references", Arrays.toString(ids));
             beneficiary.put("online_id", id); // flag to control if entity is synchronized with the backend
         } else { // ensure online_id is updated first
             beneficiary.put("online_id", id);

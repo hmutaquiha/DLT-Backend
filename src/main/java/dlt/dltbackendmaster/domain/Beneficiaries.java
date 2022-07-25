@@ -805,7 +805,6 @@ public class Beneficiaries implements java.io.Serializable
         this.beneficiariesInterventionses = beneficiariesInterventionses;
     }
 
-    @JsonIgnore
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "beneficiaries")
     public Set<References> getReferenceses() {
         return this.referenceses;
@@ -830,7 +829,7 @@ public class Beneficiaries implements java.io.Serializable
         } else {
             beneficiary.put("id", id);
         }
-
+        
         if (dateUpdated == null || dateUpdated.after(dateCreated)) {
             beneficiary.put("id", id);
             beneficiary.put("nui", nui);
@@ -849,6 +848,7 @@ public class Beneficiaries implements java.io.Serializable
             beneficiary.put("nationality", nationality);
             beneficiary.put("entry_point", entryPoint);
             beneficiary.put("neighborhood_id", neighborhood.getId());
+            beneficiary.put("locality_name", neighborhood.getLocality().getName());
             beneficiary.put("us_id", us.getId());
             if(vbltLivesWith != null) beneficiary.put("vblt_lives_with", vbltLivesWith);
             if(vbltIsOrphan != null) beneficiary.put("vblt_is_orphan", vbltIsOrphan);

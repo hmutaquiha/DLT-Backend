@@ -1,6 +1,7 @@
 package dlt.dltbackendmaster.controller;
 
 import java.text.ParseException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -22,33 +23,38 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import dlt.dltbackendmaster.domain.Beneficiary;
-import dlt.dltbackendmaster.domain.BeneficiaryIntervention;
+import dlt.dltbackendmaster.domain.AlphanumericSequence;
+import dlt.dltbackendmaster.domain.Beneficiaries;
+import dlt.dltbackendmaster.domain.BeneficiariesInterventions;
+import dlt.dltbackendmaster.domain.BeneficiariesInterventionsId;
 import dlt.dltbackendmaster.domain.Locality;
 import dlt.dltbackendmaster.domain.Neighborhood;
 import dlt.dltbackendmaster.domain.Partners;
 import dlt.dltbackendmaster.domain.Profiles;
-import dlt.dltbackendmaster.domain.Service;
-import dlt.dltbackendmaster.domain.SubService;
+import dlt.dltbackendmaster.domain.References;
+import dlt.dltbackendmaster.domain.Services;
+import dlt.dltbackendmaster.domain.SubServices;
 import dlt.dltbackendmaster.domain.Us;
 import dlt.dltbackendmaster.domain.Users;
 import dlt.dltbackendmaster.domain.watermelondb.BeneficiaryInterventionSyncModel;
 import dlt.dltbackendmaster.domain.watermelondb.BeneficiarySyncModel;
-import dlt.dltbackendmaster.domain.watermelondb.BeneficiaryVulnerabilitySyncModel;
 import dlt.dltbackendmaster.domain.watermelondb.SyncObject;
 import dlt.dltbackendmaster.domain.watermelondb.UsersSyncModel;
 import dlt.dltbackendmaster.serializers.SyncSerializer;
 import dlt.dltbackendmaster.service.DAOService;
+import dlt.dltbackendmaster.service.SequenceGenerator;
 
 @RestController
 @RequestMapping("/sync")
 public class SyncController {
 
 	private final DAOService service;
+	private SequenceGenerator generator;
 	
 	@Autowired
     public SyncController(DAOService service) {
         this.service = service;
+        this.generator = new SequenceGenerator(service);
     }
 	
 	@GetMapping(produces = "application/json")
@@ -69,20 +75,23 @@ public class SyncController {
 		List<Us> usCreated;
 		List<Us> usUpdated;
 		
-		List<Beneficiary> beneficiariesCreated;
-		List<Beneficiary> beneficiariesUpdated;
+		List<Beneficiaries> beneficiariesCreated;
+		List<Beneficiaries> beneficiariesUpdated;
         
-        List<BeneficiaryIntervention> beneficiariesInterventionsCreated;
-        List<BeneficiaryIntervention> beneficiariesInterventionsUpdated;
+        List<BeneficiariesInterventions> beneficiariesInterventionsCreated;
+        List<BeneficiariesInterventions> beneficiariesInterventionsUpdated;
         
         List<Neighborhood> neighborhoodsCreated;
         List<Neighborhood> neighborhoodUpdated;
         
-        List<Service> servicesCreated;
-        List<Service> servicesUpdated;
+        List<Services> servicesCreated;
+        List<Services> servicesUpdated;
         
-        List<SubService> subServicesCreated;
-        List<SubService> subServicesUpdated;
+        List<SubServices> subServicesCreated;
+        List<SubServices> subServicesUpdated;
+        
+        List<References> referencesCreated;
+        List<References> referencesUpdated;
 		
 		if(lastPulledAt == null || lastPulledAt.equals("null") ) {
 
@@ -105,19 +114,22 @@ public class SyncController {
 			usUpdated = new ArrayList<Us>();
 			
 			beneficiariesCreated = service.GetAllEntityByNamedQuery("Beneficiary.findAll");
-			beneficiariesUpdated = new ArrayList<Beneficiary>();
+			beneficiariesUpdated = new ArrayList<Beneficiaries>();
             
             beneficiariesInterventionsCreated = service.GetAllEntityByNamedQuery("BeneficiaryIntervention.findAll");
-            beneficiariesInterventionsUpdated = new ArrayList<BeneficiaryIntervention>();
+            beneficiariesInterventionsUpdated = new ArrayList<BeneficiariesInterventions>();
             
             neighborhoodsCreated = service.GetAllEntityByNamedQuery("Neighborhood.findAll");
             neighborhoodUpdated = new ArrayList<Neighborhood>();
             
             servicesCreated = service.GetAllEntityByNamedQuery("Service.findAll");
-            servicesUpdated = new ArrayList<Service>();
+            servicesUpdated = new ArrayList<Services>();
             
             subServicesCreated = service.GetAllEntityByNamedQuery("SubService.findAll");
-            subServicesUpdated = new ArrayList<SubService>();
+            subServicesUpdated = new ArrayList<SubServices>();
+            
+            referencesCreated = service.GetAllEntityByNamedQuery("References.findAll");
+            referencesUpdated = new ArrayList<References>();
 			
 		}else {
 			Long t = Long.valueOf(lastPulledAt);
@@ -161,6 +173,9 @@ public class SyncController {
             
             subServicesCreated = service.GetAllEntityByNamedQuery("SubService.findByDateCreated", validatedDate); 
             subServicesUpdated = service.GetAllEntityByNamedQuery("SubService.findByDateUpdated", validatedDate);
+            
+            referencesCreated = service.GetAllEntityByNamedQuery("References.findByDateCreated", validatedDate);
+            referencesUpdated = service.GetAllEntityByNamedQuery("References.findByDateUpdated", validatedDate);
 		}
 		
 		try {
@@ -169,16 +184,17 @@ public class SyncController {
 			SyncObject<Partners> partnersSO = new SyncObject<Partners>(partnersCreated, partnersUpdated, listDeleted);
 			SyncObject<Profiles> profilesSO = new SyncObject<Profiles>(profilesCreated, profilesUpdated, listDeleted);
 			SyncObject<Us> usSO = new SyncObject<Us>(usCreated, usUpdated, listDeleted);
-			SyncObject<Beneficiary> beneficiarySO = new SyncObject<Beneficiary>(beneficiariesCreated, beneficiariesUpdated, listDeleted);
-            SyncObject<BeneficiaryIntervention> beneficiaryInterventionSO = new SyncObject<BeneficiaryIntervention>(beneficiariesInterventionsCreated, beneficiariesInterventionsUpdated, listDeleted);
+			SyncObject<Beneficiaries> beneficiarySO = new SyncObject<Beneficiaries>(beneficiariesCreated, beneficiariesUpdated, listDeleted);
+            SyncObject<BeneficiariesInterventions> beneficiaryInterventionSO = new SyncObject<BeneficiariesInterventions>(beneficiariesInterventionsCreated, beneficiariesInterventionsUpdated, listDeleted);
             SyncObject<Neighborhood> neighborhoodSO = new SyncObject<Neighborhood>(neighborhoodsCreated, neighborhoodUpdated, listDeleted);
-            SyncObject<Service> serviceSO = new SyncObject<Service>(servicesCreated, servicesUpdated, listDeleted);
-            SyncObject<SubService> subServiceSO = new SyncObject<SubService>(subServicesCreated, subServicesUpdated, listDeleted);
+            SyncObject<Services> serviceSO = new SyncObject<Services>(servicesCreated, servicesUpdated, listDeleted);
+            SyncObject<SubServices> subServiceSO = new SyncObject<SubServices>(subServicesCreated, subServicesUpdated, listDeleted);
+            SyncObject<References> referencesSO = new SyncObject<References>(referencesCreated, referencesUpdated, listDeleted);
 
 			//String object = SyncSerializer.createUsersSyncObject(usersCreated, usersUpdated, new ArrayList<Integer>());
 
-			String object = SyncSerializer.createSyncObject(usersSO, localitySO, profilesSO, partnersSO, usSO, beneficiarySO,  beneficiaryInterventionSO, neighborhoodSO, serviceSO, subServiceSO, lastPulledAt);
-			System.out.println("PULLING " + object);
+			String object = SyncSerializer.createSyncObject(usersSO, localitySO, profilesSO, partnersSO, usSO, beneficiarySO,  beneficiaryInterventionSO, neighborhoodSO, serviceSO, subServiceSO, referencesSO, lastPulledAt);
+			//System.out.println("PULLING " + object);
 
 			return new ResponseEntity<>(object, HttpStatus.OK);
 		} catch (Exception e) {
@@ -189,12 +205,30 @@ public class SyncController {
 		}
 	}
 	
+	
+	@GetMapping(path="/prefix", produces = "application/json")
+	public ResponseEntity getPrefix(@RequestParam(name = "username") String username) throws ParseException {
+
+		try {
+			AlphanumericSequence seq = generator.getNextAlphanumericSequence(username);
+			
+			return new ResponseEntity<>(seq, HttpStatus.OK);
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			return new ResponseEntity<>("Processing Error!", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		
+	}
+	
 	@SuppressWarnings("unchecked")
 	@PostMapping(consumes = "application/json")
 	public ResponseEntity post(@RequestBody String changes,
 								@RequestParam(name = "username") String username) throws ParseException, JsonMappingException, JsonProcessingException {
 		
 		String lastPulledAt = SyncSerializer.readLastPulledAt(changes);
+		//System.out.println("PUSHING " + changes);
 		
 		Users user = (Users) service.GetAllEntityByNamedQuery("Users.findByUsername", username).get(0);
 		
@@ -202,12 +236,11 @@ public class SyncController {
 		SyncObject<UsersSyncModel> users;
 		SyncObject<BeneficiarySyncModel> beneficiaries;
 		SyncObject<BeneficiaryInterventionSyncModel> interventions;
-		SyncObject<BeneficiaryVulnerabilitySyncModel> vulnerabilities;
+
 		try {
 			users = SyncSerializer.readUsersSyncObject(changes);
 			beneficiaries = SyncSerializer.readBeneficiariesSyncObject(changes);
 			interventions = SyncSerializer.readInterventionsSyncObject(changes);
-			vulnerabilities = SyncSerializer.readVulnerabilitiesSyncObject(changes);
 			
 			// created entities
 			if(users != null && users.getCreated().size() > 0) {
@@ -228,9 +261,8 @@ public class SyncController {
 			    
 			    for (BeneficiarySyncModel created : createdList) {
                     if(created.getOnline_id() == null) {
-                        Beneficiary beneficiary = new Beneficiary(created, lastPulledAt);
-                        beneficiary.getCreatedBy().setId(user.getId());
-                        //beneficiary.setCreatedBy(user.getId());
+                    	Beneficiaries beneficiary = new Beneficiaries(created, lastPulledAt);
+                    	beneficiary.setCreatedBy(user.getId());
                         service.Save(beneficiary);
                     }
                 }
@@ -240,10 +272,10 @@ public class SyncController {
                 
                 for (BeneficiaryInterventionSyncModel created : createdList) {
                     if(created.getOnline_id() == null) {
-                        BeneficiaryIntervention intervention = new BeneficiaryIntervention(created, lastPulledAt);
+                    	BeneficiariesInterventions intervention = new BeneficiariesInterventions(created, lastPulledAt);
                         intervention.setCreatedBy(user.getId());
                         service.Save(intervention);
-                    }
+                    } 
                 }
             }
 
@@ -273,15 +305,13 @@ public class SyncController {
                 for (BeneficiarySyncModel updated : updatedList) {
                     
                     if(updated.getOnline_id() == null) {
-                        Beneficiary beneficiary = new Beneficiary(updated, lastPulledAt);
-                        beneficiary.getCreatedBy().setId(user.getId());
-                        //beneficiary.setCreatedBy(user.getId());
+                    	Beneficiaries beneficiary = new Beneficiaries(updated, lastPulledAt);
+                        beneficiary.setCreatedBy(user.getId());
                         service.Save(beneficiary);
                         
                     } else {
-                        Beneficiary beneficiary = service.find(Beneficiary.class, updated.getOnline_id());
-                        beneficiary.getUpdatedBy().setId(user.getId());
-                        //beneficiary.setUpdatedBy(user.getId());
+                    	Beneficiaries beneficiary = service.find(Beneficiaries.class, updated.getOnline_id());
+                        beneficiary.setUpdatedBy(user.getId());
                         beneficiary.update(updated, lastPulledAt);
                         service.update(beneficiary);
                     } 
@@ -293,15 +323,19 @@ public class SyncController {
                 for (BeneficiaryInterventionSyncModel updated : updatedList) {
                     
                     if(updated.getOnline_id() == null) {
-                        BeneficiaryIntervention intervention = new BeneficiaryIntervention(updated, lastPulledAt);
+                    	BeneficiariesInterventions intervention = new BeneficiariesInterventions(updated, lastPulledAt);
                         intervention.setCreatedBy(user.getId());
                         service.Save(intervention);
                         
                     } else {
-                        BeneficiaryIntervention intervention = service.find(BeneficiaryIntervention.class, updated.getOnline_id());
-                        intervention.setUpdatedBy(user.getId());
-                        intervention.update(updated, lastPulledAt);
-                        service.update(intervention);
+                    	String[] keys = updated.getOnline_id().split(",");
+                    	BeneficiariesInterventionsId bId = new BeneficiariesInterventionsId(Integer.valueOf(keys[0]), Integer.valueOf(keys[1]), LocalDate.parse(keys[2]));
+                        BeneficiariesInterventions intervention = service.find(BeneficiariesInterventions.class, bId);
+                        if(intervention != null) {
+                        	intervention.setUpdatedBy(String.valueOf(user.getId()));
+                        	intervention.update(updated, lastPulledAt);
+                        	service.update(intervention);
+                        }
                     } 
                 }
             }

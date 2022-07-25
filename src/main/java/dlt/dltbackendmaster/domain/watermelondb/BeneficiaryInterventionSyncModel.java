@@ -9,13 +9,13 @@ public class BeneficiaryInterventionSyncModel
     private String date;
     private Integer us_id;
     private Integer activist_id;
-    private Integer entry_point;
+    private String entry_point;
     private String provider;
     private String remarks;
     private Integer status;
     private String _status;
     private String _changed;
-    private Integer online_id;
+    private String online_id;
 
     public BeneficiaryInterventionSyncModel() {}
 
@@ -75,11 +75,11 @@ public class BeneficiaryInterventionSyncModel
         this.activist_id = activist_id;
     }
 
-    public Integer getEntry_point() {
+    public String getEntry_point() {
         return entry_point;
     }
 
-    public void setEntry_point(Integer entry_point) {
+    public void setEntry_point(String entry_point) {
         this.entry_point = entry_point;
     }
 
@@ -123,11 +123,11 @@ public class BeneficiaryInterventionSyncModel
         this._changed = _changed;
     }
 
-    public Integer getOnline_id() {
+    public String getOnline_id() {
         return online_id;
     }
 
-    public void setOnline_id(Integer online_id) {
+    public void setOnline_id(String online_id) {
         this.online_id = online_id;
     }
 }

@@ -1,5 +1,5 @@
 package dlt.dltbackendmaster.domain;
-// Generated Jan 25, 2022, 4:05:43 PM by Hibernate Tools 5.2.12.Final
+// Generated Jun 13, 2022, 9:37:47 AM by Hibernate Tools 5.2.12.Final
 
 import java.util.Date;
 import java.util.HashSet;
@@ -12,6 +12,8 @@ import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -24,8 +26,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 @Entity
 @Table(name = "district", catalog = "dreams_db")
+@NamedQueries({
+    @NamedQuery(name = "District.findByProvinces", query = "SELECT c FROM District c WHERE c.province.id in (:provinces)")})
 public class District implements java.io.Serializable {
 
+	private static final long serialVersionUID = 1L;
+	
 	private Integer id;
 	private Province province;
 	private String code;
@@ -35,7 +41,7 @@ public class District implements java.io.Serializable {
 	private Date dateCreated;
 	private Integer updatedBy;
 	private Date dateUpdated;
-	private Set<Partners> partners = new HashSet<Partners>(0);
+	private Set<Partners> partnerses = new HashSet<Partners>(0);
 	private Set<Locality> localities = new HashSet<Locality>(0);
 
 	public District() {
@@ -51,7 +57,7 @@ public class District implements java.io.Serializable {
 	}
 
 	public District(Province province, String code, String name, int status, int createdBy, Date dateCreated,
-			Integer updatedBy, Date dateUpdated, Set<Partners> partners, Set<Locality> localities) {
+			Integer updatedBy, Date dateUpdated, Set<Partners> partnerses, Set<Locality> localities) {
 		this.province = province;
 		this.code = code;
 		this.name = name;
@@ -60,7 +66,7 @@ public class District implements java.io.Serializable {
 		this.dateCreated = dateCreated;
 		this.updatedBy = updatedBy;
 		this.dateUpdated = dateUpdated;
-		this.partners = partners;
+		this.partnerses = partnerses;
 		this.localities = localities;
 	}
 
@@ -156,17 +162,17 @@ public class District implements java.io.Serializable {
 	}
 
 	@JsonIgnore
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "district")
-	public Set<Partners> getPartners() {
-		return this.partners;
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "district")
+	public Set<Partners> getPartnerses() {
+		return this.partnerses;
 	}
 
-	public void setPartners(Set<Partners> partners) {
-		this.partners = partners;
+	public void setPartnerses(Set<Partners> partnerses) {
+		this.partnerses = partnerses;
 	}
 
 	@JsonIgnore
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "district")
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "district")
 	public Set<Locality> getLocalities() {
 		return this.localities;
 	}

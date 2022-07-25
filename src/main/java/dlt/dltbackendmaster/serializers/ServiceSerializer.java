@@ -6,19 +6,21 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 
-import dlt.dltbackendmaster.domain.Service;
+import dlt.dltbackendmaster.domain.Services;
 
-public class ServiceSerializer extends JsonSerializer<Service>
+public class ServiceSerializer extends JsonSerializer<Services>
 {
     @Override
-    public void serialize(Service value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
-        Service service = new Service();
+    public void serialize(Services value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+        Services service = new Services();
         service.setId(value.getId());
         service.setName(value.getName());
         service.setDescription(value.getDescription());
-        service.setIsHidden(value.getIsHidden());
-        service.setIsCoreService(service.getIsCoreService());
-        service.setStatus(service.getStatus());
+        service.setHidden(value.getHidden());
+        service.setCoreService(value.getCoreService());
+        service.setServiceType(value.getServiceType());
+        service.setAgeBands(value.getAgeBands());
+        service.setStatus(value.getStatus());
         service.setCreatedBy(value.getCreatedBy());
         service.setDateCreated(value.getDateCreated());
         service.setUpdatedBy(value.getUpdatedBy());

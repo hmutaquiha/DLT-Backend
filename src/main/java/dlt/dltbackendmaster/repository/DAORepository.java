@@ -39,4 +39,6 @@ public interface DAORepository {
 	<T> List<T> findByJPQueryFilter(String hql, Map<String, Object> namedParams, int f, int m);
 
 	<T> void delete(T klass);
+	
+	<T> int UpdateEntitiesByNamedQuery(String query, Object... params);
 }

@@ -17,6 +17,8 @@ public interface DAOService {
 	<T> Serializable Save(T klass);
 
 	<T> void delete(T klass);
+	
+	<T> int UpdateEntitiesByNamedQuery(String query, Object... params);
 
 	<T> T update(T klass);
 

@@ -8,6 +8,7 @@ public class PartnerSyncModel {
 	private String name;
 	private String abbreviation;
 	private String description;
+	private String partner_type;
 	private int status;
 	private Integer online_id;
 	
@@ -59,6 +60,14 @@ public class PartnerSyncModel {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public String getPartner_type() {
+		return partner_type;
+	}
+
+	public void setPartner_type(String partner_type) {
+		this.partner_type = partner_type;
 	}
 
 	public int getStatus() {

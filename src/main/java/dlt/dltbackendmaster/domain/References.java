@@ -3,6 +3,8 @@ package dlt.dltbackendmaster.domain;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -283,6 +285,7 @@ public class References implements java.io.Serializable {
 
     public ObjectNode toObjectNode() {
         ObjectMapper mapper =  new ObjectMapper();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         
         ObjectNode reference = mapper.createObjectNode();
         reference.put("id", id);
@@ -301,6 +304,7 @@ public class References implements java.io.Serializable {
         reference.put("other_reason", otherReason);
         reference.put("online_id", id);
         reference.put("created_by", createdBy);
+        reference.put("date_created", dateFormat.format(dateCreated));
         
         return reference;
     }

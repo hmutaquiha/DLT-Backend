@@ -1,6 +1,5 @@
 package dlt.dltbackendmaster.security.utils;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -310,14 +309,5 @@ public class ServiceCompletionRules
             }
         }
         return false;
-    }
-
-    // FIXME: Remove this method... serves only for testing purposes
-    public static void main(String[] args) {
-        List<Integer> subServices = Arrays.asList(1, 2, 3, 4, 77, 88, 89, 90);
-
-        System.out.println(completedCondomsPromotionOrProvision(subServices));
-        System.out.println(completedContraceptionsPromotionOrProvision(subServices));
-        System.out.println(completedSAAJEducationSessions(subServices));
     }
 }

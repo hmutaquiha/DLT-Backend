@@ -1,6 +1,9 @@
 package dlt.dltbackendmaster.domain;
 // Generated Jun 13, 2022, 4:04:49 PM by Hibernate Tools 5.2.12.Final
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -20,9 +23,13 @@ import javax.persistence.TemporalType;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
-import dlt.dltbackendmaster.serializers.BeneficiarySerializer;
+import dlt.dltbackendmaster.domain.watermelondb.ReferenceServicesSyncModel;
 import dlt.dltbackendmaster.serializers.ServiceSerializer;
 
 /**
@@ -30,12 +37,16 @@ import dlt.dltbackendmaster.serializers.ServiceSerializer;
  */
 @Entity
 @Table(name = "references_services", catalog = "dreams_db")
-@NamedNativeQueries({ 
-	@NamedNativeQuery(name = "ReferencesServices.removeByReferenceId", query = "DELETE FROM references_services WHERE reference_id = :referenceId") })
+@NamedNativeQueries({
+		@NamedNativeQuery(name = "ReferencesServices.removeByReferenceId", query = "DELETE FROM references_services WHERE reference_id = :referenceId") })
+@NamedQueries({ @NamedQuery(name = "ReferencesServices.findAll", query = "SELECT b FROM ReferencesServices b"),
+		@NamedQuery(name = "ReferencesServices.findByReferenceAndService", query = "SELECT b FROM ReferencesServices b where b.references.id = :reference_id and b.services.id = :service_id"),
+		@NamedQuery(name = "ReferencesServices.findByDateCreated", query = "select b from ReferencesServices b where b.dateUpdated is null and b.dateCreated > :lastpulledat"),
+		@NamedQuery(name = "ReferencesServices.findByDateUpdated", query = "select b from ReferencesServices b where (b.dateUpdated >= :lastpulledat) or (b.dateUpdated >= :lastpulledat and b.dateCreated = b.dateUpdated)") })
 public class ReferencesServices implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	private ReferencesServicesId id;
 	private References references;
 	private Services services;
@@ -45,6 +56,7 @@ public class ReferencesServices implements java.io.Serializable {
 	private Date dateCreated;
 	private Integer updatedBy;
 	private Date dateUpdated;
+	private String offlineId;
 
 	public ReferencesServices() {
 	}
@@ -70,6 +82,21 @@ public class ReferencesServices implements java.io.Serializable {
 		this.dateCreated = dateCreated;
 		this.updatedBy = updatedBy;
 		this.dateUpdated = dateUpdated;
+	}
+	
+	public ReferencesServices(ReferenceServicesSyncModel model, String timestamp) throws ParseException {
+		Long t = Long.valueOf(timestamp);
+        Date regDate = new Date(t);
+        this.references = new References();
+        this.references.setId(model.getReference_id());
+        this.services = new Services();
+        this.services.setId(model.getService_id()); 
+        this.description = model.getDescription();
+        this.status = model.getStatus();
+        this.offlineId = model.getId();
+        this.dateCreated = regDate;
+        this.dateUpdated = regDate;
+        
 	}
 
 	@EmbeddedId
@@ -99,7 +126,7 @@ public class ReferencesServices implements java.io.Serializable {
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "service_id", nullable = false, insertable = false, updatable = false)
 	@JsonProperty("services")
-    @JsonSerialize(using = ServiceSerializer.class)
+	@JsonSerialize(using = ServiceSerializer.class)
 	public Services getServices() {
 		return this.services;
 	}
@@ -164,4 +191,51 @@ public class ReferencesServices implements java.io.Serializable {
 		this.dateUpdated = dateUpdated;
 	}
 
+	@Column(name = "offline_id", length = 45)
+	public String getOfflineId() {
+		return this.offlineId;
+	}
+
+	public void setOfflineId(String offlineId) {
+		this.offlineId = offlineId;
+	}
+
+	public ObjectNode toObjectNode(String lastPulledAt) {
+		ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule())
+				.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+
+		ObjectNode referenceService = mapper.createObjectNode();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+		if (offlineId != null) {
+			referenceService.put("id", offlineId);
+		} else {
+			referenceService.put("id", id.toString());
+		}
+
+		if (dateUpdated == null || dateUpdated.after(dateCreated) || lastPulledAt == null
+				|| lastPulledAt.equals("null")) {
+			referenceService.put("reference_id", id.getReferenceId());
+			referenceService.put("service_id", id.getServiceId());
+			referenceService.put("description", description);
+			referenceService.put("status", status);
+			referenceService.put("date_created", dateFormat.format(dateCreated));
+			referenceService.put("online_id", id.toString()); // flag to control if entity is synchronized with
+																// the backend
+		} else { // ensure online_id is updated first
+			referenceService.put("online_id", id.toString());
+		}
+		return referenceService;
+	}
+
+	public void update(ReferenceServicesSyncModel model, String timestamp) throws ParseException {
+		Long t = Long.valueOf(timestamp);
+
+		this.offlineId = model.getId();
+		this.dateUpdated = new Date(t);
+		this.references.setId(model.getReference_id());
+		this.services.setId(model.getService_id());
+		this.description = model.getDescription();
+		this.status = model.getStatus();
+	}
 }

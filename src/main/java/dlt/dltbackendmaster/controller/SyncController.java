@@ -32,12 +32,16 @@ import dlt.dltbackendmaster.domain.Neighborhood;
 import dlt.dltbackendmaster.domain.Partners;
 import dlt.dltbackendmaster.domain.Profiles;
 import dlt.dltbackendmaster.domain.References;
+import dlt.dltbackendmaster.domain.ReferencesServices;
+import dlt.dltbackendmaster.domain.ReferencesServicesId;
 import dlt.dltbackendmaster.domain.Services;
 import dlt.dltbackendmaster.domain.SubServices;
 import dlt.dltbackendmaster.domain.Us;
 import dlt.dltbackendmaster.domain.Users;
 import dlt.dltbackendmaster.domain.watermelondb.BeneficiaryInterventionSyncModel;
 import dlt.dltbackendmaster.domain.watermelondb.BeneficiarySyncModel;
+import dlt.dltbackendmaster.domain.watermelondb.ReferenceServicesSyncModel;
+import dlt.dltbackendmaster.domain.watermelondb.ReferenceSyncModel;
 import dlt.dltbackendmaster.domain.watermelondb.SyncObject;
 import dlt.dltbackendmaster.domain.watermelondb.UsersSyncModel;
 import dlt.dltbackendmaster.serializers.SyncSerializer;
@@ -92,6 +96,9 @@ public class SyncController {
         
         List<References> referencesCreated;
         List<References> referencesUpdated;
+        
+        List<ReferencesServices> referenceServicesCreated;
+        List<ReferencesServices> referenceServicesUpdated;
 		
 		if(lastPulledAt == null || lastPulledAt.equals("null") ) {
 
@@ -130,6 +137,9 @@ public class SyncController {
             
             referencesCreated = service.GetAllEntityByNamedQuery("References.findAll");
             referencesUpdated = new ArrayList<References>();
+            
+            referenceServicesCreated = service.GetAllEntityByNamedQuery("ReferencesServices.findAll");
+            referenceServicesUpdated = new ArrayList<ReferencesServices>();
 			
 		}else {
 			Long t = Long.valueOf(lastPulledAt);
@@ -176,6 +186,9 @@ public class SyncController {
             
             referencesCreated = service.GetAllEntityByNamedQuery("References.findByDateCreated", validatedDate);
             referencesUpdated = service.GetAllEntityByNamedQuery("References.findByDateUpdated", validatedDate);
+            
+            referenceServicesCreated = service.GetAllEntityByNamedQuery("ReferencesServices.findByDateCreated", validatedDate);
+            referenceServicesUpdated = service.GetAllEntityByNamedQuery("ReferencesServices.findByDateUpdated", validatedDate);
 		}
 		
 		try {
@@ -190,10 +203,11 @@ public class SyncController {
             SyncObject<Services> serviceSO = new SyncObject<Services>(servicesCreated, servicesUpdated, listDeleted);
             SyncObject<SubServices> subServiceSO = new SyncObject<SubServices>(subServicesCreated, subServicesUpdated, listDeleted);
             SyncObject<References> referencesSO = new SyncObject<References>(referencesCreated, referencesUpdated, listDeleted);
-
+            SyncObject<ReferencesServices> referencesServicesSO = new SyncObject<ReferencesServices>(referenceServicesCreated, referenceServicesUpdated, listDeleted);
+            
 			//String object = SyncSerializer.createUsersSyncObject(usersCreated, usersUpdated, new ArrayList<Integer>());
 
-			String object = SyncSerializer.createSyncObject(usersSO, localitySO, profilesSO, partnersSO, usSO, beneficiarySO,  beneficiaryInterventionSO, neighborhoodSO, serviceSO, subServiceSO, referencesSO, lastPulledAt);
+			String object = SyncSerializer.createSyncObject(usersSO, localitySO, profilesSO, partnersSO, usSO, beneficiarySO,  beneficiaryInterventionSO, neighborhoodSO, serviceSO, subServiceSO, referencesSO, referencesServicesSO, lastPulledAt);
 			//System.out.println("PULLING " + object);
 
 			return new ResponseEntity<>(object, HttpStatus.OK);
@@ -236,11 +250,15 @@ public class SyncController {
 		SyncObject<UsersSyncModel> users;
 		SyncObject<BeneficiarySyncModel> beneficiaries;
 		SyncObject<BeneficiaryInterventionSyncModel> interventions;
+		SyncObject<ReferenceSyncModel> references;
+		SyncObject<ReferenceServicesSyncModel> referencesServices;
 
 		try {
 			users = SyncSerializer.readUsersSyncObject(changes);
 			beneficiaries = SyncSerializer.readBeneficiariesSyncObject(changes);
 			interventions = SyncSerializer.readInterventionsSyncObject(changes);
+			references = SyncSerializer.readReferencesSyncObject(changes);
+			referencesServices = SyncSerializer.readReferenceServicesSyncObject(changes);
 			
 			// created entities
 			if(users != null && users.getCreated().size() > 0) {
@@ -278,6 +296,28 @@ public class SyncController {
                     } 
                 }
             }
+            if(references!=null && references.getCreated().size()>0) {
+			    List<ReferenceSyncModel> createdList = mapper.convertValue(references.getCreated(), new TypeReference<List<ReferenceSyncModel>>() {});
+			    
+			    for (ReferenceSyncModel created : createdList) {
+                    if(created.getOnline_id() == null) {
+                    	References reference = new References(created, lastPulledAt);
+                    	reference.setCreatedBy(user.getId());
+                        service.Save(reference);
+                    }
+                }
+			}
+            if(referencesServices!=null && referencesServices.getCreated().size()>0) {
+			    List<ReferenceServicesSyncModel> createdList = mapper.convertValue(referencesServices.getCreated(), new TypeReference<List<ReferenceServicesSyncModel>>() {});
+			    
+			    for (ReferenceServicesSyncModel created : createdList) {
+                    if(created.getOnline_id() == null) {
+                    	ReferencesServices reference = new ReferencesServices(created, lastPulledAt);
+                    	reference.setCreatedBy(user.getId());
+                        service.Save(reference);
+                    }
+                }
+			}
 
 			// updated entities
 			if(users != null && users.getUpdated().size() > 0) {
@@ -339,6 +379,47 @@ public class SyncController {
                     } 
                 }
             }
+            if(references != null && references.getUpdated().size() > 0) {
+                List<ReferenceSyncModel> updatedList = mapper.convertValue(references.getUpdated(), new TypeReference<List<ReferenceSyncModel>>() {});
+
+                for (ReferenceSyncModel updated : updatedList) {
+                    
+                    if(updated.getOnline_id() == null) {
+                    	References reference = new References(updated, lastPulledAt);
+                    	reference.setCreatedBy(user.getId());
+                        service.Save(reference);
+                        
+                    } else {
+                    	References reference = service.find(References.class, updated.getOnline_id());
+                    	reference.setUpdatedBy(user.getId());
+                    	reference.update(updated, lastPulledAt);
+                        service.update(reference);
+                    } 
+                }
+            }
+            if(referencesServices != null && referencesServices.getUpdated().size() > 0) {
+                List<ReferenceServicesSyncModel> updatedList = mapper.convertValue(referencesServices.getUpdated(), new TypeReference<List<ReferenceServicesSyncModel>>() {});
+
+                for (ReferenceServicesSyncModel updated : updatedList) {
+                    
+                    if(updated.getOnline_id() == null) {
+                    	ReferencesServices referenceServices = new ReferencesServices(updated, lastPulledAt);
+                    	referenceServices.setCreatedBy(user.getId());
+                        service.Save(referenceServices);
+                        
+                    } else {
+                    	String[] keys = updated.getOnline_id().split(",");
+                    	ReferencesServicesId bId = new ReferencesServicesId(Integer.valueOf(keys[0]), Integer.valueOf(keys[1]));
+                    	ReferencesServices referenceServices = service.find(ReferencesServices.class, bId);
+                        if(referenceServices != null) {
+                        	referenceServices.setUpdatedBy(user.getId());
+                        	referenceServices.update(updated, lastPulledAt);
+                        	service.update(referenceServices);
+                        }
+                    } 
+                }
+            }
+            
             
 		} catch (JsonProcessingException e) {
 			// TODO Auto-generated catch block

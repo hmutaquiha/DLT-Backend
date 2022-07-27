@@ -881,7 +881,7 @@ public class Beneficiaries implements java.io.Serializable
                     .mapToInt(References::getId)
                     .toArray();
        
-            beneficiary.put("references", Arrays.toString(ids));
+            beneficiary.put("references_a", Arrays.toString(ids));
             beneficiary.put("online_id", id); // flag to control if entity is synchronized with the backend
         } else { // ensure online_id is updated first
             beneficiary.put("online_id", id);

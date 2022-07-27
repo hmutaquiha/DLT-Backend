@@ -4,6 +4,7 @@ package dlt.dltbackendmaster.domain;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
@@ -28,6 +29,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import dlt.dltbackendmaster.domain.watermelondb.BeneficiarySyncModel;
+import dlt.dltbackendmaster.domain.watermelondb.ReferenceServicesSyncModel;
+import dlt.dltbackendmaster.domain.watermelondb.ReferenceSyncModel;
 import dlt.dltbackendmaster.serializers.BeneficiarySerializer;
 import dlt.dltbackendmaster.serializers.UsersSerializer;
 
@@ -62,6 +66,7 @@ public class References implements java.io.Serializable {
 	private Date dateCreated;
 	private Integer updatedBy;
 	private Date dateUpdated;
+	private String offlineId;
 	private Set<ReferencesServices> referencesServiceses = new HashSet<ReferencesServices>(0);
 
 	public References() {
@@ -99,6 +104,31 @@ public class References implements java.io.Serializable {
 		this.updatedBy = updatedBy;
 		this.dateUpdated = dateUpdated;
 		this.referencesServiceses = referencesServiceses;
+	}
+	
+	public References(ReferenceSyncModel model, String timestamp) {
+		Long t = Long.valueOf(timestamp);
+        Date regDate = new Date(t);
+        this.offlineId = model.getId();
+		this.dateUpdated = new Date(t);
+		this.beneficiaries = new Beneficiaries();
+		this.beneficiaries.setId(model.getBeneficiary_id());
+		this.bookNumber = model.getBook_number();
+		this.description = model.getDescription();
+		this.referenceCode = model.getReference_code();
+		this.referenceNote = model.getReference_note();
+		this.serviceType = model.getService_type();
+		this.remarks = model.getRemarks();
+		this.referTo = model.getRefer_to();
+		this.users = new Users();
+		this.users.setId(model.getNotify_to());
+		this.statusRef = model.getStatus_ref();
+		this.status = model.getStatus();
+		this.cancelReason = model.getCancel_reason();
+		this.otherReason = model.getOther_reason();
+		this.createdBy = model.getCreated_by();
+        this.dateCreated = regDate;
+        this.dateUpdated = regDate;
 	}
 
 	@Id
@@ -273,6 +303,15 @@ public class References implements java.io.Serializable {
 	public void setDateUpdated(Date dateUpdated) {
 		this.dateUpdated = dateUpdated;
 	}
+	
+	@Column(name = "offline_id", length = 45)
+    public String getOfflineId() {
+        return this.offlineId;
+    }
+
+    public void setOfflineId(String offlineId) {
+        this.offlineId = offlineId;
+    }
 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "references")
 	public Set<ReferencesServices> getReferencesServiceses() {
@@ -308,5 +347,27 @@ public class References implements java.io.Serializable {
         
         return reference;
     }
+    
+    public void update(ReferenceSyncModel model, String timestamp) throws ParseException {
+		Long t = Long.valueOf(timestamp);
+
+		this.offlineId = model.getId();
+		this.dateUpdated = new Date(t);
+		this.beneficiaries.setId(model.getBeneficiary_id());
+		this.bookNumber = model.getBook_number();
+		this.description = model.getDescription();
+		this.referenceCode = model.getReference_code();
+		this.referenceNote = model.getReference_note();
+		this.serviceType = model.getService_type();
+		this.remarks = model.getRemarks();
+		this.referTo = model.getRefer_to();
+		this.users.setId(model.getNotify_to());
+		this.statusRef = model.getStatus_ref();
+		this.status = model.getStatus();
+		this.cancelReason = model.getCancel_reason();
+		this.otherReason = model.getOther_reason();
+		this.createdBy = model.getCreated_by();
+		this.dateCreated = model.getDate_created();
+	}
 
 }

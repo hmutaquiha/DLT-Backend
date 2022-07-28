@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -243,6 +244,7 @@ public class SyncController {
 		
 		String lastPulledAt = SyncSerializer.readLastPulledAt(changes);
 		//System.out.println("PUSHING " + changes);
+		HashMap<String,Integer> referenceIds = new HashMap<String, Integer>();
 		
 		Users user = (Users) service.GetAllEntityByNamedQuery("Users.findByUsername", username).get(0);
 		
@@ -304,6 +306,7 @@ public class SyncController {
                     	References reference = new References(created, lastPulledAt);
                     	reference.setCreatedBy(user.getId());
                         service.Save(reference);
+                        referenceIds.put(reference.getOfflineId(), reference.getId());
                     }
                 }
 			}
@@ -312,9 +315,13 @@ public class SyncController {
 			    
 			    for (ReferenceServicesSyncModel created : createdList) {
                     if(created.getOnline_id() == null) {
-                    	ReferencesServices reference = new ReferencesServices(created, lastPulledAt);
-                    	reference.setCreatedBy(user.getId());
-                        service.Save(reference);
+                    	Integer refId = referenceIds.get(created.getReference_id());
+                    	if(refId != null) {
+                    		created.setReference_id(""+refId); // change mobileId with the server id
+                    		ReferencesServices reference = new ReferencesServices(created, lastPulledAt);
+                        	reference.setCreatedBy(user.getId());
+                            service.Save(reference);
+                    	}
                     }
                 }
 			}

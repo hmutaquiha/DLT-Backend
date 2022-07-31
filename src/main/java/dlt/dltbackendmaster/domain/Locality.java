@@ -197,6 +197,7 @@ public class Locality implements java.io.Serializable {
 		locality.put("id", id);
 		locality.put("name", name);
 	    locality.put("description", description);
+	    locality.put("district_id", district.getId());
 	    locality.put("status", status);
 	    locality.put("online_id", id); // flag to control if entity is synchronized with the backend
 		return locality;

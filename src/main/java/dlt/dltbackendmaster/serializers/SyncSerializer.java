@@ -16,10 +16,12 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import dlt.dltbackendmaster.domain.Beneficiaries;
 import dlt.dltbackendmaster.domain.BeneficiariesInterventions;
+import dlt.dltbackendmaster.domain.District;
 import dlt.dltbackendmaster.domain.Locality;
 import dlt.dltbackendmaster.domain.Neighborhood;
 import dlt.dltbackendmaster.domain.Partners;
 import dlt.dltbackendmaster.domain.Profiles;
+import dlt.dltbackendmaster.domain.Province;
 import dlt.dltbackendmaster.domain.References;
 import dlt.dltbackendmaster.domain.ReferencesServices;
 import dlt.dltbackendmaster.domain.Services;
@@ -36,7 +38,7 @@ import dlt.dltbackendmaster.domain.watermelondb.UsersSyncModel;
 
 public class SyncSerializer {
 
-	public static String createSyncObject(SyncObject<Users> users, SyncObject<Locality> localities,
+	public static String createSyncObject(SyncObject<Users> users, SyncObject<Province> provinces, SyncObject<District> districts, SyncObject<Locality> localities,
 			SyncObject<Profiles> profiles, SyncObject<Partners> partners, SyncObject<Us> us,
 			SyncObject<Beneficiaries> beneficiaries, SyncObject<BeneficiariesInterventions> beneficiariesInterventions,
 			SyncObject<Neighborhood> neighborhoods, SyncObject<Services> services, SyncObject<SubServices> subServices,
@@ -45,6 +47,8 @@ public class SyncSerializer {
 		ObjectMapper mapper = new ObjectMapper();
 		ObjectNode changesNode = mapper.createObjectNode();
 		changesNode.set("users", createUserSyncObject(users, lastPulledAt));
+		changesNode.set("provinces", createProvinceSyncObject(provinces));
+		changesNode.set("districts", createDistrictsSyncObject(districts));
 		changesNode.set("localities", createLocalitySyncObject(localities));
 		changesNode.set("partners", createPartnersSyncObject(partners));
 		changesNode.set("profiles", createProfilesSyncObject(profiles));
@@ -112,6 +116,60 @@ public class SyncSerializer {
 		arrayUpdated.addAll(updatedlist);
 		// deleted
 		List<Integer> deletedObjs = mapper.convertValue(locality.getDeleted(), new TypeReference<List<Integer>>() {
+		});
+		ArrayNode arrayDeleted = mapper.valueToTree(deletedObjs);
+		ObjectNode userNode = mapper.createObjectNode();
+		userNode.set("created", arrayCreated);
+		userNode.set("updated", arrayUpdated);
+		userNode.set("deleted", arrayDeleted);
+		return userNode;
+	}
+	
+	public static ObjectNode createProvinceSyncObject(SyncObject<Province> provinces) throws JsonProcessingException {
+		ObjectMapper mapper = new ObjectMapper();
+		// created
+		List<Province> createdObjs = mapper.convertValue(provinces.getCreated(), new TypeReference<List<Province>>() {
+		});
+		List<ObjectNode> createdlist = createdObjs.stream().map((Province element) -> element.toObjectNode())
+				.collect(Collectors.toList());
+		ArrayNode arrayCreated = mapper.createArrayNode();
+		arrayCreated.addAll(createdlist);
+		// updated
+		List<Province> updatedObjs = mapper.convertValue(provinces.getUpdated(), new TypeReference<List<Province>>() {
+		});
+		List<ObjectNode> updatedlist = updatedObjs.stream().map((Province element) -> element.toObjectNode())
+				.collect(Collectors.toList());
+		ArrayNode arrayUpdated = mapper.createArrayNode();
+		arrayUpdated.addAll(updatedlist);
+		// deleted
+		List<Integer> deletedObjs = mapper.convertValue(provinces.getDeleted(), new TypeReference<List<Integer>>() {
+		});
+		ArrayNode arrayDeleted = mapper.valueToTree(deletedObjs);
+		ObjectNode userNode = mapper.createObjectNode();
+		userNode.set("created", arrayCreated);
+		userNode.set("updated", arrayUpdated);
+		userNode.set("deleted", arrayDeleted);
+		return userNode;
+	}
+	
+	public static ObjectNode createDistrictsSyncObject(SyncObject<District> districts) throws JsonProcessingException {
+		ObjectMapper mapper = new ObjectMapper();
+		// created
+		List<District> createdObjs = mapper.convertValue(districts.getCreated(), new TypeReference<List<District>>() {
+		});
+		List<ObjectNode> createdlist = createdObjs.stream().map((District element) -> element.toObjectNode())
+				.collect(Collectors.toList());
+		ArrayNode arrayCreated = mapper.createArrayNode();
+		arrayCreated.addAll(createdlist);
+		// updated
+		List<District> updatedObjs = mapper.convertValue(districts.getUpdated(), new TypeReference<List<District>>() {
+		});
+		List<ObjectNode> updatedlist = updatedObjs.stream().map((District element) -> element.toObjectNode())
+				.collect(Collectors.toList());
+		ArrayNode arrayUpdated = mapper.createArrayNode();
+		arrayUpdated.addAll(updatedlist);
+		// deleted
+		List<Integer> deletedObjs = mapper.convertValue(districts.getDeleted(), new TypeReference<List<Integer>>() {
 		});
 		ArrayNode arrayDeleted = mapper.valueToTree(deletedObjs);
 		ObjectNode userNode = mapper.createObjectNode();

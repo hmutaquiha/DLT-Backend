@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import dlt.dltbackendmaster.domain.Partners;
+import dlt.dltbackendmaster.domain.ServiceType;
+import dlt.dltbackendmaster.domain.Services;
 import dlt.dltbackendmaster.service.DAOService;
 
 @RestController
@@ -48,5 +50,20 @@ public class PartnersController {
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-	}
+	} 
+	@GetMapping(path = "/{partnerType}", produces = "application/json")
+    public ResponseEntity<List<Partners>> get(@PathVariable ServiceType partnerType) {
+
+        if (partnerType == null) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+
+        try {
+            List<Partners> partners = service.GetAllEntityByNamedQuery("Partners.findByPartnerType", String.valueOf(partnerType.ordinal()+1));
+            return new ResponseEntity<>(partners, HttpStatus.OK);
+        } catch (Exception e) {
+        	e.printStackTrace();
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

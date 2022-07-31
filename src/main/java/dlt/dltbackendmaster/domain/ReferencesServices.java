@@ -40,11 +40,13 @@ import dlt.dltbackendmaster.serializers.ServiceSerializer;
 @Entity
 @Table(name = "references_services", catalog = "dreams_db")
 @NamedNativeQueries({
-		@NamedNativeQuery(name = "ReferencesServices.removeByReferenceId", query = "DELETE FROM references_services WHERE reference_id = :referenceId") })
+	@NamedNativeQuery(name = "ReferencesServices.removeByReferenceId", query = "DELETE FROM references_services WHERE reference_id = :referenceId") })
 @NamedQueries({ @NamedQuery(name = "ReferencesServices.findAll", query = "SELECT b FROM ReferencesServices b"),
-		@NamedQuery(name = "ReferencesServices.findByReferenceAndService", query = "SELECT b FROM ReferencesServices b where b.references.id = :reference_id and b.services.id = :service_id"),
-		@NamedQuery(name = "ReferencesServices.findByDateCreated", query = "select b from ReferencesServices b where b.dateUpdated is null and b.dateCreated > :lastpulledat"),
-		@NamedQuery(name = "ReferencesServices.findByDateUpdated", query = "select b from ReferencesServices b where (b.dateUpdated >= :lastpulledat) or (b.dateUpdated >= :lastpulledat and b.dateCreated = b.dateUpdated)") })
+    @NamedQuery(name = "ReferencesServices.findByReference", query = "SELECT r FROM ReferencesServices r where r.references.id = :reference_id"),
+    @NamedQuery(name = "ReferencesServices.findByReferenceAndService", query = "SELECT b FROM ReferencesServices b where b.references.id = :reference_id and b.services.id = :service_id"),
+    @NamedQuery(name = "ReferencesServices.findByBeneficiaryAndService", query = "SELECT r FROM ReferencesServices r where r.references.beneficiaries.id = :beneficiary_id and r.services.id = :service_id"),
+    @NamedQuery(name = "ReferencesServices.findByDateCreated", query = "select b from ReferencesServices b where b.dateUpdated is null and b.dateCreated > :lastpulledat"),
+    @NamedQuery(name = "ReferencesServices.findByDateUpdated", query = "select b from ReferencesServices b where (b.dateUpdated >= :lastpulledat) or (b.dateUpdated >= :lastpulledat and b.dateCreated = b.dateUpdated)") })
 public class ReferencesServices implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;

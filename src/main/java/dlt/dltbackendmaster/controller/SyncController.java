@@ -297,6 +297,7 @@ public class SyncController {
 			throws ParseException, JsonMappingException, JsonProcessingException {
 
 		String lastPulledAt = SyncSerializer.readLastPulledAt(changes);
+
 		// System.out.println("PUSHING " + changes);
 		HashMap<String, Integer> referenceIds = new HashMap<String, Integer>();
 
@@ -358,6 +359,7 @@ public class SyncController {
 					}
 				}
 			}
+
 			if (references != null && references.getCreated().size() > 0) {
 				List<ReferenceSyncModel> createdList = mapper.convertValue(references.getCreated(),
 						new TypeReference<List<ReferenceSyncModel>>() {

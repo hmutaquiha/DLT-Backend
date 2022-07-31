@@ -5,6 +5,8 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
@@ -90,7 +92,7 @@ public class ReferencesServices implements java.io.Serializable {
 		Long t = Long.valueOf(timestamp);
         Date regDate = new Date(t);
         this.references = new References();
-        this.references.setId(model.getReference_id());
+        this.references.setId(Integer.valueOf(model.getReference_id()));
         this.services = new Services();
         this.services.setId(model.getService_id()); 
         this.description = model.getDescription();
@@ -98,11 +100,12 @@ public class ReferencesServices implements java.io.Serializable {
         this.offlineId = model.getId();
         this.dateCreated = regDate;
         this.dateUpdated = regDate;
-        
+		this.id = new ReferencesServicesId();
+		this.id.setReferenceId(Integer.valueOf(model.getReference_id()));
+		this.id.setServiceId(model.getService_id());
 	}
 
 	@EmbeddedId
-
 	@AttributeOverrides({
 			@AttributeOverride(name = "referenceId", column = @Column(name = "reference_id", nullable = false)),
 			@AttributeOverride(name = "serviceId", column = @Column(name = "service_id", nullable = false)) })
@@ -217,7 +220,7 @@ public class ReferencesServices implements java.io.Serializable {
 
 		if (dateUpdated == null || dateUpdated.after(dateCreated) || lastPulledAt == null
 				|| lastPulledAt.equals("null")) {
-			referenceService.put("reference_id", id.getReferenceId());
+			referenceService.put("reference_id", String.valueOf(id.getReferenceId()));
 			referenceService.put("service_id", id.getServiceId());
 			referenceService.put("description", description);
 			referenceService.put("status", status);
@@ -225,6 +228,7 @@ public class ReferencesServices implements java.io.Serializable {
 			referenceService.put("online_id", id.toString()); // flag to control if entity is synchronized with
 																// the backend
 		} else { // ensure online_id is updated first
+			referenceService.put("reference_id", String.valueOf(id.getReferenceId()));
 			referenceService.put("online_id", id.toString());
 		}
 		return referenceService;
@@ -235,7 +239,7 @@ public class ReferencesServices implements java.io.Serializable {
 
 		this.offlineId = model.getId();
 		this.dateUpdated = new Date(t);
-		this.references.setId(model.getReference_id());
+		this.references.setId(Integer.valueOf(model.getReference_id()));
 		this.services.setId(model.getService_id());
 		this.description = model.getDescription();
 		this.status = model.getStatus();

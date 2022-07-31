@@ -228,6 +228,7 @@ public class Partners implements java.io.Serializable {
 		partner.put("name", name);
 		partner.put("abbreviation", abbreviation);
 		partner.put("description", description);
+		partner.put("partner_type", partnerType);
 		partner.put("status", status);
 		partner.put("online_id", id); // flag to control if entity is synchronized with the backend
 		return partner;

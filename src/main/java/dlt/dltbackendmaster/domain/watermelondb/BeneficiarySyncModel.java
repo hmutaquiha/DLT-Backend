@@ -19,6 +19,7 @@ public class BeneficiarySyncModel extends BasicLifeCycleSyncModel
     private Integer partner_id;
     private String entry_point;
     private Integer neighbourhood_id;
+    private String locality_name;
     private Integer us_id;
     private String vblt_lives_with;
     private int vblt_is_orphan;
@@ -46,7 +47,7 @@ public class BeneficiarySyncModel extends BasicLifeCycleSyncModel
     private int vblt_sti_history;
     private int vblt_sex_worker;
     private int vblt_house_sustainer;
-    private String references;
+    private String references_a;
 
     public BeneficiarySyncModel() {}
 
@@ -166,7 +167,16 @@ public class BeneficiarySyncModel extends BasicLifeCycleSyncModel
         this.neighbourhood_id = neighborhood_id;
     }
 
-    public Integer getUs_id() {
+    
+    public String getLocality_name() {
+		return locality_name;
+	}
+
+	public void setLocality_name(String locality_name) {
+		this.locality_name = locality_name;
+	}
+
+	public Integer getUs_id() {
         return us_id;
     }
 
@@ -386,18 +396,16 @@ public class BeneficiarySyncModel extends BasicLifeCycleSyncModel
 		this.e_mail = e_mail;
 	}
 
-	public String getReferences() {
-		return references;
+	public String getReferences_a() {
+		return references_a;
 	}
 
-	public void setReferences(String references) {
-		this.references = references;
+	public void setReferences_a(String references_a) {
+		this.references_a = references_a;
 	}
 
 	public void setVblt_school_grade(Integer vblt_school_grade) {
 		this.vblt_school_grade = vblt_school_grade;
 	}
-	
-	
 
 }

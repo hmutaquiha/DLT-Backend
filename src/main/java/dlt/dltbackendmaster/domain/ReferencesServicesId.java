@@ -38,6 +38,12 @@ public class ReferencesServicesId implements java.io.Serializable {
 	public void setServiceId(int serviceId) {
 		this.serviceId = serviceId;
 	}
+	
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return ""+referenceId+","+serviceId;
+	}
 
 	public boolean equals(Object other) {
 		if ((this == other))

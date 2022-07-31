@@ -3,7 +3,7 @@ package dlt.dltbackendmaster.domain.watermelondb;
 public class ReferenceServicesSyncModel {
 
 	private String id;
-    private Integer reference_id;
+    private String reference_id;
     private Integer service_id;
     private String description;
     private String date_created;
@@ -23,11 +23,11 @@ public class ReferenceServicesSyncModel {
 		this.id = id;
 	}
 
-	public Integer getReference_id() {
+	public String getReference_id() {
 		return reference_id;
 	}
 
-	public void setReference_id(Integer reference_id) {
+	public void setReference_id(String reference_id) {
 		this.reference_id = reference_id;
 	}
 

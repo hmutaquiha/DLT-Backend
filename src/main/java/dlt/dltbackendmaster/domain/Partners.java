@@ -31,7 +31,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 @NamedQueries({
     @NamedQuery(name = "Partners.findAll", query = "SELECT c FROM Partners c"),
     @NamedQuery(name = "Partners.findByDateCreated", query = "SELECT c FROM Partners c WHERE c.dateCreated = :lastpulledat"),
-    @NamedQuery(name = "Partners.findByDateUpdated", query = "SELECT c FROM Partners c WHERE c.dateUpdated = :lastpulledat")})
+    @NamedQuery(name = "Partners.findByDateUpdated", query = "SELECT c FROM Partners c WHERE c.dateUpdated = :lastpulledat"),
+
+@NamedQuery(name = "Partners.findByPartnerType",
+            query = "SELECT c FROM Partners c WHERE c.partnerType = :serviceType") })
 public class Partners implements java.io.Serializable {
 
 	private Integer id;

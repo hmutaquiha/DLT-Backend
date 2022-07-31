@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import dlt.dltbackendmaster.domain.Partners;
 import dlt.dltbackendmaster.domain.Users;
 import dlt.dltbackendmaster.security.EmailSender;
 import dlt.dltbackendmaster.security.utils.PasswordGenerator;
@@ -126,6 +127,21 @@ public class UserController
             Users updatedUser = service.update(user);
             
             return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @GetMapping(path = "/us/{Id}", produces = "application/json")
+    public ResponseEntity<List<Users> > getByUs(@PathVariable Integer Id) {
+
+        if (Id == null) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+
+        try {
+            List<Users> user = service.GetAllEntityByNamedQuery("Users.findByUsId", Id);
+            
+            return new ResponseEntity<>(user, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }

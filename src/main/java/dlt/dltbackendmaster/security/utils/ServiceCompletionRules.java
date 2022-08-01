@@ -1,10 +1,13 @@
 package dlt.dltbackendmaster.security.utils;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import dlt.dltbackendmaster.domain.Beneficiaries;
 import dlt.dltbackendmaster.domain.BeneficiariesInterventions;
+import dlt.dltbackendmaster.domain.References;
+import dlt.dltbackendmaster.domain.ReferencesServices;
 import dlt.dltbackendmaster.domain.SubServices;
 
 /**
@@ -131,10 +134,6 @@ public class ServiceCompletionRules
         return containsAny(ServicesConstants.PROMOCAO_PROVISAO_CONTRACEPCAO, subServices);
     }
 
-    public boolean completedUSPostViolence(List<Integer> subServices) {
-        return subServices.contains(ServicesConstants.APSS_US);
-    }
-
     public static boolean startedSAAJEducationSessions(List<Integer> subServices) {
         return containsAny(ServicesConstants.SESSOES_EDUCATIVAS_SAAJ_MANDATORY, subServices)
                || containsAny(ServicesConstants.SESSOES_EDUCATIVAS_SAAJ_NON_MANDATORY, subServices);
@@ -216,6 +215,11 @@ public class ServiceCompletionRules
                 return completedPostViolenceCare_US(subServices) ? ServicesConstants.ATTENDED
                                 : startedPostViolenceCare_US(subServices) ? ServicesConstants.PARTIALLY_ATTENDED
                                                 : ServicesConstants.PENDING;
+            // FIXME: Remove this option that stands only for testing purposes
+            case 4:
+                return completedPostViolenceCare_CM(subServices) ? ServicesConstants.ATTENDED
+                                : startedPostViolenceCare_CM(subServices) ? ServicesConstants.PARTIALLY_ATTENDED
+                                                : ServicesConstants.PENDING;
             case 9:
                 return completedHIVTestingServices(subServices) ? ServicesConstants.ATTENDED
                                 : ServicesConstants.PENDING;
@@ -225,8 +229,7 @@ public class ServiceCompletionRules
                 return completedCombinedSocioEconomicAprproaches(subServices) ? ServicesConstants.ATTENDED
                                 : ServicesConstants.PENDING;
             case 36:
-                return completedOtherSAAJServices(subServices) ? ServicesConstants.ATTENDED
-                                : ServicesConstants.PENDING;
+                return completedOtherSAAJServices(subServices) ? ServicesConstants.ATTENDED : ServicesConstants.PENDING;
             case 37:
                 return completedSAAJEducationSessions(subServices) ? ServicesConstants.ATTENDED
                                 : startedSAAJEducationSessions(subServices) ? ServicesConstants.PARTIALLY_ATTENDED
@@ -235,31 +238,26 @@ public class ServiceCompletionRules
                 return completedCommunityMobilization(subServices) ? ServicesConstants.ATTENDED
                                 : ServicesConstants.PENDING;
             case 40:
-                return completedFamilyMatters(subServices) ? ServicesConstants.ATTENDED
-                                : ServicesConstants.PENDING;
+                return completedFamilyMatters(subServices) ? ServicesConstants.ATTENDED : ServicesConstants.PENDING;
             case 42:
                 return completedPostViolenceCare_CM(subServices) ? ServicesConstants.ATTENDED
                                 : startedPostViolenceCare_CM(subServices) ? ServicesConstants.PARTIALLY_ATTENDED
                                                 : ServicesConstants.PENDING;
             case 44:
                 return completedAvanteRaparigaSocialAssets(subServices) ? ServicesConstants.ATTENDED
-                                : startedAvanteRaparigaSocialAssets(subServices)
-                                                ? ServicesConstants.PARTIALLY_ATTENDED
+                                : startedAvanteRaparigaSocialAssets(subServices) ? ServicesConstants.PARTIALLY_ATTENDED
                                                 : ServicesConstants.PENDING;
             case 45:
                 return completedAvanteEstudanteSocialAssets(subServices) ? ServicesConstants.ATTENDED
-                                : startedAvanteEstudanteSocialAssets(subServices)
-                                                ? ServicesConstants.PARTIALLY_ATTENDED
+                                : startedAvanteEstudanteSocialAssets(subServices) ? ServicesConstants.PARTIALLY_ATTENDED
                                                 : ServicesConstants.PENDING;
             case 46:
                 return completedGuiaFacilitacaoSocialAssets(subServices) ? ServicesConstants.ATTENDED
-                                : startedGuiaFacilitacaoSocialAssets(subServices)
-                                                ? ServicesConstants.PARTIALLY_ATTENDED
+                                : startedGuiaFacilitacaoSocialAssets(subServices) ? ServicesConstants.PARTIALLY_ATTENDED
                                                 : ServicesConstants.PENDING;
             case 47:
                 return completedAvanteRaparigaHIVPrevention(subServices) ? ServicesConstants.ATTENDED
-                                : startedAvanteRaparigaHIVPrevention(subServices)
-                                                ? ServicesConstants.PARTIALLY_ATTENDED
+                                : startedAvanteRaparigaHIVPrevention(subServices) ? ServicesConstants.PARTIALLY_ATTENDED
                                                 : ServicesConstants.PENDING;
             case 48:
                 return completedAvanteEstudanteHIVPrevention(subServices) ? ServicesConstants.ATTENDED
@@ -292,11 +290,45 @@ public class ServiceCompletionRules
             case 54:
                 return completedPrep(subServices) ? ServicesConstants.ATTENDED : ServicesConstants.PENDING;
             case 55:
-                return completedFinancialLiteracy(subServices) ? ServicesConstants.ATTENDED
-                                : ServicesConstants.PENDING;
+                return completedFinancialLiteracy(subServices) ? ServicesConstants.ATTENDED : ServicesConstants.PENDING;
 
             default:
                 return ServicesConstants.PENDING;
+        }
+    }
+
+    /**
+     * Retorna o estado da referência 
+     * 0 : Pendente 
+     * 1 : Atendida Parcialmente 
+     * 2 : Atendida
+     * 
+     * @param reference
+     * @return
+     */
+    public static Integer getReferenceStatus(References reference) {
+        int pendingServices = 0;
+        int completedServices = 0;
+
+        Set<ReferencesServices> referencesServiceses = reference.getReferencesServiceses();
+
+        for (ReferencesServices referencesServices : referencesServiceses) {
+            Integer referenceServiceStatus = getReferenceServiceStatus(reference.getBeneficiaries(),
+                                                                       referencesServices.getId().getServiceId());
+
+            if (referenceServiceStatus == 0) {
+                pendingServices++;
+            } else if (referenceServiceStatus != 1) {
+                completedServices++;
+            }
+        }
+
+        if (pendingServices == referencesServiceses.size()) {
+            return 0;
+        } else if (completedServices == referencesServiceses.size()) {
+            return 2;
+        } else {
+            return 1;
         }
     }
 

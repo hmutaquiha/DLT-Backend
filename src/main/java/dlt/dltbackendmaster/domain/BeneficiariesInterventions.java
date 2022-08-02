@@ -228,7 +228,7 @@ public class BeneficiariesInterventions implements java.io.Serializable {
 	}
 
 	@JsonDeserialize(using = LocalDateDeserializer.class)
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd ")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	@Transient
 	public LocalDate getDate() {
 		return date;

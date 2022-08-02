@@ -1,5 +1,6 @@
 package dlt.dltbackendmaster.controller;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -16,6 +17,7 @@ import dlt.dltbackendmaster.domain.Beneficiaries;
 import dlt.dltbackendmaster.domain.BeneficiariesInterventions;
 import dlt.dltbackendmaster.domain.References;
 import dlt.dltbackendmaster.domain.ReferencesServices;
+import dlt.dltbackendmaster.domain.ReferencesServicesObject;
 import dlt.dltbackendmaster.domain.SubServices;
 import dlt.dltbackendmaster.security.utils.ServiceCompletionRules;
 import dlt.dltbackendmaster.service.DAOService;
@@ -42,7 +44,7 @@ public class BeneficiaryInterventionController
     }
 
     @PostMapping(consumes = "application/json", produces = "application/json")
-    public ResponseEntity<BeneficiariesInterventions> save(@RequestBody BeneficiariesInterventions intervention) {
+    public ResponseEntity<ReferencesServicesObject> save(@RequestBody BeneficiariesInterventions intervention) {
 
         if (intervention.getId() == null || intervention.getId().getDate() == null || intervention.getUs() == null) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
@@ -63,6 +65,8 @@ public class BeneficiaryInterventionController
                                                                                            beneficiary.getId(),
                                                                                            serviceId);
 
+            List<References> updatedReferences = new ArrayList<>();
+
             for (ReferencesServices referenceServices : referencesServices) {
 
                 Integer referenceServiceStatus = ServiceCompletionRules.getReferenceServiceStatus(beneficiary,
@@ -72,20 +76,24 @@ public class BeneficiaryInterventionController
                     referenceServices.setStatus(referenceServiceStatus);
                     referenceServices.setDateUpdated(new Date());
                     referenceServices.setUpdatedBy(subService.getCreatedBy());
-                    service.update(referenceServices);
-                    
+                    referenceServices = service.update(referenceServices);
+
                     // Actualizar o status da referências
                     References reference = referenceServices.getReferences();
                     Integer referenceStatus = ServiceCompletionRules.getReferenceStatus(reference);
-                    if (referenceStatus.intValue()!=reference.getStatus()) {
+
+                    if (referenceStatus.intValue() != reference.getStatus()) {
                         reference.setStatus(referenceStatus);
                         reference.setDateUpdated(new Date());
                         reference.setUpdatedBy(subService.getCreatedBy());
-                        service.update(reference);
+                        reference = service.update(reference);
                     }
+                    updatedReferences.add(reference);
                 }
             }
-            return new ResponseEntity<>(intervention, HttpStatus.OK);
+            ReferencesServicesObject referenceServiceObject = new ReferencesServicesObject(intervention,
+                                                                                           updatedReferences);
+            return new ResponseEntity<>(referenceServiceObject, HttpStatus.OK);
 
         } catch (Exception e) {
             e.printStackTrace();

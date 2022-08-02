@@ -42,8 +42,10 @@ import dlt.dltbackendmaster.serializers.UsersSerializer;
 @Table(name = "references", catalog = "dreams_db")
 @NamedQueries({
     @NamedQuery(name = "References.findAll", query = "SELECT r FROM References r"),
-    @NamedQuery(name = "References.findByDateCreated", query = "SELECT r FROM References r WHERE r.dateCreated = :lastpulledat"),
-    @NamedQuery(name = "References.findByDateUpdated", query = "SELECT r FROM References r WHERE r.dateUpdated = :lastpulledat")})
+    @NamedQuery(name = "References.findByDateCreated", query = "SELECT b from References b where b.dateUpdated is null and b.dateCreated > :lastpulledat"
+    /*"SELECT r FROM References r WHERE r.dateCreated = :lastpulledat"*/),
+    @NamedQuery(name = "References.findByDateUpdated", query = "SELECT b from Beneficiaries b where (b.dateUpdated >= :lastpulledat) or (b.dateUpdated >= :lastpulledat and b.dateCreated = b.dateUpdated)"
+    /*"SELECT r FROM References r WHERE r.dateUpdated = :lastpulledat"*/)})
 public class References implements java.io.Serializable {
 
     private static final long serialVersionUID = -6756894395137677466L;
@@ -326,24 +328,37 @@ public class References implements java.io.Serializable {
         ObjectMapper mapper =  new ObjectMapper();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         
+        
         ObjectNode reference = mapper.createObjectNode();
-        reference.put("id", id);
-        reference.put("beneficiary_id", beneficiaries.getId());
-        reference.put("notify_to", users.getId());
-        reference.put("reference_note", referenceNote);
-        reference.put("description", description);
-        reference.put("refer_to", referTo);
-        reference.put("book_number", bookNumber);
-        reference.put("reference_code", referenceCode);
-        reference.put("service_type", serviceType);
-        reference.put("remarks", remarks);
-        reference.put("status_ref", statusRef);
-        reference.put("status", status);
-        reference.put("cancel_reason", cancelReason);
-        reference.put("other_reason", otherReason);
-        reference.put("online_id", id);
-        reference.put("created_by", createdBy);
-        reference.put("date_created", dateFormat.format(dateCreated));
+        
+        if (offlineId != null) {
+        	reference.put("id", offlineId);
+        } else {
+        	reference.put("id", id);
+        }
+        
+        if (dateUpdated == null || dateUpdated.after(dateCreated)) {
+        	reference.put("beneficiary_id", beneficiaries.getId());
+            reference.put("notify_to", users.getId());
+            reference.put("reference_note", referenceNote);
+            reference.put("description", description);
+            reference.put("refer_to", referTo);
+            reference.put("book_number", bookNumber);
+            reference.put("reference_code", referenceCode);
+            reference.put("service_type", serviceType);
+            reference.put("remarks", remarks);
+            reference.put("status_ref", statusRef);
+            reference.put("status", status);
+            reference.put("cancel_reason", cancelReason);
+            reference.put("other_reason", otherReason);
+            reference.put("online_id", id);
+            reference.put("created_by", createdBy);
+            reference.put("date_created", dateFormat.format(dateCreated));
+        } else { // ensure online_id is updated first
+        	reference.put("beneficiary_id", beneficiaries.getId());
+        	reference.put("online_id", id);
+        }
+        
         
         return reference;
     }

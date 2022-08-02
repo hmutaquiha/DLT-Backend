@@ -1,7 +1,6 @@
 package dlt.dltbackendmaster.controller;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -14,9 +13,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import dlt.dltbackendmaster.domain.Beneficiaries;
 import dlt.dltbackendmaster.domain.BeneficiariesInterventions;
-import dlt.dltbackendmaster.domain.BeneficiariesInterventionsId;
+import dlt.dltbackendmaster.domain.References;
+import dlt.dltbackendmaster.domain.ReferencesServices;
+import dlt.dltbackendmaster.domain.ReferencesServicesObject;
 import dlt.dltbackendmaster.domain.SubServices;
+import dlt.dltbackendmaster.security.utils.ServiceCompletionRules;
 import dlt.dltbackendmaster.service.DAOService;
 
 @RestController
@@ -41,29 +44,65 @@ public class BeneficiaryInterventionController
     }
 
     @PostMapping(consumes = "application/json", produces = "application/json")
-    public ResponseEntity<BeneficiariesInterventions> save(@RequestBody BeneficiariesInterventions intervention) {
+    public ResponseEntity<ReferencesServicesObject> save(@RequestBody BeneficiariesInterventions intervention) {
 
-    	if(intervention.getId() == null || intervention.getId().getDate() == null || intervention.getUs() == null) {
-    		return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-    	}
+        if (intervention.getId() == null || intervention.getId().getDate() == null || intervention.getUs() == null) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
 
         try {
-        	
+
             intervention.setDateCreated(new Date());
             service.Save(intervention);
-            
+
             SubServices subService = service.find(SubServices.class, intervention.getId().getSubServiceId());
             intervention.setSubServices(subService);
-            return new ResponseEntity<>(intervention, HttpStatus.OK);
-            
+
+            // Actualizar o status dos serviços solicitados
+            Beneficiaries beneficiary = service.find(Beneficiaries.class, intervention.getBeneficiaries().getId());
+            Integer serviceId = subService.getServices().getId();
+            List<ReferencesServices> referencesServices = service.GetAllEntityByNamedQuery("ReferencesServices.findByBeneficiaryAndService",
+                                                                                           beneficiary.getId(),
+                                                                                           serviceId);
+
+            List<References> updatedReferences = new ArrayList<>();
+
+            for (ReferencesServices referenceServices : referencesServices) {
+
+                Integer referenceServiceStatus = ServiceCompletionRules.getReferenceServiceStatus(beneficiary,
+                                                                                                  serviceId);
+
+                if (referenceServiceStatus.intValue() != (referenceServices.getStatus())) {
+                    referenceServices.setStatus(referenceServiceStatus);
+                    referenceServices.setDateUpdated(new Date());
+                    referenceServices.setUpdatedBy(subService.getCreatedBy());
+                    referenceServices = service.update(referenceServices);
+
+                    // Actualizar o status da referências
+                    References reference = referenceServices.getReferences();
+                    Integer referenceStatus = ServiceCompletionRules.getReferenceStatus(reference);
+
+                    if (referenceStatus.intValue() != reference.getStatus()) {
+                        reference.setStatus(referenceStatus);
+                        reference.setDateUpdated(new Date());
+                        reference.setUpdatedBy(subService.getCreatedBy());
+                        reference = service.update(reference);
+                    }
+                    updatedReferences.add(reference);
+                }
+            }
+            ReferencesServicesObject referenceServiceObject = new ReferencesServicesObject(intervention,
+                                                                                           updatedReferences);
+            return new ResponseEntity<>(referenceServiceObject, HttpStatus.OK);
+
         } catch (Exception e) {
-        	e.printStackTrace();
+            e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @SuppressWarnings("unchecked")
-	@PutMapping(consumes = "application/json", produces = "application/json")
+    @PutMapping(consumes = "application/json", produces = "application/json")
     public ResponseEntity update(@RequestBody BeneficiariesInterventions intervention) {
 
         if (intervention.getId() == null || intervention.getId().getDate() == null) {
@@ -72,64 +111,65 @@ public class BeneficiaryInterventionController
 
         try {
 
-        	BeneficiariesInterventions currentIntervention = service.find(BeneficiariesInterventions.class, intervention.getId());
-        	if(currentIntervention == null) {
-        		return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        	} 
-        	
-        	// if key was updated, entry should be disabled and a new one added
-        	if(intervention.getId().getBeneficiaryId() != intervention.getBeneficiaries().getId() || 
-        			intervention.getId().getSubServiceId() != intervention.getSubServices().getId() ||
-        			!intervention.getId().getDate().equals(intervention.getDate())) {
-        		
-        		currentIntervention.setStatus(0);
-        		currentIntervention.setDateUpdated(new Date());
-        		service.delete(currentIntervention); // Must remove to allow new additions with this key afterwards
-        		
-        		BeneficiariesInterventions newInterv = new BeneficiariesInterventions();
-        		newInterv.getId().setBeneficiaryId(intervention.getBeneficiaries().getId());
-        		newInterv.getId().setSubServiceId(intervention.getSubServices().getId());
-        		newInterv.getId().setDate(intervention.getDate());
-        		newInterv.setSubServices(intervention.getSubServices());
-        		newInterv.setBeneficiaries(intervention.getBeneficiaries());
-        		newInterv.setRemarks(intervention.getRemarks());
-        		newInterv.setEntryPoint(intervention.getEntryPoint());
-        		newInterv.setResult(intervention.getResult());
-        		newInterv.setUs(intervention.getUs());
-        		newInterv.setProvider(intervention.getProvider());
-        		newInterv.setStatus(intervention.getStatus());
-        		newInterv.setActivistId(intervention.getActivistId());
-        		newInterv.setCreatedBy(currentIntervention.getCreatedBy());
-        		newInterv.setDateCreated(currentIntervention.getDateCreated());
-        		newInterv.setDateUpdated(new Date());
-        		newInterv.setUpdatedBy(intervention.getUpdatedBy());
-        		
-        		service.Save(newInterv);
-        		
-        		SubServices subService = service.find(SubServices.class, newInterv.getId().getSubServiceId());
-        		newInterv.setSubServices(subService);
-        		
-        		return new ResponseEntity<>(newInterv, HttpStatus.OK);
-        	}
-        	
-        	// Edit fields
-        	
-        	currentIntervention.setRemarks(intervention.getRemarks());
-        	currentIntervention.setUs(intervention.getUs());
-        	currentIntervention.setEntryPoint(intervention.getEntryPoint());
-        	currentIntervention.setResult(intervention.getResult());
-        	currentIntervention.setProvider(intervention.getProvider());
-        	currentIntervention.setStatus(intervention.getStatus());
-        	currentIntervention.setActivistId(intervention.getActivistId());
-        	currentIntervention.setDateUpdated(new Date());
-        	currentIntervention.setUpdatedBy(intervention.getUpdatedBy());
+            BeneficiariesInterventions currentIntervention = service.find(BeneficiariesInterventions.class,
+                                                                          intervention.getId());
 
-        	
+            if (currentIntervention == null) {
+                return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            }
+
+            // if key was updated, entry should be disabled and a new one added
+            if (intervention.getId().getBeneficiaryId() != intervention.getBeneficiaries().getId()
+                || intervention.getId().getSubServiceId() != intervention.getSubServices().getId()
+                || !intervention.getId().getDate().equals(intervention.getDate())) {
+
+                currentIntervention.setStatus(0);
+                currentIntervention.setDateUpdated(new Date());
+                service.delete(currentIntervention); // Must remove to allow new additions with this key afterwards
+
+                BeneficiariesInterventions newInterv = new BeneficiariesInterventions();
+                newInterv.getId().setBeneficiaryId(intervention.getBeneficiaries().getId());
+                newInterv.getId().setSubServiceId(intervention.getSubServices().getId());
+                newInterv.getId().setDate(intervention.getDate());
+                newInterv.setSubServices(intervention.getSubServices());
+                newInterv.setBeneficiaries(intervention.getBeneficiaries());
+                newInterv.setRemarks(intervention.getRemarks());
+                newInterv.setEntryPoint(intervention.getEntryPoint());
+                newInterv.setResult(intervention.getResult());
+                newInterv.setUs(intervention.getUs());
+                newInterv.setProvider(intervention.getProvider());
+                newInterv.setStatus(intervention.getStatus());
+                newInterv.setActivistId(intervention.getActivistId());
+                newInterv.setCreatedBy(currentIntervention.getCreatedBy());
+                newInterv.setDateCreated(currentIntervention.getDateCreated());
+                newInterv.setDateUpdated(new Date());
+                newInterv.setUpdatedBy(intervention.getUpdatedBy());
+
+                service.Save(newInterv);
+
+                SubServices subService = service.find(SubServices.class, newInterv.getId().getSubServiceId());
+                newInterv.setSubServices(subService);
+
+                return new ResponseEntity<>(newInterv, HttpStatus.OK);
+            }
+
+            // Edit fields
+
+            currentIntervention.setRemarks(intervention.getRemarks());
+            currentIntervention.setUs(intervention.getUs());
+            currentIntervention.setEntryPoint(intervention.getEntryPoint());
+            currentIntervention.setResult(intervention.getResult());
+            currentIntervention.setProvider(intervention.getProvider());
+            currentIntervention.setStatus(intervention.getStatus());
+            currentIntervention.setActivistId(intervention.getActivistId());
+            currentIntervention.setDateUpdated(new Date());
+            currentIntervention.setUpdatedBy(intervention.getUpdatedBy());
+
             BeneficiariesInterventions updatedIntervention = service.update(currentIntervention);
             return new ResponseEntity<>(updatedIntervention, HttpStatus.OK);
-            
+
         } catch (Exception e) {
-        	e.printStackTrace();
+            e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

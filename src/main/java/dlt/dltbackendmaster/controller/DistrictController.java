@@ -33,8 +33,10 @@ public class DistrictController {
 		try {			
 			List<District> districts = service.GetAllEntityByNamedQuery("District.findAll");
 			return new ResponseEntity<>(districts, HttpStatus.OK);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
+			
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		

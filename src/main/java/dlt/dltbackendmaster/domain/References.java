@@ -44,7 +44,7 @@ import dlt.dltbackendmaster.serializers.UsersSerializer;
     @NamedQuery(name = "References.findAll", query = "SELECT r FROM References r"),
     @NamedQuery(name = "References.findByDateCreated", query = "SELECT b from References b where b.dateUpdated is null and b.dateCreated > :lastpulledat"
     /*"SELECT r FROM References r WHERE r.dateCreated = :lastpulledat"*/),
-    @NamedQuery(name = "References.findByDateUpdated", query = "SELECT b from Beneficiaries b where (b.dateUpdated >= :lastpulledat) or (b.dateUpdated >= :lastpulledat and b.dateCreated = b.dateUpdated)"
+    @NamedQuery(name = "References.findByDateUpdated", query = "SELECT b from References b where (b.dateUpdated >= :lastpulledat) or (b.dateUpdated >= :lastpulledat and b.dateCreated = b.dateUpdated)"
     /*"SELECT r FROM References r WHERE r.dateUpdated = :lastpulledat"*/)})
 public class References implements java.io.Serializable {
 

@@ -53,13 +53,13 @@ public class SyncSerializer {
 		changesNode.set("partners", createPartnersSyncObject(partners));
 		changesNode.set("profiles", createProfilesSyncObject(profiles));
 		changesNode.set("us", createUsSyncObject(us));
-		changesNode.set("beneficiaries", createBeneficiarySyncObject(beneficiaries));
+		changesNode.set("beneficiaries", createBeneficiarySyncObject(beneficiaries, lastPulledAt));
 		changesNode.set("beneficiaries_interventions",
 				createBeneficiaryInterventionSyncObject(beneficiariesInterventions, lastPulledAt));
 		changesNode.set("neighborhoods", createNeighborhoodSyncObject(neighborhoods));
 		changesNode.set("services", createServiceSyncObject(services));
 		changesNode.set("sub_services", createSubServiceSyncObject(subServices));
-		changesNode.set("references", createReferencesSyncObject(references));
+		changesNode.set("references", createReferencesSyncObject(references, lastPulledAt));
 		changesNode.set("references_services", createReferenceServicesSyncObject(referencesServices, lastPulledAt));
 
 		ObjectNode rootNode = mapper.createObjectNode();
@@ -260,7 +260,7 @@ public class SyncSerializer {
 		return userNode;
 	}
 
-	private static ObjectNode createBeneficiarySyncObject(SyncObject<Beneficiaries> beneficiaries)
+	private static ObjectNode createBeneficiarySyncObject(SyncObject<Beneficiaries> beneficiaries, String lastPulledAt)
 			throws JsonProcessingException {
 		ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule())
 				.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
@@ -268,14 +268,14 @@ public class SyncSerializer {
 		List<Beneficiaries> createdObjs = mapper.convertValue(beneficiaries.getCreated(),
 				new TypeReference<List<Beneficiaries>>() {
 				});
-		List<ObjectNode> createdList = createdObjs.stream().map((Beneficiaries element) -> element.toObjectNode())
+		List<ObjectNode> createdList = createdObjs.stream().map((Beneficiaries element) -> element.toObjectNode(lastPulledAt))
 				.collect(Collectors.toList());
 		ArrayNode arrayCreated = mapper.createArrayNode();
 		arrayCreated.addAll(createdList);
 		List<Beneficiaries> updatedObjs = mapper.convertValue(beneficiaries.getUpdated(),
 				new TypeReference<List<Beneficiaries>>() {
 				});
-		List<ObjectNode> updatedList = updatedObjs.stream().map((Beneficiaries element) -> element.toObjectNode())
+		List<ObjectNode> updatedList = updatedObjs.stream().map((Beneficiaries element) -> element.toObjectNode(lastPulledAt))
 				.collect(Collectors.toList());
 		ArrayNode arrayUpdated = mapper.createArrayNode();
 		arrayUpdated.addAll(updatedList);
@@ -441,21 +441,21 @@ public class SyncSerializer {
 		return subServiceNode;
 	}
 
-	private static ObjectNode createReferencesSyncObject(SyncObject<References> references)
+	private static ObjectNode createReferencesSyncObject(SyncObject<References> references, String lastPulledAt)
 			throws JsonProcessingException {
 		ObjectMapper mapper = new ObjectMapper();
 		List<References> createdObjects = mapper.convertValue(references.getCreated(),
 				new TypeReference<List<References>>() {
 				});
 
-		List<ObjectNode> createdList = createdObjects.stream().map((References element) -> element.toObjectNode())
+		List<ObjectNode> createdList = createdObjects.stream().map((References element) -> element.toObjectNode(lastPulledAt))
 				.collect(Collectors.toList());
 		ArrayNode arrayCreated = mapper.createArrayNode();
 		arrayCreated.addAll(createdList);
 		List<References> updatedObjs = mapper.convertValue(references.getUpdated(),
 				new TypeReference<List<References>>() {
 				});
-		List<ObjectNode> updatedList = updatedObjs.stream().map((References element) -> element.toObjectNode())
+		List<ObjectNode> updatedList = updatedObjs.stream().map((References element) -> element.toObjectNode(lastPulledAt))
 				.collect(Collectors.toList());
 		ArrayNode arrayUpdated = mapper.createArrayNode();
 		arrayUpdated.addAll(updatedList);

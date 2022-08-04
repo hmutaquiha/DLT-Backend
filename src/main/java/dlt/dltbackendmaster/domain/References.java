@@ -324,7 +324,7 @@ public class References implements java.io.Serializable {
 		this.referencesServiceses = referencesServiceses;
 	}
 
-    public ObjectNode toObjectNode() {
+    public ObjectNode toObjectNode(String lastPulledAt) {
         ObjectMapper mapper =  new ObjectMapper();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         
@@ -337,7 +337,7 @@ public class References implements java.io.Serializable {
         	reference.put("id", id);
         }
         
-        if (dateUpdated == null || dateUpdated.after(dateCreated)) {
+        if (dateUpdated == null || dateUpdated.after(dateCreated) || lastPulledAt == null || lastPulledAt.equals("null")) {
         	reference.put("beneficiary_id", beneficiaries.getId());
             reference.put("notify_to", users.getId());
             reference.put("reference_note", referenceNote);

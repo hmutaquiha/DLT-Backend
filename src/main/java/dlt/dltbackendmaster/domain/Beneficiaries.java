@@ -815,7 +815,7 @@ public class Beneficiaries implements java.io.Serializable
         this.referenceses = referenceses;
     }
 
-    public ObjectNode toObjectNode() {
+    public ObjectNode toObjectNode(String lastPulledAt) {
         ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule())
                                                 .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         mapper.setSerializationInclusion(Include.NON_NULL);
@@ -831,7 +831,7 @@ public class Beneficiaries implements java.io.Serializable
             beneficiary.put("id", id);
         }
         
-        if (dateUpdated == null || dateUpdated.after(dateCreated)) {
+        if (dateUpdated == null || dateUpdated.after(dateCreated) || lastPulledAt == null || lastPulledAt.equals("null")) {
             beneficiary.put("id", id);
             beneficiary.put("nui", nui);
             beneficiary.put("name", name);

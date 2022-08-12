@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
-import javax.persistence.ElementCollection;
-
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -17,9 +15,6 @@ import org.springframework.security.core.userdetails.UserDetails;
  */
 public class Account extends Users implements Serializable, UserDetails {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	private Boolean isaccountenabled;
@@ -31,13 +26,13 @@ public class Account extends Users implements Serializable, UserDetails {
 		super();
 	}
 
-	public Account(int id, Locality locality, Partners partner, Profiles profiles, Us us, String surname, String name,
+	public Account(int id, Locality locality, Partners partner, Profiles profiles, String surname, String name,
 			String phoneNumber, String email, String username, String password, String entryPoint, int status,
 			int newPassword,
 			Byte isLocked, Byte isExpired, Byte isCredentialsExpired, Byte isEnabled, int createdBy, Date dateCreated,
 			Integer updatedBy, Date dateUpdated) {
 
-		super(id, partner, profiles, us, surname, name,
+		super(id, partner, profiles, surname, name,
 				phoneNumber, email, username, password, newPassword, entryPoint, status,
 				isLocked, isExpired, isCredentialsExpired, isEnabled, createdBy, dateCreated,
 				updatedBy, dateUpdated);
@@ -50,7 +45,7 @@ public class Account extends Users implements Serializable, UserDetails {
 	}
 
 	public Account(Users user) {
-		super(user.getId(), user.getPartners(), user.getProfiles(), user.getUs(), user.getSurname(),
+		super(user.getId(), user.getPartners(), user.getProfiles(), user.getSurname(),
 				user.getName(), user.getPhoneNumber(), user.getEmail(), user.getUsername(), user.getPassword(),
 				user.getNewPassword(), user.getEntryPoint(),
 				user.getStatus(), user.getIsLocked(), user.getIsExpired(), user.getIsCredentialsExpired(),
@@ -94,7 +89,7 @@ public class Account extends Users implements Serializable, UserDetails {
 
 	public Users toUser() {
 
-		return new Users(getId(), getPartners(), getProfiles(), getUs(),
+		return new Users(getId(), getPartners(), getProfiles(), 
 				getSurname(), getName(), getPhoneNumber(), getEmail(), getUsername(), getPassword(), getNewPassword(),
 				getEntryPoint(), getStatus(), getIsLocked(), getIsExpired(), getIsCredentialsExpired(),
 				getIsEnabled(), getCreatedBy(), getDateCreated(), getUpdatedBy(), getDateUpdated());

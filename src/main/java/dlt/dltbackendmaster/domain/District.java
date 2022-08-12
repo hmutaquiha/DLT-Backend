@@ -30,7 +30,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 @Table(name = "district", catalog = "dreams_db")
 @NamedQueries({
 	@NamedQuery(name = "District.findAll", query = "SELECT u FROM District u"),
-    @NamedQuery(name = "District.findByProvinces", query = "SELECT c FROM District c WHERE c.province.id in (:provinces)")})
+    @NamedQuery(name = "District.findByProvinces", query = "SELECT c FROM District c WHERE c.province.id in (:provinces) and c.status=1")})
 public class District implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;

@@ -114,7 +114,10 @@ public class BeneficiariesInterventions implements java.io.Serializable {
 	}
 	
 	public BeneficiariesInterventions(BeneficiaryInterventionSyncModel model, String timestamp) throws ParseException {
-        Long t = Long.valueOf(timestamp);
+		this.id = new BeneficiariesInterventionsId();
+		this.id.setBeneficiaryId(model.getBeneficiary_id());
+		this.id.setSubServiceId(model.getSub_service_id());
+		Long t = Long.valueOf(timestamp);
         Date regDate = new Date(t);
         this.beneficiaries = new Beneficiaries(model.getBeneficiary_id());
         this.subServices = new SubServices(model.getSub_service_id());

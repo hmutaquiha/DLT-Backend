@@ -34,7 +34,7 @@ import dlt.dltbackendmaster.serializers.LocalitySerializer;
 @Table(name = "neighborhood", catalog = "dreams_db")
 @NamedQueries({
     @NamedQuery(name = "Neighborhood.findAll", query = "SELECT c FROM Neighborhood c"),
-    @NamedQuery(name = "Neighborhood.findByLocalities", query = "SELECT c FROM Neighborhood c WHERE c.locality.id in (:localities)"),
+    @NamedQuery(name = "Neighborhood.findByLocalities", query = "SELECT c FROM Neighborhood c WHERE c.locality.id in (:localities) and c.status=1"),
     @NamedQuery(name = "Neighborhood.findByDateCreated", query = "SELECT c FROM Neighborhood c WHERE c.dateCreated = :lastpulledat"),
     @NamedQuery(name = "Neighborhood.findByDateUpdated", query = "SELECT c FROM Neighborhood c WHERE c.dateUpdated = :lastpulledat")})
 public class Neighborhood implements java.io.Serializable {

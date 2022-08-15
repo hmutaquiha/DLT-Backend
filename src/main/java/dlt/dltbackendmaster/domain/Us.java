@@ -34,11 +34,14 @@ import dlt.dltbackendmaster.serializers.UsTypeSerializer;
 @Table(name = "us", catalog = "dreams_db")
 @NamedQueries({
     @NamedQuery(name = "Us.findAll", query = "SELECT c FROM Us c"),
+    @NamedQuery(name = "Us.findByLocalities", query = "SELECT u FROM Us u where u.localityId in (:localities) and u.status=1"),
     @NamedQuery(name = "Us.findByDateCreated", query = "SELECT c FROM Us c WHERE c.dateCreated = :lastpulledat"),
     @NamedQuery(name = "Us.findByDateUpdated", query = "SELECT c FROM Us c WHERE c.dateUpdated = :lastpulledat")})
 public class Us implements java.io.Serializable {
 
-	private Integer id;
+	private static final long serialVersionUID = 1L;
+    
+    private Integer id;
 	private UsType usType;
 	private String code;
 	private String name;
@@ -52,7 +55,6 @@ public class Us implements java.io.Serializable {
 	private Integer updatedBy;
 	private Date dateUpdated;
 	private Set<BeneficiariesInterventions> beneficiariesInterventionses = new HashSet<BeneficiariesInterventions>(0);
-	private Set<Users> userses = new HashSet<Users>(0);
 	private Set<Beneficiaries> beneficiarieses = new HashSet<Beneficiaries>(0);
 
 	public Us() {
@@ -70,7 +72,7 @@ public class Us implements java.io.Serializable {
 
 	public Us(UsType usType, String code, String name, String description, Float latitude, Float longitude,
 			int localityId, int status, int createdBy, Date dateCreated, Integer updatedBy, Date dateUpdated,
-			Set<BeneficiariesInterventions> beneficiariesInterventionses, Set<Users> userses,
+			Set<BeneficiariesInterventions> beneficiariesInterventionses, 
 			Set<Beneficiaries> beneficiarieses) {
 		this.usType = usType;
 		this.code = code;
@@ -85,7 +87,6 @@ public class Us implements java.io.Serializable {
 		this.updatedBy = updatedBy;
 		this.dateUpdated = dateUpdated;
 		this.beneficiariesInterventionses = beneficiariesInterventionses;
-		this.userses = userses;
 		this.beneficiarieses = beneficiarieses;
 	}
 	
@@ -226,16 +227,6 @@ public class Us implements java.io.Serializable {
 
 	public void setBeneficiariesInterventionses(Set<BeneficiariesInterventions> beneficiariesInterventionses) {
 		this.beneficiariesInterventionses = beneficiariesInterventionses;
-	}
-	
-	@JsonIgnore
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "us")
-	public Set<Users> getUserses() {
-		return this.userses;
-	}
-
-	public void setUserses(Set<Users> userses) {
-		this.userses = userses;
 	}
 
 	@JsonIgnore

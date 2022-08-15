@@ -28,6 +28,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 @Table(name = "province", catalog = "dreams_db")
 @NamedQueries({
     @NamedQuery(name = "Province.findAll", query = "SELECT u FROM Province u"),
+    @NamedQuery(name = "Province.findByStatus", query = "SELECT p FROM Province p where p.status = :status"),
     @NamedQuery(name = "Province.findByIds", query = "SELECT c FROM Province c WHERE c.id in (:provinces)")})
 public class Province implements java.io.Serializable {
 

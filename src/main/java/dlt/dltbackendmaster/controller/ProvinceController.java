@@ -17,6 +17,7 @@ import dlt.dltbackendmaster.domain.District;
 import dlt.dltbackendmaster.domain.Locality;
 import dlt.dltbackendmaster.domain.Neighborhood;
 import dlt.dltbackendmaster.domain.Province;
+import dlt.dltbackendmaster.domain.Us;
 import dlt.dltbackendmaster.service.DAOService;
 
 /**
@@ -27,6 +28,8 @@ import dlt.dltbackendmaster.service.DAOService;
 @RestController
 @RequestMapping("/api")
 public class ProvinceController {
+    
+    private static final Integer ACTIVE = 1;
 	
     private final DAOService service;
     
@@ -43,7 +46,7 @@ public class ProvinceController {
 	
 	@GetMapping("/getprovinces")
 	public ResponseEntity<List<Province>> getProvinces(){
-		List<Province> provinces = service.getAll(Province.class);
+		List<Province> provinces = service.GetAllEntityByNamedQuery("Province.findByStatus", ACTIVE);
 		return ResponseEntity.ok(provinces);
 		
 		//return service.getAll(Province.class);
@@ -84,6 +87,20 @@ public class ProvinceController {
             
             List<Neighborhood> neighborhoods = service.GetAllEntityByNamedQuery("Neighborhood.findByLocalities", localIds);
             return ResponseEntity.ok(neighborhoods);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        
+    }
+    
+    @GetMapping("/localus")
+    public ResponseEntity<List<Us>> getUss(@RequestParam("localities") List<String> localities){
+        try {
+            List<Integer> localIds = localities.stream().map(Integer::parseInt).collect(Collectors.toList());
+            
+            List<Us> us = service.GetAllEntityByNamedQuery("Us.findByLocalities", localIds);
+            return ResponseEntity.ok(us);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);

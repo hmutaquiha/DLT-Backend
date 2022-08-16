@@ -28,7 +28,7 @@ public class DistrictController {
     	this.service = service;
     }
 		
-	@GetMapping("/getdistricts")
+	@GetMapping("/districts")
 	public ResponseEntity<List<District>> getDistricts(){
 		try {			
 			List<District> districts = service.GetAllEntityByNamedQuery("District.findAll");

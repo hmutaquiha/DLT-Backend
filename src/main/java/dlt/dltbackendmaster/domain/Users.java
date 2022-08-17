@@ -3,6 +3,7 @@ package dlt.dltbackendmaster.domain;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -505,6 +506,8 @@ public class Users implements java.io.Serializable
 
         if (dateUpdated == null || dateUpdated.after(dateCreated) || lastPulledAt == null
             || lastPulledAt.equals("null")) {
+        	
+        	int[] usIds = us.stream().mapToInt(Us::getId).toArray();
 
             user.put("name", name);
             user.put("surname", surname);
@@ -514,7 +517,7 @@ public class Users implements java.io.Serializable
             user.put("password", password);
             user.put("entry_point", entryPoint);
             user.put("status", status);
-            // user.put("locality_id", locality.getId());
+            user.put("us_ids", Arrays.toString(usIds));
             user.put("partner_id", partners.getId());
             user.put("profile_id", profiles.getId());
             user.put("online_id", id); // flag to control if entity is synchronized with the backend

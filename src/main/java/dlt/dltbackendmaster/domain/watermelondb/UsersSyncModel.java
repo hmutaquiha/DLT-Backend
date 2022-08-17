@@ -15,7 +15,7 @@ public class UsersSyncModel {
 	private Integer locality_id;
 	private Integer partner_id;
 	private Integer profile_id;
-	private Integer us_id;
+	private String us_ids;
 	private Integer online_id;
 	
 	public UsersSyncModel() {}
@@ -104,11 +104,11 @@ public class UsersSyncModel {
 	public void setProfile_id(Integer profile_id) {
 		this.profile_id = profile_id;
 	}
-	public Integer getUs_id() {
-		return us_id;
+	public String getUs_ids() {
+		return us_ids;
 	}
-	public void setUs_id(Integer us_id) {
-		this.us_id = us_id;
+	public void setUs_ids(String us_id) {
+		this.us_ids = us_id;
 	}
 	public Integer getOnline_id() {
 		return online_id;
@@ -131,7 +131,7 @@ public class UsersSyncModel {
 				+ "locality_id: " + locality_id + "\n"
 				+ "partner_id" + partner_id + "\n"
 				+ "profile_id: " + profile_id + "\n"
-				+ "us_id: " + us_id + "\n"
+				+ "us_id: " + us_ids + "\n"
 				+ "online_id: " + online_id + "\n";
 		return object;
 	}

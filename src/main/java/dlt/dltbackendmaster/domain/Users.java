@@ -130,7 +130,7 @@ public class Users implements java.io.Serializable
     }
 
     public Users(Locality locality, Partners partners, Profiles profiles, String surname, String name,
-                 String phoneNumber, String email, String username, String password, String entryPoint, int status,
+                 String phoneNumber, String email, String username, String password, String entryPoint, Set<Us> us, int status,
                  Byte isLocked, Byte isExpired, Byte isCredentialsExpired, Byte isEnabled, int createdBy,
                  Date dateCreated, Integer updatedBy, Date dateUpdated, String offlineId, Integer newPassword,
                  Set<References> referenceses) {
@@ -143,6 +143,7 @@ public class Users implements java.io.Serializable
         this.username = username;
         this.password = password;
         this.entryPoint = entryPoint;
+        this.us = us;
         this.status = status;
         this.isLocked = isLocked;
         this.isExpired = isExpired;
@@ -158,7 +159,7 @@ public class Users implements java.io.Serializable
     }
 
     public Users(Integer id, Partners partner, Profiles profiles, String surname, String name, String phoneNumber,
-                 String email, String username, String password, Integer newPassword, String entryPoint, int status,
+                 String email, String username, String password, Integer newPassword, String entryPoint, Set<Us> us, int status,
                  Byte isLocked, Byte isExpired, Byte isCredentialsExpired, Byte isEnabled, int createdBy,
                  Date dateCreated, Integer updatedBy, Date dateUpdated) {
         super();
@@ -173,6 +174,7 @@ public class Users implements java.io.Serializable
         this.password = password;
         this.newPassword = newPassword;
         this.entryPoint = entryPoint;
+        this.us = us;
         this.status = status;
         this.isLocked = isLocked;
         this.isExpired = isExpired;

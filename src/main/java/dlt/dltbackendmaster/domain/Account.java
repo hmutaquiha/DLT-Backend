@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Set;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,13 +28,13 @@ public class Account extends Users implements Serializable, UserDetails {
 	}
 
 	public Account(int id, Locality locality, Partners partner, Profiles profiles, String surname, String name,
-			String phoneNumber, String email, String username, String password, String entryPoint, int status,
+			String phoneNumber, String email, String username, String password, String entryPoint, Set<Us> us, int status,
 			int newPassword,
 			Byte isLocked, Byte isExpired, Byte isCredentialsExpired, Byte isEnabled, int createdBy, Date dateCreated,
 			Integer updatedBy, Date dateUpdated) {
 
 		super(id, partner, profiles, surname, name,
-				phoneNumber, email, username, password, newPassword, entryPoint, status,
+				phoneNumber, email, username, password, newPassword, entryPoint, us, status,
 				isLocked, isExpired, isCredentialsExpired, isEnabled, createdBy, dateCreated,
 				updatedBy, dateUpdated);
 
@@ -47,7 +48,7 @@ public class Account extends Users implements Serializable, UserDetails {
 	public Account(Users user) {
 		super(user.getId(), user.getPartners(), user.getProfiles(), user.getSurname(),
 				user.getName(), user.getPhoneNumber(), user.getEmail(), user.getUsername(), user.getPassword(),
-				user.getNewPassword(), user.getEntryPoint(),
+				user.getNewPassword(), user.getEntryPoint(), user.getUs(),
 				user.getStatus(), user.getIsLocked(), user.getIsExpired(), user.getIsCredentialsExpired(),
 				user.getIsEnabled(),
 				user.getCreatedBy(), user.getDateCreated(), user.getUpdatedBy(), user.getDateUpdated());
@@ -91,7 +92,7 @@ public class Account extends Users implements Serializable, UserDetails {
 
 		return new Users(getId(), getPartners(), getProfiles(), 
 				getSurname(), getName(), getPhoneNumber(), getEmail(), getUsername(), getPassword(), getNewPassword(),
-				getEntryPoint(), getStatus(), getIsLocked(), getIsExpired(), getIsCredentialsExpired(),
+				getEntryPoint(), getUs(), getStatus(), getIsLocked(), getIsExpired(), getIsCredentialsExpired(),
 				getIsEnabled(), getCreatedBy(), getDateCreated(), getUpdatedBy(), getDateUpdated());
 	}
 

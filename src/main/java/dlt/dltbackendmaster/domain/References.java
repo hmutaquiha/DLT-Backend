@@ -112,7 +112,6 @@ public class References implements java.io.Serializable {
 		Long t = Long.valueOf(timestamp);
         Date regDate = new Date(t);
         this.offlineId = model.getId();
-		this.dateUpdated = new Date(t);
 		this.beneficiaries = new Beneficiaries();
 		this.beneficiaries.setId(model.getBeneficiary_id());
 		this.bookNumber = model.getBook_number();
@@ -128,7 +127,7 @@ public class References implements java.io.Serializable {
 		this.status = model.getStatus();
 		this.cancelReason = model.getCancel_reason();
 		this.otherReason = model.getOther_reason();
-		this.createdBy = model.getCreated_by();
+		this.createdBy = Integer.valueOf(model.getCreated_by());
         this.dateCreated = regDate;
         this.dateUpdated = regDate;
 	}
@@ -145,7 +144,7 @@ public class References implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "beneficiary_id", nullable = false)
 	@JsonProperty("beneficiaries")
 	@JsonSerialize(using = BeneficiarySerializer.class)
@@ -157,7 +156,7 @@ public class References implements java.io.Serializable {
 		this.beneficiaries = beneficiaries;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "notify_to", nullable = false)
 	@JsonProperty("users")
 	@JsonSerialize(using = UsersSerializer.class)
@@ -315,7 +314,7 @@ public class References implements java.io.Serializable {
         this.offlineId = offlineId;
     }
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "references")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "references")
 	public Set<ReferencesServices> getReferencesServiceses() {
 		return this.referencesServiceses;
 	}
@@ -352,6 +351,7 @@ public class References implements java.io.Serializable {
             reference.put("cancel_reason", cancelReason);
             reference.put("other_reason", otherReason);
             reference.put("online_id", id);
+            reference.put("user_created", createdBy);
             reference.put("created_by", createdBy);
             reference.put("date_created", dateFormat.format(dateCreated));
         } else { // ensure online_id is updated first
@@ -381,7 +381,7 @@ public class References implements java.io.Serializable {
 		this.status = model.getStatus();
 		this.cancelReason = model.getCancel_reason();
 		this.otherReason = model.getOther_reason();
-		this.createdBy = model.getCreated_by();
+		this.createdBy = Integer.valueOf(model.getCreated_by());
 		this.dateCreated = model.getDate_created();
 	}
 

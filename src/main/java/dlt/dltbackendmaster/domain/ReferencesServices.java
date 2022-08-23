@@ -118,7 +118,7 @@ public class ReferencesServices implements java.io.Serializable {
 	}
 
 	@JsonIgnore
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "reference_id", nullable = false, insertable = false, updatable = false)
 	public References getReferences() {
 		return this.references;
@@ -128,7 +128,7 @@ public class ReferencesServices implements java.io.Serializable {
 		this.references = references;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "service_id", nullable = false, insertable = false, updatable = false)
 	@JsonProperty("services")
 	@JsonSerialize(using = ServiceSerializer.class)

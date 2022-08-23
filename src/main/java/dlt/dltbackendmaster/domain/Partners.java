@@ -98,7 +98,7 @@ public class Partners implements java.io.Serializable {
 	}
 
 	@JsonIgnore
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "district_id")
 	public District getDistrict() {
 		return this.district;
@@ -201,7 +201,7 @@ public class Partners implements java.io.Serializable {
 	}
 
 	@JsonIgnore
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "partners")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "partners")
 	public Set<Users> getUserses() {
 		return this.userses;
 	}
@@ -211,7 +211,7 @@ public class Partners implements java.io.Serializable {
 	}
 
 	@JsonIgnore
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "partners")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "partners")
 	public Set<Beneficiaries> getBeneficiarieses() {
 		return this.beneficiarieses;
 	}

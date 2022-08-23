@@ -195,7 +195,7 @@ public class Services implements java.io.Serializable {
 	}
 
 	@JsonIgnore
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "services")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "services")
 	public Set<ReferencesServices> getReferencesServiceses() {
 		return this.referencesServiceses;
 	}
@@ -204,7 +204,7 @@ public class Services implements java.io.Serializable {
 		this.referencesServiceses = referencesServiceses;
 	}
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "services")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "services")
 	public Set<SubServices> getSubServiceses() {
 		return this.subServiceses;
 	}
@@ -214,7 +214,7 @@ public class Services implements java.io.Serializable {
 	}
 
 	@JsonIgnore
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "services")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "services")
 	public Set<CurriculumsServices> getCurriculumsServiceses() {
 		return this.curriculumsServiceses;
 	}

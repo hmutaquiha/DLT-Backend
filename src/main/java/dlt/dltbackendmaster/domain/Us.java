@@ -35,6 +35,7 @@ import dlt.dltbackendmaster.serializers.UsTypeSerializer;
 @NamedQueries({
     @NamedQuery(name = "Us.findAll", query = "SELECT c FROM Us c"),
     @NamedQuery(name = "Us.findByLocalities", query = "SELECT u FROM Us u where u.localityId in (:localities) and u.status=1"),
+    @NamedQuery(name = "Us.findByType", query = "SELECT u FROM Us u where u.usType.entryPoint = :ustype and u.localityId = :locality"),
     @NamedQuery(name = "Us.findByDateCreated", query = "SELECT c FROM Us c WHERE c.dateCreated = :lastpulledat"),
     @NamedQuery(name = "Us.findByDateUpdated", query = "SELECT c FROM Us c WHERE c.dateUpdated = :lastpulledat")})
 public class Us implements java.io.Serializable {

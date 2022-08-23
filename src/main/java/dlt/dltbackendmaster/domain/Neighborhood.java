@@ -106,7 +106,7 @@ public class Neighborhood implements java.io.Serializable
         this.id = id;
     }
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "locality_id", nullable = false)
     @JsonProperty("locality")
     @JsonSerialize(using = LocalitySerializer.class)
@@ -118,7 +118,7 @@ public class Neighborhood implements java.io.Serializable
         this.locality = locality;
     }
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "us_id", nullable = false)
     @JsonProperty("us")
     @JsonSerialize(using = UsSerializer.class)
@@ -196,7 +196,7 @@ public class Neighborhood implements java.io.Serializable
     }
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "neighborhood")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "neighborhood")
     public Set<Beneficiaries> getBeneficiarieses() {
         return this.beneficiarieses;
     }

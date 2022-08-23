@@ -222,7 +222,7 @@ public class Users implements java.io.Serializable
         this.id = id;
     }
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "partner_id", nullable = false)
     @JsonProperty("partners")
     @JsonSerialize(using = PartnersSerializer.class)
@@ -234,7 +234,7 @@ public class Users implements java.io.Serializable
         this.partners = partners;
     }
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "profile_id", nullable = false)
     @JsonProperty("profiles")
     @JsonSerialize(using = ProfilesSerializer.class)
@@ -437,7 +437,7 @@ public class Users implements java.io.Serializable
         this.recoverPasswordToken = recoverPasswordToken;
     }
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "users_localities", catalog = "dreams_db",
                joinColumns = { @JoinColumn(name = "user_id", nullable = false, updatable = false) },
                inverseJoinColumns = { @JoinColumn(name = "locality_id", nullable = false, updatable = false) })
@@ -449,7 +449,7 @@ public class Users implements java.io.Serializable
         this.localities = localities;
     }
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "users_districts", catalog = "dreams_db",
                joinColumns = { @JoinColumn(name = "user_id", nullable = false, updatable = false) },
                inverseJoinColumns = { @JoinColumn(name = "district_id", nullable = false, updatable = false) })
@@ -461,7 +461,7 @@ public class Users implements java.io.Serializable
         this.districts = districts;
     }
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "users_provinces", catalog = "dreams_db",
                joinColumns = { @JoinColumn(name = "user_id", nullable = false, updatable = false) },
                inverseJoinColumns = { @JoinColumn(name = "province_id", nullable = false, updatable = false) })
@@ -473,7 +473,7 @@ public class Users implements java.io.Serializable
         this.provinces = provinces;
     }
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "users_us", catalog = "dreams_db",
                joinColumns = { @JoinColumn(name = "user_id", nullable = false, updatable = false) },
                inverseJoinColumns = { @JoinColumn(name = "us_id", nullable = false, updatable = false) })
@@ -486,7 +486,7 @@ public class Users implements java.io.Serializable
     }
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "users")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "users")
     public Set<References> getReferenceses() {
         return this.referenceses;
     }

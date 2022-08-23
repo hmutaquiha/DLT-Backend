@@ -147,7 +147,7 @@ public class Province implements java.io.Serializable {
 	}
 
 	@JsonIgnore
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "province")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "province")
 	public Set<District> getDistricts() {
 		return this.districts;
 	}

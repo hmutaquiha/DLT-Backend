@@ -99,7 +99,7 @@ public class SubServices implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "service_id", nullable = false)
 	@JsonProperty("service")
     @JsonSerialize(using = ServiceSerializer.class)
@@ -204,7 +204,7 @@ public class SubServices implements java.io.Serializable {
 	}
 
 	@JsonIgnore
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "subServices")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "subServices")
 	public Set<BeneficiariesInterventions> getBeneficiariesInterventionses() {
 		return this.beneficiariesInterventionses;
 	}

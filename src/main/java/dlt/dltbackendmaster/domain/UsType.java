@@ -162,7 +162,7 @@ public class UsType implements java.io.Serializable {
 	}
 
 	@JsonIgnore
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "usType")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "usType")
 	public Set<Us> getUses() {
 		return this.uses;
 	}

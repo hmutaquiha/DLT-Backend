@@ -85,7 +85,7 @@ public class District implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "province_id", nullable = false)
 	public Province getProvince() {
 		return this.province;
@@ -165,7 +165,7 @@ public class District implements java.io.Serializable {
 	}
 
 	@JsonIgnore
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "district")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "district")
 	public Set<Partners> getPartnerses() {
 		return this.partnerses;
 	}
@@ -175,7 +175,7 @@ public class District implements java.io.Serializable {
 	}
 
 	@JsonIgnore
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "district")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "district")
 	public Set<Locality> getLocalities() {
 		return this.localities;
 	}

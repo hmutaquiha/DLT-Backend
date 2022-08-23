@@ -151,7 +151,7 @@ public class BeneficiariesInterventions implements java.io.Serializable {
 	}
 
 	@JsonIgnore
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "beneficiary_id", nullable = false, insertable = false, updatable = false)
 	@JsonProperty("beneficiary")
     @JsonSerialize(using = BeneficiarySerializer.class)
@@ -164,7 +164,7 @@ public class BeneficiariesInterventions implements java.io.Serializable {
 	}
 
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "sub_service_id", nullable = false, insertable = false, updatable = false)
 	public SubServices getSubServices() {
 		return this.subServices;
@@ -174,7 +174,7 @@ public class BeneficiariesInterventions implements java.io.Serializable {
 		this.subServices = subServices;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "us_id", nullable = false)
 	@JsonProperty("us")
     @JsonSerialize(using = UsSerializer.class)

@@ -8,7 +8,6 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -28,15 +27,11 @@ import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.annotation.JsonInclude.Value;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
@@ -52,6 +47,9 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 @Table(name = "beneficiaries", catalog = "dreams_db", uniqueConstraints = @UniqueConstraint(columnNames = "nui"))
 @NamedQueries({ @NamedQuery(name = "Beneficiary.findAll", query = "SELECT b FROM Beneficiaries b"),
                 @NamedQuery(name = "Beneficiary.findByNui", query = "SELECT b FROM Beneficiaries b where nui = :nui"),
+                @NamedQuery(name = "Beneficiary.findByLocalities", query = "SELECT b FROM Beneficiaries b where neighborhood.locality.id in (:localities)"),
+                @NamedQuery(name = "Beneficiary.findByDistricts", query = "SELECT b FROM Beneficiaries b where neighborhood.locality.district.id in (:districts)"),
+                @NamedQuery(name = "Beneficiary.findByProvinces", query = "SELECT b FROM Beneficiaries b where neighborhood.locality.district.province.id in (:provinces)"),
                 @NamedQuery(name = "Beneficiary.findByDateCreated",
                             query = "select b from Beneficiaries b where b.dateUpdated is null and b.dateCreated > :lastpulledat"),
                 @NamedQuery(name = "Beneficiary.findByDateUpdated",
@@ -315,7 +313,7 @@ public class Beneficiaries implements java.io.Serializable
         this.id = id;
     }
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "neighbourhood_id", nullable = false)
     @JsonProperty("neighborhood")
     @JsonSerialize(using = NeighborhoodSerializer.class)
@@ -327,7 +325,7 @@ public class Beneficiaries implements java.io.Serializable
         this.neighborhood = neighborhood;
     }
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "partner")
     @JsonProperty("partner")
     @JsonSerialize(using = PartnersSerializer.class)
@@ -339,7 +337,7 @@ public class Beneficiaries implements java.io.Serializable
         this.partners = partners;
     }
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "us_id", nullable = false)
     @JsonProperty("us")
     @JsonSerialize(using = UsSerializer.class)
@@ -788,7 +786,7 @@ public class Beneficiaries implements java.io.Serializable
     }
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "beneficiaries")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "beneficiaries")
     public Set<VulnerabilityHistory> getVulnerabilityHistories() {
         return this.vulnerabilityHistories;
     }
@@ -797,7 +795,7 @@ public class Beneficiaries implements java.io.Serializable
         this.vulnerabilityHistories = vulnerabilityHistories;
     }
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "beneficiaries")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "beneficiaries")
     public Set<BeneficiariesInterventions> getBeneficiariesInterventionses() {
         return this.beneficiariesInterventionses;
     }
@@ -806,7 +804,7 @@ public class Beneficiaries implements java.io.Serializable
         this.beneficiariesInterventionses = beneficiariesInterventionses;
     }
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "beneficiaries")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "beneficiaries")
     public Set<References> getReferenceses() {
         return this.referenceses;
     }

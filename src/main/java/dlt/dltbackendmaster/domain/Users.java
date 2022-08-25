@@ -3,6 +3,7 @@ package dlt.dltbackendmaster.domain;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -129,7 +130,7 @@ public class Users implements java.io.Serializable
     }
 
     public Users(Locality locality, Partners partners, Profiles profiles, String surname, String name,
-                 String phoneNumber, String email, String username, String password, String entryPoint, int status,
+                 String phoneNumber, String email, String username, String password, String entryPoint, Set<Us> us, int status,
                  Byte isLocked, Byte isExpired, Byte isCredentialsExpired, Byte isEnabled, int createdBy,
                  Date dateCreated, Integer updatedBy, Date dateUpdated, String offlineId, Integer newPassword,
                  Set<References> referenceses) {
@@ -142,6 +143,7 @@ public class Users implements java.io.Serializable
         this.username = username;
         this.password = password;
         this.entryPoint = entryPoint;
+        this.us = us;
         this.status = status;
         this.isLocked = isLocked;
         this.isExpired = isExpired;
@@ -157,7 +159,7 @@ public class Users implements java.io.Serializable
     }
 
     public Users(Integer id, Partners partner, Profiles profiles, String surname, String name, String phoneNumber,
-                 String email, String username, String password, Integer newPassword, String entryPoint, int status,
+                 String email, String username, String password, Integer newPassword, String entryPoint, Set<Us> us, int status,
                  Byte isLocked, Byte isExpired, Byte isCredentialsExpired, Byte isEnabled, int createdBy,
                  Date dateCreated, Integer updatedBy, Date dateUpdated) {
         super();
@@ -172,6 +174,7 @@ public class Users implements java.io.Serializable
         this.password = password;
         this.newPassword = newPassword;
         this.entryPoint = entryPoint;
+        this.us = us;
         this.status = status;
         this.isLocked = isLocked;
         this.isExpired = isExpired;
@@ -219,7 +222,7 @@ public class Users implements java.io.Serializable
         this.id = id;
     }
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "partner_id", nullable = false)
     @JsonProperty("partners")
     @JsonSerialize(using = PartnersSerializer.class)
@@ -231,7 +234,7 @@ public class Users implements java.io.Serializable
         this.partners = partners;
     }
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "profile_id", nullable = false)
     @JsonProperty("profiles")
     @JsonSerialize(using = ProfilesSerializer.class)
@@ -434,7 +437,7 @@ public class Users implements java.io.Serializable
         this.recoverPasswordToken = recoverPasswordToken;
     }
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "users_localities", catalog = "dreams_db",
                joinColumns = { @JoinColumn(name = "user_id", nullable = false, updatable = false) },
                inverseJoinColumns = { @JoinColumn(name = "locality_id", nullable = false, updatable = false) })
@@ -446,7 +449,7 @@ public class Users implements java.io.Serializable
         this.localities = localities;
     }
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "users_districts", catalog = "dreams_db",
                joinColumns = { @JoinColumn(name = "user_id", nullable = false, updatable = false) },
                inverseJoinColumns = { @JoinColumn(name = "district_id", nullable = false, updatable = false) })
@@ -458,7 +461,7 @@ public class Users implements java.io.Serializable
         this.districts = districts;
     }
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "users_provinces", catalog = "dreams_db",
                joinColumns = { @JoinColumn(name = "user_id", nullable = false, updatable = false) },
                inverseJoinColumns = { @JoinColumn(name = "province_id", nullable = false, updatable = false) })
@@ -470,7 +473,7 @@ public class Users implements java.io.Serializable
         this.provinces = provinces;
     }
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "users_us", catalog = "dreams_db",
                joinColumns = { @JoinColumn(name = "user_id", nullable = false, updatable = false) },
                inverseJoinColumns = { @JoinColumn(name = "us_id", nullable = false, updatable = false) })
@@ -483,7 +486,7 @@ public class Users implements java.io.Serializable
     }
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "users")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "users")
     public Set<References> getReferenceses() {
         return this.referenceses;
     }
@@ -505,6 +508,8 @@ public class Users implements java.io.Serializable
 
         if (dateUpdated == null || dateUpdated.after(dateCreated) || lastPulledAt == null
             || lastPulledAt.equals("null")) {
+        	
+        	int[] usIds = us.stream().mapToInt(Us::getId).toArray();
 
             user.put("name", name);
             user.put("surname", surname);
@@ -514,7 +519,7 @@ public class Users implements java.io.Serializable
             user.put("password", password);
             user.put("entry_point", entryPoint);
             user.put("status", status);
-            // user.put("locality_id", locality.getId());
+            user.put("us_ids", Arrays.toString(usIds));
             user.put("partner_id", partners.getId());
             user.put("profile_id", profiles.getId());
             user.put("online_id", id); // flag to control if entity is synchronized with the backend

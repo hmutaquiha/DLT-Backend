@@ -112,7 +112,10 @@ public class BeneficiariesInterventions implements java.io.Serializable {
 	}
 	
 	public BeneficiariesInterventions(BeneficiaryInterventionSyncModel model, String timestamp) throws ParseException {
-        Long t = Long.valueOf(timestamp);
+		this.id = new BeneficiariesInterventionsId();
+		this.id.setBeneficiaryId(model.getBeneficiary_id());
+		this.id.setSubServiceId(model.getSub_service_id());
+		Long t = Long.valueOf(timestamp);
         Date regDate = new Date(t);
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate date = LocalDate.parse(model.getDate(), dtf);
@@ -148,7 +151,7 @@ public class BeneficiariesInterventions implements java.io.Serializable {
 	}
 
 	@JsonIgnore
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "beneficiary_id", nullable = false, insertable = false, updatable = false)
 	@JsonProperty("beneficiary")
     @JsonSerialize(using = BeneficiarySerializer.class)
@@ -161,7 +164,7 @@ public class BeneficiariesInterventions implements java.io.Serializable {
 	}
 
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "sub_service_id", nullable = false, insertable = false, updatable = false)
 	public SubServices getSubServices() {
 		return this.subServices;
@@ -171,7 +174,7 @@ public class BeneficiariesInterventions implements java.io.Serializable {
 		this.subServices = subServices;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "us_id", nullable = false)
 	@JsonProperty("us")
     @JsonSerialize(using = UsSerializer.class)

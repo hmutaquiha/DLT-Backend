@@ -32,8 +32,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
     @NamedQuery(name = "Partners.findAll", query = "SELECT c FROM Partners c"),
     @NamedQuery(name = "Partners.findByDateCreated", query = "SELECT c FROM Partners c WHERE c.dateCreated = :lastpulledat"),
     @NamedQuery(name = "Partners.findByDateUpdated", query = "SELECT c FROM Partners c WHERE c.dateUpdated = :lastpulledat"),
-
-@NamedQuery(name = "Partners.findByPartnerType",
+    @NamedQuery(name = "Partners.findByTypeDistrict", query = "SELECT c FROM Partners c WHERE c.partnerType = :serviceType and c.district.id = :district"),
+    @NamedQuery(name = "Partners.findByPartnerType",
             query = "SELECT c FROM Partners c WHERE c.partnerType = :serviceType") })
 public class Partners implements java.io.Serializable {
 
@@ -98,7 +98,7 @@ public class Partners implements java.io.Serializable {
 	}
 
 	@JsonIgnore
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "district_id")
 	public District getDistrict() {
 		return this.district;
@@ -201,7 +201,7 @@ public class Partners implements java.io.Serializable {
 	}
 
 	@JsonIgnore
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "partners")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "partners")
 	public Set<Users> getUserses() {
 		return this.userses;
 	}
@@ -211,7 +211,7 @@ public class Partners implements java.io.Serializable {
 	}
 
 	@JsonIgnore
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "partners")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "partners")
 	public Set<Beneficiaries> getBeneficiarieses() {
 		return this.beneficiarieses;
 	}

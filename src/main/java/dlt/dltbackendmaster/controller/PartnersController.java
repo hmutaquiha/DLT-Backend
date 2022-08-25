@@ -37,7 +37,7 @@ public class PartnersController {
 		}
 	}
 
-	@GetMapping(path = "/{id}", consumes = "application/json")
+	@GetMapping(path = "/{id}", produces = "application/json")
 	public ResponseEntity<Partners> get(@PathVariable Integer id){
 		if(id == null ) {
 			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
@@ -60,6 +60,22 @@ public class PartnersController {
 
         try {
             List<Partners> partners = service.GetAllEntityByNamedQuery("Partners.findByPartnerType", String.valueOf(partnerType.ordinal()+1));
+            return new ResponseEntity<>(partners, HttpStatus.OK);
+        } catch (Exception e) {
+        	e.printStackTrace();
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+	
+	@GetMapping(path = "/{partnerType}/{district}", produces = "application/json")
+    public ResponseEntity<List<Partners>> getByTypeDistrict(@PathVariable ServiceType partnerType, @PathVariable Integer district) {
+
+        if (partnerType == null || district == null) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+
+        try {
+            List<Partners> partners = service.GetAllEntityByNamedQuery("Partners.findByTypeDistrict", String.valueOf(partnerType.ordinal()+1), district);
             return new ResponseEntity<>(partners, HttpStatus.OK);
         } catch (Exception e) {
         	e.printStackTrace();

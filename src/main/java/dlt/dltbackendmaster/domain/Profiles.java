@@ -132,7 +132,7 @@ public class Profiles implements java.io.Serializable {
 	}
 
 	@JsonIgnore
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "profiles")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "profiles")
 	public Set<Users> getUserses() {
 		return this.userses;
 	}

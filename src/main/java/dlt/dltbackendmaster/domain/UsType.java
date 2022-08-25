@@ -29,6 +29,7 @@ public class UsType implements java.io.Serializable {
 	private String level;
 	private String type;
 	private String description;
+	private int entryPoint;
 	private int status;
 	private int createdBy;
 	private Date dateCreated;
@@ -110,6 +111,15 @@ public class UsType implements java.io.Serializable {
 		this.description = description;
 	}
 
+	@Column(name = "entry_point")
+	public int getEntryPoint() {
+		return entryPoint;
+	}
+
+	public void setEntryPoint(int entryPoint) {
+		this.entryPoint = entryPoint;
+	}
+
 	@Column(name = "status", nullable = false)
 	public int getStatus() {
 		return this.status;
@@ -162,7 +172,7 @@ public class UsType implements java.io.Serializable {
 	}
 
 	@JsonIgnore
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "usType")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "usType")
 	public Set<Us> getUses() {
 		return this.uses;
 	}

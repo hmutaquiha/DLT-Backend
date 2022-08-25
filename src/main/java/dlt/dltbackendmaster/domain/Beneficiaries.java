@@ -8,7 +8,6 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -28,15 +27,11 @@ import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.annotation.JsonInclude.Value;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
@@ -52,6 +47,9 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 @Table(name = "beneficiaries", catalog = "dreams_db", uniqueConstraints = @UniqueConstraint(columnNames = "nui"))
 @NamedQueries({ @NamedQuery(name = "Beneficiary.findAll", query = "SELECT b FROM Beneficiaries b"),
                 @NamedQuery(name = "Beneficiary.findByNui", query = "SELECT b FROM Beneficiaries b where nui = :nui"),
+                @NamedQuery(name = "Beneficiary.findByLocalities", query = "SELECT b FROM Beneficiaries b where neighborhood.locality.id in (:localities)"),
+                @NamedQuery(name = "Beneficiary.findByDistricts", query = "SELECT b FROM Beneficiaries b where neighborhood.locality.district.id in (:districts)"),
+                @NamedQuery(name = "Beneficiary.findByProvinces", query = "SELECT b FROM Beneficiaries b where neighborhood.locality.district.province.id in (:provinces)"),
                 @NamedQuery(name = "Beneficiary.findByDateCreated",
                             query = "select b from Beneficiaries b where b.dateUpdated is null and b.dateCreated > :lastpulledat"),
                 @NamedQuery(name = "Beneficiary.findByDateUpdated",

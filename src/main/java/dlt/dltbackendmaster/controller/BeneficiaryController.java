@@ -1,16 +1,19 @@
 package dlt.dltbackendmaster.controller;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import dlt.dltbackendmaster.domain.Beneficiaries;
@@ -23,6 +26,7 @@ import dlt.dltbackendmaster.service.SequenceGenerator;
 public class BeneficiaryController
 {
     private final DAOService service;
+
     private SequenceGenerator generator;
 
     public BeneficiaryController(DAOService service) {
@@ -31,13 +35,25 @@ public class BeneficiaryController
     }
 
     @GetMapping(produces = "application/json")
-    public ResponseEntity<List<Beneficiaries>> getAll() {
+    public ResponseEntity<List<Beneficiaries>> get(@RequestParam(name = "profile") Integer profile, @RequestParam(name = "level") String level, @RequestParam(name = "params",
+                                                                                                                                                              required = false) @Nullable Integer[] params) {
 
         try {
-            List<Beneficiaries> beneficiaries = service.getAll(Beneficiaries.class);
+            List<Beneficiaries> beneficiaries = null;
+
+            if (level.equals("CENTRAL")) {
+                beneficiaries = service.getAll(Beneficiaries.class);
+            } else if (level.equals("PROVINCIAL")) {
+                beneficiaries = service.GetAllEntityByNamedQuery("Beneficiary.findByProvinces", Arrays.asList(params));
+            } else if (level.equals("DISTRITAL")) {
+                beneficiaries = service.GetAllEntityByNamedQuery("Beneficiary.findByDistricts", Arrays.asList(params));
+            } else {
+                beneficiaries = service.GetAllEntityByNamedQuery("Beneficiary.findByLocalities", Arrays.asList(params));
+            }
+
             return new ResponseEntity<List<Beneficiaries>>(beneficiaries, HttpStatus.OK);
         } catch (Exception e) {
-            // e.printStackTrace();
+            // TODO Auto-generated catch block
             System.out.println(e.getMessage());
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }

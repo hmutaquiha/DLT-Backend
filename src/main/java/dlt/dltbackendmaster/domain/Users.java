@@ -31,6 +31,8 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import dlt.dltbackendmaster.domain.watermelondb.UsersSyncModel;
+import dlt.dltbackendmaster.serializers.DistrictsSerializer;
+import dlt.dltbackendmaster.serializers.LocalitiesSerializer;
 import dlt.dltbackendmaster.serializers.PartnersSerializer;
 import dlt.dltbackendmaster.serializers.ProfilesSerializer;
 
@@ -441,6 +443,7 @@ public class Users implements java.io.Serializable
     @JoinTable(name = "users_localities", catalog = "dreams_db",
                joinColumns = { @JoinColumn(name = "user_id", nullable = false, updatable = false) },
                inverseJoinColumns = { @JoinColumn(name = "locality_id", nullable = false, updatable = false) })
+    @JsonSerialize(using = LocalitiesSerializer.class)
     public Set<Locality> getLocalities() {
         return this.localities;
     }
@@ -453,6 +456,7 @@ public class Users implements java.io.Serializable
     @JoinTable(name = "users_districts", catalog = "dreams_db",
                joinColumns = { @JoinColumn(name = "user_id", nullable = false, updatable = false) },
                inverseJoinColumns = { @JoinColumn(name = "district_id", nullable = false, updatable = false) })
+    @JsonSerialize(using = DistrictsSerializer.class)
     public Set<District> getDistricts() {
         return this.districts;
     }

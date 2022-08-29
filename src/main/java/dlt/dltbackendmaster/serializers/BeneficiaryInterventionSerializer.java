@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 
 import dlt.dltbackendmaster.domain.BeneficiariesInterventions;
 
-public class BeficiaryInterventionSerializer extends JsonSerializer<BeneficiariesInterventions>
+public class BeneficiaryInterventionSerializer extends JsonSerializer<BeneficiariesInterventions>
 {
 
     @Override

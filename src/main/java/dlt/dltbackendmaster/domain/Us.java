@@ -1,19 +1,21 @@
 package dlt.dltbackendmaster.domain;
 // Generated Jun 13, 2022, 9:37:47 AM by Hibernate Tools 5.2.12.Final
 
+import static javax.persistence.GenerationType.IDENTITY;
+
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQuery;
 import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -25,6 +27,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import dlt.dltbackendmaster.serializers.LocalitySerializer;
 import dlt.dltbackendmaster.serializers.UsTypeSerializer;
 
 /**
@@ -34,10 +37,16 @@ import dlt.dltbackendmaster.serializers.UsTypeSerializer;
 @Table(name = "us", catalog = "dreams_db")
 @NamedQueries({
     @NamedQuery(name = "Us.findAll", query = "SELECT c FROM Us c"),
-    @NamedQuery(name = "Us.findByLocalities", query = "SELECT u FROM Us u where u.localityId in (:localities) and u.status=1"),
-    @NamedQuery(name = "Us.findByType", query = "SELECT u FROM Us u where u.usType.entryPoint = :ustype and u.localityId = :locality"),
+    @NamedQuery(name = "Us.findByLocalities", query = "SELECT u FROM Us u where u.locality.id in (:localities) and u.status=1"),
+    @NamedQuery(name = "Us.findByType", query = "SELECT u FROM Us u where u.usType.entryPoint = :ustype and u.locality.id = :locality"),
     @NamedQuery(name = "Us.findByDateCreated", query = "SELECT c FROM Us c WHERE c.dateCreated = :lastpulledat"),
-    @NamedQuery(name = "Us.findByDateUpdated", query = "SELECT c FROM Us c WHERE c.dateUpdated = :lastpulledat")})
+    @NamedQuery(name = "Us.findByDateUpdated", query = "SELECT c FROM Us c WHERE c.dateUpdated = :lastpulledat"),
+
+	@NamedQuery(name = "Us.findByEPLocalities", query = "SELECT u FROM Us u where u.usType.entryPoint = :entryPoint and u.locality.id in (:localities)"),
+	@NamedQuery(name = "Us.findByEPDistrict", query = "SELECT u FROM Us u where u.usType.entryPoint = :entryPoint and u.locality.district.id in (:distrits)"),
+	@NamedQuery(name = "Us.findByEPProvince", query = "SELECT u FROM Us u where u.usType.entryPoint = :entryPoint and u.locality.district.province.id in (:provinces)")
+
+})
 public class Us implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -49,7 +58,7 @@ public class Us implements java.io.Serializable {
 	private String description;
 	private Float latitude;
 	private Float longitude;
-	private int localityId;
+	private Locality locality;
 	private int status;
 	private int createdBy;
 	private Date dateCreated;
@@ -61,18 +70,18 @@ public class Us implements java.io.Serializable {
 	public Us() {
 	}
 
-	public Us(UsType usType, String code, String name, int localityId, int status, int createdBy, Date dateCreated) {
+	public Us(UsType usType, String code, String name, Locality locality, int status, int createdBy, Date dateCreated) {
 		this.usType = usType;
 		this.code = code;
 		this.name = name;
-		this.localityId = localityId;
+		this.locality = locality;
 		this.status = status;
 		this.createdBy = createdBy;
 		this.dateCreated = dateCreated;
 	}
 
 	public Us(UsType usType, String code, String name, String description, Float latitude, Float longitude,
-			int localityId, int status, int createdBy, Date dateCreated, Integer updatedBy, Date dateUpdated,
+			Locality locality, int status, int createdBy, Date dateCreated, Integer updatedBy, Date dateUpdated,
 			Set<BeneficiariesInterventions> beneficiariesInterventionses, 
 			Set<Beneficiaries> beneficiarieses) {
 		this.usType = usType;
@@ -81,7 +90,7 @@ public class Us implements java.io.Serializable {
 		this.description = description;
 		this.latitude = latitude;
 		this.longitude = longitude;
-		this.localityId = localityId;
+		this.locality = locality;
 		this.status = status;
 		this.createdBy = createdBy;
 		this.dateCreated = dateCreated;
@@ -163,14 +172,16 @@ public class Us implements java.io.Serializable {
 	public void setLongitude(Float longitude) {
 		this.longitude = longitude;
 	}
-
-	@Column(name = "locality_id", nullable = false)
-	public int getLocalityId() {
-		return this.localityId;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "locality_id", nullable = false)
+	@JsonSerialize(using=LocalitySerializer.class)
+	public Locality getLocality() {
+		return this.locality;
 	}
 
-	public void setLocalityId(int localityId) {
-		this.localityId = localityId;
+	public void setLocality(Locality locality) {
+		this.locality = locality;
 	}
 
 	@Column(name = "status", nullable = false)
@@ -243,13 +254,14 @@ public class Us implements java.io.Serializable {
 	public ObjectNode toObjectNode() {
 		ObjectMapper mapper = new ObjectMapper();
 		
-		ObjectNode profile = mapper.createObjectNode();
-		profile.put("id", id);
-		profile.put("name", name);
-		profile.put("description", description);
-		profile.put("status", status);
-		profile.put("online_id", id); // flag to control if entity is synchronized with the backend
-		return profile;
+		ObjectNode us = mapper.createObjectNode();
+		us.put("id", id);
+		us.put("name", name);
+		us.put("description", description);
+		us.put("status", status);
+		us.put("locality_id", locality.getId());
+		us.put("online_id", id); // flag to control if entity is synchronized with the backend
+		return us;
 	} 
 
 }

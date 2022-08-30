@@ -21,6 +21,7 @@ public class DistrictsSerializer extends JsonSerializer<Set<District>>
         for (District value : districts) {
             District district = new District();
             district.setId(value.getId());
+            district.setProvince(value.getProvince());
             district.setCode(value.getCode());
             district.setName(value.getName());
             districtsObjects.add(district);

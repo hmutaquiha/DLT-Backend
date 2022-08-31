@@ -368,7 +368,7 @@ public class SyncController {
 				for (ReferenceSyncModel created : createdList) {
 					if (created.getOnline_id() == null) {
 						References reference = new References(created, lastPulledAt);
-						reference.setCreatedBy(user.getId());
+						reference.setUserCreated(user.getId()+"");
 						service.Save(reference);
 						referenceIds.put(reference.getOfflineId(), reference.getId());
 					}
@@ -468,7 +468,7 @@ public class SyncController {
 
 					if (updated.getOnline_id() == null) {
 						References reference = new References(updated, lastPulledAt);
-						reference.setCreatedBy(user.getId());
+						reference.setUserCreated(user.getId()+"");
 						service.Save(reference);
 
 					} else {

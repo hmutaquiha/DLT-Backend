@@ -23,6 +23,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -64,7 +65,8 @@ public class References implements java.io.Serializable {
 	private Integer status;
 	private Integer cancelReason;
 	private String otherReason;
-	private int createdBy;
+	//private int createdBy;
+	private String userCreated;
 	private Date dateCreated;
 	private Integer updatedBy;
 	private Date dateUpdated;
@@ -74,19 +76,19 @@ public class References implements java.io.Serializable {
 	public References() {
 	}
 
-	public References(Beneficiaries beneficiaries, Users users, String referTo, int statusRef, int createdBy,
+	public References(Beneficiaries beneficiaries, Users users, String referTo, int statusRef, String userCreated,
 			Date dateCreated) {
 		this.beneficiaries = beneficiaries;
 		this.users = users;
 		this.referTo = referTo;
 		this.statusRef = statusRef;
-		this.createdBy = createdBy;
+		this.userCreated = userCreated;
 		this.dateCreated = dateCreated;
 	}
 
 	public References(Beneficiaries beneficiaries, Users users, String referenceNote, String description,
 			String referTo, String bookNumber, String referenceCode, String serviceType, String remarks, int statusRef,
-			Integer status, Integer cancelReason, String otherReason, int createdBy, Date dateCreated,
+			Integer status, Integer cancelReason, String otherReason, String userCreated, Date dateCreated,
 			Integer updatedBy, Date dateUpdated, Set<ReferencesServices> referencesServiceses) {
 		this.beneficiaries = beneficiaries;
 		this.users = users;
@@ -101,7 +103,7 @@ public class References implements java.io.Serializable {
 		this.status = status;
 		this.cancelReason = cancelReason;
 		this.otherReason = otherReason;
-		this.createdBy = createdBy;
+		this.userCreated = userCreated;
 		this.dateCreated = dateCreated;
 		this.updatedBy = updatedBy;
 		this.dateUpdated = dateUpdated;
@@ -127,7 +129,7 @@ public class References implements java.io.Serializable {
 		this.status = model.getStatus();
 		this.cancelReason = model.getCancel_reason();
 		this.otherReason = model.getOther_reason();
-		this.createdBy = Integer.valueOf(model.getCreated_by());
+		this.userCreated = model.getUser_created();
         this.dateCreated = regDate;
         this.dateUpdated = regDate;
 	}
@@ -267,14 +269,16 @@ public class References implements java.io.Serializable {
 		this.otherReason = otherReason;
 	}
 
-	@Column(name = "created_by", nullable = false)
-	public int getCreatedBy() {
-		return this.createdBy;
+	//@Column(name = "created_by", nullable = false)
+	@Column(name = "user_created", length = 45)
+	public String getUserCreated() {
+		return userCreated;
 	}
 
-	public void setCreatedBy(int createdBy) {
-		this.createdBy = createdBy;
+	public void setUserCreated(String userCreated) {
+		this.userCreated = userCreated;
 	}
+	
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "date_created", nullable = false, length = 19)
@@ -351,8 +355,8 @@ public class References implements java.io.Serializable {
             reference.put("cancel_reason", cancelReason);
             reference.put("other_reason", otherReason);
             reference.put("online_id", id);
-            reference.put("user_created", createdBy);
-            reference.put("created_by", createdBy);
+            reference.put("user_created", userCreated);
+            //reference.put("created_by", createdBy);
             reference.put("date_created", dateFormat.format(dateCreated));
         } else { // ensure online_id is updated first
         	reference.put("beneficiary_id", beneficiaries.getId());
@@ -381,7 +385,7 @@ public class References implements java.io.Serializable {
 		this.status = model.getStatus();
 		this.cancelReason = model.getCancel_reason();
 		this.otherReason = model.getOther_reason();
-		this.createdBy = Integer.valueOf(model.getCreated_by());
+		this.userCreated = model.getUser_created();
 		this.dateCreated = model.getDate_created();
 	}
 

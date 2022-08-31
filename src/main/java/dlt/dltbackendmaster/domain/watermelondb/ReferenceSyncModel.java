@@ -16,8 +16,7 @@ public class ReferenceSyncModel{
 	private Integer status_ref;
 	private Integer cancel_reason;
 	private String other_reason;
-	private Integer user_created;
-	private String created_by;
+	private String user_created;
 	private Date date_created;
     private Integer status;
     private String _status;
@@ -106,20 +105,14 @@ public class ReferenceSyncModel{
 		this.other_reason = other_reason;
 	}
 	
-	public Integer getUser_created() {
+	public String getUser_created() {
 		return user_created;
 	}
 
-	public void setUser_created(Integer user_created) {
+	public void setUser_created(String user_created) {
 		this.user_created = user_created;
 	}
 
-	public String getCreated_by() {
-		return created_by;
-	}
-	public void setCreated_by(String createdby) {
-		this.created_by = createdby;
-	}
 	public Date getDate_created() {
 		return date_created;
 	}

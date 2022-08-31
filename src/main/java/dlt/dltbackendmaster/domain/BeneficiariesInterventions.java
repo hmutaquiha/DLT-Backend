@@ -34,6 +34,7 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
 import dlt.dltbackendmaster.domain.watermelondb.BeneficiaryInterventionSyncModel;
 import dlt.dltbackendmaster.serializers.BeneficiarySerializer;
+import dlt.dltbackendmaster.serializers.SubServiceSerializer;
 import dlt.dltbackendmaster.serializers.UsSerializer;
 
 /**
@@ -50,8 +51,10 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 	@NamedQuery(name = "BeneficiaryIntervention.findByDateUpdated",
 		query = "select b from BeneficiariesInterventions b where (b.dateUpdated >= :lastpulledat) or (b.dateUpdated >= :lastpulledat and b.dateCreated = b.dateUpdated)") })
 public class BeneficiariesInterventions implements java.io.Serializable {
-
-	private BeneficiariesInterventionsId id;
+	
+    private static final long serialVersionUID = 1L;
+    
+    private BeneficiariesInterventionsId id;
 	private Beneficiaries beneficiaries;
 	private SubServices subServices;
 	private Us us;
@@ -166,6 +169,7 @@ public class BeneficiariesInterventions implements java.io.Serializable {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "sub_service_id", nullable = false, insertable = false, updatable = false)
+	@JsonSerialize(using = SubServiceSerializer.class)
 	public SubServices getSubServices() {
 		return this.subServices;
 	}

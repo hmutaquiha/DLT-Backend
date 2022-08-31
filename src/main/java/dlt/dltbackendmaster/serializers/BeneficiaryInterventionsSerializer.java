@@ -18,7 +18,7 @@ public class BeneficiaryInterventionsSerializer extends JsonSerializer<Set<Benef
                     throws IOException {
         Set<BeneficiariesInterventions> interventionsObject = new HashSet<>();
 
-        for (BeneficiariesInterventions value : interventionsObject) {
+        for (BeneficiariesInterventions value : interventions) {
             BeneficiariesInterventions intervention = new BeneficiariesInterventions();
             intervention.setBeneficiaries(value.getBeneficiaries());
             intervention.setSubServices(value.getSubServices());
@@ -34,6 +34,8 @@ public class BeneficiaryInterventionsSerializer extends JsonSerializer<Set<Benef
             intervention.setDateCreated(value.getDateCreated());
             intervention.setUpdatedBy(value.getUpdatedBy());
             intervention.setDateUpdated(value.getDateUpdated());
+            
+            interventionsObject.add(intervention);
         }
         gen.writeObject(interventionsObject);
     }

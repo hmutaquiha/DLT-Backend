@@ -175,10 +175,7 @@ public class Us implements java.io.Serializable {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "locality_id", nullable = false)
-<<<<<<< HEAD
-=======
 	@JsonSerialize(using=LocalitySerializer.class)
->>>>>>> upstream/test
 	public Locality getLocality() {
 		return this.locality;
 	}

@@ -28,7 +28,7 @@ public class ServiceController
     public ResponseEntity<List<Services>> getAll() {
 
         try {
-            List<Services> services = service.getAll(Services.class);
+            List<Services> services = service.GetAllEntityByNamedQuery("Service.findAll");
             return new ResponseEntity<>(services, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();

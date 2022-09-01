@@ -27,7 +27,7 @@ public class SubServiceController
     public ResponseEntity<List<SubServices>> getAll() {
 
         try {
-            List<SubServices> subServices = service.getAll(SubServices.class);
+            List<SubServices> subServices = service.GetAllEntityByNamedQuery("SubService.findAll");
             return new ResponseEntity<>(subServices, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();

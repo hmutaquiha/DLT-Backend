@@ -88,14 +88,6 @@ public class UsSyncModel {
 	public void setOnline_id(Integer online_id) {
 		this.online_id = online_id;
 	}
-	
-	public int getEntry_point() {
-		return entry_point;
-	}
-
-	public void setEntry_point(int entry_point) {
-		this.entry_point = entry_point;
-	}
 
 	public ObjectNode toObjectNode() {
 		ObjectMapper mapper = new ObjectMapper();

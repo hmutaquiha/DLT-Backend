@@ -212,7 +212,8 @@ public class Beneficiaries implements java.io.Serializable
         this.surname = model.getSurname();
         this.nickName = model.getNick_name();
         this.name = model.getName();
-        this.partners = new Partners(model.getPartner_id());
+        this.organizationId = model.getOrganization_id();
+        this.partners = new Partners(model.getOrganization_id());
         this.dateOfBirth = model.getDate_of_birth();
         this.gender = model.getGender();
         this.address = model.getAddress();
@@ -221,6 +222,7 @@ public class Beneficiaries implements java.io.Serializable
         this.via = model.getVia();
         this.partnerId = model.getPartner_id();
         this.nationality = 1;
+        this.enrollmentDate = model.getEnrollment_date();
         this.entryPoint = model.getEntry_point();
         this.neighborhood = new Neighborhood(model.getNeighbourhood_id());
         this.us = new Us(model.getUs_id());
@@ -259,6 +261,8 @@ public class Beneficiaries implements java.io.Serializable
         this.nui = model.getNui();
         this.surname = model.getSurname();
         this.nickName = model.getNick_name();
+        this.name = model.getName();
+        this.organizationId = model.getOrganization_id();
         this.partners = new Partners(model.getOrganization_id());
         this.dateOfBirth = model.getDate_of_birth();
         this.gender = model.getGender();
@@ -845,7 +849,7 @@ public class Beneficiaries implements java.io.Serializable
             beneficiary.put("email", EMail);
             beneficiary.put("enrollment_date", enrollmentDate != null ? dateFormat.format(enrollmentDate): null);
             beneficiary.put("via", via);
-            beneficiary.put("partner_id", partnerId == null ? null : 1); // TODO
+            beneficiary.put("partner_id", partnerId);
             beneficiary.put("nationality", nationality);
             beneficiary.put("entry_point", entryPoint);
             beneficiary.put("neighborhood_id", neighborhood.getId());

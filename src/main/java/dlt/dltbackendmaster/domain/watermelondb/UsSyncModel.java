@@ -61,7 +61,15 @@ public class UsSyncModel {
 		return locality_id;
 	}
 
-	public void setLocality_id(int locality_id) {
+	public int getEntry_point() {
+        return entry_point;
+    }
+
+    public void setEntry_point(int entry_point) {
+        this.entry_point = entry_point;
+    }
+
+    public void setLocality_id(int locality_id) {
 		this.locality_id = locality_id;
 	} 	
 
@@ -80,14 +88,6 @@ public class UsSyncModel {
 	public void setOnline_id(Integer online_id) {
 		this.online_id = online_id;
 	}
-	
-	public int getEntry_point() {
-		return entry_point;
-	}
-
-	public void setEntry_point(int entry_point) {
-		this.entry_point = entry_point;
-	}
 
 	public ObjectNode toObjectNode() {
 		ObjectMapper mapper = new ObjectMapper();
@@ -97,6 +97,7 @@ public class UsSyncModel {
 		us.put("name", name);
 		us.put("description", description);
 		us.put("locality_id", locality_id);
+		us.put("entry_point", entry_point);
 		us.put("status", status);
 		us.put("online_id", id); // flag to control if entity is synchronized with the backend
 		return us;

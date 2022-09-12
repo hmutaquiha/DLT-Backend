@@ -15,14 +15,16 @@ public class BeneficiaryInterventionSerializer extends JsonSerializer<Beneficiar
     public void serialize(BeneficiariesInterventions value, JsonGenerator gen, SerializerProvider serializers)
                     throws IOException {
     	BeneficiariesInterventions intervention = new BeneficiariesInterventions();
+    	intervention.setId(value.getId());
         intervention.setBeneficiaries(value.getBeneficiaries());
         intervention.setSubServices(value.getSubServices());
-        //intervention.setDate(value.getId().getDate());
+//        intervention.setDate(value.getId().getDate());
         intervention.setEntryPoint(value.getEntryPoint());
         intervention.setResult(value.getResult());
         intervention.setProvider(value.getProvider());
         intervention.setActivistId(value.getActivistId());
         intervention.setRemarks(value.getRemarks());
+        intervention.setUs(value.getUs());
     //    intervention.setUs_id(String.valueOf(value.getUs().getId()));
         intervention.setStatus(value.getStatus());
         intervention.setCreatedBy(value.getCreatedBy());

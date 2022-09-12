@@ -255,6 +255,8 @@ public class Beneficiaries implements java.io.Serializable
         this.vbltStiHistory = (byte) model.getVblt_sti_history();
         this.vbltSexWorker = (byte) model.getVblt_sex_worker();
         this.vbltHouseSustainer = (byte) model.getVblt_house_sustainer();
+        this.createdBy = model.getCreated_by();
+        this.updatedBy = model.getUpdated_by();
     }
 
     public Beneficiaries(BeneficiarySyncModel model) {
@@ -883,6 +885,8 @@ public class Beneficiaries implements java.io.Serializable
             if(vbltStiHistory != null) beneficiary.put("vblt_sti_history", vbltStiHistory);
             if(vbltSexWorker != null) beneficiary.put("vblt_sex_worker", vbltSexWorker);
             if(vbltHouseSustainer != null) beneficiary.put("vblt_house_sustainer", vbltHouseSustainer);
+            beneficiary.put("created_by", createdBy);
+            if (updatedBy != null) beneficiary.put("updated_by", updatedBy);
             
             int[] ids = referenceses.stream()
                     .mapToInt(References::getId)
@@ -944,6 +948,7 @@ public class Beneficiaries implements java.io.Serializable
         this.vbltStiHistory = (byte) model.getVblt_sti_history();
         this.vbltSexWorker = (byte) model.getVblt_sex_worker();
         this.vbltHouseSustainer = (byte) model.getVblt_house_sustainer();
+        this.updatedBy = model.getUpdated_by();
     }
     
     public void fill(ObjectNode obj, String field, Object value) {

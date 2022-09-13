@@ -128,5 +128,22 @@ public class ReferencesController
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @GetMapping(path = "/user/{Id}", produces = "application/json")
+    public ResponseEntity<List<References>> getRefByUser(@PathVariable String Id) {
+
+        if (Id == null) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+
+        try {
+        	List<References> references= service.GetAllEntityByNamedQuery("References.findAllByUser", Id);
+            return new ResponseEntity<>(references, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+       
+    }
+    
    
 }

@@ -224,7 +224,7 @@ public class Beneficiaries implements java.io.Serializable
         this.nationality = 1;
         this.enrollmentDate = model.getEnrollment_date();
         this.entryPoint = model.getEntry_point();
-        this.neighborhood = new Neighborhood(model.getNeighbourhood_id());
+        this.neighborhood = new Neighborhood(model.getNeighborhood_id());
         this.us = new Us(model.getUs_id());
         this.offlineId = model.getId();
         this.dateCreated = regDate;
@@ -274,7 +274,7 @@ public class Beneficiaries implements java.io.Serializable
         this.via = model.getVia();
         this.partnerId = model.getPartner_id();
         this.entryPoint = model.getEntry_point();
-        this.neighborhood = new Neighborhood(model.getNeighbourhood_id());
+        this.neighborhood = new Neighborhood(model.getNeighborhood_id());
         this.us = new Us(model.getUs_id());
         this.offlineId = model.getId();
         this.vbltLivesWith = model.getVblt_lives_with();
@@ -842,22 +842,26 @@ public class Beneficiaries implements java.io.Serializable
             beneficiary.put("nui", nui);
             beneficiary.put("name", name);
             beneficiary.put("surname", surname);
-            beneficiary.put("nickname", nickName);
+            beneficiary.put("nick_name", nickName);
             beneficiary.put("organization_id", partners.getId());
             beneficiary.put("date_of_birth", dateFormat.format(dateOfBirth));
             beneficiary.put("gender", String.valueOf(gender));
-            beneficiary.put("adress", address);
+            beneficiary.put("address", address);
             beneficiary.put("phone_number", phoneNumber);
-            beneficiary.put("email", EMail);
+            beneficiary.put("e_mail", EMail);
             beneficiary.put("enrollment_date", enrollmentDate != null ? dateFormat.format(enrollmentDate): null);
             beneficiary.put("via", via);
             beneficiary.put("partner_id", partnerId);
             beneficiary.put("nationality", nationality);
             beneficiary.put("entry_point", entryPoint);
             beneficiary.put("neighborhood_id", neighborhood.getId());
-            beneficiary.put("locality_id", neighborhood.getLocality().getId());
-            beneficiary.put("locality_name", neighborhood.getLocality().getName());
-            beneficiary.put("district_code", neighborhood.getLocality().getDistrict().getCode());
+            Locality locality = neighborhood.getLocality();
+            beneficiary.put("locality_id", locality.getId());
+            beneficiary.put("locality_name", locality.getName());
+            District district = locality.getDistrict();
+            beneficiary.put("district_id", district.getId());
+            beneficiary.put("district_code", district.getCode());
+            beneficiary.put("province_id", district.getProvince().getId());
             beneficiary.put("us_id", us.getId());
             if(vbltLivesWith != null) beneficiary.put("vblt_lives_with", vbltLivesWith);
             if(vbltIsOrphan != null) beneficiary.put("vblt_is_orphan", vbltIsOrphan);
@@ -887,6 +891,7 @@ public class Beneficiaries implements java.io.Serializable
             if(vbltHouseSustainer != null) beneficiary.put("vblt_house_sustainer", vbltHouseSustainer);
             beneficiary.put("created_by", createdBy);
             if (updatedBy != null) beneficiary.put("updated_by", updatedBy);
+            beneficiary.put("status", status);
             
             int[] ids = referenceses.stream()
                     .mapToInt(References::getId)
@@ -919,7 +924,7 @@ public class Beneficiaries implements java.io.Serializable
         this.partnerId = model.getPartner_id();
         this.nationality = model.getNationality();
         this.entryPoint = model.getEntry_point();
-        this.neighborhood.setId(model.getNeighbourhood_id());
+        this.neighborhood.setId(model.getNeighborhood_id());
         this.us = new Us(model.getUs_id());
         this.status = Integer.valueOf(model.getStatus());
         this.vbltLivesWith = model.getVblt_lives_with();

@@ -18,10 +18,12 @@ public class BeneficiarySyncModel extends BasicLifeCycleSyncModel
     private Integer nationality;
     private Integer partner_id;
     private String entry_point;
-    private Integer neighbourhood_id;
+    private Integer neighborhood_id;
     private Integer locality_id;
     private String locality_name;
+    private Integer district_id;
     private String district_code;
+    private Integer province_id;
     private Integer us_id;
     private String vblt_lives_with;
     private int vblt_is_orphan;
@@ -163,12 +165,12 @@ public class BeneficiarySyncModel extends BasicLifeCycleSyncModel
         this.entry_point = entry_point;
     }
 
-    public Integer getNeighbourhood_id() {
-        return neighbourhood_id;
+    public Integer getNeighborhood_id() {
+        return neighborhood_id;
     }
 
-    public void setNeighbourhood_id(Integer neighborhood_id) {
-        this.neighbourhood_id = neighborhood_id;
+    public void setNeighborhood_id(Integer neighborhood_id) {
+        this.neighborhood_id = neighborhood_id;
     }
 
     public Integer getLocality_id() {
@@ -187,12 +189,28 @@ public class BeneficiarySyncModel extends BasicLifeCycleSyncModel
 		this.locality_name = locality_name;
 	}
 	
-	public String getDistrict_code() {
+	public Integer getDistrict_id() {
+        return district_id;
+    }
+
+    public void setDistrict_id(Integer district_id) {
+        this.district_id = district_id;
+    }
+
+    public String getDistrict_code() {
         return district_code;
     }
 
     public void setDistrict_code(String district_code) {
         this.district_code = district_code;
+    }
+
+    public Integer getProvince_id() {
+        return province_id;
+    }
+
+    public void setProvince_id(Integer province_id) {
+        this.province_id = province_id;
     }
 
     public Integer getUs_id() {

@@ -52,7 +52,7 @@ public class SequenceGenerator {
 			
 			// extend to 10 chars
 			String s = ("0000000000" + newSequence.getSequence());
-	        s = s.substring (s.length() - 9);
+	        s = s.substring (s.length() - 10);
 			newSequence.setSequence(s);
 			return newSequence;
 		}

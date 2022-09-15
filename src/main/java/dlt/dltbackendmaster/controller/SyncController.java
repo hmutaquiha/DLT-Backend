@@ -342,6 +342,7 @@ public class SyncController {
 					if (created.getOnline_id() == null) {
 						Beneficiaries beneficiary = new Beneficiaries(created, lastPulledAt);
 						beneficiary.setCreatedBy(user.getId());
+						beneficiary.setDateCreated(new Date());
 						service.Save(beneficiary);
 					}
 				}
@@ -418,7 +419,7 @@ public class SyncController {
 				}
 			}
 			if (beneficiaries != null && beneficiaries.getUpdated().size() > 0) {
-				List<BeneficiarySyncModel> updatedList = mapper.convertValue(users.getUpdated(),
+				List<BeneficiarySyncModel> updatedList = mapper.convertValue(beneficiaries.getUpdated(),
 						new TypeReference<List<BeneficiarySyncModel>>() {
 						});
 
@@ -427,11 +428,13 @@ public class SyncController {
 					if (updated.getOnline_id() == null) {
 						Beneficiaries beneficiary = new Beneficiaries(updated, lastPulledAt);
 						beneficiary.setCreatedBy(user.getId());
+						beneficiary.setDateCreated(new Date());
 						service.Save(beneficiary);
 
 					} else {
 						Beneficiaries beneficiary = service.find(Beneficiaries.class, updated.getOnline_id());
 						beneficiary.setUpdatedBy(user.getId());
+						beneficiary.setDateUpdated(new Date());
 						beneficiary.update(updated, lastPulledAt);
 						service.update(beneficiary);
 					}

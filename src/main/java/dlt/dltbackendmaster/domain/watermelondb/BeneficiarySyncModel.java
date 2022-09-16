@@ -52,8 +52,6 @@ public class BeneficiarySyncModel extends BasicLifeCycleSyncModel
     private int vblt_sex_worker;
     private int vblt_house_sustainer;
     private String references_a;
-    private int created_by;
-    private int updated_by;
 
     public BeneficiarySyncModel() {}
 
@@ -444,21 +442,5 @@ public class BeneficiarySyncModel extends BasicLifeCycleSyncModel
 	public void setVblt_school_grade(Integer vblt_school_grade) {
 		this.vblt_school_grade = vblt_school_grade;
 	}
-
-    public int getCreated_by() {
-        return created_by;
-    }
-
-    public void setCreated_by(int created_by) {
-        this.created_by = created_by;
-    }
-
-    public int getUpdated_by() {
-        return updated_by;
-    }
-
-    public void setUpdated_by(int updated_by) {
-        this.updated_by = updated_by;
-    }
 
 }

@@ -207,7 +207,6 @@ public class Beneficiaries implements java.io.Serializable
 
     public Beneficiaries(BeneficiarySyncModel model, String timestamp) {
         Long t = Long.valueOf(timestamp);
-        Date regDate = new Date(t);
         this.nui = model.getNui();
         this.surname = model.getSurname();
         this.nickName = model.getNick_name();
@@ -227,8 +226,6 @@ public class Beneficiaries implements java.io.Serializable
         this.neighborhood = new Neighborhood(model.getNeighborhood_id());
         this.us = new Us(model.getUs_id());
         this.offlineId = model.getId();
-        this.dateCreated = regDate;
-        this.dateUpdated = regDate;
         this.vbltLivesWith = model.getVblt_lives_with();
         this.vbltIsOrphan = (byte) model.getVblt_is_orphan();
         this.vbltIsStudent = (byte) model.getVblt_is_student();
@@ -255,8 +252,6 @@ public class Beneficiaries implements java.io.Serializable
         this.vbltStiHistory = (byte) model.getVblt_sti_history();
         this.vbltSexWorker = (byte) model.getVblt_sex_worker();
         this.vbltHouseSustainer = (byte) model.getVblt_house_sustainer();
-        this.createdBy = model.getCreated_by();
-        this.updatedBy = model.getUpdated_by();
     }
 
     public Beneficiaries(BeneficiarySyncModel model) {
@@ -889,8 +884,6 @@ public class Beneficiaries implements java.io.Serializable
             if(vbltStiHistory != null) beneficiary.put("vblt_sti_history", vbltStiHistory);
             if(vbltSexWorker != null) beneficiary.put("vblt_sex_worker", vbltSexWorker);
             if(vbltHouseSustainer != null) beneficiary.put("vblt_house_sustainer", vbltHouseSustainer);
-            beneficiary.put("created_by", createdBy);
-            if (updatedBy != null) beneficiary.put("updated_by", updatedBy);
             beneficiary.put("status", status);
             
             int[] ids = referenceses.stream()
@@ -953,7 +946,6 @@ public class Beneficiaries implements java.io.Serializable
         this.vbltStiHistory = (byte) model.getVblt_sti_history();
         this.vbltSexWorker = (byte) model.getVblt_sex_worker();
         this.vbltHouseSustainer = (byte) model.getVblt_house_sustainer();
-        this.updatedBy = model.getUpdated_by();
     }
     
     public void fill(ObjectNode obj, String field, Object value) {

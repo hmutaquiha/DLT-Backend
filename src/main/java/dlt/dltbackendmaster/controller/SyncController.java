@@ -342,7 +342,6 @@ public class SyncController {
 					if (created.getOnline_id() == null) {
 						Beneficiaries beneficiary = new Beneficiaries(created, lastPulledAt);
 						beneficiary.setCreatedBy(user.getId());
-						beneficiary.setDateCreated(new Date());
 						service.Save(beneficiary);
 					}
 				}
@@ -428,7 +427,6 @@ public class SyncController {
 					if (updated.getOnline_id() == null) {
 						Beneficiaries beneficiary = new Beneficiaries(updated, lastPulledAt);
 						beneficiary.setCreatedBy(user.getId());
-						beneficiary.setDateCreated(new Date());
 						service.Save(beneficiary);
 
 					} else {

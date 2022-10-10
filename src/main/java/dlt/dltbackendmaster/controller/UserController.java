@@ -2,6 +2,7 @@ package dlt.dltbackendmaster.controller;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -17,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import dlt.dltbackendmaster.domain.Partners;
 import dlt.dltbackendmaster.domain.Users;
 import dlt.dltbackendmaster.security.EmailSender;
 import dlt.dltbackendmaster.security.utils.PasswordGenerator;
@@ -28,7 +28,9 @@ import dlt.dltbackendmaster.service.DAOService;
 public class UserController
 {
     private final DAOService service;
+
     private final PasswordEncoder passwordEncoder;
+
     @Autowired
     private EmailSender emailSender;
 
@@ -67,7 +69,7 @@ public class UserController
 
     @PostMapping(consumes = "application/json", produces = "application/json")
     public ResponseEntity<Users> save(@RequestBody Users user) {
-    	
+
         if (user == null || user.getPartners() == null || user.getProfiles() == null || user.getUs() == null) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
@@ -84,14 +86,14 @@ public class UserController
             Integer userId = (Integer) service.Save(user);
             Users createdUser = service.find(Users.class, userId);
 
-            /*if(user.getEmail() != null) {
-            	String email = user.getEmail();
-            	emailSender.sendEmail(user.getUsername(), password, email, null, true);
-            }*/
-            
+            if (user.getEmail() != null) {
+                String email = user.getEmail();
+                emailSender.sendEmail(user.getUsername(), password, email, null, true);
+            }
+
             return new ResponseEntity<>(createdUser, HttpStatus.OK);
         } catch (Exception e) {
-        	e.printStackTrace();
+            e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -114,7 +116,7 @@ public class UserController
 
     @PutMapping(path = "/change-password", produces = "application/json")
     public ResponseEntity<Users> changePassword(HttpServletRequest request, @RequestBody Users users) {
-  
+
         Users user = service.GetUniqueEntityByNamedQuery("Users.findByUsername", users.getUsername());
 
         if (user == null) {
@@ -125,14 +127,15 @@ public class UserController
             user.setNewPassword(0);
             user.setPassword(passwordEncoder.encode(users.getRecoverPassword()));
             Users updatedUser = service.update(user);
-            
+
             return new ResponseEntity<>(updatedUser, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
     @GetMapping(path = "/us/{Id}", produces = "application/json")
-    public ResponseEntity<List<Users> > getByUs(@PathVariable Integer Id) {
+    public ResponseEntity<List<Users>> getByUs(@PathVariable Integer Id) {
 
         if (Id == null) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
@@ -140,8 +143,26 @@ public class UserController
 
         try {
             List<Users> user = service.GetAllEntityByNamedQuery("Users.findByUsId", Id);
-            
+
             return new ResponseEntity<>(user, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping(path = "/byProfilesAndUser/{profiles}/{userId}", produces = "application/json")
+    public ResponseEntity<List<Users>> getByProfilesAndUser(@PathVariable List<String> profiles, @PathVariable Integer userId) {
+
+        if (profiles == null || userId == null) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+
+        try {
+            Users user = service.find(Users.class, userId);
+            List<Integer> profilesIds = profiles.stream().map(Integer::parseInt).collect(Collectors.toList());
+            List<Users> users = service.GetAllEntityByNamedQuery("Users.findByProfilesAndOrganization", user.getPartners().getId(), profilesIds);
+
+            return new ResponseEntity<>(users, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }

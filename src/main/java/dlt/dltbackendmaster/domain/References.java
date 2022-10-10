@@ -23,15 +23,12 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import dlt.dltbackendmaster.domain.watermelondb.BeneficiarySyncModel;
-import dlt.dltbackendmaster.domain.watermelondb.ReferenceServicesSyncModel;
 import dlt.dltbackendmaster.domain.watermelondb.ReferenceSyncModel;
 import dlt.dltbackendmaster.serializers.BeneficiarySerializer;
 import dlt.dltbackendmaster.serializers.UsersSerializer;
@@ -54,7 +51,8 @@ public class References implements java.io.Serializable {
 
     private Integer id;
 	private Beneficiaries beneficiaries;
-	private Users users;
+	private Users referredBy;
+    private Users users;
 	private String referenceNote;
 	private String description;
 	private String referTo;
@@ -77,9 +75,10 @@ public class References implements java.io.Serializable {
 	public References() {
 	}
 
-	public References(Beneficiaries beneficiaries, Users users, String referTo, int statusRef, String userCreated,
+	public References(Beneficiaries beneficiaries, Users referredBy, Users users, String referTo, int statusRef, String userCreated,
 			Date dateCreated) {
 		this.beneficiaries = beneficiaries;
+        this.referredBy = referredBy;
 		this.users = users;
 		this.referTo = referTo;
 		this.statusRef = statusRef;
@@ -87,11 +86,12 @@ public class References implements java.io.Serializable {
 		this.dateCreated = dateCreated;
 	}
 
-	public References(Beneficiaries beneficiaries, Users users, String referenceNote, String description,
+	public References(Beneficiaries beneficiaries, Users referredBy, Users users, String referenceNote, String description,
 			String referTo, String bookNumber, String referenceCode, String serviceType, String remarks, int statusRef,
 			Integer status, Integer cancelReason, String otherReason, String userCreated, Date dateCreated,
 			Integer updatedBy, Date dateUpdated, Set<ReferencesServices> referencesServiceses) {
 		this.beneficiaries = beneficiaries;
+        this.referredBy = referredBy;
 		this.users = users;
 		this.referenceNote = referenceNote;
 		this.description = description;
@@ -160,6 +160,18 @@ public class References implements java.io.Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "referred_by", nullable = false)
+    @JsonProperty("referredBy")
+    @JsonSerialize(using = UsersSerializer.class)
+    public Users getReferredBy() {
+        return referredBy;
+    }
+
+    public void setReferredBy(Users referredBy) {
+        this.referredBy = referredBy;
+    }
+
+    @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "notify_to", nullable = false)
 	@JsonProperty("users")
 	@JsonSerialize(using = UsersSerializer.class)

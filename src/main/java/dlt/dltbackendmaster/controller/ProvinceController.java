@@ -37,13 +37,23 @@ public class ProvinceController {
     public ProvinceController(DAOService service) {
     	this.service = service;
     }
-	
+
+    @GetMapping(path = "/provinces", produces = "application/json")
+    public ResponseEntity<List<Province>> provinces(){
+        try {
+                List<Province> provinces = service.getAll(Province.class);
+                return ResponseEntity.ok(provinces); 
+            } catch (Exception e) {
+                 return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }       
+    }
+    
 	@PostMapping("/provinces")
 	public ResponseEntity<Province> addProvince(@RequestBody Province province) {
 		Province prov = (Province) service.Save(province); //FIXME: revew this cast
 		return ResponseEntity.ok().body(prov);
 	}
-	
+    
 	@GetMapping("/getprovinces")
 	public ResponseEntity<List<Province>> getProvinces(){
 		List<Province> provinces = service.GetAllEntityByNamedQuery("Province.findByStatus", ACTIVE);

@@ -166,10 +166,15 @@ public class UserController {
 			List<Users> users = service.GetAllEntityByNamedQuery("Users.findByProfilesAndOrganization",
 					user.getPartners().getId(), profilesIds);
 
-			List<Users> filteredUsers = users.stream()
-					.filter(u -> localitiesIds.contains(((Locality)u.getLocalities().toArray()[0]).getId())).collect(Collectors.toList());
+			if (localitiesIds.isEmpty()) {
+				return new ResponseEntity<>(users, HttpStatus.OK);
+			} else {
+				List<Users> filteredUsers = users.stream()
+						.filter(u -> localitiesIds.contains(((Locality) u.getLocalities().toArray()[0]).getId()))
+						.collect(Collectors.toList());
 
-			return new ResponseEntity<>(filteredUsers, HttpStatus.OK);
+				return new ResponseEntity<>(filteredUsers, HttpStatus.OK);
+			}
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}

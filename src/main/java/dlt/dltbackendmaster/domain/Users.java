@@ -45,9 +45,12 @@ import dlt.dltbackendmaster.serializers.UssSerializer;
 @NamedQueries({ @NamedQuery(name = "Users.findAll", query = "SELECT u FROM Users u"),
                 @NamedQuery(name = "Users.findByUsername",
                             query = "SELECT u FROM Users u where u.username = :username"),
-                @NamedQuery(name = "Users.findByUsId", query = "SELECT u FROM Users u INNER JOIN u.us us where us.id in (:us)"),
+                @NamedQuery(name = "Users.findByUsId",
+                            query = "SELECT u FROM Users u INNER JOIN u.us us where us.id in (:us)"),
                 @NamedQuery(name = "Users.findByResetPasswordToken",
                             query = "SELECT u FROM Users u where u.recoverPasswordToken = :recoverPasswordToken"),
+                @NamedQuery(name = "Users.findByProfilesAndOrganization",
+                            query = "SELECT u FROM Users u where u.profiles.id in (:profiles) and u.partners.id = :organizationId"),
                 @NamedQuery(name = "Users.findByDateCreated",
                             query = "select u from Users u where u.dateUpdated is null and u.dateCreated > :lastpulledat"),
                 @NamedQuery(name = "Users.findByDateUpdated",
@@ -133,8 +136,8 @@ public class Users implements java.io.Serializable
     }
 
     public Users(Locality locality, Partners partners, Profiles profiles, String surname, String name,
-                 String phoneNumber, String email, String username, String password, String entryPoint, Set<Us> us, int status,
-                 Byte isLocked, Byte isExpired, Byte isCredentialsExpired, Byte isEnabled, int createdBy,
+                 String phoneNumber, String email, String username, String password, String entryPoint, Set<Us> us,
+                 int status, Byte isLocked, Byte isExpired, Byte isCredentialsExpired, Byte isEnabled, int createdBy,
                  Date dateCreated, Integer updatedBy, Date dateUpdated, String offlineId, Integer newPassword,
                  Set<References> referenceses) {
         this.partners = partners;
@@ -162,8 +165,8 @@ public class Users implements java.io.Serializable
     }
 
     public Users(Integer id, Partners partner, Profiles profiles, String surname, String name, String phoneNumber,
-                 String email, String username, String password, Integer newPassword, String entryPoint, Set<Us> us, int status,
-                 Byte isLocked, Byte isExpired, Byte isCredentialsExpired, Byte isEnabled, int createdBy,
+                 String email, String username, String password, Integer newPassword, String entryPoint, Set<Us> us,
+                 int status, Byte isLocked, Byte isExpired, Byte isCredentialsExpired, Byte isEnabled, int createdBy,
                  Date dateCreated, Integer updatedBy, Date dateUpdated) {
         super();
         this.id = id;
@@ -514,8 +517,8 @@ public class Users implements java.io.Serializable
 
         if (dateUpdated == null || dateUpdated.after(dateCreated) || lastPulledAt == null
             || lastPulledAt.equals("null")) {
-        	
-        	int[] usIds = us.stream().mapToInt(Us::getId).toArray();
+
+            int[] usIds = us.stream().mapToInt(Us::getId).toArray();
 
             user.put("name", name);
             user.put("surname", surname);

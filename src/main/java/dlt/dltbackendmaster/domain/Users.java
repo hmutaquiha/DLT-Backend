@@ -49,6 +49,8 @@ import dlt.dltbackendmaster.serializers.UssSerializer;
                             query = "SELECT u FROM Users u INNER JOIN u.us us where us.id in (:us)"),
                 @NamedQuery(name = "Users.findByResetPasswordToken",
                             query = "SELECT u FROM Users u where u.recoverPasswordToken = :recoverPasswordToken"),
+                @NamedQuery(name = "Users.findByProfiles",
+                			query = "SELECT u FROM Users u where u.profiles.id in (:profiles)"),
                 @NamedQuery(name = "Users.findByProfilesAndOrganization",
                             query = "SELECT u FROM Users u where u.profiles.id in (:profiles) and u.partners.id = :organizationId"),
                 @NamedQuery(name = "Users.findByDateCreated",

@@ -163,8 +163,13 @@ public class UserController {
 			List<Integer> profilesIds = profiles.stream().map(Integer::parseInt).collect(Collectors.toList());
 			List<Integer> localitiesIds = user.getLocalities().stream().map(Locality::getId)
 					.collect(Collectors.toList());
-			List<Users> users = service.GetAllEntityByNamedQuery("Users.findByProfilesAndOrganization",
-					user.getPartners().getId(), profilesIds);
+			List<Users> users = null;
+			if (user.getProvinces().isEmpty()) {
+				users = service.GetAllEntityByNamedQuery("Users.findByProfiles", profilesIds);
+			} else {
+				users = service.GetAllEntityByNamedQuery("Users.findByProfilesAndOrganization",
+						user.getPartners().getId(), profilesIds);
+			}
 
 			if (localitiesIds.isEmpty()) {
 				return new ResponseEntity<>(users, HttpStatus.OK);

@@ -15,7 +15,8 @@ public class LocalitiesSerializer extends JsonSerializer<Set<Locality>>{
 	@Override
 	public void serialize(Set<Locality> localities, JsonGenerator gen, SerializerProvider serializers) throws IOException {
 	    Set<Locality> localitiesObject = new HashSet<>();
-	    for (Locality value : localitiesObject) {
+	    
+	    for (Locality value : localities) {
 	        Locality locality = new Locality();
 	        locality.setId(value.getId());
 	        locality.setName(value.getName());

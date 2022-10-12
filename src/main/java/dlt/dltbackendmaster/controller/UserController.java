@@ -163,13 +163,23 @@ public class UserController {
 			List<Integer> profilesIds = profiles.stream().map(Integer::parseInt).collect(Collectors.toList());
 			List<Integer> localitiesIds = user.getLocalities().stream().map(Locality::getId)
 					.collect(Collectors.toList());
-			List<Users> users = service.GetAllEntityByNamedQuery("Users.findByProfilesAndOrganization",
-					user.getPartners().getId(), profilesIds);
+			List<Users> users = null;
+			if (user.getProvinces().isEmpty()) {
+				users = service.GetAllEntityByNamedQuery("Users.findByProfiles", profilesIds);
+			} else {
+				users = service.GetAllEntityByNamedQuery("Users.findByProfilesAndOrganization",
+						user.getPartners().getId(), profilesIds);
+			}
 
-			List<Users> filteredUsers = users.stream()
-					.filter(u -> localitiesIds.contains(((Locality)u.getLocalities().toArray()[0]).getId())).collect(Collectors.toList());
+			if (localitiesIds.isEmpty()) {
+				return new ResponseEntity<>(users, HttpStatus.OK);
+			} else {
+				List<Users> filteredUsers = users.stream()
+						.filter(u -> localitiesIds.contains(((Locality) u.getLocalities().toArray()[0]).getId()))
+						.collect(Collectors.toList());
 
-			return new ResponseEntity<>(filteredUsers, HttpStatus.OK);
+				return new ResponseEntity<>(filteredUsers, HttpStatus.OK);
+			}
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}

@@ -1,6 +1,8 @@
 package dlt.dltbackendmaster.security;
 
 import java.io.IOException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -42,7 +44,7 @@ public class StatelessLoginFilter extends AbstractAuthenticationProcessingFilter
 		
 		String username = request.getParameter("username");
         String password = request.getParameter("password");
-        final UsernamePasswordAuthenticationToken loginToken = new UsernamePasswordAuthenticationToken(username, password);
+        final UsernamePasswordAuthenticationToken loginToken = new UsernamePasswordAuthenticationToken(username, URLDecoder.decode(password, StandardCharsets.UTF_8.toString()));
         
 		return getAuthenticationManager().authenticate(loginToken);
 	}

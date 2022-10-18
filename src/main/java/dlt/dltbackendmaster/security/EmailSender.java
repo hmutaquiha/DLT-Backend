@@ -31,7 +31,7 @@ public class EmailSender
                       + "<p>Foi cadastrado na plataforma do Dreams com os seguintes detalhes:</p>"
                       + "<p>Username: <b>" + username + "</b></p>"
                       + "<p>Password: <b>" + password + "</b></p>"
-                      + "<p>Será solicitado a alterar a senha no primeiro login.</p>";
+                      + "<p>Será solicitado a alterar a senha na primeira autenticação.</p>";
         } else {
             subject = "DLT: Confirmar Alteração de Password";
             content = "<p>Olá,</p>"

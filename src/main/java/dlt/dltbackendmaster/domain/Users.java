@@ -272,7 +272,7 @@ public class Users implements java.io.Serializable
         this.name = name;
     }
 
-    @Column(name = "phone_number", nullable = false, length = 50)
+    @Column(name = "phone_number", length = 50)
     public String getPhoneNumber() {
         return this.phoneNumber;
     }

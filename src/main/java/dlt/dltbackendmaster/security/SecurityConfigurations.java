@@ -137,6 +137,8 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter{
         Properties javaMailProperties = new Properties();
         javaMailProperties.put("mail.smtp.auth", true);
         javaMailProperties.put("mail.smtp.starttls.enable", true);
+        javaMailProperties.put("mail.smtp.allow8bitmime", true);
+        javaMailProperties.put("mail.smtps.allow8bitmime", true);
 
         mailSender.setJavaMailProperties(javaMailProperties);
 

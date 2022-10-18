@@ -37,7 +37,8 @@ import dlt.dltbackendmaster.serializers.DistrictSerializer;
 		@NamedQuery(name = "Partners.findByDateCreated", query = "SELECT c FROM Partners c WHERE c.dateCreated = :lastpulledat"),
 		@NamedQuery(name = "Partners.findByDateUpdated", query = "SELECT c FROM Partners c WHERE c.dateUpdated = :lastpulledat"),
 		@NamedQuery(name = "Partners.findByTypeDistrict", query = "SELECT c FROM Partners c WHERE c.partnerType = :serviceType and c.district.id = :district"),
-		@NamedQuery(name = "Partners.findByPartnerType", query = "SELECT c FROM Partners c WHERE c.partnerType = :serviceType") })
+		@NamedQuery(name = "Partners.findByPartnerType", query = "SELECT c FROM Partners c WHERE c.partnerType = :serviceType"),
+		@NamedQuery(name = "Partners.findByDistricts", query = "SELECT c FROM Partners c WHERE c.district.id in (:districtsIds)") })
 public class Partners implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;

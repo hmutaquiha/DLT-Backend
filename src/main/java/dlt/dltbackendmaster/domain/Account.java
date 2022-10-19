@@ -27,13 +27,13 @@ public class Account extends Users implements Serializable, UserDetails {
 		super();
 	}
 
-	public Account(int id, Locality locality, Partners partner, Profiles profiles, String surname, String name,
+	public Account(int id, Set<Locality> locality, Partners partner, Profiles profiles, Set<Province> provinces, Set<District> districts, String surname, String name,
 			String phoneNumber, String email, String username, String password, String entryPoint, Set<Us> us, int status,
 			int newPassword,
 			Byte isLocked, Byte isExpired, Byte isCredentialsExpired, Byte isEnabled, int createdBy, Date dateCreated,
 			Integer updatedBy, Date dateUpdated) {
 
-		super(id, partner, profiles, surname, name,
+		super(id, locality, partner, profiles, provinces, districts, surname, name,
 				phoneNumber, email, username, password, newPassword, entryPoint, us, status,
 				isLocked, isExpired, isCredentialsExpired, isEnabled, createdBy, dateCreated,
 				updatedBy, dateUpdated);
@@ -46,7 +46,7 @@ public class Account extends Users implements Serializable, UserDetails {
 	}
 
 	public Account(Users user) {
-		super(user.getId(), user.getPartners(), user.getProfiles(), user.getSurname(),
+		super(user.getId(), user.getLocalities(), user.getPartners(), user.getProfiles(), user.getProvinces(), user.getDistricts(), user.getSurname(),
 				user.getName(), user.getPhoneNumber(), user.getEmail(), user.getUsername(), user.getPassword(),
 				user.getNewPassword(), user.getEntryPoint(), user.getUs(),
 				user.getStatus(), user.getIsLocked(), user.getIsExpired(), user.getIsCredentialsExpired(),
@@ -90,7 +90,7 @@ public class Account extends Users implements Serializable, UserDetails {
 
 	public Users toUser() {
 
-		return new Users(getId(), getPartners(), getProfiles(), 
+		return new Users(getId(), getLocalities(), getPartners(), getProfiles(), getProvinces(), getDistricts(), 
 				getSurname(), getName(), getPhoneNumber(), getEmail(), getUsername(), getPassword(), getNewPassword(),
 				getEntryPoint(), getUs(), getStatus(), getIsLocked(), getIsExpired(), getIsCredentialsExpired(),
 				getIsEnabled(), getCreatedBy(), getDateCreated(), getUpdatedBy(), getDateUpdated());

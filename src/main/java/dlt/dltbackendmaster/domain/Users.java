@@ -166,12 +166,13 @@ public class Users implements java.io.Serializable
         this.newPassword = newPassword;
     }
 
-    public Users(Integer id, Partners partner, Profiles profiles, Set<Province> provinces, Set<District> district, String surname, String name, String phoneNumber,
+    public Users(Integer id, Set<Locality> locality,Partners partner, Profiles profiles, Set<Province> provinces, Set<District> district, String surname, String name, String phoneNumber,
                  String email, String username, String password, Integer newPassword, String entryPoint, Set<Us> us,
                  int status, Byte isLocked, Byte isExpired, Byte isCredentialsExpired, Byte isEnabled, int createdBy,
                  Date dateCreated, Integer updatedBy, Date dateUpdated) {
         super();
         this.id = id;
+        this.localities = locality;
         this.partners = partner;
         this.profiles = profiles;
         this.provinces = provinces;

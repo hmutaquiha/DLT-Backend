@@ -1,6 +1,7 @@
 package dlt.dltbackendmaster.controller;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -16,134 +17,156 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import dlt.dltbackendmaster.domain.Beneficiaries;
-import dlt.dltbackendmaster.domain.NumericSequence;
 import dlt.dltbackendmaster.domain.References;
 import dlt.dltbackendmaster.domain.ReferencesServices;
 import dlt.dltbackendmaster.domain.ReferencesServicesId;
-import dlt.dltbackendmaster.domain.Services;
+import dlt.dltbackendmaster.domain.Users;
 import dlt.dltbackendmaster.service.DAOService;
+import static dlt.dltbackendmaster.util.ProfilesConstants.*;
 
 @RestController
 @RequestMapping("/api/references")
-public class ReferencesController
-{
-    private final DAOService service;
+public class ReferencesController {
+	private final DAOService service;
 
-    @Autowired
-    public ReferencesController(DAOService service) {
-        this.service = service;
-    }
+	@Autowired
+	public ReferencesController(DAOService service) {
+		this.service = service;
+	}
 
-    @GetMapping(produces = "application/json")
-    public ResponseEntity<List<References>> getall() {
-        try {
-            List<References> references = service.getAll(References.class);
-            return new ResponseEntity<>(references, HttpStatus.OK);
-        } catch (Exception e) {
-        	e.printStackTrace();
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+	@GetMapping(produces = "application/json")
+	public ResponseEntity<List<References>> getall() {
+		try {
+			List<References> references = service.getAll(References.class);
+			return new ResponseEntity<>(references, HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
-    @GetMapping(path = "/{Id}", produces = "application/json")
-    public ResponseEntity<References> get(@PathVariable Integer Id) {
+	@GetMapping(path = "/{Id}", produces = "application/json")
+	public ResponseEntity<References> get(@PathVariable Integer Id) {
 
-        if (Id == null) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        }
+		if (Id == null) {
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		}
 
-        try {
-        	References references = service.find(References.class, Id);
-            return new ResponseEntity<>(references, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-    
-    @PostMapping(consumes = "application/json")
-    public ResponseEntity<References> save(@RequestBody References reference) {
+		try {
+			References references = service.find(References.class, Id);
+			return new ResponseEntity<>(references, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
-        if (reference == null) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        }
+	@GetMapping(path = "/byUser/{userId}", produces = "application/json")
+	public ResponseEntity<List<References>> getAllByUser(@PathVariable Integer userId) {
 
-        try {
-        	reference.setDateCreated(new Date());
-            
-            service.Save(reference);
-            
-            List<ReferencesServices> registeredServices = new ArrayList<ReferencesServices>();
-            
-            for(ReferencesServices services: reference.getReferencesServiceses()) {
-            	services.setId(new ReferencesServicesId());
-            	services.getId().setReferenceId(reference.getId());
-            	services.getId().setServiceId(services.getServices().getId());
-            	services.setDateCreated(new Date());
-            	service.Save(services);
-            	registeredServices.add(services);
-            }
-            
-            reference.setReferencesServiceses(Set.copyOf(registeredServices));
-           
-            return new ResponseEntity<>(reference, HttpStatus.OK);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-    
-    @PutMapping(consumes = "application/json")
-    public ResponseEntity<References> update(@RequestBody References reference) {
+		if (userId == null) {
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		}
 
-        if (reference == null) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        }
+		try {
+			Users user = service.find(Users.class, userId);
 
-        try {
-        	reference.setDateUpdated(new Date());
-            
-            service.update(reference);
-            
-            //remove all previous entries 
-            service.UpdateEntitiesByNamedQuery("ReferencesServices.removeByReferenceId", reference.getId());
-            
-            //save new ones
-            List<ReferencesServices> registeredServices = new ArrayList<ReferencesServices>();
-            
-            for(ReferencesServices services: reference.getReferencesServiceses()) {
-            	services.setId(new ReferencesServicesId());
-            	services.getId().setReferenceId(reference.getId());
-            	services.getId().setServiceId(services.getServices().getId());
-            	services.setDateCreated(new Date());
-            	service.Save(services);
-            	registeredServices.add(services);
-            }
-            
-            reference.setReferencesServiceses(Set.copyOf(registeredServices));
-           
-            return new ResponseEntity<>(reference, HttpStatus.OK);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+			List<References> references = null;
 
-    @GetMapping(path = "/user/{Id}", produces = "application/json")
-    public ResponseEntity<List<References>> getRefByUser(@PathVariable String Id) {
+			if (Arrays.asList(MENTORA, ENFERMEIRA, CONSELHEIRA).contains(user.getProfiles().getId())) {
+				references = service.GetAllEntityByNamedQuery("References.findAllByUserPermission", userId);
+			} else {
+				references = service.getAll(References.class);
+			}
 
-        if (Id == null) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        }
+			return new ResponseEntity<>(references, HttpStatus.OK);
 
-        try {
-        	List<References> references= service.GetAllEntityByNamedQuery("References.findAllByUser", Id);
-            return new ResponseEntity<>(references, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-       
-    }
-    
-   
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@PostMapping(consumes = "application/json")
+	public ResponseEntity<References> save(@RequestBody References reference) {
+
+		if (reference == null) {
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		}
+
+		try {
+			reference.setDateCreated(new Date());
+
+			service.Save(reference);
+
+			List<ReferencesServices> registeredServices = new ArrayList<ReferencesServices>();
+
+			for (ReferencesServices services : reference.getReferencesServiceses()) {
+				services.setId(new ReferencesServicesId());
+				services.getId().setReferenceId(reference.getId());
+				services.getId().setServiceId(services.getServices().getId());
+				services.setDateCreated(new Date());
+				service.Save(services);
+				registeredServices.add(services);
+			}
+
+			reference.setReferencesServiceses(Set.copyOf(registeredServices));
+
+			return new ResponseEntity<>(reference, HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@PutMapping(consumes = "application/json")
+	public ResponseEntity<References> update(@RequestBody References reference) {
+
+		if (reference == null) {
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		}
+
+		try {
+			reference.setDateUpdated(new Date());
+
+			service.update(reference);
+
+			// remove all previous entries
+			service.UpdateEntitiesByNamedQuery("ReferencesServices.removeByReferenceId", reference.getId());
+
+			// save new ones
+			List<ReferencesServices> registeredServices = new ArrayList<ReferencesServices>();
+
+			for (ReferencesServices services : reference.getReferencesServiceses()) {
+				services.setId(new ReferencesServicesId());
+				services.getId().setReferenceId(reference.getId());
+				services.getId().setServiceId(services.getServices().getId());
+				services.setDateCreated(new Date());
+				service.Save(services);
+				registeredServices.add(services);
+			}
+
+			reference.setReferencesServiceses(Set.copyOf(registeredServices));
+
+			return new ResponseEntity<>(reference, HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@GetMapping(path = "/user/{Id}", produces = "application/json")
+	public ResponseEntity<List<References>> getRefByUser(@PathVariable String Id) {
+
+		if (Id == null) {
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		}
+
+		try {
+			List<References> references = service.GetAllEntityByNamedQuery("References.findAllByUser", Id);
+			return new ResponseEntity<>(references, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+	}
+
 }

@@ -41,6 +41,7 @@ import dlt.dltbackendmaster.serializers.UsersSerializer;
 @NamedQueries({
     @NamedQuery(name = "References.findAll", query = "SELECT r FROM References r"),
     @NamedQuery(name = "References.findAllByUser", query = "SELECT r FROM References r where r.userCreated like :userCreated"),
+    @NamedQuery(name = "References.findAllByUserPermission", query = "SELECT r FROM References r where r.userCreated = cast(:userId as string) or r.users.id = : userId or r.referredBy.id = : userId"),
     @NamedQuery(name = "References.findByDateCreated", query = "SELECT b from References b where b.dateUpdated is null and b.dateCreated > :lastpulledat"
     /*"SELECT r FROM References r WHERE r.dateCreated = :lastpulledat"*/),
     @NamedQuery(name = "References.findByDateUpdated", query = "SELECT b from References b where (b.dateUpdated >= :lastpulledat) or (b.dateUpdated >= :lastpulledat and b.dateCreated = b.dateUpdated)"

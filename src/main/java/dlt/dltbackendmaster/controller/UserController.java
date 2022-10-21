@@ -164,7 +164,7 @@ public class UserController {
 			List<Integer> localitiesIds = user.getLocalities().stream().map(Locality::getId)
 					.collect(Collectors.toList());
 			List<Users> users = null;
-			if (user.getProvinces().isEmpty()) {
+			if (user.getLocalities().isEmpty()) {
 				users = service.GetAllEntityByNamedQuery("Users.findByProfiles", profilesIds);
 			} else {
 				users = service.GetAllEntityByNamedQuery("Users.findByProfilesAndOrganization",

@@ -31,6 +31,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import dlt.dltbackendmaster.domain.watermelondb.ReferenceSyncModel;
 import dlt.dltbackendmaster.serializers.BeneficiarySerializer;
+import dlt.dltbackendmaster.serializers.UsSerializer;
 import dlt.dltbackendmaster.serializers.UsersSerializer;
 
 /**
@@ -38,22 +39,21 @@ import dlt.dltbackendmaster.serializers.UsersSerializer;
  */
 @Entity
 @Table(name = "references", catalog = "dreams_db")
-@NamedQueries({
-    @NamedQuery(name = "References.findAll", query = "SELECT r FROM References r"),
-    @NamedQuery(name = "References.findAllByUser", query = "SELECT r FROM References r where r.userCreated like :userCreated"),
-    @NamedQuery(name = "References.findAllByUserPermission", query = "SELECT r FROM References r where r.userCreated = cast(:userId as string) or r.users.id = : userId or r.referredBy.id = : userId"),
-    @NamedQuery(name = "References.findByDateCreated", query = "SELECT b from References b where b.dateUpdated is null and b.dateCreated > :lastpulledat"
-    /*"SELECT r FROM References r WHERE r.dateCreated = :lastpulledat"*/),
-    @NamedQuery(name = "References.findByDateUpdated", query = "SELECT b from References b where (b.dateUpdated >= :lastpulledat) or (b.dateUpdated >= :lastpulledat and b.dateCreated = b.dateUpdated)"
-    /*"SELECT r FROM References r WHERE r.dateUpdated = :lastpulledat"*/)})
+@NamedQueries({ @NamedQuery(name = "References.findAll", query = "SELECT r FROM References r"),
+		@NamedQuery(name = "References.findAllByUser", query = "SELECT r FROM References r where r.userCreated like :userCreated"),
+		@NamedQuery(name = "References.findAllByUserPermission", query = "SELECT r FROM References r where r.userCreated = cast(:userId as string) or r.users.id = : userId or r.referredBy.id = : userId"),
+		@NamedQuery(name = "References.findByDateCreated", query = "SELECT b from References b where b.dateUpdated is null and b.dateCreated > :lastpulledat"
+		/* "SELECT r FROM References r WHERE r.dateCreated = :lastpulledat" */),
+		@NamedQuery(name = "References.findByDateUpdated", query = "SELECT b from References b where (b.dateUpdated >= :lastpulledat) or (b.dateUpdated >= :lastpulledat and b.dateCreated = b.dateUpdated)"
+		/* "SELECT r FROM References r WHERE r.dateUpdated = :lastpulledat" */) })
 public class References implements java.io.Serializable {
 
-    private static final long serialVersionUID = -6756894395137677466L;
+	private static final long serialVersionUID = -6756894395137677466L;
 
-    private Integer id;
+	private Integer id;
 	private Beneficiaries beneficiaries;
 	private Users referredBy;
-    private Users users;
+	private Users users;
 	private String referenceNote;
 	private String description;
 	private String referTo;
@@ -61,11 +61,11 @@ public class References implements java.io.Serializable {
 	private String referenceCode;
 	private String serviceType;
 	private String remarks;
-	private int statusRef;
 	private Integer status;
+	private Us us;
 	private Integer cancelReason;
 	private String otherReason;
-	//private int createdBy;
+	// private int createdBy;
 	private String userCreated;
 	private Date dateCreated;
 	private Integer updatedBy;
@@ -76,23 +76,23 @@ public class References implements java.io.Serializable {
 	public References() {
 	}
 
-	public References(Beneficiaries beneficiaries, Users referredBy, Users users, String referTo, int statusRef, String userCreated,
-			Date dateCreated) {
+	public References(Beneficiaries beneficiaries, Users referredBy, Users users, String referTo, Us us,
+			String userCreated, Date dateCreated) {
 		this.beneficiaries = beneficiaries;
-        this.referredBy = referredBy;
+		this.referredBy = referredBy;
 		this.users = users;
 		this.referTo = referTo;
-		this.statusRef = statusRef;
+		this.us = us;
 		this.userCreated = userCreated;
 		this.dateCreated = dateCreated;
 	}
 
-	public References(Beneficiaries beneficiaries, Users referredBy, Users users, String referenceNote, String description,
-			String referTo, String bookNumber, String referenceCode, String serviceType, String remarks, int statusRef,
-			Integer status, Integer cancelReason, String otherReason, String userCreated, Date dateCreated,
-			Integer updatedBy, Date dateUpdated, Set<ReferencesServices> referencesServiceses) {
+	public References(Beneficiaries beneficiaries, Users referredBy, Users users, String referenceNote,
+			String description, String referTo, String bookNumber, String referenceCode, String serviceType,
+			String remarks, Integer status, Us us, Integer cancelReason, String otherReason, String userCreated,
+			Date dateCreated, Integer updatedBy, Date dateUpdated, Set<ReferencesServices> referencesServiceses) {
 		this.beneficiaries = beneficiaries;
-        this.referredBy = referredBy;
+		this.referredBy = referredBy;
 		this.users = users;
 		this.referenceNote = referenceNote;
 		this.description = description;
@@ -101,8 +101,8 @@ public class References implements java.io.Serializable {
 		this.referenceCode = referenceCode;
 		this.serviceType = serviceType;
 		this.remarks = remarks;
-		this.statusRef = statusRef;
 		this.status = status;
+		this.us = us;
 		this.cancelReason = cancelReason;
 		this.otherReason = otherReason;
 		this.userCreated = userCreated;
@@ -111,11 +111,11 @@ public class References implements java.io.Serializable {
 		this.dateUpdated = dateUpdated;
 		this.referencesServiceses = referencesServiceses;
 	}
-	
+
 	public References(ReferenceSyncModel model, String timestamp) {
 		Long t = Long.valueOf(timestamp);
-        Date regDate = new Date(t);
-        this.offlineId = model.getId();
+		Date regDate = new Date(t);
+		this.offlineId = model.getId();
 		this.beneficiaries = new Beneficiaries();
 		this.beneficiaries.setId(model.getBeneficiary_id());
 		this.bookNumber = model.getBook_number();
@@ -130,13 +130,12 @@ public class References implements java.io.Serializable {
 		this.referredBy = new Users();
 		String createdBy = model.getUser_created();
 		this.getReferredBy().setId(Integer.valueOf(createdBy));
-		this.statusRef = model.getStatus_ref();
 		this.status = model.getStatus();
 		this.cancelReason = model.getCancel_reason();
 		this.otherReason = model.getOther_reason();
 		this.userCreated = createdBy;
-        this.dateCreated = regDate;
-        this.dateUpdated = regDate;
+		this.dateCreated = regDate;
+		this.dateUpdated = regDate;
 	}
 
 	@Id
@@ -164,18 +163,18 @@ public class References implements java.io.Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "referred_by", nullable = false)
-    @JsonProperty("referredBy")
-    @JsonSerialize(using = UsersSerializer.class)
-    public Users getReferredBy() {
-        return referredBy;
-    }
+	@JoinColumn(name = "referred_by", nullable = false)
+	@JsonProperty("referredBy")
+	@JsonSerialize(using = UsersSerializer.class)
+	public Users getReferredBy() {
+		return referredBy;
+	}
 
-    public void setReferredBy(Users referredBy) {
-        this.referredBy = referredBy;
-    }
+	public void setReferredBy(Users referredBy) {
+		this.referredBy = referredBy;
+	}
 
-    @ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "notify_to", nullable = false)
 	@JsonProperty("users")
 	@JsonSerialize(using = UsersSerializer.class)
@@ -250,15 +249,6 @@ public class References implements java.io.Serializable {
 		this.remarks = remarks;
 	}
 
-	@Column(name = "status_ref", nullable = false)
-	public int getStatusRef() {
-		return this.statusRef;
-	}
-
-	public void setStatusRef(int statusRef) {
-		this.statusRef = statusRef;
-	}
-
 	@Column(name = "status")
 	public Integer getStatus() {
 		return this.status;
@@ -266,6 +256,18 @@ public class References implements java.io.Serializable {
 
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "us_id", nullable = false)
+	@JsonProperty("us")
+	@JsonSerialize(using = UsSerializer.class)
+	public Us getUs() {
+		return us;
+	}
+
+	public void setUs(Us us) {
+		this.us = us;
 	}
 
 	@Column(name = "cancel_reason")
@@ -286,7 +288,7 @@ public class References implements java.io.Serializable {
 		this.otherReason = otherReason;
 	}
 
-	//@Column(name = "created_by", nullable = false)
+	// @Column(name = "created_by", nullable = false)
 	@Column(name = "user_created", length = 45)
 	public String getUserCreated() {
 		return userCreated;
@@ -295,7 +297,6 @@ public class References implements java.io.Serializable {
 	public void setUserCreated(String userCreated) {
 		this.userCreated = userCreated;
 	}
-	
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "date_created", nullable = false, length = 19)
@@ -325,15 +326,15 @@ public class References implements java.io.Serializable {
 	public void setDateUpdated(Date dateUpdated) {
 		this.dateUpdated = dateUpdated;
 	}
-	
-	@Column(name = "offline_id", length = 45)
-    public String getOfflineId() {
-        return this.offlineId;
-    }
 
-    public void setOfflineId(String offlineId) {
-        this.offlineId = offlineId;
-    }
+	@Column(name = "offline_id", length = 45)
+	public String getOfflineId() {
+		return this.offlineId;
+	}
+
+	public void setOfflineId(String offlineId) {
+		this.offlineId = offlineId;
+	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "references")
 	public Set<ReferencesServices> getReferencesServiceses() {
@@ -344,48 +345,48 @@ public class References implements java.io.Serializable {
 		this.referencesServiceses = referencesServiceses;
 	}
 
-    public ObjectNode toObjectNode(String lastPulledAt) {
-        ObjectMapper mapper =  new ObjectMapper();
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        
-        
-        ObjectNode reference = mapper.createObjectNode();
-        
-        if (offlineId != null) {
-        	reference.put("id", offlineId);
-        } else {
-        	reference.put("id", id);
-        }
-        
-        if (dateUpdated == null || dateUpdated.after(dateCreated) || lastPulledAt == null || lastPulledAt.equals("null")) {
-        	reference.put("beneficiary_id", beneficiaries.getId());
-            reference.put("notify_to", users.getId());
-            reference.put("reference_note", referenceNote);
-            reference.put("description", description);
-            reference.put("refer_to", referTo);
-            reference.put("book_number", bookNumber);
-            reference.put("reference_code", referenceCode);
-            reference.put("service_type", serviceType);
-            reference.put("remarks", remarks);
-            reference.put("status_ref", statusRef);
-            reference.put("status", status);
-            reference.put("cancel_reason", cancelReason);
-            reference.put("other_reason", otherReason);
-            reference.put("online_id", id);
-            reference.put("user_created", userCreated);
-            reference.put("is_awaiting_sync", 0); // flag to control if reference is synced in mobile
-            reference.put("date_created", dateFormat.format(dateCreated));
-        } else { // ensure online_id is updated first
-        	reference.put("is_awaiting_sync", 0); // flag to control if reference is synced in mobile
-        	reference.put("beneficiary_id", beneficiaries.getId());
-        	reference.put("online_id", id);
-        }
-        
-        
-        return reference;
-    }
-    
-    public void update(ReferenceSyncModel model, String timestamp) throws ParseException {
+	public ObjectNode toObjectNode(String lastPulledAt) {
+		ObjectMapper mapper = new ObjectMapper();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+		ObjectNode reference = mapper.createObjectNode();
+
+		if (offlineId != null) {
+			reference.put("id", offlineId);
+		} else {
+			reference.put("id", id);
+		}
+
+		if (dateUpdated == null || dateUpdated.after(dateCreated) || lastPulledAt == null
+				|| lastPulledAt.equals("null")) {
+			reference.put("beneficiary_id", beneficiaries.getId());
+			reference.put("referred_by", referredBy.getId());
+			reference.put("notify_to", users.getId());
+			reference.put("reference_note", referenceNote);
+			reference.put("description", description);
+			reference.put("refer_to", referTo);
+			reference.put("book_number", bookNumber);
+			reference.put("reference_code", referenceCode);
+			reference.put("service_type", serviceType);
+			reference.put("remarks", remarks);
+			reference.put("status", status);
+			reference.put("us_id", us.getId());
+			reference.put("cancel_reason", cancelReason);
+			reference.put("other_reason", otherReason);
+			reference.put("online_id", id);
+			reference.put("user_created", userCreated);
+			reference.put("is_awaiting_sync", 0); // flag to control if reference is synced in mobile
+			reference.put("date_created", dateFormat.format(dateCreated));
+		} else { // ensure online_id is updated first
+			reference.put("is_awaiting_sync", 0); // flag to control if reference is synced in mobile
+			reference.put("beneficiary_id", beneficiaries.getId());
+			reference.put("online_id", id);
+		}
+
+		return reference;
+	}
+
+	public void update(ReferenceSyncModel model, String timestamp) throws ParseException {
 		Long t = Long.valueOf(timestamp);
 
 		this.offlineId = model.getId();
@@ -399,13 +400,12 @@ public class References implements java.io.Serializable {
 		this.remarks = model.getRemarks();
 		this.referTo = model.getRefer_to();
 		this.users.setId(model.getNotify_to());
-		String createdBy = model.getUser_created();
-		this.referredBy.setId(Integer.valueOf(createdBy));
-		this.statusRef = model.getStatus_ref();
+		this.referredBy.setId(model.getReferred_by());
 		this.status = model.getStatus();
+		this.us.setId(model.getUs_id());
 		this.cancelReason = model.getCancel_reason();
 		this.otherReason = model.getOther_reason();
-		this.userCreated = createdBy;
+		this.userCreated = model.getUser_created();
 		this.dateCreated = model.getDate_created();
 	}
 

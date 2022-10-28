@@ -128,12 +128,13 @@ public class References implements java.io.Serializable {
 		this.users = new Users();
 		this.users.setId(model.getNotify_to());
 		this.referredBy = new Users();
-		String createdBy = model.getUser_created();
-		this.getReferredBy().setId(Integer.valueOf(createdBy));
+		this.referredBy.setId(model.getReferred_by());
 		this.status = model.getStatus();
+		this.us = new Us();
+		this.us.setId(model.getUs_id());
 		this.cancelReason = model.getCancel_reason();
 		this.otherReason = model.getOther_reason();
-		this.userCreated = createdBy;
+		this.userCreated = model.getUser_created();
 		this.dateCreated = regDate;
 		this.dateUpdated = regDate;
 	}

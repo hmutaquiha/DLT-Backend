@@ -37,6 +37,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import dlt.dltbackendmaster.domain.watermelondb.BeneficiarySyncModel;
 import dlt.dltbackendmaster.serializers.BeneficiaryInterventionsSerializer;
+import dlt.dltbackendmaster.serializers.LocalitySerializer;
 import dlt.dltbackendmaster.serializers.NeighborhoodSerializer;
 import dlt.dltbackendmaster.serializers.PartnersSerializer;
 import dlt.dltbackendmaster.serializers.UsSerializer;
@@ -62,6 +63,7 @@ public class Beneficiaries implements java.io.Serializable
     private Integer id;
     private Neighborhood neighborhood;
     private Partners partners;
+    private Locality locality;
     private Us us;
     private String nui;
     private String surname;
@@ -136,7 +138,7 @@ public class Beneficiaries implements java.io.Serializable
         this.dateCreated = dateCreated;
     }
 
-    public Beneficiaries(Neighborhood neighborhood, Partners partners, Us us, String nui, String surname, String name,
+    public Beneficiaries(Neighborhood neighborhood, Partners partners, Locality locality, Us us, String nui, String surname, String name,
                          String nickName, Integer organizationId, Date dateOfBirth, char gender, String address,
                          String phoneNumber, String EMail, Date enrollmentDate, Integer via, Integer nationality,
                          Integer partnerId, String entryPoint, String vbltLivesWith, Byte vbltIsOrphan,
@@ -152,6 +154,7 @@ public class Beneficiaries implements java.io.Serializable
                          Set<BeneficiariesInterventions> beneficiariesInterventionses, Set<References> referenceses) {
         this.neighborhood = neighborhood;
         this.partners = partners;
+        this.locality = locality;
         this.us = us;
         this.nui = nui;
         this.surname = surname;
@@ -214,6 +217,7 @@ public class Beneficiaries implements java.io.Serializable
         this.name = model.getName();
         this.organizationId = model.getOrganization_id();
         this.partners = new Partners(model.getOrganization_id());
+        this.locality = new Locality(model.getLocality_id());
         this.dateOfBirth = model.getDate_of_birth();
         this.gender = model.getGender();
         this.address = model.getAddress();
@@ -264,6 +268,7 @@ public class Beneficiaries implements java.io.Serializable
         this.name = model.getName();
         this.organizationId = model.getOrganization_id();
         this.partners = new Partners(model.getOrganization_id());
+        this.locality = new Locality(model.getLocality_id());
         this.dateOfBirth = model.getDate_of_birth();
         this.gender = model.getGender();
         this.address = model.getAddress();
@@ -340,6 +345,18 @@ public class Beneficiaries implements java.io.Serializable
 
     public void setPartners(Partners partners) {
         this.partners = partners;
+    }
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "locality_id")
+    @JsonProperty("locality")
+    @JsonSerialize(using = LocalitySerializer.class)
+    public Locality getLocality() {
+        return this.locality;
+    }
+
+    public void setLocality(Locality locality) {
+        this.locality = locality;
     }
 
     @ManyToOne(fetch = FetchType.LAZY)

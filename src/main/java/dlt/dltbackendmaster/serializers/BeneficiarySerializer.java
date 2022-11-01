@@ -26,6 +26,7 @@ public class BeneficiarySerializer extends JsonSerializer<Beneficiaries>
         beneficiary.setEntryPoint(value.getEntryPoint());
         beneficiary.setNeighborhood(value.getNeighborhood());
         beneficiary.setPartnerId(value.getPartnerId());
+        beneficiary.setLocality(value.getLocality());
         beneficiary.setPhoneNumber(value.getPhoneNumber());
         beneficiary.setVia(value.getVia());
        // beneficiary.setUsId(value.getUsId());

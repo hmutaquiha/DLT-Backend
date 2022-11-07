@@ -88,7 +88,7 @@ public class UserController {
 
 			if (user.getEmail() != null) {
 				String email = user.getEmail();
-				emailSender.sendEmail(user.getUsername(), password, email, null, true);
+				emailSender.sendEmail(user.getName()+" "+user.getSurname(), user.getUsername(), password, email, null, true);
 			}
 
 			return new ResponseEntity<>(createdUser, HttpStatus.OK);

@@ -21,7 +21,7 @@ public class PasswordGenerator
     // private static final String OTHER_PUNCTUATION = "!@#&()–[{}]:;',?/*";
     private static final String OTHER_SYMBOL = "~$^+=<>";
     private static final String OTHER_SPECIAL = OTHER_PUNCTUATION + OTHER_SYMBOL;
-    private static final int PASSWORD_LENGTH = 10;
+    private static final int PASSWORD_LENGTH = 8;
     private static final String PASSWORD_ALLOW = CHAR_LOWERCASE + CHAR_UPPERCASE + DIGIT + OTHER_SPECIAL;
     private static SecureRandom random = new SecureRandom();
 
@@ -29,13 +29,13 @@ public class PasswordGenerator
         StringBuilder result = new StringBuilder(PASSWORD_LENGTH);
         String strLowerCase = generateRandomString(CHAR_LOWERCASE, 2);
         result.append(strLowerCase);
-        String strUppercaseCase = generateRandomString(CHAR_UPPERCASE, 2);
+        String strUppercaseCase = generateRandomString(CHAR_UPPERCASE, 1);
         result.append(strUppercaseCase);
         String strDigit = generateRandomString(DIGIT, 2);
         result.append(strDigit);
-        String strSpecialChar = generateRandomString(OTHER_SPECIAL, 2);
+        String strSpecialChar = generateRandomString(OTHER_SPECIAL, 1);
         result.append(strSpecialChar);
-        String strOther = generateRandomString(PASSWORD_ALLOW, PASSWORD_LENGTH - 8);
+        String strOther = generateRandomString(PASSWORD_ALLOW, PASSWORD_LENGTH - 6);
         result.append(strOther);
         String password = result.toString();
         return shuffleString(password);

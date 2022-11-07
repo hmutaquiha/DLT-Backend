@@ -16,7 +16,7 @@ public class EmailSender
     @Autowired
     private JavaMailSender javaMailSender;
 
-    public void sendEmail(String username, String password, String email, String link, boolean isNewUser)
+    public void sendEmail(String fullname, String username, String password, String email, String link, boolean isNewUser)
                     throws UnsupportedEncodingException, MessagingException {
         String subject = "";
         String content = "";
@@ -29,8 +29,9 @@ public class EmailSender
             subject = "DLT: Confirmação de Cadastro";
             content = "<p>Olá,</p>" 
                       + "<p>Foi cadastrado na plataforma do Dreams com os seguintes detalhes:</p>"
-                      + "<p>Username: <b>" + username + "</b></p>"
-                      + "<p>Password: <b>" + password + "</b></p>"
+                      + "<p>Nome Completo: <b>" + fullname + "</b></p>"
+                      + "<p>Username	 : <b>" + username + "</b></p>"
+                      + "<p>Password	 : <b>" + password + "</b></p>"
                       + "<p>Será solicitado a alterar a senha na primeira autenticação.</p>";
         } else {
             subject = "DLT: Confirmar Alteração de Password";

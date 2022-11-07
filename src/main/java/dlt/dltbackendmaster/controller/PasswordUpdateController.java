@@ -54,7 +54,7 @@ public class PasswordUpdateController
             // Generate reset confirmation Link
             String confirmUpdatePasswordLink = Utility.getSiteURL(request) + "/users/confirm-update?token=" + token;
             // Send E-mail
-            emailSender.sendEmail(user.getName() + " " + user.getSurname(),
+            emailSender.sendEmail(user.getName()+" "+user.getSurname(), user.getName() + " " + user.getSurname(),
                                   null,
                                   user.getEmail(),
                                   confirmUpdatePasswordLink,

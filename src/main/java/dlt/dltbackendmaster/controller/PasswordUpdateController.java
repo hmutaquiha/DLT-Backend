@@ -21,28 +21,29 @@ import net.bytebuddy.utility.RandomString;
 
 @Controller
 @RequestMapping("/users")
-public class PasswordUpdateController
-{
-    private final DAOService service;
-    private final PasswordEncoder passwordEncoder;
-    
-    @Autowired
-    private EmailSender emailSender;
+public class PasswordUpdateController {
+	private static final String ENV_HOST = "http://172.105.133.124:8080";
+	private final DAOService service;
+	private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    public PasswordUpdateController(DAOService service, PasswordEncoder passwordEncoder) {
-        this.service = service;
-        this.passwordEncoder = passwordEncoder;
-    }
+	@Autowired
+	private EmailSender emailSender;
 
-    @PutMapping(path = "/update-password", produces = "application/json")
-    public ResponseEntity<Users> updatePassword(HttpServletRequest request, @RequestBody Users users) {
+	@Autowired
+	public PasswordUpdateController(DAOService service, PasswordEncoder passwordEncoder) {
+		this.service = service;
+		this.passwordEncoder = passwordEncoder;
+	}
 
-        Users user = service.GetUniqueEntityByNamedQuery("Users.findByUsername", users.getUsername());
+	@PutMapping(path = "/update-password", produces = "application/json")
+	public ResponseEntity<Users> updatePassword(HttpServletRequest request, @RequestBody Users users) {
 
-        if (user == null) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        }
+		Users user = service.GetUniqueEntityByNamedQuery("Users.findByUsername", users.getUsername());
+
+
+		if (user == null) {
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		}
 
         try {
             user.setRecoverPassword(passwordEncoder.encode(users.getRecoverPassword()));
@@ -65,25 +66,27 @@ public class PasswordUpdateController
         }
     }
 
-    @GetMapping(path = "/confirm-update")
-    public ResponseEntity<String> confirmPasswordUpdate(HttpServletRequest request, @Param(value = "token") String token) {
-        Users user = service.GetUniqueEntityByNamedQuery("Users.findByResetPasswordToken", token);
+	@GetMapping(path = "/confirm-update")
+	public ResponseEntity<String> confirmPasswordUpdate(HttpServletRequest request,
+			@Param(value = "token") String token) {
+		Users user = service.GetUniqueEntityByNamedQuery("Users.findByResetPasswordToken", token);
 
-        if (token == null || user == null) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        }
+		if (token == null || user == null) {
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		}
 
-        try {
-            user.setPassword(user.getRecoverPassword());
-            user.setIsEnabled(Byte.valueOf("1"));
-            user.setRecoverPassword(null);
-            user.setRecoverPasswordToken(null);
-            Users updatedUser = service.update(user);
-            return new ResponseEntity<>("Confirmada a alteração da password do Utilizador " + updatedUser.getName()
-                                        + " " + user.getSurname() + "!",
-                                        HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+		try {
+			user.setPassword(user.getRecoverPassword());
+			user.setIsEnabled(Byte.valueOf("1"));
+			user.setRecoverPassword(null);
+			user.setRecoverPasswordToken(null);
+			Users updatedUser = service.update(user);
+			return new ResponseEntity<>(
+					"Confirmada a alteração da password do Utilizador " + updatedUser.getName() + " "
+							+ user.getSurname() + "!, " + " <a href=\"" + ENV_HOST + "/dreams#/login\">Login</a>",
+					HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 }

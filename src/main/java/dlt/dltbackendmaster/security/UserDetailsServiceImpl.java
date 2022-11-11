@@ -40,6 +40,9 @@ public class UserDetailsServiceImpl implements UserDetailsService{
 			if(users != null && !users.isEmpty()) {
 				Account account = new Account(users.get(0));
 				detailsChecker.check(account);
+				if (account.getStatus() == 0) {
+					throw new UsernameNotFoundException("user with " + username + " is inactive ");
+				}
 				return account;
 			}
 			

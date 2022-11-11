@@ -40,27 +40,31 @@ public class PasswordUpdateController {
 
 		Users user = service.GetUniqueEntityByNamedQuery("Users.findByUsername", users.getUsername());
 
+
 		if (user == null) {
 			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 		}
 
-		try {
-			user.setRecoverPassword(passwordEncoder.encode(users.getRecoverPassword()));
-			user.setNewPassword(0);
-			user.setIsEnabled(Byte.valueOf("0"));
-			String token = RandomString.make(45);
-			user.setRecoverPasswordToken(token);
-			Users updatedUser = service.update(user);
-			// Generate reset confirmation Link
-			String confirmUpdatePasswordLink = Utility.getSiteURL(request) + "/users/confirm-update?token=" + token;
-			// Send E-mail
-			emailSender.sendEmail(user.getName() + " " + user.getSurname(), user.getName() + " " + user.getSurname(),
-					null, user.getEmail(), confirmUpdatePasswordLink, false);
-			return new ResponseEntity<>(updatedUser, HttpStatus.OK);
-		} catch (Exception e) {
-			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
+        try {
+            user.setRecoverPassword(passwordEncoder.encode(users.getRecoverPassword()));
+            user.setNewPassword(0);
+            user.setIsEnabled(Byte.valueOf("0"));
+            String token = RandomString.make(45);
+            user.setRecoverPasswordToken(token);
+            Users updatedUser = service.update(user);
+            // Generate reset confirmation Link
+            String confirmUpdatePasswordLink = Utility.getSiteURL(request) + "/users/confirm-update?token=" + token;
+            // Send E-mail
+            emailSender.sendEmail(user.getName()+" "+user.getSurname(), user.getName() + " " + user.getSurname(),
+                                  null,
+                                  user.getEmail(),
+                                  confirmUpdatePasswordLink,
+                                  false);
+            return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 	@GetMapping(path = "/confirm-update")
 	public ResponseEntity<String> confirmPasswordUpdate(HttpServletRequest request,

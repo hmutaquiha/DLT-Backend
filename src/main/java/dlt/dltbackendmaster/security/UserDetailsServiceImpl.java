@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AccountStatusUserDetailsChecker;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
@@ -41,7 +40,7 @@ public class UserDetailsServiceImpl implements UserDetailsService{
 				Account account = new Account(users.get(0));
 				detailsChecker.check(account);
 				if (account.getStatus() == 0) {
-					throw new UsernameNotFoundException("user with " + username + " is inactive ");
+					throw new UsernameNotFoundException("user " + username + " is inactive ");
 				}
 				return account;
 			}

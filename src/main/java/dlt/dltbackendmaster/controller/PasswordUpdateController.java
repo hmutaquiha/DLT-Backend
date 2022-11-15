@@ -22,7 +22,6 @@ import net.bytebuddy.utility.RandomString;
 @Controller
 @RequestMapping("/users")
 public class PasswordUpdateController {
-	private static final String ENV_HOST = "http://172.105.133.124:8080";
 	private final DAOService service;
 	private final PasswordEncoder passwordEncoder;
 
@@ -83,7 +82,7 @@ public class PasswordUpdateController {
 			Users updatedUser = service.update(user);
 			return new ResponseEntity<>(
 					"Confirmada a alteração da password do Utilizador " + updatedUser.getName() + " "
-							+ user.getSurname() + "!, " + " <a href=\"" + ENV_HOST + "/dreams#/login\">Login</a>",
+							+ user.getSurname() + "!, " + " <a href=\"" + Utility.getSiteURL(request) + "/dreams#/login\">Login</a>",
 					HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);

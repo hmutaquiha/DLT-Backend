@@ -118,7 +118,9 @@ public class BeneficiaryController
                 // TODO: Throw exception for NUI not found
                 if (partner != null)
                     beneficiary.setPartnerId(partner.getId());
-            }
+            } else {
+				beneficiary.setPartnerId(null);
+			}
             Beneficiaries updatedBeneficiary = service.update(beneficiary);
             return new ResponseEntity<>(updatedBeneficiary, HttpStatus.OK);
         } catch (Exception e) {

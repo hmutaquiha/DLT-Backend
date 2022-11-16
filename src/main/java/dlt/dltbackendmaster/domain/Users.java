@@ -302,7 +302,7 @@ public class Users implements java.io.Serializable
         this.email = email;
     }
 
-    @Column(name = "username", nullable = false, length = 50)
+    @Column(name = "username",unique = true , nullable = false, length = 50)
     public String getUsername() {
         return this.username;
     }

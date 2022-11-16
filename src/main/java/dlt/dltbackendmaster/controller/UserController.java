@@ -1,7 +1,9 @@
 package dlt.dltbackendmaster.controller;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,6 +29,8 @@ import dlt.dltbackendmaster.service.DAOService;
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
+	private static final String QUERY_FIND_USER_BY_USERNAME = "select u from Users u where u.username = :username";
+	
 	private final DAOService service;
 
 	private final PasswordEncoder passwordEncoder;
@@ -73,6 +77,20 @@ public class UserController {
 		if (user == null || user.getPartners() == null || user.getProfiles() == null || user.getUs() == null) {
 			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 		}
+		
+		Map<String, Object> todo = new HashMap<String, Object>();
+        todo.put("username", user.getUsername());
+		try {
+			List<Users> users = service.findByJPQuery(QUERY_FIND_USER_BY_USERNAME, todo);
+			
+			if(users != null && !users.isEmpty()) {
+				return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 
 		try {
 			String password = PasswordGenerator.generateStrongPassword();

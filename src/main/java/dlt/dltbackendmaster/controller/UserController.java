@@ -84,7 +84,7 @@ public class UserController {
 			List<Users> users = service.findByJPQuery(QUERY_FIND_USER_BY_USERNAME, todo);
 			
 			if(users != null && !users.isEmpty()) {
-				return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+				return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
 			}
 			
 		} catch (Exception e) {

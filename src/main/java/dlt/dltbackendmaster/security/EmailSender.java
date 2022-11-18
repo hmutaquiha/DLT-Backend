@@ -28,7 +28,7 @@ public class EmailSender
         if (isNewUser) {
             subject = "DLT: Confirmação de Cadastro";
             content = "<p>Olá,</p>" 
-                      + "<p>Foi cadastrado na plataforma do Dreams com os seguintes detalhes:</p>"
+                      + "<p>Foi cadastrado um novo Utilizador na plataforma do Dreams com os seguintes detalhes:</p>"
                       + "<p>Nome Completo: <b>" + fullname + "</b></p>"
                       + "<p>Username	 : <b>" + username + "</b></p>"
                       + "<p>Password	 : <b>" + password + "</b></p>"

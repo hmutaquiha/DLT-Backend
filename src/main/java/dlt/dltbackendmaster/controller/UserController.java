@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.security.auth.login.AccountLockedException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import dlt.dltbackendmaster.domain.Locality;
 import dlt.dltbackendmaster.domain.Users;
 import dlt.dltbackendmaster.security.EmailSender;
+import dlt.dltbackendmaster.security.UserDetailsServiceImpl;
 import dlt.dltbackendmaster.security.utils.PasswordGenerator;
 import dlt.dltbackendmaster.service.DAOService;
 
@@ -30,18 +32,20 @@ import dlt.dltbackendmaster.service.DAOService;
 @RequestMapping("/api/users")
 public class UserController {
 	private static final String QUERY_FIND_USER_BY_USERNAME = "select u from Users u where u.username = :username";
-	
+
 	private final DAOService service;
 
 	private final PasswordEncoder passwordEncoder;
-
+	
+	private final UserDetailsServiceImpl userDetailsService;
 	@Autowired
 	private EmailSender emailSender;
 
 	@Autowired
-	public UserController(DAOService service, PasswordEncoder passwordEncoder) {
+	public UserController(DAOService service, PasswordEncoder passwordEncoder,UserDetailsServiceImpl userDetailsService) {
 		this.service = service;
 		this.passwordEncoder = passwordEncoder;
+		this.userDetailsService=userDetailsService;
 	}
 
 	@GetMapping(produces = "application/json")
@@ -77,20 +81,19 @@ public class UserController {
 		if (user == null || user.getPartners() == null || user.getProfiles() == null || user.getUs() == null) {
 			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 		}
-		
+
 		Map<String, Object> todo = new HashMap<String, Object>();
-        todo.put("username", user.getUsername());
+		todo.put("username", user.getUsername());
 		try {
 			List<Users> users = service.findByJPQuery(QUERY_FIND_USER_BY_USERNAME, todo);
 			
 			if(users != null && !users.isEmpty()) {
 				return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
 			}
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
 
 		try {
 			String password = PasswordGenerator.generateStrongPassword();
@@ -106,7 +109,8 @@ public class UserController {
 
 			if (user.getEmail() != null) {
 				String email = user.getEmail();
-				emailSender.sendEmail(user.getName()+" "+user.getSurname(), user.getUsername(), password, email, null, true);
+				emailSender.sendEmail(user.getName() + " " + user.getSurname(), user.getUsername(), password, email,
+						null, true);
 			}
 
 			return new ResponseEntity<>(createdUser, HttpStatus.OK);
@@ -201,5 +205,10 @@ public class UserController {
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+	}
+
+	@GetMapping(path = "/username/{username}", produces = "application/json")
+	public ResponseEntity<Users> verifyUserByUsername(@PathVariable String username) throws AccountLockedException {
+		return userDetailsService.verifyUserByUsername(username);
 	}
 }

@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.persistence.EntityNotFoundException;
 import javax.security.auth.login.AccountLockedException;
 import javax.servlet.http.HttpServletRequest;
 
@@ -25,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import dlt.dltbackendmaster.domain.Locality;
 import dlt.dltbackendmaster.domain.Users;
 import dlt.dltbackendmaster.security.EmailSender;
+import dlt.dltbackendmaster.security.UserDetailsServiceImpl;
 import dlt.dltbackendmaster.security.utils.PasswordGenerator;
 import dlt.dltbackendmaster.service.DAOService;
 
@@ -36,14 +36,16 @@ public class UserController {
 	private final DAOService service;
 
 	private final PasswordEncoder passwordEncoder;
-
+	
+	private final UserDetailsServiceImpl userDetailsService;
 	@Autowired
 	private EmailSender emailSender;
 
 	@Autowired
-	public UserController(DAOService service, PasswordEncoder passwordEncoder) {
+	public UserController(DAOService service, PasswordEncoder passwordEncoder,UserDetailsServiceImpl userDetailsService) {
 		this.service = service;
 		this.passwordEncoder = passwordEncoder;
+		this.userDetailsService=userDetailsService;
 	}
 
 	@GetMapping(produces = "application/json")
@@ -207,23 +209,6 @@ public class UserController {
 
 	@GetMapping(path = "/username/{username}", produces = "application/json")
 	public ResponseEntity<Users> verifyUserByUsername(@PathVariable String username) throws AccountLockedException {
-		Map<String, Object> todo = new HashMap<String, Object>();
-		todo.put("username", username);
-		ResponseEntity<Users> responseEntity = null;
-		try {
-			List<Users> users = service.findByJPQuery(QUERY_FIND_USER_BY_USERNAME, todo);
-			Users user = users.get(0);
-			if (users != null && !users.isEmpty()) {
-				if (user.getStatus() == 0) {
-					responseEntity = new ResponseEntity<>(user, HttpStatus.LOCKED);
-				} else {
-					responseEntity = new ResponseEntity<>(user, HttpStatus.OK);
-				}
-			} 
-		} catch (Exception e) {
-			/*** Its OK **/
-		}
-		return responseEntity != null ? responseEntity : new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-
+		return userDetailsService.verifyUserByUsername(username);
 	}
 }

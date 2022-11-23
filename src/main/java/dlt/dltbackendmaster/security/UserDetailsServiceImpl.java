@@ -67,7 +67,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 				if (user.getStatus() == 0) {
 					responseEntity = new ResponseEntity<>(null, HttpStatus.LOCKED);
 				} else {
-					responseEntity = new ResponseEntity<>(null, HttpStatus.OK);
+					responseEntity = new ResponseEntity<>(user, HttpStatus.OK);
 				}
 			} else {
 				responseEntity = new ResponseEntity<>(null, HttpStatus.NOT_FOUND);

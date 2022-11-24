@@ -4,6 +4,7 @@ public class BeneficiaryInterventionSyncModel
 {
     private String id;
     private Integer beneficiary_id;
+    private String beneficiary_offline_id;
     private Integer sub_service_id;
     private String result;
     private String date;
@@ -35,7 +36,15 @@ public class BeneficiaryInterventionSyncModel
         this.beneficiary_id = beneficiary_id;
     }
 
-    public Integer getSub_service_id() {
+    public String getBeneficiary_offline_id() {
+		return beneficiary_offline_id;
+	}
+
+	public void setBeneficiary_offline_id(String beneficiaty_offline_id) {
+		this.beneficiary_offline_id = beneficiaty_offline_id;
+	}
+
+	public Integer getSub_service_id() {
         return sub_service_id;
     }
 

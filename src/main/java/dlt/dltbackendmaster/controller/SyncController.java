@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,7 +66,7 @@ public class SyncController {
 		this.generator = new SequenceGenerator(service);
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	@GetMapping(produces = "application/json")
 	public ResponseEntity get(@RequestParam(name = "lastPulledAt", required = false) @Nullable String lastPulledAt,
 			@RequestParam(name = "username") String username) throws ParseException {
@@ -276,6 +277,7 @@ public class SyncController {
 		}
 	}
 
+	@SuppressWarnings("rawtypes")
 	@GetMapping(path = "/prefix", produces = "application/json")
 	public ResponseEntity getPrefix(@RequestParam(name = "username") String username) throws ParseException {
 
@@ -291,7 +293,7 @@ public class SyncController {
 
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@PostMapping(consumes = "application/json")
 	public ResponseEntity post(@RequestBody String changes, @RequestParam(name = "username") String username)
 			throws ParseException, JsonMappingException, JsonProcessingException {
@@ -300,6 +302,7 @@ public class SyncController {
 
 		// System.out.println("PUSHING " + changes);
 		HashMap<String, Integer> referenceIds = new HashMap<String, Integer>();
+		Map<String, Integer> beneficiariesIds = new HashMap<>();
 
 		Users user = (Users) service.GetAllEntityByNamedQuery("Users.findByUsername", username).get(0);
 
@@ -329,7 +332,7 @@ public class SyncController {
 					if (created.getOnline_id() == null) {
 						Users newUser = new Users(created, lastPulledAt);
 						newUser.setCreatedBy(user.getId());
-						Integer savedId = (Integer) service.Save(newUser);
+						service.Save(newUser);
 					}
 				}
 			}
@@ -342,7 +345,33 @@ public class SyncController {
 					if (created.getOnline_id() == null) {
 						Beneficiaries beneficiary = new Beneficiaries(created, lastPulledAt);
 						beneficiary.setCreatedBy(user.getId());
-						service.Save(beneficiary);
+						Integer beneficiaryId = (Integer) service.Save(beneficiary);
+						beneficiariesIds.put(created.getId(), beneficiaryId);
+					} else {
+						beneficiariesIds.put(created.getId(), created.getOnline_id());
+					}
+				}
+			}
+			if (beneficiaries != null && beneficiaries.getUpdated().size() > 0) {
+				List<BeneficiarySyncModel> updatedList = mapper.convertValue(beneficiaries.getUpdated(),
+						new TypeReference<List<BeneficiarySyncModel>>() {
+						});
+
+				for (BeneficiarySyncModel updated : updatedList) {
+
+					if (updated.getOnline_id() == null) {
+						Beneficiaries beneficiary = new Beneficiaries(updated, lastPulledAt);
+						beneficiary.setCreatedBy(user.getId());
+						Integer beneficiaryId = (Integer) service.Save(beneficiary);
+						beneficiariesIds.put(updated.getId(), beneficiaryId);
+
+					} else {
+						Beneficiaries beneficiary = service.find(Beneficiaries.class, updated.getOnline_id());
+						beneficiary.setUpdatedBy(user.getId());
+						beneficiary.setDateUpdated(new Date());
+						beneficiary.update(updated, lastPulledAt);
+						service.update(beneficiary);
+						beneficiariesIds.put(updated.getId(), updated.getOnline_id());
 					}
 				}
 			}
@@ -354,6 +383,17 @@ public class SyncController {
 				for (BeneficiaryInterventionSyncModel created : createdList) {
 					if (created.getOnline_id() == null) {
 						BeneficiariesInterventions intervention = new BeneficiariesInterventions(created, lastPulledAt);
+						if (created.getBeneficiary_id() == 0) {
+							Integer beneficiaryId = beneficiariesIds.get(created.getBeneficiary_offline_id());
+							if (beneficiaryId == null) {
+								Beneficiaries beneficiary = service.GetUniqueEntityByNamedQuery("Beneficiary.findByOfflineId", created.getBeneficiary_offline_id());
+								beneficiaryId = beneficiary.getId();
+							}
+							intervention.setBeneficiaries(new Beneficiaries(beneficiaryId));
+							intervention.getId().setBeneficiaryId(beneficiaryId);
+							intervention.setDateUpdated(new Date());
+							intervention.setUpdatedBy(user.getId().toString());
+						}
 						intervention.setCreatedBy(user.getId());
 						service.Save(intervention);
 						
@@ -371,6 +411,16 @@ public class SyncController {
 				for (ReferenceSyncModel created : createdList) {
 					if (created.getOnline_id() == null) {
 						References reference = new References(created, lastPulledAt);
+						if (created.getBeneficiary_id() == 0) {
+							Integer beneficiaryId = beneficiariesIds.get(created.getBeneficiary_offline_id());
+							if (beneficiaryId == null) {
+								Beneficiaries beneficiary = service.GetUniqueEntityByNamedQuery("Beneficiary.findByOfflineId", created.getBeneficiary_offline_id());
+								beneficiaryId = beneficiary.getId();
+							}
+							reference.setBeneficiaries(new Beneficiaries(beneficiaryId));
+							reference.setDateUpdated(new Date());
+							reference.setUpdatedBy(user.getId());
+						}
 						reference.setUserCreated(user.getId()+"");
 						service.Save(reference);
 						referenceIds.put(reference.getOfflineId(), reference.getId());
@@ -406,35 +456,14 @@ public class SyncController {
 					if (updated.getOnline_id() == null) {
 						Users newUser = new Users(updated, lastPulledAt);
 						newUser.setCreatedBy(user.getId());
-						Integer savedId = (Integer) service.Save(newUser);
+						service.Save(newUser);
 
 					} else {
-						Users updateu = service.find(Users.class, updated.getOnline_id());
-						updateu.update(updated, lastPulledAt);
-						updateu.setUpdatedBy(user.getId());
-						service.update(updateu);
+						Users updatedUser = service.find(Users.class, updated.getOnline_id());
+						updatedUser.update(updated, lastPulledAt);
+						updatedUser.setUpdatedBy(user.getId());
+						service.update(updatedUser);
 
-					}
-				}
-			}
-			if (beneficiaries != null && beneficiaries.getUpdated().size() > 0) {
-				List<BeneficiarySyncModel> updatedList = mapper.convertValue(beneficiaries.getUpdated(),
-						new TypeReference<List<BeneficiarySyncModel>>() {
-						});
-
-				for (BeneficiarySyncModel updated : updatedList) {
-
-					if (updated.getOnline_id() == null) {
-						Beneficiaries beneficiary = new Beneficiaries(updated, lastPulledAt);
-						beneficiary.setCreatedBy(user.getId());
-						service.Save(beneficiary);
-
-					} else {
-						Beneficiaries beneficiary = service.find(Beneficiaries.class, updated.getOnline_id());
-						beneficiary.setUpdatedBy(user.getId());
-						beneficiary.setDateUpdated(new Date());
-						beneficiary.update(updated, lastPulledAt);
-						service.update(beneficiary);
 					}
 				}
 			}
@@ -448,6 +477,17 @@ public class SyncController {
 					if (updated.getOnline_id() == null) {
 						BeneficiariesInterventions intervention = new BeneficiariesInterventions(updated, lastPulledAt);
 						intervention.setCreatedBy(user.getId());
+						if (updated.getBeneficiary_id() == 0) {
+							Integer beneficiaryId = beneficiariesIds.get(updated.getBeneficiary_offline_id());
+							if (beneficiaryId == null) {
+								Beneficiaries beneficiary = service.GetUniqueEntityByNamedQuery("Beneficiary.findByOfflineId", updated.getBeneficiary_offline_id());
+								beneficiaryId = beneficiary.getId();
+							}
+							intervention.setBeneficiaries(new Beneficiaries(beneficiaryId));
+							intervention.getId().setBeneficiaryId(beneficiaryId);
+							intervention.setDateUpdated(new Date());
+							intervention.setUpdatedBy(user.getId().toString());
+						}
 						service.Save(intervention);
 
 					} else {
@@ -472,6 +512,16 @@ public class SyncController {
 
 					if (updated.getOnline_id() == null) {
 						References reference = new References(updated, lastPulledAt);
+						if (updated.getBeneficiary_id() == 0) {
+							Integer beneficiaryId = beneficiariesIds.get(updated.getBeneficiary_offline_id());
+							if (beneficiaryId == null) {
+								Beneficiaries beneficiary = service.GetUniqueEntityByNamedQuery("Beneficiary.findByOfflineId", updated.getBeneficiary_offline_id());
+								beneficiaryId = beneficiary.getId();
+							}
+							reference.setBeneficiaries(new Beneficiaries(beneficiaryId));
+							reference.setDateUpdated(new Date());
+							reference.setUpdatedBy(user.getId());
+						}
 						reference.setUserCreated(user.getId()+"");
 						service.Save(reference);
 

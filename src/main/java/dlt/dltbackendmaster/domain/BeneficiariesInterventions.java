@@ -69,9 +69,9 @@ public class BeneficiariesInterventions implements java.io.Serializable {
 	private String updatedBy;
 	private Date dateUpdated;
 	private String offlineId;
-
 	
 	private LocalDate date;
+	private String beneficiaryOfflineId;
 
 	public BeneficiariesInterventions() {
 
@@ -123,6 +123,7 @@ public class BeneficiariesInterventions implements java.io.Serializable {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate date = LocalDate.parse(model.getDate(), dtf);
         this.date = date;
+        this.beneficiaryOfflineId = model.getBeneficiary_offline_id();
         this.id = new BeneficiariesInterventionsId(model.getBeneficiary_id(), model.getSub_service_id(), date);
         this.beneficiaries = new Beneficiaries(model.getBeneficiary_id());
         this.subServices = new SubServices(model.getSub_service_id());
@@ -246,6 +247,15 @@ public class BeneficiariesInterventions implements java.io.Serializable {
 		this.date = date;
 	}
 
+	@Transient
+	public String getBeneficiaryOfflineId() {
+		return beneficiaryOfflineId;
+	}
+
+	public void setBeneficiaryOfflineId(String beneficiaryOfflineId) {
+		this.beneficiaryOfflineId = beneficiaryOfflineId;
+	}
+
 	@Column(name = "status", nullable = false)
 	public int getStatus() {
 		return this.status;
@@ -316,7 +326,7 @@ public class BeneficiariesInterventions implements java.io.Serializable {
         }
 
         if (dateUpdated == null || dateUpdated.after(dateCreated) || lastPulledAt == null || lastPulledAt.equals("null")) {
-            beneficiaryIntervention.put("beneficiary_id", beneficiaries.getId());
+            beneficiaryIntervention.put("beneficiary_offline_id", beneficiaries.getOfflineId());
             beneficiaryIntervention.put("sub_service_id", subServices.getId());
             beneficiaryIntervention.put("result", result);
             beneficiaryIntervention.put("date", id.getDate().toString());
@@ -331,6 +341,7 @@ public class BeneficiariesInterventions implements java.io.Serializable {
         } else { // ensure online_id is updated first
             beneficiaryIntervention.put("online_id", id.toString());
         }
+        beneficiaryIntervention.put("beneficiary_id", beneficiaries.getId());
         return beneficiaryIntervention;
     }
 	
@@ -341,6 +352,7 @@ public class BeneficiariesInterventions implements java.io.Serializable {
         this.dateUpdated = new Date(t);
         this.beneficiaries.setId(model.getBeneficiary_id());
         this.subServices.setId(model.getSub_service_id());
+        this.beneficiaryOfflineId = model.getBeneficiary_offline_id();
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         this.id.setDate(LocalDate.parse(model.getDate(), dtf));
         this.us = new Us(model.getUs_id());

@@ -6,6 +6,7 @@ public class ReferenceSyncModel {
 
 	private String id;
 	private Integer beneficiary_id;
+	private String beneficiary_offline_id;
 	private Integer referred_by;
 	private String refer_to;
 	private Integer notify_to;
@@ -39,6 +40,14 @@ public class ReferenceSyncModel {
 
 	public Integer getBeneficiary_id() {
 		return beneficiary_id;
+	}
+
+	public String getBeneficiary_offline_id() {
+		return beneficiary_offline_id;
+	}
+
+	public void setBeneficiary_offline_id(String beneficiary_offline_id) {
+		this.beneficiary_offline_id = beneficiary_offline_id;
 	}
 
 	public void setBeneficiary_id(Integer beneficiary_id) {

@@ -2,9 +2,6 @@ package dlt.dltbackendmaster.domain.watermelondb;
 
 import java.util.List;
 
-import dlt.dltbackendmaster.domain.Locality;
-import dlt.dltbackendmaster.domain.Users;
-
 public class SyncObject<T> {
 	private List<T> created;
 	private List<T> updated;

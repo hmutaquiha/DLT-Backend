@@ -49,6 +49,7 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 @Table(name = "beneficiaries", catalog = "dreams_db", uniqueConstraints = @UniqueConstraint(columnNames = "nui"))
 @NamedQueries({ @NamedQuery(name = "Beneficiary.findAll", query = "SELECT b FROM Beneficiaries b"),
                 @NamedQuery(name = "Beneficiary.findByNui", query = "SELECT b FROM Beneficiaries b where nui = :nui"),
+                @NamedQuery(name = "Beneficiary.findByOfflineId", query = "SELECT b FROM Beneficiaries b where offlineId = :offlineId"),
                 @NamedQuery(name = "Beneficiary.findByLocalities", query = "SELECT b FROM Beneficiaries b where neighborhood.locality.id in (:localities)"),
                 @NamedQuery(name = "Beneficiary.findByDistricts", query = "SELECT b FROM Beneficiaries b where neighborhood.locality.district.id in (:districts)"),
                 @NamedQuery(name = "Beneficiary.findByProvinces", query = "SELECT b FROM Beneficiaries b where neighborhood.locality.district.province.id in (:provinces)"),
@@ -69,7 +70,6 @@ public class Beneficiaries implements java.io.Serializable
     private String surname;
     private String name;
     private String nickName;
-    private Integer organizationId;
     private Date dateOfBirth;
     private char gender;
     private String address;
@@ -139,7 +139,7 @@ public class Beneficiaries implements java.io.Serializable
     }
 
     public Beneficiaries(Neighborhood neighborhood, Partners partners, Locality locality, Us us, String nui, String surname, String name,
-                         String nickName, Integer organizationId, Date dateOfBirth, char gender, String address,
+                         String nickName, Date dateOfBirth, char gender, String address,
                          String phoneNumber, String EMail, Date enrollmentDate, Integer via, Integer nationality,
                          Integer partnerId, String entryPoint, String vbltLivesWith, Byte vbltIsOrphan,
                          Byte vbltIsStudent, Integer vbltSchoolGrade, String vbltSchoolName, Byte vbltIsDeficient,
@@ -160,7 +160,6 @@ public class Beneficiaries implements java.io.Serializable
         this.surname = surname;
         this.name = name;
         this.nickName = nickName;
-        this.organizationId = organizationId;
         this.dateOfBirth = dateOfBirth;
         this.gender = gender;
         this.address = address;
@@ -215,7 +214,6 @@ public class Beneficiaries implements java.io.Serializable
         this.surname = model.getSurname();
         this.nickName = model.getNick_name();
         this.name = model.getName();
-        this.organizationId = model.getOrganization_id();
         this.partners = new Partners(model.getOrganization_id());
         this.locality = new Locality(model.getLocality_id());
         this.dateOfBirth = model.getDate_of_birth();
@@ -266,7 +264,6 @@ public class Beneficiaries implements java.io.Serializable
         this.surname = model.getSurname();
         this.nickName = model.getNick_name();
         this.name = model.getName();
-        this.organizationId = model.getOrganization_id();
         this.partners = new Partners(model.getOrganization_id());
         this.locality = new Locality(model.getLocality_id());
         this.dateOfBirth = model.getDate_of_birth();
@@ -336,7 +333,7 @@ public class Beneficiaries implements java.io.Serializable
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "partner")
+    @JoinColumn(name = "organization_id")
     @JsonProperty("partner")
     @JsonSerialize(using = PartnersSerializer.class)
     public Partners getPartners() {
@@ -405,15 +402,6 @@ public class Beneficiaries implements java.io.Serializable
 
     public void setNickName(String nickName) {
         this.nickName = nickName;
-    }
-
-    @Column(name = "organization_id")
-    public Integer getOrganizationId() {
-        return this.organizationId;
-    }
-
-    public void setOrganizationId(Integer organizationId) {
-        this.organizationId = organizationId;
     }
 
     @Temporal(TemporalType.DATE)

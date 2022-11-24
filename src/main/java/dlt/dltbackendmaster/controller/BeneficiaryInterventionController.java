@@ -19,6 +19,7 @@ import dlt.dltbackendmaster.domain.References;
 import dlt.dltbackendmaster.domain.ReferencesServices;
 import dlt.dltbackendmaster.domain.ReferencesServicesObject;
 import dlt.dltbackendmaster.domain.SubServices;
+import dlt.dltbackendmaster.domain.Us;
 import dlt.dltbackendmaster.security.utils.ServiceCompletionRules;
 import dlt.dltbackendmaster.service.DAOService;
 
@@ -51,7 +52,8 @@ public class BeneficiaryInterventionController
         }
 
         try {
-
+        	Us us = service.find(Us.class, intervention.getUs().getId());
+        	intervention.setUs(us);
             intervention.setDateCreated(new Date());
             service.Save(intervention);
 
@@ -101,7 +103,7 @@ public class BeneficiaryInterventionController
         }
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "rawtypes" })
     @PutMapping(consumes = "application/json", produces = "application/json")
     public ResponseEntity update(@RequestBody BeneficiariesInterventions intervention) {
 

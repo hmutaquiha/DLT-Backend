@@ -23,6 +23,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -71,6 +72,7 @@ public class References implements java.io.Serializable {
 	private Integer updatedBy;
 	private Date dateUpdated;
 	private String offlineId;
+	private String beneficiaryOfflineId;
 	private Set<ReferencesServices> referencesServiceses = new HashSet<ReferencesServices>(0);
 
 	public References() {
@@ -137,6 +139,7 @@ public class References implements java.io.Serializable {
 		this.userCreated = model.getUser_created();
 		this.dateCreated = regDate;
 		this.dateUpdated = regDate;
+		this.beneficiaryOfflineId = model.getBeneficiary_offline_id();
 	}
 
 	@Id
@@ -337,6 +340,15 @@ public class References implements java.io.Serializable {
 		this.offlineId = offlineId;
 	}
 
+	@Transient
+	public String getBeneficiaryOfflineId() {
+		return beneficiaryOfflineId;
+	}
+
+	public void setBeneficiaryOfflineId(String beneficiaryOfflineId) {
+		this.beneficiaryOfflineId = beneficiaryOfflineId;
+	}
+
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "references")
 	public Set<ReferencesServices> getReferencesServiceses() {
 		return this.referencesServiceses;
@@ -360,7 +372,7 @@ public class References implements java.io.Serializable {
 
 		if (dateUpdated == null || dateUpdated.after(dateCreated) || lastPulledAt == null
 				|| lastPulledAt.equals("null")) {
-			reference.put("beneficiary_id", beneficiaries.getId());
+            reference.put("beneficiary_offline_id", beneficiaries.getOfflineId());
 			reference.put("referred_by", referredBy.getId());
 			reference.put("notify_to", users.getId());
 			reference.put("reference_note", referenceNote);
@@ -383,6 +395,7 @@ public class References implements java.io.Serializable {
 			reference.put("beneficiary_id", beneficiaries.getId());
 			reference.put("online_id", id);
 		}
+		reference.put("beneficiary_id", beneficiaries.getId());
 
 		return reference;
 	}
@@ -408,6 +421,7 @@ public class References implements java.io.Serializable {
 		this.otherReason = model.getOther_reason();
 		this.userCreated = model.getUser_created();
 		this.dateCreated = model.getDate_created();
+        this.beneficiaryOfflineId = model.getBeneficiary_offline_id();
 	}
 
 }

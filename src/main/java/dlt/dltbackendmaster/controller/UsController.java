@@ -1,6 +1,5 @@
 package dlt.dltbackendmaster.controller;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import dlt.dltbackendmaster.domain.District;
 import dlt.dltbackendmaster.domain.Locality;
 import dlt.dltbackendmaster.domain.Province;
-import dlt.dltbackendmaster.domain.ReferencesServices;
 import dlt.dltbackendmaster.domain.Us;
 import dlt.dltbackendmaster.domain.Users;
 import dlt.dltbackendmaster.service.DAOService;
@@ -106,7 +104,7 @@ public class UsController {
 				
 			}else if(user.getProfiles().getId() == 1) {
 				
-				List<Us> us = service.getAll(Us.class);
+				List<Us> us =  service.GetAllEntityByNamedQuery("Us.findByEntryPoint", typeId);
 				return new ResponseEntity<>(us, HttpStatus.OK);
 			}
 						

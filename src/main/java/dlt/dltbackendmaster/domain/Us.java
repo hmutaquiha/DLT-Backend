@@ -42,7 +42,8 @@ import dlt.dltbackendmaster.serializers.UsTypeSerializer;
     @NamedQuery(name = "Us.findByDateCreated", query = "SELECT c FROM Us c WHERE c.dateCreated = :lastpulledat"),
     @NamedQuery(name = "Us.findByDateUpdated", query = "SELECT c FROM Us c WHERE c.dateUpdated = :lastpulledat"),
 
-	@NamedQuery(name = "Us.findByEPLocalities", query = "SELECT u FROM Us u where u.usType.entryPoint = :entryPoint and u.locality.id in (:localities)"),
+    @NamedQuery(name = "Us.findByEntryPoint", query = "SELECT u FROM Us u where u.usType.entryPoint = :entryPoint"),
+    @NamedQuery(name = "Us.findByEPLocalities", query = "SELECT u FROM Us u where u.usType.entryPoint = :entryPoint and u.locality.id in (:localities)"),
 	@NamedQuery(name = "Us.findByEPDistrict", query = "SELECT u FROM Us u where u.usType.entryPoint = :entryPoint and u.locality.district.id in (:distrits)"),
 	@NamedQuery(name = "Us.findByEPProvince", query = "SELECT u FROM Us u where u.usType.entryPoint = :entryPoint and u.locality.district.province.id in (:provinces)")
 

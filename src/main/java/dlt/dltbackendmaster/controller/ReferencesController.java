@@ -93,6 +93,8 @@ public class ReferencesController {
 		}
 
 		try {
+			reference.setCancelReason(null);
+			reference.setOtherReason(null);
 			reference.setDateCreated(new Date());
 
 			service.Save(reference);

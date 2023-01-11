@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import dlt.dltbackendmaster.domain.Beneficiaries;
 import dlt.dltbackendmaster.domain.NumericSequence;
+import dlt.dltbackendmaster.domain.VulnerabilityHistory;
 import dlt.dltbackendmaster.service.DAOService;
 import dlt.dltbackendmaster.service.SequenceGenerator;
 
@@ -121,10 +122,67 @@ public class BeneficiaryController
             } else {
 				beneficiary.setPartnerId(null);
 			}
-            Beneficiaries updatedBeneficiary = service.update(beneficiary);
-            return new ResponseEntity<>(updatedBeneficiary, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+			Beneficiaries updatedBeneficiary = service.update(beneficiary);
+
+			saveVulnerabilityHistory(updatedBeneficiary);
+
+			return new ResponseEntity<>(updatedBeneficiary, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	private void saveVulnerabilityHistory(Beneficiaries beneficiary) {
+		createVulnerability("DEFICIENCY_TYPE", beneficiary.getVbltDeficiencyType(), beneficiary);
+		createVulnerability("IS_EMPLOYED", beneficiary.getVbltIsEmployed(), beneficiary);
+		createVulnerability("LIVES_WITH", beneficiary.getVbltLivesWith(), beneficiary);
+		createVulnerability("SCHOOL_NAME", beneficiary.getVbltSchoolName(), beneficiary);
+		createVulnerability("SEXPLOITATION_TIME", beneficiary.getVbltSexploitationTime(), beneficiary);
+		createVulnerability("TESTED_HIV", beneficiary.getVbltTestedHiv(), beneficiary);
+		createVulnerability("VBG_TIME", beneficiary.getVbltVbgTime(), beneficiary);
+		createVulnerability("VBG_TYPE", beneficiary.getVbltVbgType(), beneficiary);
+		createVulnerability("ALCOHOL_DRUGS_USE", String.valueOf(beneficiary.getVbltAlcoholDrugsUse()), beneficiary);
+		createVulnerability("CHILDREN", String.valueOf(beneficiary.getVbltChildren()), beneficiary);
+		createVulnerability("HOUSE_SUSTAINER", String.valueOf(beneficiary.getVbltHouseSustainer()), beneficiary);
+		createVulnerability("IS_DEFICIENT", String.valueOf(beneficiary.getVbltIsDeficient()), beneficiary);
+		createVulnerability("IS_MIGRANT", String.valueOf(beneficiary.getVbltIsMigrant()), beneficiary);
+		createVulnerability("IS_ORPHAN", String.valueOf(beneficiary.getVbltIsOrphan()), beneficiary);
+		createVulnerability("IS_STUDENT", String.valueOf(beneficiary.getVbltIsStudent()), beneficiary);
+		createVulnerability("MARRIED_BEFORE", String.valueOf(beneficiary.getVbltMarriedBefore()), beneficiary);
+		createVulnerability("MULTIPLE_PARTNERS", String.valueOf(beneficiary.getVbltMultiplePartners()), beneficiary);
+		createVulnerability("PREGNANT_BEFORE", String.valueOf(beneficiary.getVbltPregnantBefore()), beneficiary);
+		createVulnerability("PREGNANT_OR_BREASTFEEDING", String.valueOf(beneficiary.getVbltPregnantOrBreastfeeding()),
+				beneficiary);
+		createVulnerability("SCHOOL_GRADE", String.valueOf(beneficiary.getVbltSchoolGrade()), beneficiary);
+		createVulnerability("SEXUAL_EXPLOITATION", String.valueOf(beneficiary.getVbltSexualExploitation()),
+				beneficiary);
+		createVulnerability("SEXUALLY_ACTIVE", String.valueOf(beneficiary.getVbltSexuallyActive()), beneficiary);
+		createVulnerability("SEX_WORKER", String.valueOf(beneficiary.getVbltSexWorker()), beneficiary);
+		createVulnerability("STI_HISTORY", String.valueOf(beneficiary.getVbltStiHistory()), beneficiary);
+		createVulnerability("TRAFFICKING_VICTIM", String.valueOf(beneficiary.getVbltTraffickingVictim()), beneficiary);
+		createVulnerability("VBG_VICTIM", String.valueOf(beneficiary.getVbltVbgVictim()), beneficiary);
+	}
+
+	private void createVulnerability(String vulnerabilityKey, String vulnerabilityValue, Beneficiaries beneficiary) {
+		VulnerabilityHistory history = new VulnerabilityHistory();
+
+		history.setBeneficiaries(beneficiary);
+		history.setVulnerability(vulnerabilityKey);
+		history.setValue(vulnerabilityValue);
+		history.setStatus(beneficiary.getStatus());
+		history.setCreatedBy(String.valueOf(beneficiary.getCreatedBy()));
+		history.setDateCreated(beneficiary.getDateCreated());
+
+		try {
+		
+			List<VulnerabilityHistory> vulnerabilityHistoryOrdered = service.GetAllEntityByNamedQuery(
+					"VulnerabilityHistory.findByBeneficiaryAndVulnerability", beneficiary.getId(), vulnerabilityKey);
+
+			if (vulnerabilityHistoryOrdered.isEmpty() || !vulnerabilityValue.equals(vulnerabilityHistoryOrdered.get(0).getValue())) {
+				service.Save(history);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }

@@ -136,7 +136,10 @@ public class BeneficiaryController
 	}
 
 	private void saveVulnerabilityHistory(Beneficiaries beneficiary) {
-		createVulnerability("DEFICIENCY_TYPE", beneficiary.getVbltDeficiencyType(), beneficiary);
+		createVulnerability("IS_DEFICIENT", String.valueOf(beneficiary.getVbltIsDeficient()), beneficiary);
+		if(beneficiary.getVbltIsDeficient()==1) {
+			createVulnerability("DEFICIENCY_TYPE", beneficiary.getVbltDeficiencyType(), beneficiary);
+		}		
 		createVulnerability("IS_EMPLOYED", beneficiary.getVbltIsEmployed(), beneficiary);
 		createVulnerability("LIVES_WITH", beneficiary.getVbltLivesWith(), beneficiary);
 		createVulnerability("SCHOOL_NAME", beneficiary.getVbltSchoolName(), beneficiary);
@@ -147,7 +150,6 @@ public class BeneficiaryController
 		createVulnerability("ALCOHOL_DRUGS_USE", String.valueOf(beneficiary.getVbltAlcoholDrugsUse()), beneficiary);
 		createVulnerability("CHILDREN", String.valueOf(beneficiary.getVbltChildren()), beneficiary);
 		createVulnerability("HOUSE_SUSTAINER", String.valueOf(beneficiary.getVbltHouseSustainer()), beneficiary);
-		createVulnerability("IS_DEFICIENT", String.valueOf(beneficiary.getVbltIsDeficient()), beneficiary);
 		createVulnerability("IS_MIGRANT", String.valueOf(beneficiary.getVbltIsMigrant()), beneficiary);
 		createVulnerability("IS_ORPHAN", String.valueOf(beneficiary.getVbltIsOrphan()), beneficiary);
 		createVulnerability("IS_STUDENT", String.valueOf(beneficiary.getVbltIsStudent()), beneficiary);
@@ -174,14 +176,15 @@ public class BeneficiaryController
 		history.setValue(vulnerabilityValue);
 		history.setStatus(beneficiary.getStatus());
 		history.setCreatedBy(String.valueOf(beneficiary.getCreatedBy()));
-		history.setDateCreated(beneficiary.getDateCreated());
+		history.setDateCreated(new Date());
 
 		try {
 		
 			List<VulnerabilityHistory> vulnerabilityHistoryOrdered = service.GetAllEntityByNamedQuery(
 					"VulnerabilityHistory.findByBeneficiaryAndVulnerability", beneficiary.getId(), vulnerabilityKey);
 
-			if (vulnerabilityHistoryOrdered.isEmpty() || !vulnerabilityValue.equals(vulnerabilityHistoryOrdered.get(0).getValue())) {
+			if ((vulnerabilityHistoryOrdered.isEmpty() || !vulnerabilityValue.equals(vulnerabilityHistoryOrdered.get(0).getValue()))
+					&& vulnerabilityValue != null ) {
 				service.Save(history);
 			}
 		} catch (Exception e) {

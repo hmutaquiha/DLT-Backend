@@ -216,6 +216,9 @@ public class BeneficiaryController
 		if(beneficiary.getVbltVbgVictim()!=null) {
 			createVulnerability("VBG_VICTIM", String.valueOf(beneficiary.getVbltVbgVictim()), beneficiary);
 		}
+		if(beneficiary.getVbltHouseSustainer()!=null) {
+			createVulnerability("HOUSE_SUSTAINER", String.valueOf(beneficiary.getVbltHouseSustainer()), beneficiary);
+		}
 	}
 
 	private void createVulnerability(String vulnerabilityKey, String vulnerabilityValue, Beneficiaries beneficiary) {

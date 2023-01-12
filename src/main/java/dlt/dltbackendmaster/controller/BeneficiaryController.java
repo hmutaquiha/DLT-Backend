@@ -96,6 +96,9 @@ public class BeneficiaryController
             beneficiary.setNui(nextNUI.getSequence());
             Integer beneficiaryId = (Integer) service.Save(beneficiary);
             Beneficiaries createdBeneficiary = service.find(Beneficiaries.class, beneficiaryId);
+            
+            saveVulnerabilityHistory(createdBeneficiary);
+            
             return new ResponseEntity<>(createdBeneficiary, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();

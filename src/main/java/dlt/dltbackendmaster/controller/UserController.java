@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 import javax.security.auth.login.AccountLockedException;
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +33,8 @@ import dlt.dltbackendmaster.service.DAOService;
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
+	Logger logger = LoggerFactory.getLogger(BeneficiaryController.class);
+	
 	private static final String QUERY_FIND_USER_BY_USERNAME = "select u from Users u where u.username = :username";
 
 	private final DAOService service;
@@ -88,10 +92,12 @@ public class UserController {
 			List<Users> users = service.findByJPQuery(QUERY_FIND_USER_BY_USERNAME, todo);
 			
 			if(users != null && !users.isEmpty()) {
+				logger.warn(user.getUsername()+"tried to register, but this user already exists, check error code returned "+HttpStatus.FORBIDDEN);  
 				return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
 			}
 
 		} catch (Exception e) {
+			logger.warn(user.getUsername()+" tried to register, but the system had unkown error, check error code returned "+HttpStatus.INTERNAL_SERVER_ERROR);
 			e.printStackTrace();
 		}
 
@@ -116,6 +122,7 @@ public class UserController {
 			return new ResponseEntity<>(createdUser, HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.warn(user.getUsername()+" tried to register, but the system had unkown error, check error code returned "+HttpStatus.INTERNAL_SERVER_ERROR);
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -132,6 +139,7 @@ public class UserController {
 			Users updatedUser = service.update(user);
 			return new ResponseEntity<>(updatedUser, HttpStatus.OK);
 		} catch (Exception e) {
+			logger.warn(user.getUsername()+" tried to update user, but the system had unkown error, check error code returned "+HttpStatus.INTERNAL_SERVER_ERROR);
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -142,6 +150,7 @@ public class UserController {
 		Users user = service.GetUniqueEntityByNamedQuery("Users.findByUsername", users.getUsername());
 
 		if (user == null) {
+			logger.warn(users.getUsername()+" tried to change password, but the user does not exists, check error code returned "+HttpStatus.BAD_REQUEST);
 			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 		}
 
@@ -152,6 +161,7 @@ public class UserController {
 
 			return new ResponseEntity<>(updatedUser, HttpStatus.OK);
 		} catch (Exception e) {
+			logger.warn(user.getUsername()+" tried to change password, but the system had unkown error, check error code returned "+HttpStatus.INTERNAL_SERVER_ERROR);
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}

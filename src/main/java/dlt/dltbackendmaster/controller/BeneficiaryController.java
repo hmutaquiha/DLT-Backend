@@ -136,40 +136,86 @@ public class BeneficiaryController
 	}
 
 	private void saveVulnerabilityHistory(Beneficiaries beneficiary) {
-		createVulnerability("IS_DEFICIENT", String.valueOf(beneficiary.getVbltIsDeficient()), beneficiary);
-		if(beneficiary.getVbltIsDeficient()==1) {
-			createVulnerability("DEFICIENCY_TYPE", beneficiary.getVbltDeficiencyType(), beneficiary);
-		}	
+		if(beneficiary.getVbltIsDeficient()!=null) {
+			createVulnerability("IS_DEFICIENT", String.valueOf(beneficiary.getVbltIsDeficient()), beneficiary);
+			if(beneficiary.getVbltIsDeficient()==1 && beneficiary.getVbltDeficiencyType()!=null) {
+				createVulnerability("DEFICIENCY_TYPE", beneficiary.getVbltDeficiencyType(), beneficiary);
+			}
+		}			
 		if(beneficiary.getVbltChildren() !=null) {
 			createVulnerability("CHILDREN", String.valueOf(beneficiary.getVbltChildren()), beneficiary);
 		}
 		if(beneficiary.getVbltSexWorker() !=null) {
 			createVulnerability("SEX_WORKER", String.valueOf(beneficiary.getVbltSexWorker()), beneficiary);
 		}
-		createVulnerability("IS_EMPLOYED", beneficiary.getVbltIsEmployed(), beneficiary);
-		createVulnerability("LIVES_WITH", beneficiary.getVbltLivesWith(), beneficiary);
-		createVulnerability("SCHOOL_NAME", beneficiary.getVbltSchoolName(), beneficiary);
-		createVulnerability("SEXPLOITATION_TIME", beneficiary.getVbltSexploitationTime(), beneficiary);
-		createVulnerability("TESTED_HIV", beneficiary.getVbltTestedHiv(), beneficiary);
-		createVulnerability("VBG_TIME", beneficiary.getVbltVbgTime(), beneficiary);
-		createVulnerability("VBG_TYPE", beneficiary.getVbltVbgType(), beneficiary);
-		createVulnerability("ALCOHOL_DRUGS_USE", String.valueOf(beneficiary.getVbltAlcoholDrugsUse()), beneficiary);
-		createVulnerability("HOUSE_SUSTAINER", String.valueOf(beneficiary.getVbltHouseSustainer()), beneficiary);
-		createVulnerability("IS_MIGRANT", String.valueOf(beneficiary.getVbltIsMigrant()), beneficiary);
-		createVulnerability("IS_ORPHAN", String.valueOf(beneficiary.getVbltIsOrphan()), beneficiary);
-		createVulnerability("IS_STUDENT", String.valueOf(beneficiary.getVbltIsStudent()), beneficiary);
-		createVulnerability("MARRIED_BEFORE", String.valueOf(beneficiary.getVbltMarriedBefore()), beneficiary);
-		createVulnerability("MULTIPLE_PARTNERS", String.valueOf(beneficiary.getVbltMultiplePartners()), beneficiary);
-		createVulnerability("PREGNANT_BEFORE", String.valueOf(beneficiary.getVbltPregnantBefore()), beneficiary);
-		createVulnerability("PREGNANT_OR_BREASTFEEDING", String.valueOf(beneficiary.getVbltPregnantOrBreastfeeding()),
+		if(beneficiary.getVbltIsEmployed()!= null) {
+			createVulnerability("IS_EMPLOYED", beneficiary.getVbltIsEmployed(), beneficiary);
+		}
+		if( beneficiary.getVbltLivesWith()!=null) {
+			createVulnerability("LIVES_WITH", beneficiary.getVbltLivesWith(), beneficiary);
+		}
+		if(beneficiary.getVbltSchoolName()!=null) {
+			createVulnerability("SCHOOL_NAME", beneficiary.getVbltSchoolName(), beneficiary);
+		}
+		if(beneficiary.getVbltSexploitationTime()!=null) {
+			createVulnerability("SEXPLOITATION_TIME", beneficiary.getVbltSexploitationTime(), beneficiary);
+		}
+		if( beneficiary.getVbltTestedHiv()!=null) {
+			createVulnerability("TESTED_HIV", beneficiary.getVbltTestedHiv(), beneficiary);
+		}
+		if(beneficiary.getVbltVbgTime()!=null) {
+			createVulnerability("VBG_TIME", beneficiary.getVbltVbgTime(), beneficiary);
+		}
+		if(beneficiary.getVbltVbgType()!=null) {
+			createVulnerability("VBG_TYPE", beneficiary.getVbltVbgType(), beneficiary);
+		}
+		if(beneficiary.getVbltAlcoholDrugsUse()!=null) {
+			createVulnerability("ALCOHOL_DRUGS_USE", String.valueOf(beneficiary.getVbltAlcoholDrugsUse()), beneficiary);
+		}
+		if(beneficiary.getVbltAlcoholDrugsUse()!=null) {
+			createVulnerability("HOUSE_SUSTAINER", String.valueOf(beneficiary.getVbltHouseSustainer()), beneficiary);
+		}
+		if(beneficiary.getVbltIsMigrant()!=null) {
+			createVulnerability("IS_MIGRANT", String.valueOf(beneficiary.getVbltIsMigrant()), beneficiary);
+		}
+		if(beneficiary.getVbltIsOrphan()!=null) {
+			createVulnerability("IS_ORPHAN", String.valueOf(beneficiary.getVbltIsOrphan()), beneficiary);
+		}
+		if(beneficiary.getVbltIsStudent()!=null) {
+			createVulnerability("IS_STUDENT", String.valueOf(beneficiary.getVbltIsStudent()), beneficiary);
+		}
+		if(beneficiary.getVbltMarriedBefore()!=null) {
+			createVulnerability("MARRIED_BEFORE", String.valueOf(beneficiary.getVbltMarriedBefore()), beneficiary);
+		}
+		if(beneficiary.getVbltMultiplePartners()!=null) {
+			createVulnerability("MULTIPLE_PARTNERS", String.valueOf(beneficiary.getVbltMultiplePartners()), beneficiary);
+		}
+		if(beneficiary.getVbltPregnantBefore()!=null) {
+			createVulnerability("PREGNANT_BEFORE", String.valueOf(beneficiary.getVbltPregnantBefore()), beneficiary);
+		}
+		if(beneficiary.getVbltPregnantOrBreastfeeding()!=null) {
+			createVulnerability("PREGNANT_OR_BREASTFEEDING", String.valueOf(beneficiary.getVbltPregnantOrBreastfeeding()),
 				beneficiary);
-		createVulnerability("SCHOOL_GRADE", String.valueOf(beneficiary.getVbltSchoolGrade()), beneficiary);
-		createVulnerability("SEXUAL_EXPLOITATION", String.valueOf(beneficiary.getVbltSexualExploitation()),
+		}
+		if(beneficiary.getVbltSchoolGrade()!=null) {
+			createVulnerability("SCHOOL_GRADE", String.valueOf(beneficiary.getVbltSchoolGrade()), beneficiary);
+		}
+		if(beneficiary.getVbltSexualExploitation()!=null) {
+			createVulnerability("SEXUAL_EXPLOITATION", String.valueOf(beneficiary.getVbltSexualExploitation()),
 				beneficiary);
-		createVulnerability("SEXUALLY_ACTIVE", String.valueOf(beneficiary.getVbltSexuallyActive()), beneficiary);
-		createVulnerability("STI_HISTORY", String.valueOf(beneficiary.getVbltStiHistory()), beneficiary);
-		createVulnerability("TRAFFICKING_VICTIM", String.valueOf(beneficiary.getVbltTraffickingVictim()), beneficiary);
-		createVulnerability("VBG_VICTIM", String.valueOf(beneficiary.getVbltVbgVictim()), beneficiary);
+		}
+		if(beneficiary.getVbltSexuallyActive()!=null) {
+			createVulnerability("SEXUALLY_ACTIVE", String.valueOf(beneficiary.getVbltSexuallyActive()), beneficiary);
+		}
+		if(beneficiary.getVbltStiHistory()!=null) {
+			createVulnerability("STI_HISTORY", String.valueOf(beneficiary.getVbltStiHistory()), beneficiary);}
+		
+		if(beneficiary.getVbltTraffickingVictim()!=null) {
+			createVulnerability("TRAFFICKING_VICTIM", String.valueOf(beneficiary.getVbltTraffickingVictim()), beneficiary);
+		}
+		if(beneficiary.getVbltVbgVictim()!=null) {
+			createVulnerability("VBG_VICTIM", String.valueOf(beneficiary.getVbltVbgVictim()), beneficiary);
+		}
 	}
 
 	private void createVulnerability(String vulnerabilityKey, String vulnerabilityValue, Beneficiaries beneficiary) {

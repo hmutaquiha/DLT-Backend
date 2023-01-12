@@ -139,7 +139,13 @@ public class BeneficiaryController
 		createVulnerability("IS_DEFICIENT", String.valueOf(beneficiary.getVbltIsDeficient()), beneficiary);
 		if(beneficiary.getVbltIsDeficient()==1) {
 			createVulnerability("DEFICIENCY_TYPE", beneficiary.getVbltDeficiencyType(), beneficiary);
-		}		
+		}	
+		if(beneficiary.getVbltChildren() !=null) {
+			createVulnerability("CHILDREN", String.valueOf(beneficiary.getVbltChildren()), beneficiary);
+		}
+		if(beneficiary.getVbltSexWorker() !=null) {
+			createVulnerability("SEX_WORKER", String.valueOf(beneficiary.getVbltSexWorker()), beneficiary);
+		}
 		createVulnerability("IS_EMPLOYED", beneficiary.getVbltIsEmployed(), beneficiary);
 		createVulnerability("LIVES_WITH", beneficiary.getVbltLivesWith(), beneficiary);
 		createVulnerability("SCHOOL_NAME", beneficiary.getVbltSchoolName(), beneficiary);
@@ -148,7 +154,6 @@ public class BeneficiaryController
 		createVulnerability("VBG_TIME", beneficiary.getVbltVbgTime(), beneficiary);
 		createVulnerability("VBG_TYPE", beneficiary.getVbltVbgType(), beneficiary);
 		createVulnerability("ALCOHOL_DRUGS_USE", String.valueOf(beneficiary.getVbltAlcoholDrugsUse()), beneficiary);
-		createVulnerability("CHILDREN", String.valueOf(beneficiary.getVbltChildren()), beneficiary);
 		createVulnerability("HOUSE_SUSTAINER", String.valueOf(beneficiary.getVbltHouseSustainer()), beneficiary);
 		createVulnerability("IS_MIGRANT", String.valueOf(beneficiary.getVbltIsMigrant()), beneficiary);
 		createVulnerability("IS_ORPHAN", String.valueOf(beneficiary.getVbltIsOrphan()), beneficiary);
@@ -162,7 +167,6 @@ public class BeneficiaryController
 		createVulnerability("SEXUAL_EXPLOITATION", String.valueOf(beneficiary.getVbltSexualExploitation()),
 				beneficiary);
 		createVulnerability("SEXUALLY_ACTIVE", String.valueOf(beneficiary.getVbltSexuallyActive()), beneficiary);
-		createVulnerability("SEX_WORKER", String.valueOf(beneficiary.getVbltSexWorker()), beneficiary);
 		createVulnerability("STI_HISTORY", String.valueOf(beneficiary.getVbltStiHistory()), beneficiary);
 		createVulnerability("TRAFFICKING_VICTIM", String.valueOf(beneficiary.getVbltTraffickingVictim()), beneficiary);
 		createVulnerability("VBG_VICTIM", String.valueOf(beneficiary.getVbltVbgVictim()), beneficiary);
@@ -183,8 +187,8 @@ public class BeneficiaryController
 			List<VulnerabilityHistory> vulnerabilityHistoryOrdered = service.GetAllEntityByNamedQuery(
 					"VulnerabilityHistory.findByBeneficiaryAndVulnerability", beneficiary.getId(), vulnerabilityKey);
 
-			if ((vulnerabilityHistoryOrdered.isEmpty() || !vulnerabilityValue.equals(vulnerabilityHistoryOrdered.get(0).getValue()))
-					&& vulnerabilityValue != null ) {
+			if (vulnerabilityValue != null  && (vulnerabilityHistoryOrdered.isEmpty() || !vulnerabilityValue.equals(vulnerabilityHistoryOrdered.get(0).getValue()))) 
+			{
 				service.Save(history);
 			}
 		} catch (Exception e) {

@@ -92,12 +92,12 @@ public class UserController {
 			List<Users> users = service.findByJPQuery(QUERY_FIND_USER_BY_USERNAME, todo);
 			
 			if(users != null && !users.isEmpty()) {
-				logger.warn(user.getUsername()+"tried to register, but this user already exists, check error code returned "+HttpStatus.FORBIDDEN);  
+				logger.warn("User "+user.getUsername()+"tried to register, but this user already exists, check error code returned "+HttpStatus.FORBIDDEN);  
 				return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
 			}
 
 		} catch (Exception e) {
-			logger.warn(user.getUsername()+" tried to register, but the system had unkown error, check error code returned "+HttpStatus.INTERNAL_SERVER_ERROR);
+			logger.warn("User "+user.getUsername()+" tried to register, but the system had unkown error, check error code returned "+HttpStatus.INTERNAL_SERVER_ERROR);
 			e.printStackTrace();
 		}
 
@@ -118,11 +118,11 @@ public class UserController {
 				emailSender.sendEmail(user.getName() + " " + user.getSurname(), user.getUsername(), password, email,
 						null, true);
 			}
-
+			logger.warn("User "+user.getUsername()+" logged to system ");
 			return new ResponseEntity<>(createdUser, HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
-			logger.warn(user.getUsername()+" tried to register, but the system had unkown error, check error code returned "+HttpStatus.INTERNAL_SERVER_ERROR);
+			logger.warn("User "+user.getUsername()+" tried to register, but the system had unkown error, check error code returned "+HttpStatus.INTERNAL_SERVER_ERROR);
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -137,9 +137,10 @@ public class UserController {
 		try {
 			user.setDateUpdated(new Date());
 			Users updatedUser = service.update(user);
+			logger.warn("User "+user.getUsername()+" updated the user information ");
 			return new ResponseEntity<>(updatedUser, HttpStatus.OK);
 		} catch (Exception e) {
-			logger.warn(user.getUsername()+" tried to update user, but the system had unkown error, check error code returned "+HttpStatus.INTERNAL_SERVER_ERROR);
+			logger.warn("User "+user.getUsername()+" tried to update user, but the system had unkown error, check error code returned "+HttpStatus.INTERNAL_SERVER_ERROR);
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -150,7 +151,7 @@ public class UserController {
 		Users user = service.GetUniqueEntityByNamedQuery("Users.findByUsername", users.getUsername());
 
 		if (user == null) {
-			logger.warn(users.getUsername()+" tried to change password, but the user does not exists, check error code returned "+HttpStatus.BAD_REQUEST);
+			logger.warn("User "+users.getUsername()+" tried to change password, but the user does not exists, check error code returned "+HttpStatus.BAD_REQUEST);
 			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 		}
 
@@ -158,10 +159,10 @@ public class UserController {
 			user.setNewPassword(0);
 			user.setPassword(passwordEncoder.encode(users.getRecoverPassword()));
 			Users updatedUser = service.update(user);
-
+			logger.warn("User "+user.getUsername()+" changed password ");
 			return new ResponseEntity<>(updatedUser, HttpStatus.OK);
 		} catch (Exception e) {
-			logger.warn(user.getUsername()+" tried to change password, but the system had unkown error, check error code returned "+HttpStatus.INTERNAL_SERVER_ERROR);
+			logger.warn("User "+user.getUsername()+" tried to change password, but the system had unkown error, check error code returned "+HttpStatus.INTERNAL_SERVER_ERROR);
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}

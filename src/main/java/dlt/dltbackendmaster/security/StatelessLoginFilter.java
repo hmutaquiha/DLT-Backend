@@ -46,6 +46,12 @@ public class StatelessLoginFilter extends AbstractAuthenticationProcessingFilter
         String password = request.getParameter("password");
         final UsernamePasswordAuthenticationToken loginToken = new UsernamePasswordAuthenticationToken(username, URLDecoder.decode(password, StandardCharsets.UTF_8.toString()));
         
+        try {
+			getAuthenticationManager().authenticate(loginToken);
+		} catch (AuthenticationException e) {
+			logger.warn("User "+username+" unable to log in, details: "+e.getMessage());
+		}
+        
 		return getAuthenticationManager().authenticate(loginToken);
 	}
 	
@@ -56,6 +62,8 @@ public class StatelessLoginFilter extends AbstractAuthenticationProcessingFilter
 		final UserAuthentication userAuthentication = new UserAuthentication(authenticatedUser);
 		tokenAuthenticationService.addAuthentication(response, userAuthentication);
 		SecurityContextHolder.getContext().setAuthentication(userAuthentication);
+		
+		logger.warn("User "+authResult.getName()+" logged to system");
 	}
 	
 	

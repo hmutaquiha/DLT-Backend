@@ -82,8 +82,14 @@ public class ProvinceController {
     
 	@GetMapping("/getprovinces")
 	public ResponseEntity<List<Province>> getProvinces(){
-		List<Province> provinces = service.GetAllEntityByNamedQuery("Province.findByStatus", ACTIVE);
-		return ResponseEntity.ok(provinces);		
+	    try {
+    		List<Province> provinces = service.GetAllEntityByNamedQuery("Province.findByStatus", ACTIVE);
+    		return ResponseEntity.ok(provinces);
+    		
+	    } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 	}
 	
 	@GetMapping("/provdisctricts")

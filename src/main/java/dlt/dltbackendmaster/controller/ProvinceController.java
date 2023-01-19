@@ -1,5 +1,6 @@
 package dlt.dltbackendmaster.controller;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -8,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -48,11 +50,35 @@ public class ProvinceController {
         }       
     }
     
-	@PostMapping("/provinces")
+	@PostMapping(path = "/provinces", consumes = "application/json", produces = "application/json")
 	public ResponseEntity<Province> addProvince(@RequestBody Province province) {
-		Province prov = (Province) service.Save(province); //FIXME: revew this cast
-		return ResponseEntity.ok().body(prov);
+	    if (province == null) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+	    try {
+	        province.setCreateDate(new Date());
+	        Province prov = (Province) service.Save(province);
+	        return ResponseEntity.ok().body(prov);
+	    }catch (Exception e) {
+	        e.printStackTrace();
+	        return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+	    }
 	}
+	
+    @PutMapping(path = "/provinces", consumes = "application/json", produces = "application/json")
+    public ResponseEntity<Province> editProvince(@RequestBody Province province) {
+        if (province == null) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+        try {
+            province.setUpdateDate(new Date());
+            Province prov = (Province) service.update(province);
+            return ResponseEntity.ok().body(prov);
+        }catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     
 	@GetMapping("/getprovinces")
 	public ResponseEntity<List<Province>> getProvinces(){

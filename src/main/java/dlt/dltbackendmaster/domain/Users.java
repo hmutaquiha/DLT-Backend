@@ -109,6 +109,8 @@ public class Users implements java.io.Serializable
     private String recoverPassword;
 
     private String recoverPasswordToken;
+    
+    private Date passwordLastChangeDate;
 
     private Set<Locality> localities = new HashSet<Locality>(0);
 
@@ -559,4 +561,14 @@ public class Users implements java.io.Serializable
         this.partners.setId(model.getPartner_id());
         this.profiles.setId(model.getProfile_id());
     }
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "password_last_change_date", length = 19)
+	public Date getPasswordLastChangeDate() {
+		return passwordLastChangeDate;
+	}
+
+	public void setPasswordLastChangeDate(Date passwordLastChangeDate) {
+		this.passwordLastChangeDate = passwordLastChangeDate;
+	}
 }

@@ -110,6 +110,7 @@ public class UserController {
 			user.setIsLocked(Byte.valueOf("0"));
 			user.setIsEnabled(Byte.valueOf("1"));
 			user.setNewPassword(1);
+			user.setPasswordLastChangeDate(new Date());
 			Integer userId = (Integer) service.Save(user);
 			Users createdUser = service.find(Users.class, userId);
 
@@ -158,6 +159,7 @@ public class UserController {
 		try {
 			user.setNewPassword(0);
 			user.setPassword(passwordEncoder.encode(users.getRecoverPassword()));
+			user.setPasswordLastChangeDate(new Date());
 			Users updatedUser = service.update(user);
 			logger.warn("User "+user.getUsername()+" changed password ");
 			return new ResponseEntity<>(updatedUser, HttpStatus.OK);
@@ -221,5 +223,10 @@ public class UserController {
 	@GetMapping(path = "/username/{username}", produces = "application/json")
 	public ResponseEntity<Users> verifyUserByUsername(@PathVariable String username) throws AccountLockedException {
 		return userDetailsService.verifyUserByUsername(username);
+	}
+	
+	@GetMapping(path = "/username/{username}/password-validity", produces = "application/json")
+	public ResponseEntity<Users> checkPasswordValidity(@PathVariable String username) throws AccountLockedException {
+		return userDetailsService.checkPasswordValidity(username);
 	}
 }

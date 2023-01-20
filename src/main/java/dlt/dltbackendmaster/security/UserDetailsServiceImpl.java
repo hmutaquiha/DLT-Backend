@@ -1,8 +1,10 @@
 package dlt.dltbackendmaster.security;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import javax.security.auth.login.AccountLockedException;
 
@@ -83,6 +85,37 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		}
 		return responseEntity;
 
+	}
+	
+	public ResponseEntity<Users> checkPasswordValidity(@PathVariable String username) {
+		Map<String, Object> todo = new HashMap<String, Object>();
+		todo.put("username", username);
+		ResponseEntity<Users> responseEntity = null;
+	
+		List<Users> users = service.findByJPQuery(QUERY_FIND_USER_BY_USERNAME, todo);
+		if (users != null && !users.isEmpty()) {
+			Users user = users.get(0);
+			if(isPasswordVeryOld(user)){
+				logger.warn("user " +user.getUsername()+" tried to login, the user password expired, the user has been redirected to password change page "+HttpStatus.TEMPORARY_REDIRECT);
+				responseEntity = new ResponseEntity<>(null, HttpStatus.TEMPORARY_REDIRECT);
+			}else {
+				responseEntity = new ResponseEntity<>(null, HttpStatus.OK);
+			}
+		}
+		return responseEntity;
+	}
+
+	private boolean isPasswordVeryOld(Users user) {
+		if(user.getPasswordLastChangeDate() != null){
+			long diffInMillies = Math.abs(new Date().getTime() - user.getPasswordLastChangeDate().getTime());
+		    long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+			return diff > 182;
+		}
+		else {
+		    long diffInMillies = Math.abs(new Date().getTime() - user.getDateCreated().getTime());
+		    long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+			return diff > 182;
+		}
 	}
 
 }

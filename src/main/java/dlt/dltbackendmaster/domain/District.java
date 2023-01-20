@@ -33,9 +33,11 @@ import dlt.dltbackendmaster.serializers.ProvinceSerializer;
  */
 @Entity
 @Table(name = "district", catalog = "dreams_db")
-@NamedQueries({ @NamedQuery(name = "District.findAll", query = "SELECT u FROM District u"),
+@NamedQueries({ @NamedQuery(name = "District.findAll", query = "SELECT d FROM District d"),
+                @NamedQuery(name = "District.findByStatus", 
+                            query = "SELECT d FROM District d WHERE d.status = :status"),
                 @NamedQuery(name = "District.findByProvinces",
-                            query = "SELECT c FROM District c WHERE c.province.id in (:provinces) and c.status=1") })
+                            query = "SELECT d FROM District d WHERE d.province.id in (:provinces) and d.status=1") })
 public class District implements java.io.Serializable
 {
 
@@ -138,7 +140,6 @@ public class District implements java.io.Serializable
         this.status = status;
     }
 
-    @JsonIgnore
     @Column(name = "created_by", nullable = false)
     public int getCreatedBy() {
         return this.createdBy;
@@ -148,7 +149,6 @@ public class District implements java.io.Serializable
         this.createdBy = createdBy;
     }
 
-    @JsonIgnore
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "date_created", nullable = false, length = 19)
     public Date getDateCreated() {
@@ -159,7 +159,6 @@ public class District implements java.io.Serializable
         this.dateCreated = dateCreated;
     }
 
-    @JsonIgnore
     @Column(name = "updated_by")
     public Integer getUpdatedBy() {
         return this.updatedBy;
@@ -169,7 +168,6 @@ public class District implements java.io.Serializable
         this.updatedBy = updatedBy;
     }
 
-    @JsonIgnore
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "date_updated", length = 19)
     public Date getDateUpdated() {

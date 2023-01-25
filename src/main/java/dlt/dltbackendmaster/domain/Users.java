@@ -171,7 +171,7 @@ public class Users implements java.io.Serializable
     public Users(Integer id, Set<Locality> locality,Partners partner, Profiles profiles, Set<Province> provinces, Set<District> district, String surname, String name, String phoneNumber,
                  String email, String username, String password, Integer newPassword, String entryPoint, Set<Us> us,
                  int status, Byte isLocked, Byte isExpired, Byte isCredentialsExpired, Byte isEnabled, int createdBy,
-                 Date dateCreated, Integer updatedBy, Date dateUpdated) {
+                 Date dateCreated, Integer updatedBy, Date dateUpdated, Date passwordLastChangeDate) {
         super();
         this.id = id;
         this.localities = locality;
@@ -197,6 +197,7 @@ public class Users implements java.io.Serializable
         this.dateCreated = dateCreated;
         this.updatedBy = updatedBy;
         this.dateUpdated = dateUpdated;
+        this.passwordLastChangeDate = passwordLastChangeDate;
     }
 
     public Users(UsersSyncModel model, String timestamp) {

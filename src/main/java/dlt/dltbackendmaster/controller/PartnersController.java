@@ -1,5 +1,6 @@
 package dlt.dltbackendmaster.controller;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -8,6 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -101,4 +105,39 @@ public class PartnersController {
 		}
 		
 	}
+	
+	@PostMapping(consumes = "application/json", produces = "application/json")
+    public ResponseEntity<Partners> save(@RequestBody Partners partner) {
+        if (partner == null) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+
+        try {
+            partner.setDateCreated(new Date());
+            Integer partnerId = (Integer) this.service.Save(partner);
+            Partners savedPartners = this.service.find(Partners.class, partnerId);
+
+            return new ResponseEntity<>(savedPartners, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping(consumes = "application/json", produces = "application/json")
+    public ResponseEntity<Partners> update(@RequestBody Partners partner) {
+        if (partner == null) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+
+        try {
+            partner.setDateUpdated(new Date());
+            Partners updatedService = this.service.update(partner);
+            return new ResponseEntity<>(updatedService, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
 }

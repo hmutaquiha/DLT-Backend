@@ -173,5 +173,26 @@ public class DAOServiceImpl implements DAOService{
 		return referenceServiceObject;
 		
 	}
+	
+	@Override
+	public List<BeneficiariesInterventions> findByBeneficiaryId (Integer beneficiaryId){
+		
+		List<BeneficiariesInterventions> beneficiariesInterventions = GetAllEntityByNamedQuery("BeneficiaryIntervention.findByBeneficiaryId",
+                 beneficiaryId);
+		
+		return beneficiariesInterventions;
+	}
+	
+	@Override
+	public Integer getTotalBeneficiaries (){
+		int count = count(Beneficiaries.class);
+		return count;
+	}
+	
+	@Override
+	public Integer getTotalReferences (){
+		int count = count(References.class);
+		return count;
+	}
 
 }

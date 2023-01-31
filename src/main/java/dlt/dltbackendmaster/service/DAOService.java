@@ -47,4 +47,10 @@ public interface DAOService {
 	<T> List<T> findByJPQueryFilter(String hql, Map<String, Object> namedParams, int f, int m);
 	
 	<T> ReferencesServicesObject registerServiceCompletionStatus(BeneficiariesInterventions intervention);
+
+	List<BeneficiariesInterventions> findByBeneficiaryId(Integer beneficiaryId);
+
+	Integer getTotalBeneficiaries();
+
+	Integer getTotalReferences();
 }

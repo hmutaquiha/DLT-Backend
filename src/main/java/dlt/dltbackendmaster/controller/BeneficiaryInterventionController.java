@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -174,5 +175,15 @@ public class BeneficiaryInterventionController
             e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+    
+	@GetMapping(path = "/byBeneficiaryId/{beneficiaryId}", produces = "application/json")
+    public ResponseEntity<List<BeneficiariesInterventions>>  getByBeneficiaryId(@PathVariable Integer beneficiaryId) {
+		 try {
+	            List<BeneficiariesInterventions> interventions = service.findByBeneficiaryId(beneficiaryId);
+	            return new ResponseEntity<>(interventions, HttpStatus.OK);
+	      } catch (Exception e) {
+	            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+	      }
     }
 }

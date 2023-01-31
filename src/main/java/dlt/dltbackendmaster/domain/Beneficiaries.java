@@ -806,7 +806,7 @@ public class Beneficiaries implements java.io.Serializable
     }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "beneficiaries")
-    @JsonSerialize(using = BeneficiaryInterventionsSerializer.class)
+    @JsonIgnore
     public Set<BeneficiariesInterventions> getBeneficiariesInterventionses() {
         return this.beneficiariesInterventionses;
     }
@@ -816,6 +816,7 @@ public class Beneficiaries implements java.io.Serializable
     }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "beneficiaries")
+    @JsonIgnore
     public Set<References> getReferenceses() {
         return this.referenceses;
     }

@@ -37,7 +37,7 @@ public class ReferencesController {
 	@GetMapping(produces = "application/json")
 	public ResponseEntity<List<References>> getall() {
 		try {
-			List<References> references = service.GetAllEntityByNamedQuery("References.findAll");;
+			List<References> references = service.GetAllEntityByNamedQuery("References.findAll");
 			return new ResponseEntity<>(references, HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -72,7 +72,7 @@ public class ReferencesController {
 
 			List<References> references = null;
 
-			if (Arrays.asList(MENTORA, ENFERMEIRA, CONSELHEIRA).contains(user.getProfiles().getId())) {
+			if (Arrays.asList(MANAGER, MENTOR, NURSE, COUNSELOR).contains(user.getProfiles().getId())) {
 				references = service.GetAllEntityByNamedQuery("References.findAllByUserPermission", userId);
 			} else {
 				references = service.GetAllEntityByNamedQuery("References.findAll");

@@ -1,5 +1,6 @@
 package dlt.dltbackendmaster.controller;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -34,22 +35,23 @@ import dlt.dltbackendmaster.service.DAOService;
 @RequestMapping("/api/users")
 public class UserController {
 	Logger logger = LoggerFactory.getLogger(BeneficiaryController.class);
-	
+
 	private static final String QUERY_FIND_USER_BY_USERNAME = "select u from Users u where u.username = :username";
 
 	private final DAOService service;
 
 	private final PasswordEncoder passwordEncoder;
-	
+
 	private final UserDetailsServiceImpl userDetailsService;
 	@Autowired
 	private EmailSender emailSender;
 
 	@Autowired
-	public UserController(DAOService service, PasswordEncoder passwordEncoder,UserDetailsServiceImpl userDetailsService) {
+	public UserController(DAOService service, PasswordEncoder passwordEncoder,
+			UserDetailsServiceImpl userDetailsService) {
 		this.service = service;
 		this.passwordEncoder = passwordEncoder;
-		this.userDetailsService=userDetailsService;
+		this.userDetailsService = userDetailsService;
 	}
 
 	@GetMapping(produces = "application/json")
@@ -90,14 +92,18 @@ public class UserController {
 		todo.put("username", user.getUsername());
 		try {
 			List<Users> users = service.findByJPQuery(QUERY_FIND_USER_BY_USERNAME, todo);
-			
-			if(users != null && !users.isEmpty()) {
-				logger.warn("User "+user.getUsername()+"tried to register, but this user already exists, check error code returned "+HttpStatus.FORBIDDEN);  
+
+			if (users != null && !users.isEmpty()) {
+				logger.warn("User " + user.getUsername()
+						+ "tried to register, but this user already exists, check error code returned "
+						+ HttpStatus.FORBIDDEN);
 				return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
 			}
 
 		} catch (Exception e) {
-			logger.warn("User "+user.getUsername()+" tried to register, but the system had unkown error, check error code returned "+HttpStatus.INTERNAL_SERVER_ERROR);
+			logger.warn("User " + user.getUsername()
+					+ " tried to register, but the system had unkown error, check error code returned "
+					+ HttpStatus.INTERNAL_SERVER_ERROR);
 			e.printStackTrace();
 		}
 
@@ -119,11 +125,13 @@ public class UserController {
 				emailSender.sendEmail(user.getName() + " " + user.getSurname(), user.getUsername(), password, email,
 						null, true);
 			}
-			logger.warn("User "+user.getUsername()+" logged to system ");
+			logger.warn("User " + user.getUsername() + " logged to system ");
 			return new ResponseEntity<>(createdUser, HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
-			logger.warn("User "+user.getUsername()+" tried to register, but the system had unkown error, check error code returned "+HttpStatus.INTERNAL_SERVER_ERROR);
+			logger.warn("User " + user.getUsername()
+					+ " tried to register, but the system had unkown error, check error code returned "
+					+ HttpStatus.INTERNAL_SERVER_ERROR);
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -138,10 +146,12 @@ public class UserController {
 		try {
 			user.setDateUpdated(new Date());
 			Users updatedUser = service.update(user);
-			logger.warn("User "+user.getUsername()+" updated the user information ");
+			logger.warn("User " + user.getUsername() + " updated the user information ");
 			return new ResponseEntity<>(updatedUser, HttpStatus.OK);
 		} catch (Exception e) {
-			logger.warn("User "+user.getUsername()+" tried to update user, but the system had unkown error, check error code returned "+HttpStatus.INTERNAL_SERVER_ERROR);
+			logger.warn("User " + user.getUsername()
+					+ " tried to update user, but the system had unkown error, check error code returned "
+					+ HttpStatus.INTERNAL_SERVER_ERROR);
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -152,7 +162,9 @@ public class UserController {
 		Users user = service.GetUniqueEntityByNamedQuery("Users.findByUsername", users.getUsername());
 
 		if (user == null) {
-			logger.warn("User "+users.getUsername()+" tried to change password, but the user does not exists, check error code returned "+HttpStatus.BAD_REQUEST);
+			logger.warn("User " + users.getUsername()
+					+ " tried to change password, but the user does not exists, check error code returned "
+					+ HttpStatus.BAD_REQUEST);
 			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 		}
 
@@ -161,10 +173,12 @@ public class UserController {
 			user.setPassword(passwordEncoder.encode(users.getRecoverPassword()));
 			user.setPasswordLastChangeDate(new Date());
 			Users updatedUser = service.update(user);
-			logger.warn("User "+user.getUsername()+" changed password ");
+			logger.warn("User " + user.getUsername() + " changed password ");
 			return new ResponseEntity<>(updatedUser, HttpStatus.OK);
 		} catch (Exception e) {
-			logger.warn("User "+user.getUsername()+" tried to change password, but the system had unkown error, check error code returned "+HttpStatus.INTERNAL_SERVER_ERROR);
+			logger.warn("User " + user.getUsername()
+					+ " tried to change password, but the system had unkown error, check error code returned "
+					+ HttpStatus.INTERNAL_SERVER_ERROR);
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -209,9 +223,15 @@ public class UserController {
 			if (localitiesIds.isEmpty()) {
 				return new ResponseEntity<>(users, HttpStatus.OK);
 			} else {
-				List<Users> filteredUsers = users.stream()
-						.filter(u -> localitiesIds.contains(((Locality) u.getLocalities().toArray()[0]).getId()))
-						.collect(Collectors.toList());
+				List<Users> filteredUsers = new ArrayList<>();
+
+				for (Users users2 : users) {
+					List<Integer> userLocalitiesIds = users2.getLocalities().stream().map(Locality::getId)
+							.collect(Collectors.toList());
+					if (containsAny(userLocalitiesIds, localitiesIds)) {
+						filteredUsers.add(users2);
+					}
+				}
 
 				return new ResponseEntity<>(filteredUsers, HttpStatus.OK);
 			}
@@ -224,9 +244,20 @@ public class UserController {
 	public ResponseEntity<Users> verifyUserByUsername(@PathVariable String username) throws AccountLockedException {
 		return userDetailsService.verifyUserByUsername(username);
 	}
-	
+
 	@GetMapping(path = "/username/{username}/password-validity", produces = "application/json")
 	public ResponseEntity<Users> checkPasswordValidity(@PathVariable String username) throws AccountLockedException {
 		return userDetailsService.checkPasswordValidity(username);
+	}
+
+	public static <T> boolean containsAny(List<T> l1, List<T> l2) {
+
+		for (T elem : l1) {
+
+			if (l2.contains(elem)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

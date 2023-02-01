@@ -36,7 +36,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import dlt.dltbackendmaster.domain.watermelondb.BeneficiarySyncModel;
-import dlt.dltbackendmaster.serializers.BeneficiaryInterventionsSerializer;
 import dlt.dltbackendmaster.serializers.LocalitySerializer;
 import dlt.dltbackendmaster.serializers.NeighborhoodSerializer;
 import dlt.dltbackendmaster.serializers.PartnersSerializer;

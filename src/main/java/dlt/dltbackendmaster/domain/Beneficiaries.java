@@ -36,7 +36,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import dlt.dltbackendmaster.domain.watermelondb.BeneficiarySyncModel;
-import dlt.dltbackendmaster.serializers.BeneficiaryInterventionsSerializer;
 import dlt.dltbackendmaster.serializers.LocalitySerializer;
 import dlt.dltbackendmaster.serializers.NeighborhoodSerializer;
 import dlt.dltbackendmaster.serializers.PartnersSerializer;
@@ -806,7 +805,7 @@ public class Beneficiaries implements java.io.Serializable
     }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "beneficiaries")
-    @JsonSerialize(using = BeneficiaryInterventionsSerializer.class)
+    @JsonIgnore
     public Set<BeneficiariesInterventions> getBeneficiariesInterventionses() {
         return this.beneficiariesInterventionses;
     }
@@ -816,6 +815,7 @@ public class Beneficiaries implements java.io.Serializable
     }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "beneficiaries")
+    @JsonIgnore
     public Set<References> getReferenceses() {
         return this.referenceses;
     }

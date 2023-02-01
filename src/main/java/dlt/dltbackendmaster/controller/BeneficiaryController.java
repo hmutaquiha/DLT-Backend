@@ -244,4 +244,14 @@ public class BeneficiaryController
 			e.printStackTrace();
 		}
 	}
+	
+	@GetMapping(path = "/total", produces = "application/json")
+    public ResponseEntity<Integer>  getTotalBeneficiaries() {
+		 try {
+			    int totalBeneficiaries = service.count(Beneficiaries.class);
+	            return new ResponseEntity<>(totalBeneficiaries, HttpStatus.OK);
+	      } catch (Exception e) {
+	            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+	      }
+    }
 }

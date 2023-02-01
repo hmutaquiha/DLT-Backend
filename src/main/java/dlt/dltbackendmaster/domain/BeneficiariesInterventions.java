@@ -49,7 +49,10 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 	@NamedQuery(name = "BeneficiaryIntervention.findByDateCreated", 
 		query = "select b from BeneficiariesInterventions b where b.dateUpdated is null and b.dateCreated > :lastpulledat"),
 	@NamedQuery(name = "BeneficiaryIntervention.findByDateUpdated",
-		query = "select b from BeneficiariesInterventions b where (b.dateUpdated >= :lastpulledat) or (b.dateUpdated >= :lastpulledat and b.dateCreated = b.dateUpdated)") })
+		query = "select b from BeneficiariesInterventions b where (b.dateUpdated >= :lastpulledat) or (b.dateUpdated >= :lastpulledat and b.dateCreated = b.dateUpdated)"),
+	@NamedQuery(name = "BeneficiaryIntervention.findByBeneficiaryId", 
+		query = "SELECT b FROM BeneficiariesInterventions b where b.beneficiaries.id = :beneficiary_id"),	
+})
 public class BeneficiariesInterventions implements java.io.Serializable {
 	
     private static final long serialVersionUID = 1L;

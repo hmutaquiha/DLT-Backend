@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-import dlt.dltbackendmaster.controller.BeneficiaryInterventionController;
 import dlt.dltbackendmaster.domain.BeneficiariesInterventions;
 import dlt.dltbackendmaster.domain.ReferencesServicesObject;
 

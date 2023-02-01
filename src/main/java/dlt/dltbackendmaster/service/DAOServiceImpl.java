@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -173,26 +171,4 @@ public class DAOServiceImpl implements DAOService{
 		return referenceServiceObject;
 		
 	}
-	
-	@Override
-	public List<BeneficiariesInterventions> findByBeneficiaryId (Integer beneficiaryId){
-		
-		List<BeneficiariesInterventions> beneficiariesInterventions = GetAllEntityByNamedQuery("BeneficiaryIntervention.findByBeneficiaryId",
-                 beneficiaryId);
-		
-		return beneficiariesInterventions;
-	}
-	
-	@Override
-	public Integer getTotalBeneficiaries (){
-		int count = count(Beneficiaries.class);
-		return count;
-	}
-	
-	@Override
-	public Integer getTotalReferences (){
-		int count = count(References.class);
-		return count;
-	}
-
 }

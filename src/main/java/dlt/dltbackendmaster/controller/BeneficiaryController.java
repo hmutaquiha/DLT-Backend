@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import dlt.dltbackendmaster.domain.Beneficiaries;
-import dlt.dltbackendmaster.domain.BeneficiariesInterventions;
 import dlt.dltbackendmaster.domain.NumericSequence;
 import dlt.dltbackendmaster.domain.VulnerabilityHistory;
 import dlt.dltbackendmaster.service.DAOService;
@@ -249,7 +248,7 @@ public class BeneficiaryController
 	@GetMapping(path = "/total", produces = "application/json")
     public ResponseEntity<Integer>  getTotalBeneficiaries() {
 		 try {
-	            int totalBeneficiaries = service.getTotalBeneficiaries();
+			    int totalBeneficiaries = service.count(Beneficiaries.class);
 	            return new ResponseEntity<>(totalBeneficiaries, HttpStatus.OK);
 	      } catch (Exception e) {
 	            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);

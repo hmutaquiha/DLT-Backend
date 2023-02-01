@@ -22,6 +22,7 @@ import dlt.dltbackendmaster.domain.ReferencesServicesObject;
 import dlt.dltbackendmaster.domain.SubServices;
 import dlt.dltbackendmaster.domain.Us;
 import dlt.dltbackendmaster.security.utils.ServiceCompletionRules;
+import dlt.dltbackendmaster.service.BeneficiariyInterventionService;
 import dlt.dltbackendmaster.service.DAOService;
 
 @RestController
@@ -29,9 +30,11 @@ import dlt.dltbackendmaster.service.DAOService;
 public class BeneficiaryInterventionController
 {
     private final DAOService service;
+    private final BeneficiariyInterventionService beneficiariyInterventionService;
 
-    public BeneficiaryInterventionController(DAOService service) {
+    public BeneficiaryInterventionController(DAOService service, BeneficiariyInterventionService beneficiariyInterventionService) {
         this.service = service;
+        this.beneficiariyInterventionService=beneficiariyInterventionService;
     }
 
     @GetMapping(produces = "application/json")
@@ -180,7 +183,7 @@ public class BeneficiaryInterventionController
 	@GetMapping(path = "/byBeneficiaryId/{beneficiaryId}", produces = "application/json")
     public ResponseEntity<List<BeneficiariesInterventions>>  getByBeneficiaryId(@PathVariable Integer beneficiaryId) {
 		 try {
-	            List<BeneficiariesInterventions> interventions = service.findByBeneficiaryId(beneficiaryId);
+	            List<BeneficiariesInterventions> interventions = beneficiariyInterventionService.findByBeneficiaryId(beneficiaryId);
 	            return new ResponseEntity<>(interventions, HttpStatus.OK);
 	      } catch (Exception e) {
 	            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);

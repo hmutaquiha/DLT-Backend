@@ -170,14 +170,4 @@ public class ReferencesController {
 		}
 
 	}
-
-	@GetMapping(path = "/total", produces = "application/json")
-    public ResponseEntity<Integer>  getTotalReferences() {
-		 try {
-	            int totalReferences = service.getTotalReferences();
-	            return new ResponseEntity<>(totalReferences, HttpStatus.OK);
-	      } catch (Exception e) {
-	            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-	      }
-    }
 }

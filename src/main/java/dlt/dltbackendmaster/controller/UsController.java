@@ -1,5 +1,6 @@
 package dlt.dltbackendmaster.controller;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -8,6 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -40,6 +44,41 @@ public class UsController {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
+	@PostMapping(consumes = "application/json", produces = "application/json")
+    public ResponseEntity<Us> save(@RequestBody Us us) {
+        if (us == null) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+
+        try {
+            us.setDateCreated(new Date());
+            Integer usId = (Integer) this.service.Save(us);
+            Us savedPartners = this.service.find(Us.class, usId);
+
+            return new ResponseEntity<>(savedPartners, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping(consumes = "application/json", produces = "application/json")
+    public ResponseEntity<Us> update(@RequestBody Us us) {
+        if (us == null) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+
+        try {
+            us.setDateUpdated(new Date());
+            Us updatedUs = this.service.update(us);
+            return new ResponseEntity<>(updatedUs, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
 
 	@GetMapping(path = "/{id}", produces = "application/json")
 	public ResponseEntity<Us> get(@PathVariable Integer id){

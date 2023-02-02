@@ -9,6 +9,8 @@ package dlt.dltbackendmaster.util;
 public class ProfilesConstants {
 
 	public static final Integer MANAGER = 15;
+
+	public static final Integer ADMIN = 20;
 	
 	public static final Integer MENTOR = 21;
 

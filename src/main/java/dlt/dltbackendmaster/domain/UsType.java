@@ -29,7 +29,7 @@ public class UsType implements java.io.Serializable {
 	private String level;
 	private String type;
 	private String description;
-	private int entryPoint;
+	private String entryPoint;
 	private int status;
 	private int createdBy;
 	private Date dateCreated;
@@ -112,11 +112,11 @@ public class UsType implements java.io.Serializable {
 	}
 
 	@Column(name = "entry_point")
-	public int getEntryPoint() {
+	public String getEntryPoint() {
 		return entryPoint;
 	}
 
-	public void setEntryPoint(int entryPoint) {
+	public void setEntryPoint(String entryPoint) {
 		this.entryPoint = entryPoint;
 	}
 

@@ -91,7 +91,8 @@ public class ServiceController {
 							.collect(Collectors.toList());
 				}
 
-				if (beneficiary.getVbltSexuallyActive() == 0 && serviceType == ServiceType.CLINIC) {
+				if (beneficiary.getVbltSexuallyActive() != null && beneficiary.getVbltSexuallyActive() == 0
+						&& serviceType == ServiceType.CLINIC) {
 					// Retirar Promoção e Provisão de Preservativos e Aconselhamento e testagem em
 					// saúde
 					services = services.stream().filter(s -> s.getId() != 1 && s.getId() != 9)

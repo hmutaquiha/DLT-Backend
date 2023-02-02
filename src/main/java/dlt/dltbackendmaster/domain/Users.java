@@ -121,6 +121,8 @@ public class Users implements java.io.Serializable
     private Set<Us> us = new HashSet<Us>(0);
 
     private Set<References> referenceses = new HashSet<References>(0);
+    
+    private String recoverPasswordOrigin;
 
     public Users() {}
 
@@ -571,5 +573,14 @@ public class Users implements java.io.Serializable
 
 	public void setPasswordLastChangeDate(Date passwordLastChangeDate) {
 		this.passwordLastChangeDate = passwordLastChangeDate;
+	}
+
+	@Column(name = "recover_password_origin", nullable = false, length = 50)
+	public String getRecoverPasswordOrigin() {
+		return recoverPasswordOrigin;
+	}
+
+	public void setRecoverPasswordOrigin(String recoverPasswordOrigin) {
+		this.recoverPasswordOrigin = recoverPasswordOrigin;
 	}
 }

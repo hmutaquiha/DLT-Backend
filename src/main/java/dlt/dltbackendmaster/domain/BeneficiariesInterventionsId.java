@@ -2,13 +2,13 @@ package dlt.dltbackendmaster.domain;
 // Generated Jun 13, 2022, 9:37:47 AM by Hibernate Tools 5.2.12.Final
 
 import java.time.LocalDate;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -21,6 +21,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 @Embeddable
 public class BeneficiariesInterventionsId implements java.io.Serializable {
 
+	private static final long serialVersionUID = -3312323271412669443L;
 	private int beneficiaryId;
 	private int subServiceId;
 	private LocalDate date;

@@ -2,6 +2,7 @@ package dlt.dltbackendmaster.domain;
 // Generated Jun 13, 2022, 9:37:47 AM by Hibernate Tools 5.2.12.Final
 
 import java.util.Date;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
@@ -21,6 +22,7 @@ import javax.persistence.TemporalType;
 @Table(name = "curriculums_services", catalog = "dreams_db")
 public class CurriculumsServices implements java.io.Serializable {
 
+	private static final long serialVersionUID = 493079027790309420L;
 	private CurriculumsServicesId id;
 	private Curriculums curriculums;
 	private Services services;

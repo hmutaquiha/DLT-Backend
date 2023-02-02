@@ -48,6 +48,7 @@ public class PasswordUpdateController {
             user.setRecoverPassword(passwordEncoder.encode(users.getRecoverPassword()));
             user.setNewPassword(0);
             user.setIsEnabled(Byte.valueOf("0"));
+            user.setRecoverPasswordOrigin(users.getRecoverPasswordOrigin());
             String token = RandomString.make(45);
             user.setRecoverPasswordToken(token);
             Users updatedUser = service.update(user);
@@ -82,7 +83,7 @@ public class PasswordUpdateController {
 			Users updatedUser = service.update(user);
 			return new ResponseEntity<>(
 					"Confirmada a alteração da password do Utilizador " + updatedUser.getName() + " "
-							+ user.getSurname() + "!, " + " <a href=\"" + Utility.getSiteURL(request) + "/dreams#/login\">Login</a>",
+							+ user.getSurname() + "!, " + " <a href=\"" + user.getRecoverPasswordOrigin() + "/dreams#/login\">Login</a>",
 					HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);

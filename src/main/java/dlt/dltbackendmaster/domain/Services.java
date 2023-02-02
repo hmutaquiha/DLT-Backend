@@ -37,6 +37,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
                 query = "SELECT s FROM Services s WHERE s.serviceType = :serviceType AND s.status=1") })
 public class Services implements java.io.Serializable {
 
+	private static final long serialVersionUID = 4980687319870853996L;
 	private Integer id;
 	private String name;
 	private String description;

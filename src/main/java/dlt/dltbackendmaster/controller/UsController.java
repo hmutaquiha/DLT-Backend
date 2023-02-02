@@ -17,6 +17,7 @@ import dlt.dltbackendmaster.domain.Province;
 import dlt.dltbackendmaster.domain.Us;
 import dlt.dltbackendmaster.domain.Users;
 import dlt.dltbackendmaster.service.DAOService;
+import dlt.dltbackendmaster.util.ProfilesConstants;
 
 @RestController
 @RequestMapping("/api/us")
@@ -102,7 +103,7 @@ public class UsController {
 				List<Us> us = service.GetAllEntityByNamedQuery("Us.findByEPProvince", provincesId, typeId);	
 				return new ResponseEntity<>(us, HttpStatus.OK);
 				
-			}else if(user.getProfiles().getId() == 1) {
+			}else if(user.getProfiles().getId() == ProfilesConstants.ADMIN) {
 				
 				List<Us> us =  service.GetAllEntityByNamedQuery("Us.findByEntryPoint", typeId);
 				return new ResponseEntity<>(us, HttpStatus.OK);

@@ -43,6 +43,7 @@ import dlt.dltbackendmaster.serializers.ServiceSerializer;
                 query = "SELECT ss FROM SubServices ss WHERE ss.services.id = :serviceId AND ss.status=1") })
 public class SubServices implements java.io.Serializable {
 
+	private static final long serialVersionUID = -2806766479892025596L;
 	private Integer id;
 	private Services services;
 	private String name;

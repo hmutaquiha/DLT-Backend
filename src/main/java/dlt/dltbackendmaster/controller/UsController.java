@@ -104,7 +104,7 @@ public class UsController {
 		}	
 		
 		try {
-			List<Us> uss = service.GetAllEntityByNamedQuery("Us.findByType", localityId, typeId);
+			List<Us> uss = service.GetAllEntityByNamedQuery("Us.findByType", localityId, String.valueOf(typeId));
 			
 			return new ResponseEntity<>(uss, HttpStatus.OK);
 		} catch (Exception e) {

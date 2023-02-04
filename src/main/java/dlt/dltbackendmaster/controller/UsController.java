@@ -21,6 +21,7 @@ import dlt.dltbackendmaster.domain.Province;
 import dlt.dltbackendmaster.domain.Us;
 import dlt.dltbackendmaster.domain.Users;
 import dlt.dltbackendmaster.service.DAOService;
+import dlt.dltbackendmaster.util.ProfilesConstants;
 
 @RestController
 @RequestMapping("/api/us")
@@ -103,7 +104,7 @@ public class UsController {
 		}	
 		
 		try {
-			List<Us> uss = service.GetAllEntityByNamedQuery("Us.findByType", localityId, typeId);
+			List<Us> uss = service.GetAllEntityByNamedQuery("Us.findByType", localityId, String.valueOf(typeId));
 			
 			return new ResponseEntity<>(uss, HttpStatus.OK);
 		} catch (Exception e) {
@@ -124,31 +125,32 @@ public class UsController {
 			if(user.getLocalities().size() > 0) {
 				List<Integer> localitiesId = user.getLocalities().stream().map(Locality::getId).collect(Collectors.toList());
 				
-				List<Us> us = service.GetAllEntityByNamedQuery("Us.findByEPLocalities", localitiesId, typeId);	
+				List<Us> us = service.GetAllEntityByNamedQuery("Us.findByEPLocalities", localitiesId, String.valueOf(typeId));	
 				return new ResponseEntity<>(us, HttpStatus.OK);
 				
 			} else if(user.getDistricts().size() > 0) {
 				
 				List<Integer> districtsId = user.getDistricts().stream().map(District::getId).collect(Collectors.toList());
 				
-				List<Us> us = service.GetAllEntityByNamedQuery("Us.findByEPDistrict", districtsId, typeId);	
+				List<Us> us = service.GetAllEntityByNamedQuery("Us.findByEPDistrict", districtsId, String.valueOf(typeId));	
 				return new ResponseEntity<>(us, HttpStatus.OK);
 				
 			}else if(user.getProvinces().size() > 0) {
 				
 				List<Integer> provincesId = user.getProvinces().stream().map(Province::getId).collect(Collectors.toList());
 				
-				List<Us> us = service.GetAllEntityByNamedQuery("Us.findByEPProvince", provincesId, typeId);	
+				List<Us> us = service.GetAllEntityByNamedQuery("Us.findByEPProvince", provincesId, String.valueOf(typeId));	
 				return new ResponseEntity<>(us, HttpStatus.OK);
 				
-			}else if(user.getProfiles().getId() == 1) {
+			}else if(user.getProfiles().getId() == ProfilesConstants.ADMIN) {
 				
-				List<Us> us =  service.GetAllEntityByNamedQuery("Us.findByEntryPoint", typeId);
+				List<Us> us =  service.GetAllEntityByNamedQuery("Us.findByEntryPoint", String.valueOf(typeId));
 				return new ResponseEntity<>(us, HttpStatus.OK);
 			}
 						
 			return new ResponseEntity<>(null, HttpStatus.OK);
 		} catch (Exception e) {
+			e.printStackTrace();
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}

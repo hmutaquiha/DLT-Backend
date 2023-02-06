@@ -32,6 +32,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
     @NamedQuery(name = "Profiles.findByDateUpdated", query = "SELECT c FROM Profiles c WHERE c.dateUpdated = :lastpulledat")})
 public class Profiles implements java.io.Serializable {
 
+	private static final long serialVersionUID = 3465583000432844297L;
 	private Integer id;
 	private String name;
 	private String description;

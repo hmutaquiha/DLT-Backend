@@ -24,6 +24,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Table(name = "us_type", catalog = "dreams_db")
 public class UsType implements java.io.Serializable {
 
+	private static final long serialVersionUID = 4843139494353941070L;
 	private Integer id;
 	private String name;
 	private String level;

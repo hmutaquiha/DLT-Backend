@@ -2,10 +2,6 @@ package dlt.dltbackendmaster.service;
 
 import java.util.Date;
 
-import javax.sql.rowset.spi.SyncResolver;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
 import dlt.dltbackendmaster.domain.AlphanumericSequence;
 import dlt.dltbackendmaster.domain.NumericSequence;
 

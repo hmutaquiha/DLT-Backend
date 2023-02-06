@@ -1,14 +1,16 @@
 package dlt.dltbackendmaster.domain;
 // Generated Jun 13, 2022, 9:37:47 AM by Hibernate Tools 5.2.12.Final
 
+import static javax.persistence.GenerationType.IDENTITY;
+
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -22,6 +24,7 @@ import javax.persistence.TemporalType;
 @Table(name = "curriculums", catalog = "dreams_db")
 public class Curriculums implements java.io.Serializable {
 
+	private static final long serialVersionUID = -8600672727714311405L;
 	private Integer id;
 	private String name;
 	private String description;

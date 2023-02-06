@@ -10,6 +10,7 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class ReferencesServicesId implements java.io.Serializable {
 
+	private static final long serialVersionUID = 6987733917961073464L;
 	private int referenceId;
 	private int serviceId;
 

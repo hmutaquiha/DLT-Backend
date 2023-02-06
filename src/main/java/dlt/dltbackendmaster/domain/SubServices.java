@@ -221,7 +221,7 @@ public class SubServices implements java.io.Serializable {
         ObjectNode subService = mapper.createObjectNode();
         subService.put("id", id);
         subService.put("name", name);
-        subService.put("service_id", services.getId());
+		subService.put("service_id", services == null ? null : services.getId());
         subService.put("is_mandatory", mandatory);
         subService.put("is_hidden", hidden);
         subService.put("remarks", remarks);

@@ -333,7 +333,7 @@ public class BeneficiariesInterventions implements java.io.Serializable {
             beneficiaryIntervention.put("sub_service_id", subServices.getId());
             beneficiaryIntervention.put("result", result);
             beneficiaryIntervention.put("date", id.getDate().toString());
-            beneficiaryIntervention.put("us_id", us.getId());
+			beneficiaryIntervention.put("us_id", us == null ? null : us.getId());
             beneficiaryIntervention.put("result", result);
             beneficiaryIntervention.put("activist_id", activistId);
             beneficiaryIntervention.put("entry_point", entryPoint);

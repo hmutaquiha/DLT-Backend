@@ -161,7 +161,7 @@ public class SyncController {
 			usUpdated = new ArrayList<Us>();
 			
 			if (level.equals("CENTRAL")) {
-			    beneficiariesCreated = service.getAll(Beneficiaries.class);
+			    beneficiariesCreated = service.GetAllEntityByNamedQuery("Beneficiary.findAll");
             } else if (level.equals("PROVINCIAL")) {
                 beneficiariesCreated = service.GetAllEntityByNamedQuery("Beneficiary.findByProvinces", Arrays.asList(params));
             } else if (level.equals("DISTRITAL")) {

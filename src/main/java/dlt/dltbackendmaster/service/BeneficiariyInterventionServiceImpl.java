@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import dlt.dltbackendmaster.domain.Beneficiaries;
 import dlt.dltbackendmaster.domain.BeneficiariesInterventions;
-import dlt.dltbackendmaster.domain.ICountIntervention;
+import dlt.dltbackendmaster.domain.CountIntervention;
 import dlt.dltbackendmaster.domain.References;
 import dlt.dltbackendmaster.domain.ReferencesServices;
 import dlt.dltbackendmaster.domain.ReferencesServicesObject;
@@ -80,9 +80,9 @@ public class BeneficiariyInterventionServiceImpl implements BeneficiariyInterven
 	}
 	
 	@Override
-	public List<ICountIntervention> findInterventionsPerBeneficiary() {
+	public List<CountIntervention> findInterventionsPerBeneficiary() {
 
-		List<ICountIntervention> beneficiariesInterventions = daoService
+		List<CountIntervention> beneficiariesInterventions = daoService
 				.GetAllEntityByNamedQuery("BeneficiaryIntervention.findInterventionsPerBeneficiary");
 		
 		return beneficiariesInterventions;

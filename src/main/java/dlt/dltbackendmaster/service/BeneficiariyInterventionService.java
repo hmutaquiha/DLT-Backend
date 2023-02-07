@@ -4,7 +4,7 @@ import java.util.List;
 
 import dlt.dltbackendmaster.domain.BeneficiariesInterventions;
 import dlt.dltbackendmaster.domain.ReferencesServicesObject;
-import dlt.dltbackendmaster.domain.ICountIntervention;
+import dlt.dltbackendmaster.domain.CountIntervention;
 
 /**
  * This interface holds the service implementations called by the API controller
@@ -18,5 +18,5 @@ public interface BeneficiariyInterventionService {
 
 	List<BeneficiariesInterventions> findByBeneficiaryId(Integer beneficiaryId);
 
-	List<ICountIntervention> findInterventionsPerBeneficiary();
+	List<CountIntervention> findInterventionsPerBeneficiary();
 }

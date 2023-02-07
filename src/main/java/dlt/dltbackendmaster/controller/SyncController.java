@@ -3,6 +3,7 @@ package dlt.dltbackendmaster.controller;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -69,7 +70,9 @@ public class SyncController {
 	@SuppressWarnings("rawtypes")
 	@GetMapping(produces = "application/json")
 	public ResponseEntity get(@RequestParam(name = "lastPulledAt", required = false) @Nullable String lastPulledAt,
-			@RequestParam(name = "username") String username) throws ParseException {
+			@RequestParam(name = "username") String username, @RequestParam(name = "profile") Integer profile, 
+			@RequestParam(name = "level") String level, @RequestParam(name = "params",required = false) 
+	        @Nullable Integer[] params) throws ParseException {
 
 		Date validatedDate;
 		List<Users> usersCreated;
@@ -156,9 +159,18 @@ public class SyncController {
 
 			usCreated = service.GetAllEntityByNamedQuery("Us.findAll");
 			usUpdated = new ArrayList<Us>();
+			
+			if (level.equals("CENTRAL")) {
+			    beneficiariesCreated = service.GetAllEntityByNamedQuery("Beneficiary.findAll");
+            } else if (level.equals("PROVINCIAL")) {
+                beneficiariesCreated = service.GetAllEntityByNamedQuery("Beneficiary.findByProvinces", Arrays.asList(params));
+            } else if (level.equals("DISTRITAL")) {
+                beneficiariesCreated = service.GetAllEntityByNamedQuery("Beneficiary.findByDistricts", Arrays.asList(params));
+            } else {
+                beneficiariesCreated = service.GetAllEntityByNamedQuery("Beneficiary.findByLocalities", Arrays.asList(params));
+            }
 
-			beneficiariesCreated = service.GetAllEntityByNamedQuery("Beneficiary.findAll");
-			beneficiariesUpdated = new ArrayList<Beneficiaries>();
+            beneficiariesUpdated = new ArrayList<Beneficiaries>();
 
 			beneficiariesInterventionsCreated = service.GetAllEntityByNamedQuery("BeneficiaryIntervention.findAll");
 			beneficiariesInterventionsUpdated = new ArrayList<BeneficiariesInterventions>();

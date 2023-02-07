@@ -20,6 +20,7 @@ import dlt.dltbackendmaster.domain.References;
 import dlt.dltbackendmaster.domain.ReferencesServices;
 import dlt.dltbackendmaster.domain.ReferencesServicesObject;
 import dlt.dltbackendmaster.domain.SubServices;
+import dlt.dltbackendmaster.domain.CountIntervention;
 import dlt.dltbackendmaster.domain.Us;
 import dlt.dltbackendmaster.security.utils.ServiceCompletionRules;
 import dlt.dltbackendmaster.service.BeneficiariyInterventionService;
@@ -189,4 +190,15 @@ public class BeneficiaryInterventionController
 	            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 	      }
     }
+
+	@GetMapping(path = "/countByBeneficiary", produces = "application/json")
+	public ResponseEntity<List<CountIntervention>> countByBeneficiary() {
+		try {
+			List<CountIntervention> interventions = beneficiariyInterventionService
+					.findInterventionsPerBeneficiary();
+			return new ResponseEntity<>(interventions, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 }

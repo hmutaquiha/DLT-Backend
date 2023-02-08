@@ -56,10 +56,13 @@ import dlt.dltbackendmaster.service.SequenceGenerator;
 
 @RestController
 @RequestMapping("/sync")
-public class SyncController {
+public class SyncController 
+{
 
 	private final DAOService service;
 	private SequenceGenerator generator;
+	private String level;
+	private Integer[] params;
 
 	@Autowired
 	public SyncController(DAOService service) {
@@ -70,9 +73,7 @@ public class SyncController {
 	@SuppressWarnings("rawtypes")
 	@GetMapping(produces = "application/json")
 	public ResponseEntity get(@RequestParam(name = "lastPulledAt", required = false) @Nullable String lastPulledAt,
-			@RequestParam(name = "username") String username, @RequestParam(name = "profile") Integer profile, 
-			@RequestParam(name = "level") String level, @RequestParam(name = "params",required = false) 
-	        @Nullable Integer[] params) throws ParseException {
+			@RequestParam(name = "username") String username) throws ParseException {
 
 		Date validatedDate;
 		List<Users> usersCreated;
@@ -83,7 +84,7 @@ public class SyncController {
 		List<Locality> localityUpdated;
 
 		List<Province> provincesCreated = new ArrayList<Province>();
-		List<District> districtsCreated = new ArrayList<District>(); 
+		List<District> districtsCreated = new ArrayList<District>();
 
 		List<Partners> partnersCreated;
 		List<Partners> partnersUpdated;
@@ -112,14 +113,15 @@ public class SyncController {
 
 		List<ReferencesServices> referenceServicesCreated;
 		List<ReferencesServices> referenceServicesUpdated;
-		
+
 		Users user = service.GetUniqueEntityByNamedQuery("Users.findByUsername", username);
+		defineLevelAndParms(user);
 
 		if (lastPulledAt == null || lastPulledAt.equals("null")) {
 
 			// provinces
 			if (user.getProvinces().size() > 0) {
-				provincesCreated = new ArrayList<Province>(user.getProvinces()); 
+				provincesCreated = new ArrayList<Province>(user.getProvinces());
 			} else {
 				provincesCreated = service.GetAllEntityByNamedQuery("Province.findAll");
 			}
@@ -159,20 +161,36 @@ public class SyncController {
 
 			usCreated = service.GetAllEntityByNamedQuery("Us.findAll");
 			usUpdated = new ArrayList<Us>();
-			
+
+			// Beneficiary
 			if (level.equals("CENTRAL")) {
-			    beneficiariesCreated = service.GetAllEntityByNamedQuery("Beneficiary.findAll");
-            } else if (level.equals("PROVINCIAL")) {
-                beneficiariesCreated = service.GetAllEntityByNamedQuery("Beneficiary.findByProvinces", Arrays.asList(params));
-            } else if (level.equals("DISTRITAL")) {
-                beneficiariesCreated = service.GetAllEntityByNamedQuery("Beneficiary.findByDistricts", Arrays.asList(params));
-            } else {
-                beneficiariesCreated = service.GetAllEntityByNamedQuery("Beneficiary.findByLocalities", Arrays.asList(params));
-            }
+				beneficiariesCreated = service.GetAllEntityByNamedQuery("Beneficiary.findAll");
+			} else if (level.equals("PROVINCIAL")) {
+				beneficiariesCreated = service.GetAllEntityByNamedQuery("Beneficiary.findByProvinces",
+						Arrays.asList(params));
+			} else if (level.equals("DISTRITAL")) {
+				beneficiariesCreated = service.GetAllEntityByNamedQuery("Beneficiary.findByDistricts",
+						Arrays.asList(params));
+			} else {
+				beneficiariesCreated = service.GetAllEntityByNamedQuery("Beneficiary.findByLocalities",
+						Arrays.asList(params));
+			}
 
-            beneficiariesUpdated = new ArrayList<Beneficiaries>();
+			beneficiariesUpdated = new ArrayList<Beneficiaries>();
 
-			beneficiariesInterventionsCreated = service.GetAllEntityByNamedQuery("BeneficiaryIntervention.findAll");
+			if (level.equals("CENTRAL")) {
+				beneficiariesInterventionsCreated = service.GetAllEntityByNamedQuery("BeneficiaryIntervention.findAll");
+			} else if (level.equals("PROVINCIAL")) {
+				beneficiariesInterventionsCreated = service
+						.GetAllEntityByNamedQuery("BeneficiaryIntervention.findByProvinces", Arrays.asList(params));
+			} else if (level.equals("DISTRITAL")) {
+				beneficiariesInterventionsCreated = service
+						.GetAllEntityByNamedQuery("BeneficiaryIntervention.findByDistricts", Arrays.asList(params));
+			} else {
+				beneficiariesInterventionsCreated = service
+						.GetAllEntityByNamedQuery("BeneficiaryIntervention.findByLocalities", Arrays.asList(params));
+			}
+
 			beneficiariesInterventionsUpdated = new ArrayList<BeneficiariesInterventions>();
 
 			neighborhoodsCreated = service.GetAllEntityByNamedQuery("Neighborhood.findAll");
@@ -184,10 +202,14 @@ public class SyncController {
 			subServicesCreated = service.GetAllEntityByNamedQuery("SubService.findAll");
 			subServicesUpdated = new ArrayList<SubServices>();
 
-			referencesCreated = service.GetAllEntityByNamedQuery("References.findAll");
+			// References
+			referencesCreated = service.GetAllEntityByNamedQuery("References.findAllByUserPermission", user.getId());
 			referencesUpdated = new ArrayList<References>();
 
-			referenceServicesCreated = service.GetAllEntityByNamedQuery("ReferencesServices.findAll");
+			// ReferencesServices
+			referenceServicesCreated = service.GetAllEntityByNamedQuery("ReferencesServices.findByUserPermission",
+					user.getId());
+
 			referenceServicesUpdated = new ArrayList<ReferencesServices>();
 
 		} else {
@@ -203,7 +225,7 @@ public class SyncController {
 			/*
 			 * TODO: include provinces and district created after validatedDate
 			 */
-			
+
 			// users
 			usersCreated = service.GetAllEntityByNamedQuery("Users.findByDateCreated", validatedDate);
 			usersUpdated = service.GetAllEntityByNamedQuery("Users.findByDateUpdated", validatedDate);
@@ -275,9 +297,9 @@ public class SyncController {
 			// String object = SyncSerializer.createUsersSyncObject(usersCreated,
 			// usersUpdated, new ArrayList<Integer>());
 
-			String object = SyncSerializer.createSyncObject(usersSO, provinceSO, districtSO, localitySO, profilesSO, partnersSO, usSO,
-					beneficiarySO, beneficiaryInterventionSO, neighborhoodSO, serviceSO, subServiceSO, referencesSO,
-					referencesServicesSO, lastPulledAt);
+			String object = SyncSerializer.createSyncObject(usersSO, provinceSO, districtSO, localitySO, profilesSO,
+					partnersSO, usSO, beneficiarySO, beneficiaryInterventionSO, neighborhoodSO, serviceSO, subServiceSO,
+					referencesSO, referencesServicesSO, lastPulledAt);
 			// System.out.println("PULLING " + object);
 
 			return new ResponseEntity<>(object, HttpStatus.OK);
@@ -398,7 +420,8 @@ public class SyncController {
 						if (created.getBeneficiary_id() == 0) {
 							Integer beneficiaryId = beneficiariesIds.get(created.getBeneficiary_offline_id());
 							if (beneficiaryId == null) {
-								Beneficiaries beneficiary = service.GetUniqueEntityByNamedQuery("Beneficiary.findByOfflineId", created.getBeneficiary_offline_id());
+								Beneficiaries beneficiary = service.GetUniqueEntityByNamedQuery(
+										"Beneficiary.findByOfflineId", created.getBeneficiary_offline_id());
 								beneficiaryId = beneficiary.getId();
 							}
 							intervention.setBeneficiaries(new Beneficiaries(beneficiaryId));
@@ -408,9 +431,9 @@ public class SyncController {
 						}
 						intervention.setCreatedBy(user.getId());
 						service.Save(intervention);
-						
+
 						service.registerServiceCompletionStatus(intervention);
-						
+
 					}
 				}
 			}
@@ -426,14 +449,15 @@ public class SyncController {
 						if (created.getBeneficiary_id() == 0) {
 							Integer beneficiaryId = beneficiariesIds.get(created.getBeneficiary_offline_id());
 							if (beneficiaryId == null) {
-								Beneficiaries beneficiary = service.GetUniqueEntityByNamedQuery("Beneficiary.findByOfflineId", created.getBeneficiary_offline_id());
+								Beneficiaries beneficiary = service.GetUniqueEntityByNamedQuery(
+										"Beneficiary.findByOfflineId", created.getBeneficiary_offline_id());
 								beneficiaryId = beneficiary.getId();
 							}
 							reference.setBeneficiaries(new Beneficiaries(beneficiaryId));
 							reference.setDateUpdated(new Date());
 							reference.setUpdatedBy(user.getId());
 						}
-						reference.setUserCreated(user.getId()+"");
+						reference.setUserCreated(user.getId() + "");
 						service.Save(reference);
 						referenceIds.put(reference.getOfflineId(), reference.getId());
 					}
@@ -492,7 +516,8 @@ public class SyncController {
 						if (updated.getBeneficiary_id() == 0) {
 							Integer beneficiaryId = beneficiariesIds.get(updated.getBeneficiary_offline_id());
 							if (beneficiaryId == null) {
-								Beneficiaries beneficiary = service.GetUniqueEntityByNamedQuery("Beneficiary.findByOfflineId", updated.getBeneficiary_offline_id());
+								Beneficiaries beneficiary = service.GetUniqueEntityByNamedQuery(
+										"Beneficiary.findByOfflineId", updated.getBeneficiary_offline_id());
 								beneficiaryId = beneficiary.getId();
 							}
 							intervention.setBeneficiaries(new Beneficiaries(beneficiaryId));
@@ -527,14 +552,15 @@ public class SyncController {
 						if (updated.getBeneficiary_id() == 0) {
 							Integer beneficiaryId = beneficiariesIds.get(updated.getBeneficiary_offline_id());
 							if (beneficiaryId == null) {
-								Beneficiaries beneficiary = service.GetUniqueEntityByNamedQuery("Beneficiary.findByOfflineId", updated.getBeneficiary_offline_id());
+								Beneficiaries beneficiary = service.GetUniqueEntityByNamedQuery(
+										"Beneficiary.findByOfflineId", updated.getBeneficiary_offline_id());
 								beneficiaryId = beneficiary.getId();
 							}
 							reference.setBeneficiaries(new Beneficiaries(beneficiaryId));
 							reference.setDateUpdated(new Date());
 							reference.setUpdatedBy(user.getId());
 						}
-						reference.setUserCreated(user.getId()+"");
+						reference.setUserCreated(user.getId() + "");
 						service.Save(reference);
 
 					} else {
@@ -577,5 +603,24 @@ public class SyncController {
 			return new ResponseEntity<>("Json Processing Error!", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		return new ResponseEntity<>(HttpStatus.OK);
+	}
+
+	private void defineLevelAndParms(Users user) {
+		if (user.getProvinces().isEmpty()) {
+			this.level = "CENTRAL";
+			this.params = new Integer[0];
+		} else if (user.getDistricts().isEmpty()) {
+			this.level = "PROVINCIAL";
+			this.params = user.getProvinces().stream().map(Province::getId).collect(Collectors.toList()).stream()
+					.toArray(Integer[]::new);
+		} else if (user.getLocalities().isEmpty()) {
+			this.level = "DISTRITAL";
+			this.params = user.getDistricts().stream().map(District::getId).collect(Collectors.toList()).stream()
+					.toArray(Integer[]::new);
+		} else {
+			this.level = "LOCAL";
+			this.params = user.getLocalities().stream().map(Locality::getId).collect(Collectors.toList()).stream()
+					.toArray(Integer[]::new);
+		}
 	}
 }

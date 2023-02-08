@@ -156,7 +156,16 @@ public class SyncController {
 			profilesCreated = service.GetAllEntityByNamedQuery("Profiles.findAll");
 			profilesUpdated = new ArrayList<Profiles>();
 
-			usCreated = service.GetAllEntityByNamedQuery("Us.findAll");
+			// Us
+			if (level.equals("CENTRAL")) {
+	            usCreated = service.GetAllEntityByNamedQuery("Us.findAll");
+            } else if (level.equals("PROVINCIAL")) {
+                usCreated = service.GetAllEntityByNamedQuery("Us.findByProvinces", Arrays.asList(params));
+            } else if (level.equals("DISTRITAL")) {
+                usCreated = service.GetAllEntityByNamedQuery("Us.findByDistricts", Arrays.asList(params));
+            } else {
+                usCreated = service.GetAllEntityByNamedQuery("Us.findBySyncLocalities", Arrays.asList(params));
+            }
 			usUpdated = new ArrayList<Us>();
 			
 			//	Beneficiary

@@ -43,6 +43,19 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 @Entity
 @Table(name = "beneficiaries_interventions", catalog = "dreams_db")
 @NamedQueries({ 
+    @NamedQuery(name = "BeneficiaryIntervention.findByLocalities", query = "SELECT bi FROM  BeneficiariesInterventions bi "
+                                                            + "left join fetch bi.beneficiaries b " 
+            												+ "left join fetch b.locality l "
+            												+ "where l.id in (:localities)"),
+    @NamedQuery(name = "BeneficiaryIntervention.findByDistricts", query = "SELECT bi FROM  BeneficiariesInterventions bi "
+            												+ "left join fetch bi.beneficiaries b " 
+            												+ "left join fetch b.locality l "
+            												+ "where l.district.id in (:districts)"),
+    @NamedQuery(name = "BeneficiaryIntervention.findByProvinces", query = "SELECT bi FROM  BeneficiariesInterventions bi "
+                                                            + "left join fetch bi.beneficiaries b " 
+            												+ "left join fetch b.locality l "
+            												+ "where l.district.province.id in (:provinces)"),  
+    
 	@NamedQuery(name = "BeneficiaryIntervention.findAll", query = "SELECT b FROM BeneficiariesInterventions b"),
 	@NamedQuery(name = "BeneficiaryIntervention.findByBeneficiaryAndSubService", 
 		query = "SELECT b FROM BeneficiariesInterventions b where b.beneficiaries.id = :beneficiary_id and b.subServices.id = :sub_service_id"),

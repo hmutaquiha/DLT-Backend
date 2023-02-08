@@ -56,7 +56,8 @@ import dlt.dltbackendmaster.service.SequenceGenerator;
 
 @RestController
 @RequestMapping("/sync")
-public class SyncController {
+public class SyncController 
+{
 
 	private final DAOService service;
 	private SequenceGenerator generator;
@@ -161,6 +162,7 @@ public class SyncController {
 			usCreated = service.GetAllEntityByNamedQuery("Us.findAll");
 			usUpdated = new ArrayList<Us>();
 
+			// Beneficiary
 			if (level.equals("CENTRAL")) {
 				beneficiariesCreated = service.GetAllEntityByNamedQuery("Beneficiary.findAll");
 			} else if (level.equals("PROVINCIAL")) {
@@ -176,7 +178,19 @@ public class SyncController {
 
 			beneficiariesUpdated = new ArrayList<Beneficiaries>();
 
-			beneficiariesInterventionsCreated = service.GetAllEntityByNamedQuery("BeneficiaryIntervention.findAll");
+			if (level.equals("CENTRAL")) {
+				beneficiariesInterventionsCreated = service.GetAllEntityByNamedQuery("BeneficiaryIntervention.findAll");
+			} else if (level.equals("PROVINCIAL")) {
+				beneficiariesInterventionsCreated = service
+						.GetAllEntityByNamedQuery("BeneficiaryIntervention.findByProvinces", Arrays.asList(params));
+			} else if (level.equals("DISTRITAL")) {
+				beneficiariesInterventionsCreated = service
+						.GetAllEntityByNamedQuery("BeneficiaryIntervention.findByDistricts", Arrays.asList(params));
+			} else {
+				beneficiariesInterventionsCreated = service
+						.GetAllEntityByNamedQuery("BeneficiaryIntervention.findByLocalities", Arrays.asList(params));
+			}
+
 			beneficiariesInterventionsUpdated = new ArrayList<BeneficiariesInterventions>();
 
 			neighborhoodsCreated = service.GetAllEntityByNamedQuery("Neighborhood.findAll");
@@ -188,10 +202,14 @@ public class SyncController {
 			subServicesCreated = service.GetAllEntityByNamedQuery("SubService.findAll");
 			subServicesUpdated = new ArrayList<SubServices>();
 
-			referencesCreated = service.GetAllEntityByNamedQuery("References.findAll");
+			// References
+			referencesCreated = service.GetAllEntityByNamedQuery("References.findAllByUserPermission", user.getId());
 			referencesUpdated = new ArrayList<References>();
 
-			referenceServicesCreated = service.GetAllEntityByNamedQuery("ReferencesServices.findAll");
+			// ReferencesServices
+			referenceServicesCreated = service.GetAllEntityByNamedQuery("ReferencesServices.findByUserPermission",
+					user.getId());
+
 			referenceServicesUpdated = new ArrayList<ReferencesServices>();
 
 		} else {

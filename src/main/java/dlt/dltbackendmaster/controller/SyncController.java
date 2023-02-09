@@ -149,11 +149,23 @@ public class SyncController
 			localityUpdated = new ArrayList<Locality>();
 
 			// users
-			usersCreated = service.GetAllEntityByNamedQuery("Users.findAll");
+	        usersCreated = service.GetAllEntityByNamedQuery("Users.findAll");
 			usersUpdated = new ArrayList<Users>();
 			listDeleted = new ArrayList<Integer>();
 
-			partnersCreated = service.GetAllEntityByNamedQuery("Partners.findAll");
+			// Partners
+            if (level.equals("CENTRAL")) {
+                partnersCreated = service.GetAllEntityByNamedQuery("Partners.findAll");
+            } else if (level.equals("PROVINCIAL")) {
+                partnersCreated = service.GetAllEntityByNamedQuery("Partners.findBySyncProvinces",
+                        Arrays.asList(params));
+            } else if (level.equals("DISTRITAL")) {
+                partnersCreated = service.GetAllEntityByNamedQuery("Partners.findBySyncDistricts", 
+                        Arrays.asList(params));
+            } else {
+                partnersCreated = service.GetAllEntityByNamedQuery("Partners.findBySyncLocalities",
+                        Arrays.asList(params));
+            }
 			partnersUpdated = new ArrayList<Partners>();
 
 			profilesCreated = service.GetAllEntityByNamedQuery("Profiles.findAll");
@@ -203,7 +215,21 @@ public class SyncController
 			beneficiariesInterventionsCreated = new ArrayList<BeneficiariesInterventions>();
 			beneficiariesInterventionsUpdated = new ArrayList<BeneficiariesInterventions>();
 
-			neighborhoodsCreated = service.GetAllEntityByNamedQuery("Neighborhood.findAll");
+			
+			// Neighborhood
+            if (level.equals("CENTRAL")) {
+                neighborhoodsCreated = service.GetAllEntityByNamedQuery("Neighborhood.findAll");
+            } else if (level.equals("PROVINCIAL")) {
+                neighborhoodsCreated = service.GetAllEntityByNamedQuery("Neighborhood.findBySyncProvinces",
+                        Arrays.asList(params));
+            } else if (level.equals("DISTRITAL")) {
+                neighborhoodsCreated = service.GetAllEntityByNamedQuery("Neighborhood.findBySyncDistricts",
+                        Arrays.asList(params));
+            } else {
+                neighborhoodsCreated = service.GetAllEntityByNamedQuery("Neighborhood.findBySyncLocalities",
+                        Arrays.asList(params));
+            }
+			
 			neighborhoodUpdated = new ArrayList<Neighborhood>();
 
 			servicesCreated = service.GetAllEntityByNamedQuery("Service.findAll");

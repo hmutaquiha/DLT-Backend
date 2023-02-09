@@ -73,9 +73,7 @@ public class SyncController
 	@SuppressWarnings("rawtypes")
 	@GetMapping(produces = "application/json")
 	public ResponseEntity get(@RequestParam(name = "lastPulledAt", required = false) @Nullable String lastPulledAt,
-			@RequestParam(name = "username") String username, @RequestParam(name = "profile") Integer profile, 
-			@RequestParam(name = "level") String level, @RequestParam(name = "params",required = false) 
-	        @Nullable Integer[] params) throws ParseException {
+				@RequestParam(name = "username") String username) throws ParseException {
 
 		Date validatedDate;
 		List<Users> usersCreated;

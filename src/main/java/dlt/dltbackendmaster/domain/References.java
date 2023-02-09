@@ -58,6 +58,13 @@ import dlt.dltbackendmaster.domain.watermelondb.ReferenceSyncModel;
 																+ "and (r.userCreated = cast(:userId as string) "
 																+ "or r.users.id = : userId "
 																+ "or r.referredBy.id = : userId)"),
+		@NamedQuery(name = "References.findAllByNotifyTo", query = "SELECT r FROM References r "
+																+ "left join fetch r.beneficiaries "
+																+ "left join fetch r.referredBy "
+																+ "left join fetch r.us "
+																+ "left join fetch r.users "
+																+ "where r.status = 0 "
+																+ "and r.users.id = : userId "),
 		@NamedQuery(name = "References.findByDateCreated", query = "SELECT r from References r "
 																+ "left join fetch r.beneficiaries "
 																+ "left join fetch r.referredBy "

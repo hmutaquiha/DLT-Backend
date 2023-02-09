@@ -43,7 +43,7 @@ public class BeneficiaryController
             List<Beneficiaries> beneficiaries = null;
 
             if (level.equals("CENTRAL")) {
-                beneficiaries = service.getAll(Beneficiaries.class);
+                beneficiaries = service.GetAllEntityByNamedQuery("Beneficiary.findAll");
             } else if (level.equals("PROVINCIAL")) {
                 beneficiaries = service.GetAllEntityByNamedQuery("Beneficiary.findByProvinces", Arrays.asList(params));
             } else if (level.equals("DISTRITAL")) {

@@ -177,7 +177,7 @@ public class SyncController
 			}
 
 			beneficiariesUpdated = new ArrayList<Beneficiaries>();
-
+/**
 			if (level.equals("CENTRAL")) {
 				beneficiariesInterventionsCreated = service.GetAllEntityByNamedQuery("BeneficiaryIntervention.findAll");
 			} else if (level.equals("PROVINCIAL")) {
@@ -190,7 +190,8 @@ public class SyncController
 				beneficiariesInterventionsCreated = service
 						.GetAllEntityByNamedQuery("BeneficiaryIntervention.findByLocalities", Arrays.asList(params));
 			}
-
+*/
+			beneficiariesInterventionsCreated = new ArrayList<BeneficiariesInterventions>();
 			beneficiariesInterventionsUpdated = new ArrayList<BeneficiariesInterventions>();
 
 			neighborhoodsCreated = service.GetAllEntityByNamedQuery("Neighborhood.findAll");
@@ -203,11 +204,11 @@ public class SyncController
 			subServicesUpdated = new ArrayList<SubServices>();
 
 			// References
-			referencesCreated = service.GetAllEntityByNamedQuery("References.findAllByUserPermission", user.getId());
+			referencesCreated = service.GetAllEntityByNamedQuery("References.findAllByNotifyTo", user.getId());
 			referencesUpdated = new ArrayList<References>();
 
 			// ReferencesServices
-			referenceServicesCreated = service.GetAllEntityByNamedQuery("ReferencesServices.findByUserPermission",
+			referenceServicesCreated = service.GetAllEntityByNamedQuery("ReferencesServices.findByNotifyTo",
 					user.getId());
 
 			referenceServicesUpdated = new ArrayList<ReferencesServices>();

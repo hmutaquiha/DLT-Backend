@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import dlt.dltbackendmaster.domain.Beneficiaries;
 import dlt.dltbackendmaster.domain.BeneficiariesInterventions;
+import dlt.dltbackendmaster.domain.CountIntervention;
 import dlt.dltbackendmaster.domain.References;
 import dlt.dltbackendmaster.domain.ReferencesServices;
 import dlt.dltbackendmaster.domain.ReferencesServicesObject;
@@ -75,6 +76,15 @@ public class BeneficiariyInterventionServiceImpl implements BeneficiariyInterven
 		List<BeneficiariesInterventions> beneficiariesInterventions = daoService
 				.GetAllEntityByNamedQuery("BeneficiaryIntervention.findByBeneficiaryId", beneficiaryId);
 
+		return beneficiariesInterventions;
+	}
+	
+	@Override
+	public List<CountIntervention> findInterventionsPerBeneficiary() {
+
+		List<CountIntervention> beneficiariesInterventions = daoService
+				.GetAllEntityByNamedQuery("BeneficiaryIntervention.findInterventionsPerBeneficiary");
+		
 		return beneficiariesInterventions;
 	}
 }

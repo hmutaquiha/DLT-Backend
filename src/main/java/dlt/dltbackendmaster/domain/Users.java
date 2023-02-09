@@ -56,7 +56,10 @@ import dlt.dltbackendmaster.serializers.UssSerializer;
                 @NamedQuery(name = "Users.findByDateCreated",
                             query = "select u from Users u where u.dateUpdated is null and u.dateCreated > :lastpulledat"),
                 @NamedQuery(name = "Users.findByDateUpdated",
-                            query = "select u from Users u where (u.dateUpdated >= :lastpulledat) or (u.dateUpdated >= :lastpulledat and u.dateCreated = u.dateUpdated)") })
+                            query = "select u from Users u where (u.dateUpdated >= :lastpulledat) or (u.dateUpdated >= :lastpulledat and u.dateCreated = u.dateUpdated)"),
+                @NamedQuery(name = "Users.findNames", 
+                			query = "SELECT u.id as id, u.username as username FROM Users u"),                
+})
 public class Users implements java.io.Serializable
 {
 

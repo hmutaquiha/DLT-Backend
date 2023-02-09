@@ -65,6 +65,10 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 		query = "select b from BeneficiariesInterventions b where (b.dateUpdated >= :lastpulledat) or (b.dateUpdated >= :lastpulledat and b.dateCreated = b.dateUpdated)"),
 	@NamedQuery(name = "BeneficiaryIntervention.findByBeneficiaryId", 
 		query = "SELECT b FROM BeneficiariesInterventions b where b.beneficiaries.id = :beneficiary_id"),	
+	@NamedQuery(name = "BeneficiaryIntervention.findInterventionsPerBeneficiary", 
+		query = " select count(inter.beneficiaries.id) as interventions, inter.beneficiaries.id as beneficiary_id"
+				+ " from BeneficiariesInterventions inter "
+				+ " group by inter.beneficiaries.id " )
 })
 public class BeneficiariesInterventions implements java.io.Serializable {
 	

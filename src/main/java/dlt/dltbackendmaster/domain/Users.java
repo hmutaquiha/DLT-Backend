@@ -578,7 +578,7 @@ public class Users implements java.io.Serializable
 		this.passwordLastChangeDate = passwordLastChangeDate;
 	}
 
-	@Column(name = "recover_password_origin", nullable = false, length = 50)
+	@Column(name = "recover_password_origin", length = 50)
 	public String getRecoverPasswordOrigin() {
 		return recoverPasswordOrigin;
 	}

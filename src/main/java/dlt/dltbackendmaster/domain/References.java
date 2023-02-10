@@ -111,6 +111,7 @@ public class References implements java.io.Serializable {
 	private String offlineId;
 	private String beneficiaryOfflineId;
 	private Set<ReferencesServices> referencesServiceses = new HashSet<ReferencesServices>(0);
+	private String beneficiary_nui;
 
 	public References() {
 	}
@@ -426,6 +427,7 @@ public class References implements java.io.Serializable {
 			reference.put("online_id", id);
 		}
 		reference.put("beneficiary_id", beneficiaries.getId());
+		reference.put("beneficiary_nui", beneficiaries.getNui());
 
 		return reference;
 	}
@@ -452,6 +454,15 @@ public class References implements java.io.Serializable {
 		this.userCreated = model.getUser_created();
 		this.dateCreated = model.getDate_created();
         this.beneficiaryOfflineId = model.getBeneficiary_offline_id();
+	}
+
+	@Transient
+	public String getBeneficiary_nui() {
+		return beneficiaries.getNui();
+	}
+
+	public void setBeneficiary_nui(String beneficiary_nui) {
+		this.beneficiary_nui = beneficiary_nui;
 	}
 
 }

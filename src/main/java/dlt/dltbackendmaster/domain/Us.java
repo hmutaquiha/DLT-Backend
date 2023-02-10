@@ -259,9 +259,9 @@ public class Us implements java.io.Serializable {
 		us.put("id", id);
 		us.put("name", name);
 		us.put("description", description);
-		us.put("status", status);
+		us.put("status", String.valueOf(status));
 		us.put("locality_id", locality.getId());
-		us.put("entry_point", usType.getEntryPoint());
+		us.put("entry_point", Integer.valueOf(usType.getEntryPoint()));
 		us.put("online_id", id); // flag to control if entity is synchronized with the backend
 		return us;
 	} 

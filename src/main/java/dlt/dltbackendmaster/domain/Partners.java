@@ -34,6 +34,15 @@ import dlt.dltbackendmaster.serializers.DistrictSerializer;
 @Entity
 @Table(name = "partners", catalog = "dreams_db")
 @NamedQueries({ @NamedQuery(name = "Partners.findAll", query = "SELECT c FROM Partners c"),
+
+        @NamedQuery(name = "Partners.findBySyncLocalities", query = "SELECT p FROM  Partners p "
+                                                    + "where  p.district.id  in (SELECT DISTINCT l.district.id "
+                                                    + "FROM Locality l "
+                                                    + "WHERE l.id in (:locality))"),        
+    	@NamedQuery(name = "Partners.findBySyncDistricts", query = "SELECT p FROM  Partners p "
+    	                                            + "where p.district.id  in (:districts)"),
+    	@NamedQuery(name = "Partners.findBySyncProvinces", query = "SELECT p FROM  Partners p "
+    	                                            + "where p.district.province.id in (:provinces)"),    	
 		@NamedQuery(name = "Partners.findByDateCreated", query = "SELECT c FROM Partners c WHERE c.dateCreated = :lastpulledat"),
 		@NamedQuery(name = "Partners.findByDateUpdated", query = "SELECT c FROM Partners c WHERE c.dateUpdated = :lastpulledat"),
 		@NamedQuery(name = "Partners.findByTypeDistrict", query = "SELECT c FROM Partners c WHERE c.partnerType = :serviceType and c.district.id = :district"),

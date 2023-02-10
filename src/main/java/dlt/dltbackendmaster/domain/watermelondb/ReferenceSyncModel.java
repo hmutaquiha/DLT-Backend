@@ -26,6 +26,7 @@ public class ReferenceSyncModel {
 	private String _changed;
 	private Integer is_awaiting_sync;
 	private Integer online_id;
+	private String beneficiary_nui;
 
 	public ReferenceSyncModel() {
 	}
@@ -204,6 +205,14 @@ public class ReferenceSyncModel {
 
 	public void setOnline_id(Integer online_id) {
 		this.online_id = online_id;
+	}
+
+	public String getBeneficiary_nui() {
+		return beneficiary_nui;
+	}
+
+	public void setBeneficiary_nui(String beneficiary_nui) {
+		this.beneficiary_nui = beneficiary_nui;
 	}
 
 }

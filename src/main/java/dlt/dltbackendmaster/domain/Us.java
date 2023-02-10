@@ -36,6 +36,16 @@ import dlt.dltbackendmaster.serializers.UsTypeSerializer;
 @Entity
 @Table(name = "us", catalog = "dreams_db")
 @NamedQueries({
+    @NamedQuery(name = "Us.findBySyncLocalities", query = "SELECT u FROM  Us u  "
+            									+ "left join fetch u.locality l "
+            									+ "where l.id in (:localities)"),
+	@NamedQuery(name = "Us.findByDistricts", query = "SELECT u FROM  Us u "
+            									+ "left join fetch u.locality l "
+            									+ "where l.district.id in (:districts)"),
+	@NamedQuery(name = "Us.findByProvinces", query = "SELECT u FROM  Us u  "
+            									+ "left join fetch u.locality l "
+            									+ "where l.district.province.id in (:provinces)"),
+
     @NamedQuery(name = "Us.findAll", query = "SELECT c FROM Us c"),
     @NamedQuery(name = "Us.findByLocalities", query = "SELECT u FROM Us u where u.locality.id in (:localities) and u.status=1"),
     @NamedQuery(name = "Us.findByType", query = "SELECT u FROM Us u where u.usType.entryPoint = :ustype and u.locality.id = :locality"),

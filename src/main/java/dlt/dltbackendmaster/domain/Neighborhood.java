@@ -34,6 +34,16 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 @Entity
 @Table(name = "neighborhood", catalog = "dreams_db")
 @NamedQueries({
+
+    @NamedQuery(name = "Neighborhood.findBySyncLocalities", query = "SELECT n FROM  Neighborhood n "
+                                                + "left join fetch n.locality l "
+                                                + "where l.id in (:localities)"),
+    @NamedQuery(name = "Neighborhood.findBySyncDistricts", query = "SELECT n FROM  Neighborhood n "
+                                                + "left join fetch n.locality l "
+                                                + "where l.district.id in (:districts)"),
+    @NamedQuery(name = "Neighborhood.findBySyncProvinces", query = "SELECT n FROM  Neighborhood n "
+                                                + "left join fetch n.locality l "
+                                                + "where l.district.province.id in (:provinces)"),
     @NamedQuery(name = "Neighborhood.findAll", query = "SELECT c FROM Neighborhood c"),
     @NamedQuery(name = "Neighborhood.findByLocalities", query = "SELECT c FROM Neighborhood c WHERE c.locality.id in (:localities) and c.status=1"),
     @NamedQuery(name = "Neighborhood.findByDateCreated", query = "SELECT c FROM Neighborhood c WHERE c.dateCreated = :lastpulledat"),

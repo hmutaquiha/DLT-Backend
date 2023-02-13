@@ -27,6 +27,8 @@ public interface DAORepository {
 	<T> T GetUniqueEntityByNamedQuery(String query, Object... params);
 
 	<T> List<T> GetAllEntityByNamedQuery(String query, Object... params);
+	
+	<T> List<T> GetAllEntityByNamedNativeQuery(String query, Object... params);
 
 	<T> T find(Class<T> klass, Object id);
 

@@ -238,7 +238,16 @@ public class SyncController
 			subServicesCreated = service.GetAllEntityByNamedQuery("SubService.findAll");
 			subServicesUpdated = new ArrayList<SubServices>();
 			// References
-			referencesCreated = service.GetAllEntityByNamedQuery("References.findAllByNotifyTo", user.getId());
+			if (level.equals("CENTRAL")) {
+				referencesCreated = service.GetAllEntityByNamedQuery("References.findAll");
+            } else if (level.equals("PROVINCIAL")) {
+                referencesCreated = service.GetAllEntityByNamedQuery("References.findBySyncProvinces", Arrays.asList(params));
+            } else if (level.equals("DISTRITAL")) {
+                referencesCreated = service.GetAllEntityByNamedQuery("References.findBySyncDistricts", Arrays.asList(params));
+            } else {
+                referencesCreated = service.GetAllEntityByNamedQuery("References.findBySyncLocalities", Arrays.asList(params));
+            }
+						
 			referencesUpdated = new ArrayList<References>();
 
 			// ReferencesServices

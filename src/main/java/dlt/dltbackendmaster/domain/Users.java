@@ -17,6 +17,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -42,7 +44,22 @@ import dlt.dltbackendmaster.serializers.UssSerializer;
  */
 @Entity
 @Table(name = "users", catalog = "dreams_db")
-@NamedQueries({ @NamedQuery(name = "Users.findAll", query = "SELECT u FROM Users u"),
+@NamedNativeQueries({
+                    @NamedNativeQuery(name = "Users.findByLocalities", query = "SELECT u.* FROM users u "
+                                                                       + "LEFT JOIN users_districts ud on ud.user_id = u.id "
+                                                                       + "Left JOIN locality l on l.district_id = ud.district_id "
+                                                                       + "where u.status = 1 AND l.id in (:localities)", resultClass = Users.class ),
+
+                    @NamedNativeQuery(name = "Users.findByDistricts", query = "SELECT u.* FROM users u  "
+                          											    + "LEFT JOIN users_districts ud on ud.user_id = u.id "
+                          											    + "where ud.district_id in (:districts)", resultClass = Users.class ),
+                    @NamedNativeQuery(name = "Users.findByProvinces", query = "SELECT u.* FROM users u "
+                          												+ "left join fetch u.users_provinces up on up.user_id = u.id "
+                          												+ "where up.province_id in (:provinces)", resultClass = Users.class ),
+                    })
+
+@NamedQueries({ 
+                @NamedQuery(name = "Users.findAll", query = "SELECT u FROM Users u"),
                 @NamedQuery(name = "Users.findByUsername",
                             query = "SELECT u FROM Users u where u.username = :username"),
                 @NamedQuery(name = "Users.findByUsId",

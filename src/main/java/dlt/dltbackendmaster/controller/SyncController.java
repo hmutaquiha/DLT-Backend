@@ -246,23 +246,31 @@ public class SyncController
 
 			subServicesCreated = service.GetAllEntityByNamedQuery("SubService.findAll");
 			subServicesUpdated = new ArrayList<SubServices>();
-			// References
+			
 			if (level.equals("CENTRAL")) {
+				// References
 				referencesCreated = service.GetAllEntityByNamedQuery("References.findAll");
+				// ReferencesServices
+				referenceServicesCreated = service.GetAllEntityByNamedQuery("ReferencesServices.findAll");
             } else if (level.equals("PROVINCIAL")) {
+            	// References
                 referencesCreated = service.GetAllEntityByNamedQuery("References.findBySyncProvinces", Arrays.asList(params));
+                // ReferencesServices
+    			referenceServicesCreated = service.GetAllEntityByNamedQuery("ReferencesServices.findBySyncProvinces", Arrays.asList(params));
             } else if (level.equals("DISTRITAL")) {
+            	// References
                 referencesCreated = service.GetAllEntityByNamedQuery("References.findBySyncDistricts", Arrays.asList(params));
+                // ReferencesServices
+    			referenceServicesCreated = service.GetAllEntityByNamedQuery("ReferencesServices.findBySyncDistricts", Arrays.asList(params));
             } else {
+            	// References
                 referencesCreated = service.GetAllEntityByNamedQuery("References.findBySyncLocalities", Arrays.asList(params));
+                // ReferencesServices
+    			referenceServicesCreated = service.GetAllEntityByNamedQuery("ReferencesServices.findBySyncLocalities", Arrays.asList(params));
             }
 						
 			referencesUpdated = new ArrayList<References>();
-
-			// ReferencesServices
-			referenceServicesCreated = service.GetAllEntityByNamedQuery("ReferencesServices.findByNotifyTo",
-					user.getId());
-
+			
 			referenceServicesUpdated = new ArrayList<ReferencesServices>();
 
 		} else {

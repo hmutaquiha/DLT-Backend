@@ -85,17 +85,32 @@ import dlt.dltbackendmaster.domain.watermelondb.ReferenceSyncModel;
 																+ "and r.dateCreated = r.dateUpdated)"
 		/* "SELECT r FROM References r WHERE r.dateUpdated = :lastpulledat" */),
 	    @NamedQuery(name = "References.findBySyncLocalities", query = "SELECT r FROM  References r "
+	    															+ "left join fetch r.referredBy rb "
+	    															+ "left join fetch r.users u "
+	    															+ "left join fetch r.us us "
 												    				+ "left join fetch r.beneficiaries b "
 													                + "left join fetch b.locality l "
-													                + "where l.id in (:localities)"),
+													                + "where l.id in (:localities) "
+													                + "and r.status = 0 "
+													                ),
 		@NamedQuery(name = "References.findBySyncDistricts", query = "SELECT r FROM  References r "
+																	+ "left join fetch r.referredBy rb "
+																	+ "left join fetch r.users u "
+																	+ "left join fetch r.us us "
 																	+ "left join fetch r.beneficiaries b "
 													                + "left join fetch b.locality l "
-													                + "where l.district.id in (:districts)"),
+													                + "where l.district.id in (:districts) "
+													                + "and r.status = 0 "
+													                ),
 		@NamedQuery(name = "References.findBySyncProvinces", query = "SELECT r FROM  References r "
+																	+ "left join fetch r.referredBy rb "
+																	+ "left join fetch r.users u "
+																	+ "left join fetch r.us us "
 																	+ "left join fetch r.beneficiaries b "
 													                + "left join fetch b.locality l "
-													                + "where l.district.province.id in (:provinces)"),
+													                + "where l.district.province.id in (:provinces) "
+													                + "and r.status = 0 "
+													                ),
 })
 public class References implements java.io.Serializable {
 

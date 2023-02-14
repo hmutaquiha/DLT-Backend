@@ -59,6 +59,7 @@ import dlt.dltbackendmaster.serializers.ServiceSerializer;
 													            + "left join fetch b.locality l "
 													            + "where l.id in (:localities) "
 													            + "and r.status = 0 "
+													            + "and r.users.id = : userId "
     															),
 	@NamedQuery(name = "ReferencesServices.findBySyncDistricts", query = "SELECT rs FROM  ReferencesServices rs "
 																+ "left join fetch rs.references r "
@@ -66,6 +67,7 @@ import dlt.dltbackendmaster.serializers.ServiceSerializer;
 													            + "left join fetch b.locality l "
 													            + "where l.district.id in (:districts) "
 													            + "and r.status = 0 "
+													            + "and r.users.id = : userId "
 																),
 	@NamedQuery(name = "ReferencesServices.findBySyncProvinces", query = "SELECT rs FROM  ReferencesServices rs "
 																+ "left join fetch rs.references r "
@@ -73,6 +75,7 @@ import dlt.dltbackendmaster.serializers.ServiceSerializer;
 													            + "left join fetch b.locality l "
 													            + "where l.district.province.id in (:provinces) "
 													            + "and r.status = 0 "
+													            + "and r.users.id = : userId "
 																),
 })
 public class ReferencesServices implements java.io.Serializable {

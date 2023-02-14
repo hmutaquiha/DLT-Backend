@@ -80,6 +80,11 @@ public class DAOServiceImpl implements DAOService{
 	public <T> List<T> GetAllEntityByNamedQuery(String query, Object... params) {
 		return repository.GetAllEntityByNamedQuery(query, params);
 	}
+	
+	@Transactional
+    public <T> List<T> GetAllEntityByNamedNativeQuery(String query, Object... params) {
+        return repository.GetAllEntityByNamedNativeQuery(query, params);
+    }
 
 	@Override
 	public <T> T find(Class<T> klass, Object id) {

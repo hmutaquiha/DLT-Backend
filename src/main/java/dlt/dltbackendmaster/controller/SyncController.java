@@ -149,7 +149,16 @@ public class SyncController
 			localityUpdated = new ArrayList<Locality>();
 
 			// users
-	        usersCreated = service.GetAllEntityByNamedQuery("Users.findAll");
+			if (level.equals("CENTRAL")) {
+	            usersCreated = service.GetAllEntityByNamedQuery("Users.findAll");
+            } else if (level.equals("PROVINCIAL")) {
+                usersCreated = service.GetAllEntityByNamedNativeQuery("Users.findByProvinces", Arrays.asList(params));
+            } else if (level.equals("DISTRITAL")) {
+                usersCreated = service.GetAllEntityByNamedNativeQuery("Users.findByDistricts", Arrays.asList(params));
+            } else {
+                usersCreated = service.GetAllEntityByNamedNativeQuery("Users.findByLocalities", Arrays.asList(params));
+            }
+			
 			usersUpdated = new ArrayList<Users>();
 			listDeleted = new ArrayList<Integer>();
 

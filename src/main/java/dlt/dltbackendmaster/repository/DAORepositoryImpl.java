@@ -111,6 +111,19 @@ public class DAORepositoryImpl implements DAORepository {
 		return results;
 	}
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public <T> List<T> GetAllEntityByNamedNativeQuery(String query, Object... params) {
+        Query q = getCurrentSession().getNamedNativeQuery(query);
+        int i = 0;
+        for (Parameter param : q.getParameters()) {
+            q.setParameter(param, params[i++]);
+        }
+
+        List<T> results = q.getResultList();
+
+        return results;
+    }
+
 	@Override
 	public <T> T find(Class<T> klass, Object id) {
 

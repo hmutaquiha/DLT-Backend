@@ -89,9 +89,7 @@ import dlt.dltbackendmaster.domain.watermelondb.ReferenceSyncModel;
 	    															+ "left join fetch r.users u "
 	    															+ "left join fetch r.us us "
 												    				+ "left join fetch r.beneficiaries b "
-												    				+ "left join fetch b.neighborhood nb "
-													                + "left join fetch nb.locality l "
-													                + "where l.id in (:localities) "
+													                + "where b.neighborhood.locality.id in (:localities) "
 													                + "and r.status = 0 "
 													                + "and r.users.id = : userId "
 													                ),
@@ -100,9 +98,7 @@ import dlt.dltbackendmaster.domain.watermelondb.ReferenceSyncModel;
 																	+ "left join fetch r.users u "
 																	+ "left join fetch r.us us "
 																	+ "left join fetch r.beneficiaries b "
-																	+ "left join fetch b.neighborhood nb "
-													                + "left join fetch nb.locality l "
-													                + "where l.district.id in (:districts) "
+													                + "where b.neighborhood.locality.district.id in (:districts) "
 													                + "and r.status = 0 "
 													                + "and r.users.id = : userId "
 													                ),
@@ -111,9 +107,7 @@ import dlt.dltbackendmaster.domain.watermelondb.ReferenceSyncModel;
 																	+ "left join fetch r.users u "
 																	+ "left join fetch r.us us "
 																	+ "left join fetch r.beneficiaries b "
-																	+ "left join fetch b.neighborhood nb "
-													                + "left join fetch nb.locality l "
-													                + "where l.district.province.id in (:provinces) "
+													                + "where b.neighborhood.locality.district.province.id in (:provinces) "
 													                + "and r.status = 0 "
 													                + "and r.users.id = : userId "
 													                ),

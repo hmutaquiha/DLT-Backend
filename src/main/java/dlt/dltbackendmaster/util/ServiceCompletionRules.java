@@ -1,4 +1,4 @@
-package dlt.dltbackendmaster.security.utils;
+package dlt.dltbackendmaster.util;
 
 import java.util.List;
 import java.util.Set;
@@ -161,6 +161,14 @@ public class ServiceCompletionRules
 
     public static boolean completedFinancialLiteracy(List<Integer> subServices) {
         return subServices.contains(ServicesConstants.LITERACIA_FINANCEIRA);
+    }
+
+    public static boolean completedFinancialLiteracyAflatoun(List<Integer> subServices) {
+        return subServices.containsAll(ServicesConstants.LITERACIA_FINANCEIRA_AFLATOUN);
+    }
+
+    public static boolean completedFinancialLiteracyAflateen(List<Integer> subServices) {
+        return subServices.containsAll(ServicesConstants.LITERACIA_FINANCEIRA_AFLATEEN);
     }
 
     public static boolean completedHIVTestingServices(List<Integer> subServices) {

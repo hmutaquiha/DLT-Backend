@@ -136,7 +136,7 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 																+ " left join  b.partners "
 																+ " left join  b.locality "
 																+ " left join  b.us "
-																+ " and b.status = 1 "
+																+ " where b.status = 1 "
 																+ ""),
 })
 public class Beneficiaries implements java.io.Serializable

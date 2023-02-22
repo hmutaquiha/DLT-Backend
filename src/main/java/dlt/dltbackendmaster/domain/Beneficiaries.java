@@ -71,19 +71,23 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 																+ " left join fetch b.locality "
 																+ " left join fetch b.us "
                 												+ " where nb.locality.id in (:localities) "
+                												+ " order by b.id desc "
                 												+ ""),
                 @NamedQuery(name = "Beneficiary.findByDistricts", query = "SELECT b FROM Beneficiaries b "
 										                		+ " left join fetch b.neighborhood nb "
 																+ " left join fetch b.partners "
 																+ " left join fetch b.locality "
 																+ " left join fetch b.us "
-                												+ " where nb.locality.district.id in (:districts)"),
+                												+ " where nb.locality.district.id in (:districts) "
+                												+ " order by b.id desc "
+                                                                + ""),
                 @NamedQuery(name = "Beneficiary.findByProvinces", query = "SELECT b FROM Beneficiaries b "
 										                		+ " left join fetch b.neighborhood nb "
 																+ " left join fetch b.partners "
 																+ " left join fetch b.locality "
 																+ " left join fetch b.us "
                 												+ " where nb.locality.district.province.id in (:provinces) "
+                												+ " order by b.id desc "
                 												+ ""),
                 @NamedQuery(name = "Beneficiary.findByDateCreated",query = "select b from Beneficiaries b "
 										                		+ " left join fetch b.neighborhood nb "

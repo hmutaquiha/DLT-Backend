@@ -113,25 +113,30 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 																+ " left join  b.locality "
 																+ " left join  b.us "
 																+ " where nb.locality.id in (:localities) "
+																+ " and b.status = 1 "
 																+ ""),
                 @NamedQuery(name = "Beneficiary.findCountByDistricts", query = "SELECT count(b.id) as total FROM Beneficiaries b "
 										                		+ " left join  b.neighborhood nb "
 										                		+ " left join  b.partners "
 																+ " left join  b.locality "
 																+ " left join  b.us "
-																+ " where nb.locality.district.id in (:districts)"),
+																+ " where nb.locality.district.id in (:districts)"
+																+ " and b.status = 1 "
+																+ ""),
 				@NamedQuery(name = "Beneficiary.findCountByProvinces", query = "SELECT count(b.id) as total FROM Beneficiaries b "
 										                		+ " left join  b.neighborhood nb "
 										                		+ " left join  b.partners "
 																+ " left join  b.locality "
 																+ " left join  b.us "
 																+ " where nb.locality.district.province.id in (:provinces) "
+																+ " and b.status = 1 "
 																+ ""),
 				@NamedQuery(name = "Beneficiary.findCountAll", query = "SELECT count(b.id) as total FROM Beneficiaries b "
 																+ " left join  b.neighborhood nb "
 																+ " left join  b.partners "
 																+ " left join  b.locality "
 																+ " left join  b.us "
+																+ " and b.status = 1 "
 																+ ""),
 })
 public class Beneficiaries implements java.io.Serializable

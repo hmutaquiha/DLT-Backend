@@ -38,10 +38,13 @@ public class PackageCompletionRules {
 			}
 
 		} else { // 15-24 Years
-			//TODO: Rules for 15+ age band
+			return ServiceCompletionRules.startedGuiaFacilitacao(subServices)
+					|| ServiceCompletionRules.startedSAAJEducationSessions(subServices)
+					|| ServiceCompletionRules.startedPostViolenceCare_US(subServices)
+					|| ServiceCompletionRules.startedPostViolenceCare_CM(subServices)
+					|| ServiceCompletionRules.startedFinancialLiteracyAflateen(subServices);
 
 		}
-		return false;
 	}
 
 	public static boolean completedPrimaryService(Beneficiaries beneficiary) {

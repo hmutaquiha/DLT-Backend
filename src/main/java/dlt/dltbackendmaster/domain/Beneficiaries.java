@@ -50,6 +50,7 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 																+ " left join fetch b.partners "
 																+ " left join fetch b.locality "
 																+ " left join fetch b.us "
+																+ " order by b.id desc"
 																+ ""),
                 @NamedQuery(name = "Beneficiary.findByNui", query = "SELECT b FROM Beneficiaries b "
 										                		+ " left join fetch b.neighborhood "

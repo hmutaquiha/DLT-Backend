@@ -26,16 +26,19 @@ public class PackageCompletionRules {
 				return ServiceCompletionRules.startedAvanteEstudante(subServices)
 						|| ServiceCompletionRules.startedSAAJEducationSessions(subServices)
 						|| ServiceCompletionRules.startedPostViolenceCare_US(subServices)
-						|| ServiceCompletionRules.startedPostViolenceCare_CM(subServices);
+						|| ServiceCompletionRules.startedPostViolenceCare_CM(subServices)
+						|| ServiceCompletionRules.startedFinancialLiteracyAflatoun(subServices);
 			} else {
 				return ServiceCompletionRules.startedAvanteRapariga(subServices)
 						|| ServiceCompletionRules.startedSAAJEducationSessions(subServices)
 						|| ServiceCompletionRules.startedPostViolenceCare_US(subServices)
-						|| ServiceCompletionRules.startedPostViolenceCare_CM(subServices);
+						|| ServiceCompletionRules.startedPostViolenceCare_CM(subServices)
+						|| ServiceCompletionRules.startedFinancialLiteracyAflateen(subServices);
 
 			}
 
-		} else {
+		} else { // 15-24 Years
+			//TODO: Rules for 15+ age band
 
 		}
 		return false;
@@ -54,6 +57,7 @@ public class PackageCompletionRules {
 				return ServiceCompletionRules.completedAvanteEstudante(subServices)
 						|| ServiceCompletionRules.completedSAAJEducationSessions(subServices)
 						|| ServiceCompletionRules.completedFinancialLiteracy(subServices)
+						|| ServiceCompletionRules.completedFinancialLiteracyAflatoun(subServices)
 						|| (beneficiary.getVbltSexuallyActive() == 1
 								&& (ServiceCompletionRules.completedHIVTestingServices(subServices)
 										|| ServiceCompletionRules.completedCondomsPromotionOrProvision(subServices)));
@@ -61,6 +65,7 @@ public class PackageCompletionRules {
 				return ServiceCompletionRules.completedAvanteRapariga(subServices)
 						|| ServiceCompletionRules.completedSAAJEducationSessions(subServices)
 						|| ServiceCompletionRules.completedFinancialLiteracy(subServices)
+						|| ServiceCompletionRules.completedFinancialLiteracyAflatoun(subServices)
 						|| (beneficiary.getVbltSexuallyActive() == 1
 								&& (ServiceCompletionRules.completedHIVTestingServices(subServices)
 										|| ServiceCompletionRules.completedCondomsPromotionOrProvision(subServices)));
@@ -70,7 +75,8 @@ public class PackageCompletionRules {
 			return ServiceCompletionRules.completedCondomsPromotionOrProvision(subServices)
 					|| ServiceCompletionRules.completedGuiaFacilitacao(subServices)
 					|| ServiceCompletionRules.completedHIVTestingServices(subServices)
-					|| ServiceCompletionRules.completedFinancialLiteracy(subServices);
+					|| ServiceCompletionRules.completedFinancialLiteracy(subServices)
+					|| ServiceCompletionRules.completedFinancialLiteracyAflateen(subServices);
 		}
 	}
 
@@ -95,7 +101,7 @@ public class PackageCompletionRules {
 				return ServiceCompletionRules.completedAvanteRapariga(subServices)
 						&& ServiceCompletionRules.completedSAAJEducationSessions(subServices)
 						&& (ServiceCompletionRules.completedFinancialLiteracy(subServices)
-								|| ServiceCompletionRules.completedFinancialLiteracyAflateen(subServices))
+								|| ServiceCompletionRules.completedFinancialLiteracyAflatoun(subServices))
 						&& (beneficiary.getVbltSexuallyActive() == 0 || beneficiary.getVbltSexuallyActive() == 1
 								&& (ServiceCompletionRules.completedHIVTestingServices(subServices)
 										&& ServiceCompletionRules.completedCondomsPromotionOrProvision(subServices)));
@@ -105,7 +111,8 @@ public class PackageCompletionRules {
 			return ServiceCompletionRules.completedCondomsPromotionOrProvision(subServices)
 					&& ServiceCompletionRules.completedGuiaFacilitacao(subServices)
 					&& ServiceCompletionRules.completedHIVTestingServices(subServices)
-					&& ServiceCompletionRules.completedFinancialLiteracy(subServices);
+					&& (ServiceCompletionRules.completedFinancialLiteracy(subServices)
+							|| ServiceCompletionRules.completedFinancialLiteracyAflateen(subServices));
 		}
 	}
 

@@ -159,6 +159,14 @@ public class ServiceCompletionRules
         return containsAny(ServicesConstants.SUBSIDIO_ESCOLAR, subServices);
     }
 
+    public static boolean startedFinancialLiteracyAflatoun(List<Integer> subServices) {
+        return containsAny(ServicesConstants.LITERACIA_FINANCEIRA_AFLATOUN, subServices);
+    }
+
+    public static boolean startedFinancialLiteracyAflateen(List<Integer> subServices) {
+        return containsAny(ServicesConstants.LITERACIA_FINANCEIRA_AFLATEEN, subServices);
+    }
+
     public static boolean completedFinancialLiteracy(List<Integer> subServices) {
         return subServices.contains(ServicesConstants.LITERACIA_FINANCEIRA);
     }

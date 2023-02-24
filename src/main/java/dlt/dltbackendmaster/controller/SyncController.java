@@ -193,35 +193,12 @@ public class SyncController
 			usUpdated = new ArrayList<Us>();
 
 			// Beneficiary
-			if (level.equals("CENTRAL")) {
-				beneficiariesCreated = service.GetAllEntityByNamedQuery("Beneficiary.findAll");
-			} else if (level.equals("PROVINCIAL")) {
-				beneficiariesCreated = service.GetAllEntityByNamedQuery("Beneficiary.findByProvinces",
-						Arrays.asList(params));
-			} else if (level.equals("DISTRITAL")) {
-				beneficiariesCreated = service.GetAllEntityByNamedQuery("Beneficiary.findByDistricts",
-						Arrays.asList(params));
-			} else {
-				beneficiariesCreated = service.GetAllEntityByNamedQuery("Beneficiary.findByLocalities",
-						Arrays.asList(params));
-			}
-
+			beneficiariesCreated = service.GetAllEntityByNamedQuery("Beneficiary.findByNotifyTo",user.getId());
 			beneficiariesUpdated = new ArrayList<Beneficiaries>();
-/**
-			if (level.equals("CENTRAL")) {
-				beneficiariesInterventionsCreated = service.GetAllEntityByNamedQuery("BeneficiaryIntervention.findAll");
-			} else if (level.equals("PROVINCIAL")) {
-				beneficiariesInterventionsCreated = service
-						.GetAllEntityByNamedQuery("BeneficiaryIntervention.findByProvinces", Arrays.asList(params));
-			} else if (level.equals("DISTRITAL")) {
-				beneficiariesInterventionsCreated = service
-						.GetAllEntityByNamedQuery("BeneficiaryIntervention.findByDistricts", Arrays.asList(params));
-			} else {
-				beneficiariesInterventionsCreated = service
-						.GetAllEntityByNamedQuery("BeneficiaryIntervention.findByLocalities", Arrays.asList(params));
-			}
-*/
-			beneficiariesInterventionsCreated = new ArrayList<BeneficiariesInterventions>();
+
+			// Interventions
+			beneficiariesInterventionsCreated = service
+						.GetAllEntityByNamedQuery("BeneficiaryIntervention.findByNotifyTo", user.getId());
 			beneficiariesInterventionsUpdated = new ArrayList<BeneficiariesInterventions>();
 
 			

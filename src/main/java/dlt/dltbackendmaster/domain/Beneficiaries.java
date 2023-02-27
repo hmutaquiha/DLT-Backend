@@ -148,7 +148,7 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 																+ " and b.id in "
 																+ "	(SELECT r.beneficiaries.id from References r"
 												                + " where r.status = 0 "
-												                + " and r.notifyTo.id = :userId) "												     
+												                + " and (b.createdBy = :userId or r.notifyTo.id = :userId)) "												     
 												                ),
 })
 public class Beneficiaries implements java.io.Serializable

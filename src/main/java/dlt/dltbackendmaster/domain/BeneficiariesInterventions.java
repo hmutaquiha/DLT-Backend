@@ -69,11 +69,11 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 		query = " select count(inter.beneficiaries.id) as interventions, inter.beneficiaries.id as beneficiary_id"
 				+ " from BeneficiariesInterventions inter "
 				+ " group by inter.beneficiaries.id " ),
-	@NamedQuery(name = "BeneficiaryIntervention.findByNotifyTo", query = "SELECT bi FROM BeneficiariesInterventions bi "
+	@NamedQuery(name = "BeneficiaryIntervention.findByReferenceNotifyToOrBeneficiaryCreatedBy", query = "SELECT bi FROM BeneficiariesInterventions bi "
 															+ " where bi.beneficiaries.id in "
 															+ " (SELECT distinct r.beneficiaries.id FROM  References r "										
 												            + " where r.status = 0 "
-												            + " and (bi.beneficiaries.createdBy = :userId or r.notifyTo.id = :userId)) "
+												            + " and (r.notifyTo.id = :userId or bi.beneficiaries.createdBy = :userId)) "
 												            ),
 })
 public class BeneficiariesInterventions implements java.io.Serializable {

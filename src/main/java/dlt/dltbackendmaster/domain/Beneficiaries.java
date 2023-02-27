@@ -139,16 +139,16 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 																+ " left join  b.us "
 																+ " where b.status = 1 "
 																+ ""),
-				@NamedQuery(name = "Beneficiary.findByNotifyTo", query = "SELECT  b FROM  Beneficiaries b "
+				@NamedQuery(name = "Beneficiary.findByReferenceNotifyToOrBeneficiaryCreatedBy", query = "SELECT  b FROM  Beneficiaries b "
 																+ " left join  b.neighborhood nb "
 																+ " left join  b.partners "
 																+ " left join  b.locality "
 																+ " left join  b.us "
 																+ " where b.status = 1 "
-																+ " and b.id in "
-																+ "	(SELECT r.beneficiaries.id from References r"
+                                                                + " and (b.createdBy = :userId "	
+																+ " or   b.id in (SELECT r.beneficiaries.id from References r"
 												                + " where r.status = 0 "
-												                + " and (b.createdBy = :userId or r.notifyTo.id = :userId)) "												     
+												                + " and r.notifyTo.id = :userId)) "    											     
 												                ),
 })
 public class Beneficiaries implements java.io.Serializable

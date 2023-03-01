@@ -3,6 +3,7 @@ package dlt.dltbackendmaster.util;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import dlt.dltbackendmaster.domain.AgywPrev;
 import dlt.dltbackendmaster.domain.Beneficiaries;
 import dlt.dltbackendmaster.domain.BeneficiariesInterventions;
 import dlt.dltbackendmaster.domain.SubServices;
@@ -45,6 +46,10 @@ public class PackageCompletionRules {
 					|| ServiceCompletionRules.startedFinancialLiteracyAflateen(subServices);
 
 		}
+	}
+
+	public static boolean startedService(AgywPrev agywPrev) {
+		return false;
 	}
 
 	public static boolean completedPrimaryService(Beneficiaries beneficiary) {

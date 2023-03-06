@@ -1,6 +1,7 @@
 package dlt.dltbackendmaster.reports.domain;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -11,16 +12,13 @@ import java.util.Map;
  */
 public class TotalsReportObject {
 
-	private Map<Integer, Map<String, Map<String, Integer>>> reportObject = new HashMap<>();
+	private List<Map<String, List<Map<String, Integer>>>> reportObject = new ArrayList<>();
 
-	public TotalsReportObject(Integer[] districts) {
-
-		for (Integer district : districts) {
-			reportObject.put(district, new TotalsAgeBands().getAgeBands());
-		}
+	public TotalsReportObject() {
+		reportObject = new TotalsAgeBands().getAgeBands();
 	}
 
-	public Map<Integer, Map<String, Map<String, Integer>>> getReportObject() {
+	public List<Map<String, List<Map<String, Integer>>>> getReportObject() {
 		return reportObject;
 	}
 

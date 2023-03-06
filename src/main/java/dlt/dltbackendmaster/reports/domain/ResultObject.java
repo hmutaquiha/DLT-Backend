@@ -10,9 +10,9 @@ public class ResultObject {
 	private TotalsReportObject totals;
 	private BeneficiariesReportObject beneficiaries;
 
-	public ResultObject(Integer[] districts) {
-		totals = new TotalsReportObject(districts);
-		beneficiaries = new BeneficiariesReportObject(districts);
+	public ResultObject() {
+		totals = new TotalsReportObject();
+		beneficiaries = new BeneficiariesReportObject();
 	}
 
 	public ResultObject(TotalsReportObject totals, BeneficiariesReportObject beneficiaries) {

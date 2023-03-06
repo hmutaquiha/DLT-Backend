@@ -32,13 +32,14 @@ public class AgywPrevController {
 	}
 
 	@GetMapping(produces = "application/json")
-	public ResponseEntity<Map<String, ResultObject>> get(@RequestParam(name = "districts") Integer[] districts,
+	public ResponseEntity<Map<Integer, Map<String, ResultObject>>> get(@RequestParam(name = "districts") Integer[] districts,
 			@RequestParam(name = "startDate") String startDate, @RequestParam(name = "endDate") String endDate) {
 
 		AgywPrevReport report = new AgywPrevReport(service);
 
 		try {
-			Map<String, ResultObject> reportObject = report.getAgywPrevResultObject(districts, startDate, endDate);
+			Map<Integer, Map<String, ResultObject>> reportObject = report.getAgywPrevResultObject(districts, startDate,
+					endDate);
 
 			return new ResponseEntity<>(reportObject, HttpStatus.OK);
 		} catch (Exception e) {

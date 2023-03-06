@@ -1,6 +1,8 @@
 package dlt.dltbackendmaster.reports.domain;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import dlt.dltbackendmaster.reports.utils.ReportsConstants;
@@ -13,15 +15,17 @@ import dlt.dltbackendmaster.reports.utils.ReportsConstants;
  */
 public class TotalsAgeBands {
 
-	private Map<String, Map<String, Integer>> ageBands = new HashMap<>();
+	private List<Map<String, List<Map<String, Integer>>>> ageBands = new ArrayList<>();
 
 	public TotalsAgeBands() {
 		for (int i = 0; i < ReportsConstants.AGE_BANDS.length; i++) {
-			ageBands.put(ReportsConstants.AGE_BANDS[i], new TotalsEnrollmentTimes().getTime());
+			Map<String, List<Map<String, Integer>>> map = new HashMap<>();
+			map.put(ReportsConstants.AGE_BANDS[i], new TotalsEnrollmentTimes().getTime());
+			ageBands.add(map);
 		}
 	}
 
-	public Map<String, Map<String, Integer>> getAgeBands() {
+	public List<Map<String, List<Map<String, Integer>>>> getAgeBands() {
 		return ageBands;
 	}
 

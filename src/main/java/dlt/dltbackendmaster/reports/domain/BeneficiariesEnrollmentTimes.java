@@ -15,15 +15,17 @@ import dlt.dltbackendmaster.reports.utils.ReportsConstants;
  */
 public class BeneficiariesEnrollmentTimes {
 
-	private Map<String, List<Integer>> time = new HashMap<>();
+	private List<Map<String, List<Integer>>> time = new ArrayList<>();
 
 	public BeneficiariesEnrollmentTimes() {
 		for (int i = 0; i < ReportsConstants.ENROLLMENT_TIMES.length; i++) {
-			time.put(ReportsConstants.ENROLLMENT_TIMES[i], new ArrayList<>());
+			Map<String, List<Integer>> map = new HashMap<>();
+			map.put(ReportsConstants.ENROLLMENT_TIMES[i], new ArrayList<>());
+			time.add(map);
 		}
 	}
 
-	public Map<String, List<Integer>> getTime() {
+	public List<Map<String, List<Integer>>> getTime() {
 		return time;
 	}
 

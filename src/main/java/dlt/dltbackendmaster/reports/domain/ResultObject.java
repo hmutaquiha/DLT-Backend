@@ -12,10 +12,12 @@ import java.util.Map;
 public class ResultObject {
 	private Map<String, Map<String, Integer>> totals;
 	private Map<String, Map<String, List<Integer>>> beneficiaries;
+	private Integer total;
 
 	public ResultObject() {
 		totals = new TotalsAgeBands().getAgeBands();
 		beneficiaries = new BeneficiariesAgeBands().getAgeBands();
+		total = 0;
 	}
 
 	public ResultObject(Map<String, Map<String, Integer>> totals,
@@ -38,6 +40,14 @@ public class ResultObject {
 
 	public void setBeneficiaries(Map<String, Map<String, List<Integer>>> beneficiaries) {
 		this.beneficiaries = beneficiaries;
+	}
+
+	public Integer getTotal() {
+		return total;
+	}
+
+	public void setTotal(Integer total) {
+		this.total = total;
 	}
 
 }

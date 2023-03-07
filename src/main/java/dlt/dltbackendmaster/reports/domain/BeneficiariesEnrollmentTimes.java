@@ -18,7 +18,7 @@ public class BeneficiariesEnrollmentTimes {
 	private Map<String, List<Integer>> time = new HashMap<>();
 
 	public BeneficiariesEnrollmentTimes() {
-		for (int i = 0; i < ReportsConstants.ENROLLMENT_TIMES.length; i++) {
+		for (int i = 0; i < ReportsConstants.ENROLLMENT_TIMES.length - 1; i++) {
 			time.put(ReportsConstants.ENROLLMENT_TIMES[i], new ArrayList<>());
 		}
 	}

@@ -1,5 +1,8 @@
 package dlt.dltbackendmaster.reports.domain;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * Resultado a ser retornado para compor o relatório
  * 
@@ -7,32 +10,33 @@ package dlt.dltbackendmaster.reports.domain;
  *
  */
 public class ResultObject {
-	private TotalsReportObject totals;
-	private BeneficiariesReportObject beneficiaries;
+	private Map<String, Map<String, Integer>> totals;
+	private Map<String, Map<String, List<Integer>>> beneficiaries;
 
-	public ResultObject(Integer[] districts) {
-		totals = new TotalsReportObject(districts);
-		beneficiaries = new BeneficiariesReportObject(districts);
+	public ResultObject() {
+		totals = new TotalsAgeBands().getAgeBands();
+		beneficiaries = new BeneficiariesAgeBands().getAgeBands();
 	}
 
-	public ResultObject(TotalsReportObject totals, BeneficiariesReportObject beneficiaries) {
+	public ResultObject(Map<String, Map<String, Integer>> totals,
+			Map<String, Map<String, List<Integer>>> beneficiaries) {
 		this.totals = totals;
 		this.beneficiaries = beneficiaries;
 	}
 
-	public TotalsReportObject getTotals() {
+	public Map<String, Map<String, Integer>> getTotals() {
 		return totals;
 	}
 
-	public void setTotals(TotalsReportObject totals) {
+	public void setTotals(Map<String, Map<String, Integer>> totals) {
 		this.totals = totals;
 	}
 
-	public BeneficiariesReportObject getBeneficiaries() {
+	public Map<String, Map<String, List<Integer>>> getBeneficiaries() {
 		return beneficiaries;
 	}
 
-	public void setBeneficiaries(BeneficiariesReportObject beneficiaries) {
+	public void setBeneficiaries(Map<String, Map<String, List<Integer>>> beneficiaries) {
 		this.beneficiaries = beneficiaries;
 	}
 

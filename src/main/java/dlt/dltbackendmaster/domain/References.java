@@ -69,6 +69,11 @@ import dlt.dltbackendmaster.domain.watermelondb.ReferenceSyncModel;
 																+ "where r.status = 0 "
 																+ "and r.notifyTo.id = : userId "
 																+ "order by r.id desc"),
+		@NamedQuery(name = "References.findAllByStatus", query = "SELECT r FROM References r "
+																+ "left join fetch r.beneficiaries "
+																+ "left join fetch r.referencesServiceses rs "
+																+ "left join fetch rs.services s "
+																+ "where r.status = :status "),
 		@NamedQuery(name = "References.findByDateCreated", query = "SELECT r from References r "
 																+ "left join fetch r.beneficiaries "
 																+ "left join fetch r.referredBy "

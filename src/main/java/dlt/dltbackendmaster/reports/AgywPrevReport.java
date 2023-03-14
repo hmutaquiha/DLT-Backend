@@ -40,6 +40,7 @@ public class AgywPrevReport {
 
 		for (Integer district : districts) {
 			Map<String, ResultObject> districtAgywPrevResultObject = new HashMap<>();
+			Map<String, Long> districtSummary = processDistrictSummary(district);
 			ResultObject completedOnlyPrimaryPackage = computeDiggregationCompletedOnlyPrimaryPackage(reportObject,
 					district);
 			ResultObject completedPrimaryPackageAndSecondaryService = computeDiggregationCompletedPrimaryPackageAndSecondaryService(
@@ -60,13 +61,21 @@ public class AgywPrevReport {
 					computeDiggregationHasSchoolAllowance(reportObject, district));
 			districtAgywPrevResultObject.put("completed-social-economic-approaches",
 					computeDiggregationCompletedSocialEconomicAllowance(reportObject, district));
-
-			ResultObject ro = new ResultObject();
-			ro.setBeneficiaries(null);
-			ro.setTotals(null);
+			
+			// Process District Summary
+			ResultObject ro = getTotalResultObject();
 			ro.setTotal(completedOnlyPrimaryPackage.getTotal() + completedPrimaryPackageAndSecondaryService.getTotal()
 					+ completedOnlyServiceNotPrimaryPackage.getTotal() + startedServiceDidNotComplete.getTotal());
 			districtAgywPrevResultObject.put("all-disaggregations-total", ro);
+			ro = getTotalResultObject();
+			ro.setTotal(districtSummary.get("totalBeneficiaries").intValue());
+			districtAgywPrevResultObject.put("total-beneficiaries", ro);
+			ro = getTotalResultObject();
+			ro.setTotal(districtSummary.get("maleBeneficiaries").intValue());
+			districtAgywPrevResultObject.put("male-beneficiaries", ro);
+			ro = getTotalResultObject();
+			ro.setTotal(districtSummary.get("femaleBeneficiaries").intValue());
+			districtAgywPrevResultObject.put("female-beneficiaries", ro);
 
 			agywPrevResultObject.put(district, districtAgywPrevResultObject);
 		}
@@ -492,6 +501,27 @@ public class AgywPrevReport {
 		return resultObject;
 	}
 
+	private Map<String, Long> processDistrictSummary(Integer district) {
+		Map<String, Long> districtSummary = new HashMap<>();
+
+		try {
+			Long totalBeneficiaries = service.GetUniqueEntityByNamedQuery("Beneficiary.findCountByDistricts",
+					Arrays.asList(district));
+			Long maleBeneficiaries = service.GetUniqueEntityByNamedQuery("Beneficiary.findCountByDistrictAndGender",
+					'1', district);
+			Long femaleBeneficiaries = service.GetUniqueEntityByNamedQuery("Beneficiary.findCountByDistrictAndGender",
+					'2', district);
+
+			districtSummary.put("totalBeneficiaries", totalBeneficiaries);
+			districtSummary.put("maleBeneficiaries", maleBeneficiaries);
+			districtSummary.put("femaleBeneficiaries", femaleBeneficiaries);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return districtSummary;
+	}
+
 	private int getEnrollmentTimeIndex(int enrollmentTime) {
 		if (enrollmentTime < 7)
 			return 0;
@@ -509,5 +539,13 @@ public class AgywPrevReport {
 		} else {
 			return 3;
 		}
+	}
+
+	private ResultObject getTotalResultObject() {
+		ResultObject ro = new ResultObject();
+		ro.setBeneficiaries(null);
+		ro.setTotals(null);
+
+		return ro;
 	}
 }

@@ -427,16 +427,19 @@ public class AgywPrevReport {
 
 		int total = 0;
 		for (int i = 0; i < ENROLLMENT_TIMES.length; i++) {
+			int subTotal = 0;
 			for (int j = 0; j < AGE_BANDS.length - 1; j++) {
 				List<Integer> completedViolenceService = reportObject.getReportObject().get(district).get(AGE_BANDS[j])
-						.get(ENROLLMENT_TIMES[j]).get(DISAGGREGATIONS[COMPLETED_VIOLENCE_SERVICE]);
+						.get(ENROLLMENT_TIMES[i]).get(DISAGGREGATIONS[COMPLETED_VIOLENCE_SERVICE]);
 
 				resultObject.getBeneficiaries().get(ENROLLMENT_TIMES[i]).get(AGE_BANDS[j])
 						.addAll(completedViolenceService);
 				int count = completedViolenceService.size();
+				subTotal += count;
 				resultObject.getTotals().get(ENROLLMENT_TIMES[i]).put(AGE_BANDS[j], count);
-				total += count;
 			}
+			resultObject.getTotals().get(ENROLLMENT_TIMES[i]).put(AGE_BANDS[4], subTotal);
+			total += subTotal;
 		}
 		resultObject.setTotal(total);
 		return resultObject;
@@ -445,15 +448,22 @@ public class AgywPrevReport {
 	private ResultObject computeDiggregationHasSchoolAllowance(ReportObject reportObject, Integer district) {
 		ResultObject resultObject = new ResultObject();
 
+		int total = 0;
 		for (int i = 0; i < ENROLLMENT_TIMES.length; i++) {
+			int subTotal = 0;
 			for (int j = 0; j < AGE_BANDS.length - 1; j++) {
 				List<Integer> hadSchoolAllowancw = reportObject.getReportObject().get(district).get(AGE_BANDS[j])
 						.get(ENROLLMENT_TIMES[i]).get(DISAGGREGATIONS[HAD_SCHOLL_ALLOWANCE]);
 
+				int count = hadSchoolAllowancw.size();
+				subTotal += count;
 				resultObject.getBeneficiaries().get(ENROLLMENT_TIMES[i]).get(AGE_BANDS[j]).addAll(hadSchoolAllowancw);
-				resultObject.getTotals().get(ENROLLMENT_TIMES[i]).put(AGE_BANDS[j], hadSchoolAllowancw.size());
+				resultObject.getTotals().get(ENROLLMENT_TIMES[i]).put(AGE_BANDS[j], count);
 			}
+			resultObject.getTotals().get(ENROLLMENT_TIMES[i]).put(AGE_BANDS[4], subTotal);
+			total += subTotal;
 		}
+		resultObject.setTotal(total);
 		return resultObject;
 	}
 
@@ -463,6 +473,7 @@ public class AgywPrevReport {
 
 		int total = 0;
 		for (int i = 0; i < ENROLLMENT_TIMES.length; i++) {
+			int subTotal = 0;
 			for (int j = 0; j < AGE_BANDS.length - 1; j++) {
 				List<Integer> hadSocialEconomicApproaches = reportObject.getReportObject().get(district)
 						.get(AGE_BANDS[j]).get(ENROLLMENT_TIMES[i])
@@ -471,9 +482,11 @@ public class AgywPrevReport {
 				resultObject.getBeneficiaries().get(ENROLLMENT_TIMES[i]).get(AGE_BANDS[j])
 						.addAll(hadSocialEconomicApproaches);
 				int count = hadSocialEconomicApproaches.size();
+				subTotal += count;
 				resultObject.getTotals().get(ENROLLMENT_TIMES[i]).put(AGE_BANDS[j], count);
-				total += count;
 			}
+			resultObject.getTotals().get(ENROLLMENT_TIMES[i]).put(AGE_BANDS[4], subTotal);
+			total += subTotal;
 		}
 		resultObject.setTotal(total);
 		return resultObject;

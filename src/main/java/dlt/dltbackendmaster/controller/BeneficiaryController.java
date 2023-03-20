@@ -271,4 +271,17 @@ public class BeneficiaryController
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
+	@GetMapping(path = "/findByNui", produces = "application/json")
+	public ResponseEntity<List<Beneficiaries>> getBeneficiariesByNui(@RequestParam(name = "nui") String nui,@RequestParam(name = "userId") Integer userId) {
+		try {
+			List<Beneficiaries> beneficiaries;
+			
+			beneficiaries = service.GetAllEntityByNamedQuery("Beneficiary.getBeneficiariesByNui",nui, userId);
+		
+			return new ResponseEntity<List<Beneficiaries>>(beneficiaries, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 }

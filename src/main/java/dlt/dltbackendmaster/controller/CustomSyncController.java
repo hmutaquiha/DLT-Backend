@@ -71,11 +71,11 @@ public class CustomSyncController {
 		List<Us> usCreated = new ArrayList<Us>();
 		List<Us> usUpdated = new ArrayList<Us>();
 
-		List<Beneficiaries> beneficiariesCreated;
+		List<Beneficiaries> beneficiariesCreated = new ArrayList<Beneficiaries>();
 		List<Beneficiaries> beneficiariesUpdated = new ArrayList<Beneficiaries>();
 
-		List<BeneficiariesInterventions> beneficiariesInterventionsCreated = new ArrayList<>();
-		List<BeneficiariesInterventions> beneficiariesInterventionsUpdated = new ArrayList<>();
+		List<BeneficiariesInterventions> beneficiariesInterventionsCreated = new ArrayList<BeneficiariesInterventions>();
+		List<BeneficiariesInterventions> beneficiariesInterventionsUpdated = new ArrayList<BeneficiariesInterventions>();
 
 		List<Neighborhood> neighborhoodsCreated = new ArrayList<>();
 		List<Neighborhood> neighborhoodUpdated = new ArrayList<>();
@@ -86,11 +86,11 @@ public class CustomSyncController {
 		List<SubServices> subServicesCreated = new ArrayList<>();
 		List<SubServices> subServicesUpdated = new ArrayList<>();
 
-		List<References> referencesCreated = new ArrayList<>();
-		List<References> referencesUpdated = new ArrayList<>();
+		List<References> referencesCreated = new ArrayList<References>();
+		List<References> referencesUpdated = new ArrayList<References>();
 
-		List<ReferencesServices> referenceServicesCreated = new ArrayList<>();
-		List<ReferencesServices> referenceServicesUpdated = new ArrayList<>();
+		List<ReferencesServices> referenceServicesCreated = new ArrayList<ReferencesServices>();
+		List<ReferencesServices> referenceServicesUpdated = new ArrayList<ReferencesServices>();
 
 		usersUpdated = new ArrayList<Users>();
 		listDeleted = new ArrayList<Integer>();
@@ -111,6 +111,21 @@ public class CustomSyncController {
 				refServicesByRef = service.GetAllEntityByNamedQuery("ReferencesServices.findByReference", ref.getId());
 				referenceServicesCreated.addAll((Collection<? extends ReferencesServices>) refServicesByRef);
 			}
+
+			neighborhoodsCreated = service.GetAllEntityByNamedQuery("Neighborhood.findById",
+					beneficiariesCreated.get(0).getNeighborhood().getId());
+
+			partnersCreated = service.GetAllEntityByNamedQuery("Partners.findById",
+					beneficiariesCreated.get(0).getPartners().getId());
+
+			districtsCreated = service.GetAllEntityByNamedQuery("District.findById",
+					beneficiariesCreated.get(0).getDistrict().getId());
+			
+			provincesCreated = service.GetAllEntityByNamedQuery("Province.findById",
+					beneficiariesCreated.get(0).getDistrict().getProvince().getId());
+			
+			localityCreated = service.GetAllEntityByNamedQuery("Locality.findById",
+					beneficiariesCreated.get(0).getLocality().getId());
 		}
 
 		try {

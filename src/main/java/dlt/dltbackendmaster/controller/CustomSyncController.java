@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -96,7 +97,14 @@ public class CustomSyncController {
 		listDeleted = new ArrayList<Integer>();
 
 		// Beneficiary
-		beneficiariesCreated = service.GetAllEntityByNamedQuery("Beneficiary.getBeneficiariesByNui", nui, userId);
+		List<Users> users = service.GetAllEntityByNamedQuery("Users.findById",userId);
+		List <Integer> localitiesIds = new ArrayList<>();
+		Set<Locality> localities = users.get(0).getLocalities();
+		localities.forEach(locality->{
+			localitiesIds.add(locality.getId());
+			});
+		
+		beneficiariesCreated = service.GetAllEntityByNamedQuery("Beneficiary.getBeneficiariesByNui",nui, localitiesIds);
 
 		if (beneficiariesCreated.size() > 0) {
 

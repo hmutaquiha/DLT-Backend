@@ -155,14 +155,14 @@ import dlt.dltbackendmaster.domain.watermelondb.ReferenceSyncModel;
 																	+ "or r.notifyTo.id = : userId "
 																	+ "or r.referredBy.id = : userId) "
 																	+ "order by r.id desc "),
-		@NamedQuery(name = "References.findByReferenceNotifyToOrBeneficiaryCreatedBy", 
+		@NamedQuery(name = "References.findByReferenceNotifyToOrReferredBy", 
 																	query = "SELECT distinct r FROM  References r "		
 																	+ "left join fetch r.beneficiaries "
 																	+ "left join fetch r.referredBy "
 																	+ "left join fetch r.us "
 																	+ "left join fetch r.notifyTo "
-														            + " where r.status = 0 "
-														            + " and (r.notifyTo.id = :userId or r.beneficiaries.createdBy like :userId) "
+														            + " where r.status in (0,1) "
+														            + " and (r.notifyTo.id = :userId or r.referredBy.id = :userId) "
 														            ),
 		@NamedQuery(name = "References.findByBeneficiaryId", query = "SELECT distinct r FROM  References r "		
 																	+ "left join fetch r.beneficiaries "

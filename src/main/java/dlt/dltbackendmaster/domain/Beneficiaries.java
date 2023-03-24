@@ -143,7 +143,7 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 																+ " where b.status = 1 "
                                                                 + " and (b.createdBy = :userId "	
 																+ " or   b.id in (SELECT r.beneficiaries.id from References r"
-												                + " where r.status = 0 "
+												                + " where r.status in (0,1) "
 												                + " and r.notifyTo.id = :userId)) "    											     
 												                ),
 				@NamedQuery(name = "Beneficiary.getBeneficiariesByNui", query = "SELECT  b FROM  Beneficiaries b "

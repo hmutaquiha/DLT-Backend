@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import dlt.dltbackendmaster.domain.District;
+import dlt.dltbackendmaster.domain.Locality;
+import dlt.dltbackendmaster.domain.Province;
 import dlt.dltbackendmaster.domain.References;
 import dlt.dltbackendmaster.domain.ReferencesServices;
 import dlt.dltbackendmaster.domain.ReferencesServicesId;
@@ -82,10 +86,26 @@ public class ReferencesController {
 			Users user = service.find(Users.class, userId);
 
 			List<References> references = null;
-
 			if (Arrays.asList(MANAGER, MENTOR, NURSE, COUNSELOR).contains(user.getProfiles().getId())) {
 				references = service.GetAllPagedEntityByNamedQuery("References.findAllByUserPermission", pageIndex,
 						pageSize, userId);
+			} else if(user.getLocalities().size() > 0) {
+				List<Integer> localitiesId = user.getLocalities().stream().map(Locality::getId).collect(Collectors.toList());
+				
+				references = service.GetAllPagedEntityByNamedQuery("References.findByLocalities", pageIndex, pageSize, localitiesId);	
+				
+			} else if(user.getDistricts().size() > 0) {
+				
+				List<Integer> districtsId = user.getDistricts().stream().map(District::getId).collect(Collectors.toList());
+				
+				references = service.GetAllPagedEntityByNamedQuery("References.findByDistricts", pageIndex, pageSize, districtsId);	
+				
+			}else if(user.getProvinces().size() > 0) {
+				
+				List<Integer> provincesId = user.getProvinces().stream().map(Province::getId).collect(Collectors.toList());
+				
+				references = service.GetAllPagedEntityByNamedQuery("References.findByProvinces", pageIndex, pageSize, provincesId);	
+				
 			} else {
 				references = service.GetAllPagedEntityByNamedQuery("References.findAll", pageIndex, pageSize);
 			}
@@ -194,8 +214,27 @@ public class ReferencesController {
 			Users user = service.find(Users.class, userId);
 
 			Long referencesTotal;
+			
+
 			if (Arrays.asList(MANAGER, MENTOR, NURSE, COUNSELOR).contains(user.getProfiles().getId())) {
 				referencesTotal = service.GetUniqueEntityByNamedQuery("References.findCountByUserPermission", userId);
+			} else if(user.getLocalities().size() > 0) {
+				List<Integer> localitiesId = user.getLocalities().stream().map(Locality::getId).collect(Collectors.toList());
+				
+				referencesTotal = service.GetUniqueEntityByNamedQuery("References.findCountByLocalities", localitiesId);	
+				
+			} else if(user.getDistricts().size() > 0) {
+				
+				List<Integer> districtsId = user.getDistricts().stream().map(District::getId).collect(Collectors.toList());
+				
+				referencesTotal = service.GetUniqueEntityByNamedQuery("References.findCountByDistricts", districtsId);	
+				
+			}else if(user.getProvinces().size() > 0) {
+				
+				List<Integer> provincesId = user.getProvinces().stream().map(Province::getId).collect(Collectors.toList());
+				
+				referencesTotal = service.GetUniqueEntityByNamedQuery("References.findCountByProvinces", provincesId);	
+				
 			} else {
 				referencesTotal = service.GetUniqueEntityByNamedQuery("References.findCountAll");
 			}

@@ -25,7 +25,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -95,34 +94,31 @@ import dlt.dltbackendmaster.domain.watermelondb.ReferenceSyncModel;
 																+ "and r.dateCreated = r.dateUpdated) "
 																+ "order by r.id desc "
 		/* "SELECT r FROM References r WHERE r.dateUpdated = :lastpulledat" */),
-	    @NamedQuery(name = "References.findBySyncLocalities", query = "SELECT r FROM  References r "
+	    @NamedQuery(name = "References.findByLocalities", query = "SELECT r FROM  References r "
 	    															+ "left join fetch r.referredBy rb "
 	    															+ "left join fetch r.notifyTo u "
 	    															+ "left join fetch r.us us "
 												    				+ "left join fetch r.beneficiaries b "
 													                + "where b.neighborhood.locality.id in (:localities) "
-													                + "and r.status = 0 "
-													                + "and r.notifyTo.id = : userId "
+													                + "and r.status <> 3 "
 													                + "order by r.id desc"
 													                ),
-		@NamedQuery(name = "References.findBySyncDistricts", query = "SELECT r FROM  References r "
+		@NamedQuery(name = "References.findByDistricts", query = "SELECT r FROM  References r "
 																	+ "left join fetch r.referredBy rb "
 																	+ "left join fetch r.notifyTo u "
 																	+ "left join fetch r.us us "
 																	+ "left join fetch r.beneficiaries b "
 													                + "where b.district.id in (:districts) "
-													                + "and r.status = 0 "
-													                + "and r.notifyTo.id = : userId "
+													                + "and r.status <> 3 "
 													                + "order by r.id desc"
 													                ),
-		@NamedQuery(name = "References.findBySyncProvinces", query = "SELECT r FROM  References r "
+		@NamedQuery(name = "References.findByProvinces", query = "SELECT r FROM  References r "
 																	+ "left join fetch r.referredBy rb "
 																	+ "left join fetch r.notifyTo u "
 																	+ "left join fetch r.us us "
 																	+ "left join fetch r.beneficiaries b "
 													                + "where b.district.province.id in (:provinces) "
-													                + "and r.status = 0 "
-													                + "and r.notifyTo.id = : userId "
+													                + "and r.status <> 3 "
 													                + "order by r.id desc"
 													                ),
 		@NamedQuery(name = "References.findCountAll", query = "SELECT count(r.id) FROM References r "
@@ -132,6 +128,18 @@ import dlt.dltbackendmaster.domain.watermelondb.ReferenceSyncModel;
 																	+ "left join r.notifyTo "
 																	+ "where r.status <> 3 "
 																	+ "order by r.id desc"),
+	    @NamedQuery(name = "References.findCountByLocalities", query = "SELECT count(r.id) FROM  References r "
+													                + "where r.beneficiaries.neighborhood.locality.id in (:localities) "
+													                + "and r.status <> 3 "
+													                ),
+	    @NamedQuery(name = "References.findCountByDistricts", query = "SELECT count(r.id) FROM  References r "
+													                + "where r.beneficiaries.district.id in (:districts) "
+													                + "and r.status <> 3 "
+													                ),
+	    @NamedQuery(name = "References.findCountByProvinces", query = "SELECT count(r.id) FROM  References r "
+													                + "where r.beneficiaries.district.province.id in (:provinces) "
+													                + "and r.status <> 3 "
+													                ),
 		@NamedQuery(name = "References.findCountByUserPermission", query = "SELECT count(r.id) FROM References r "
 																	+ "left join r.beneficiaries "
 																	+ "left join r.referredBy "
@@ -360,7 +368,7 @@ public class References implements java.io.Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "us_id", nullable = false)
+	@JoinColumn(name = "us_id", nullable = true)
 	public Us getUs() {
 		return us;
 	}

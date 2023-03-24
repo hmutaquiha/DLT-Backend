@@ -36,11 +36,12 @@ import dlt.dltbackendmaster.domain.watermelondb.ReferenceSyncModel;
 @Entity
 @Table(name = "references", catalog = "dreams_db")
 @NamedQueries({ @NamedQuery(name = "References.findAll", query = "SELECT r FROM References r "
-																+ "left join fetch r.beneficiaries "
+																+ "left join fetch r.beneficiaries b "
 																+ "left join fetch r.referredBy "
 																+ "left join fetch r.us "
 																+ "left join fetch r.notifyTo "
 																+ "where r.status <> 3 "
+																+ "and b.nui like :searchNui "
 																+ "order by r.id desc "),
 		@NamedQuery(name = "References.findAllByUser", query = "SELECT r FROM References r "
 																+ "left join fetch r.beneficiaries "
@@ -51,11 +52,12 @@ import dlt.dltbackendmaster.domain.watermelondb.ReferenceSyncModel;
 																+ "and r.userCreated like :userCreated "
 																+ "order by r.id desc "),
 		@NamedQuery(name = "References.findAllByUserPermission", query = "SELECT r FROM References r "
-																+ "left join fetch r.beneficiaries "
+																+ "left join fetch r.beneficiaries b "
 																+ "left join fetch r.referredBy "
 																+ "left join fetch r.us "
 																+ "left join fetch r.notifyTo "
 																+ "where r.status <> 3 "
+																+ "and b.nui like :searchNui "
 																+ "and (r.userCreated = cast(:userId as string) "
 																+ "or r.notifyTo.id = : userId "
 																+ "or r.referredBy.id = : userId) "
@@ -100,6 +102,7 @@ import dlt.dltbackendmaster.domain.watermelondb.ReferenceSyncModel;
 	    															+ "left join fetch r.us us "
 												    				+ "left join fetch r.beneficiaries b "
 													                + "where b.neighborhood.locality.id in (:localities) "
+													                + "and b.nui like :searchNui "
 													                + "and r.status <> 3 "
 													                + "order by r.id desc"
 													                ),
@@ -109,6 +112,7 @@ import dlt.dltbackendmaster.domain.watermelondb.ReferenceSyncModel;
 																	+ "left join fetch r.us us "
 																	+ "left join fetch r.beneficiaries b "
 													                + "where b.district.id in (:districts) "
+													                + "and b.nui like :searchNui "
 													                + "and r.status <> 3 "
 													                + "order by r.id desc"
 													                ),
@@ -118,6 +122,7 @@ import dlt.dltbackendmaster.domain.watermelondb.ReferenceSyncModel;
 																	+ "left join fetch r.us us "
 																	+ "left join fetch r.beneficiaries b "
 													                + "where b.district.province.id in (:provinces) "
+													                + "and b.nui like :searchNui "
 													                + "and r.status <> 3 "
 													                + "order by r.id desc"
 													                ),

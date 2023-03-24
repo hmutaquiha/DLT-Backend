@@ -96,19 +96,19 @@ public class ReferencesController {
 			} else if(user.getLocalities().size() > 0) {
 				List<Integer> localitiesId = user.getLocalities().stream().map(Locality::getId).collect(Collectors.toList());
 				
-				references = service.GetAllPagedEntityByNamedQuery("References.findByLocalities", pageIndex, pageSize, localitiesId);	
+				references = service.GetAllPagedEntityByNamedQuery("References.findByLocalities", pageIndex, pageSize,searchNui, localitiesId);	
 				
 			} else if(user.getDistricts().size() > 0) {
 				
 				List<Integer> districtsId = user.getDistricts().stream().map(District::getId).collect(Collectors.toList());
 				
-				references = service.GetAllPagedEntityByNamedQuery("References.findByDistricts", pageIndex, pageSize, districtsId);	
+				references = service.GetAllPagedEntityByNamedQuery("References.findByDistricts", pageIndex, pageSize,searchNui, districtsId);	
 				
 			}else if(user.getProvinces().size() > 0) {
 				
 				List<Integer> provincesId = user.getProvinces().stream().map(Province::getId).collect(Collectors.toList());
 				
-				references = service.GetAllPagedEntityByNamedQuery("References.findByProvinces", pageIndex, pageSize, provincesId);	
+				references = service.GetAllPagedEntityByNamedQuery("References.findByProvinces", pageIndex, pageSize, searchNui, provincesId);	
 				
 			} else {
 				references = service.GetAllPagedEntityByNamedQuery("References.findAll", pageIndex, pageSize,searchNui);

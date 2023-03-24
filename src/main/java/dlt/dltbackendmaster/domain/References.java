@@ -102,6 +102,7 @@ import dlt.dltbackendmaster.domain.watermelondb.ReferenceSyncModel;
 	    															+ "left join fetch r.us us "
 												    				+ "left join fetch r.beneficiaries b "
 													                + "where b.neighborhood.locality.id in (:localities) "
+													                + "and b.nui like :searchNui "
 													                + "and r.status <> 3 "
 													                + "order by r.id desc"
 													                ),
@@ -111,6 +112,7 @@ import dlt.dltbackendmaster.domain.watermelondb.ReferenceSyncModel;
 																	+ "left join fetch r.us us "
 																	+ "left join fetch r.beneficiaries b "
 													                + "where b.district.id in (:districts) "
+													                + "and b.nui like :searchNui "
 													                + "and r.status <> 3 "
 													                + "order by r.id desc"
 													                ),
@@ -120,6 +122,7 @@ import dlt.dltbackendmaster.domain.watermelondb.ReferenceSyncModel;
 																	+ "left join fetch r.us us "
 																	+ "left join fetch r.beneficiaries b "
 													                + "where b.district.province.id in (:provinces) "
+													                + "and b.nui like :searchNui "
 													                + "and r.status <> 3 "
 													                + "order by r.id desc"
 													                ),

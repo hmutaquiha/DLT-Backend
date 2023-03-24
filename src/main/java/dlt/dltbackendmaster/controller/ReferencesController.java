@@ -14,6 +14,7 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -72,7 +73,10 @@ public class ReferencesController {
 
 	@GetMapping(path = "/byUser/{userId}", produces = "application/json")
 	public ResponseEntity<List<References>> getAllByUser(@PathVariable Integer userId,
-			@RequestParam(name = "pageIndex") int pageIndex, @RequestParam(name = "pageSize") int pageSize) {
+			@RequestParam(name = "pageIndex") int pageIndex, 
+			@RequestParam(name = "pageSize") int pageSize,
+			@RequestParam(name = "searchNui", required = false) @Nullable String searchNui
+			) {
 
 		if (userId == null) {
 			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
@@ -85,9 +89,9 @@ public class ReferencesController {
 
 			if (Arrays.asList(MANAGER, MENTOR, NURSE, COUNSELOR).contains(user.getProfiles().getId())) {
 				references = service.GetAllPagedEntityByNamedQuery("References.findAllByUserPermission", pageIndex,
-						pageSize, userId);
+						pageSize, searchNui, userId);
 			} else {
-				references = service.GetAllPagedEntityByNamedQuery("References.findAll", pageIndex, pageSize);
+				references = service.GetAllPagedEntityByNamedQuery("References.findAll", pageIndex, pageSize,searchNui);
 			}
 
 			return new ResponseEntity<>(references, HttpStatus.OK);

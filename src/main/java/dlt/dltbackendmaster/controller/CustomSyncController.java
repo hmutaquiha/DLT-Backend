@@ -117,7 +117,7 @@ public class CustomSyncController {
 			for (References ref : referencesCreated) {
 				List<ReferenceService> refServicesByRef = new ArrayList<ReferenceService>();
 				refServicesByRef = service.GetAllEntityByNamedQuery("ReferencesServices.findByReference", ref.getId());
-				referenceServicesCreated.addAll((Collection<? extends ReferencesServices>) refServicesByRef);
+				referenceServicesCreated.addAll((List<? extends ReferencesServices>) refServicesByRef);
 			}
 
 			neighborhoodsCreated = service.GetAllEntityByNamedQuery("Neighborhood.findById",

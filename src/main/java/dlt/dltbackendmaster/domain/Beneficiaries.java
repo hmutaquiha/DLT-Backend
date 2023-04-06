@@ -325,8 +325,6 @@ public class Beneficiaries implements java.io.Serializable
     }
 
     public Beneficiaries(BeneficiarySyncModel model, String timestamp) {
-        Long t = Long.valueOf(timestamp);
-        Date regDate = new Date(t);
         this.nui = model.getNui();
         this.surname = model.getSurname();
         this.nickName = model.getNick_name();
@@ -335,6 +333,8 @@ public class Beneficiaries implements java.io.Serializable
         this.locality = new Locality(model.getLocality_id());
         this.district = new District(model.getDistrict_id());
         this.dateOfBirth = model.getDate_of_birth();
+        this.dateCreated = model.getDate_created();
+        this.dateUpdated = model.getDate_updated();
         this.gender = model.getGender();
         this.address = model.getAddress();
         this.phoneNumber = model.getPhone_number();
@@ -348,32 +348,31 @@ public class Beneficiaries implements java.io.Serializable
         this.us = new Us(model.getUs_id());
         this.offlineId = model.getId();
         this.vbltLivesWith = model.getVblt_lives_with();
-        this.vbltIsOrphan = (byte) model.getVblt_is_orphan();
-        this.vbltIsStudent = (byte) model.getVblt_is_student();
+        this.vbltIsOrphan = model.getVblt_is_orphan();
+        this.vbltIsStudent = model.getVblt_is_student();
         this.vbltSchoolGrade = model.getVblt_school_grade();
         this.vbltSchoolName = model.getVblt_school_name();
-        this.vbltIsDeficient = (byte) model.getVblt_is_deficient();
+        this.vbltIsDeficient = model.getVblt_is_deficient();
         this.vbltDeficiencyType = model.getVblt_deficiency_type();
-        this.vbltMarriedBefore = (byte) model.getVblt_married_before();
-        this.vbltPregnantBefore = (byte) model.getVblt_pregnant_before();
-        this.vbltChildren = (byte) model.getVblt_children();
-        this.vbltPregnantOrBreastfeeding = (byte) model.getVblt_pregnant_or_breastfeeding();
+        this.vbltMarriedBefore = model.getVblt_married_before();
+        this.vbltPregnantBefore = model.getVblt_pregnant_before();
+        this.vbltChildren = model.getVblt_children();
+        this.vbltPregnantOrBreastfeeding = model.getVblt_pregnant_or_breastfeeding();
         this.vbltIsEmployed = model.getVblt_is_employed();
         this.vbltTestedHiv = model.getVblt_tested_hiv();
-        this.vbltSexuallyActive = (byte) model.getVblt_sexually_active();
-        this.vbltMultiplePartners = (byte) model.getVblt_multiple_partners();
-        this.vbltIsMigrant = (byte) model.getVblt_is_migrant();
-        this.vbltTraffickingVictim = (byte) model.getVblt_trafficking_victim();
-        this.vbltSexualExploitation = (byte) model.getVblt_sexual_exploitation();
+        this.vbltSexuallyActive = model.getVblt_sexually_active();
+        this.vbltMultiplePartners = model.getVblt_multiple_partners();
+        this.vbltIsMigrant = model.getVblt_is_migrant();
+        this.vbltTraffickingVictim = model.getVblt_trafficking_victim();
+        this.vbltSexualExploitation = model.getVblt_sexual_exploitation();
         this.vbltSexploitationTime = model.getVblt_sexploitation_time();
-        this.vbltVbgVictim = (byte) model.getVblt_vbg_victim();
+        this.vbltVbgVictim = model.getVblt_vbg_victim();
         this.vbltVbgType = model.getVblt_vbg_type();
         this.vbltVbgTime = model.getVblt_vbg_time();
-        this.vbltAlcoholDrugsUse = (byte) model.getVblt_alcohol_drugs_use();
-        this.vbltStiHistory = (byte) model.getVblt_sti_history();
-        this.vbltSexWorker = (byte) model.getVblt_sex_worker();
-        this.vbltHouseSustainer = (byte) model.getVblt_house_sustainer();
-        this.dateCreated = regDate;
+        this.vbltAlcoholDrugsUse = model.getVblt_alcohol_drugs_use();
+        this.vbltStiHistory = model.getVblt_sti_history();
+        this.vbltSexWorker = model.getVblt_sex_worker();
+        this.vbltHouseSustainer = model.getVblt_house_sustainer();
         this.status = Integer.valueOf(model.getStatus());
     }
 
@@ -386,6 +385,8 @@ public class Beneficiaries implements java.io.Serializable
         this.locality = new Locality(model.getLocality_id());
         this.district = new District(model.getDistrict_id());
         this.dateOfBirth = model.getDate_of_birth();
+        this.dateCreated = model.getDate_created();
+        this.dateUpdated = model.getDate_updated();
         this.gender = model.getGender();
         this.address = model.getAddress();
         this.phoneNumber = model.getPhone_number();
@@ -397,31 +398,31 @@ public class Beneficiaries implements java.io.Serializable
         this.us = new Us(model.getUs_id());
         this.offlineId = model.getId();
         this.vbltLivesWith = model.getVblt_lives_with();
-        this.vbltIsOrphan = (byte) model.getVblt_is_orphan();
-        this.vbltIsStudent = (byte) model.getVblt_is_student();
+        this.vbltIsOrphan = model.getVblt_is_orphan();
+        this.vbltIsStudent = model.getVblt_is_student();
         this.vbltSchoolGrade = model.getVblt_school_grade();
         this.vbltSchoolName = model.getVblt_school_name();
-        this.vbltIsDeficient = (byte) model.getVblt_is_deficient();
+        this.vbltIsDeficient = model.getVblt_is_deficient();
         this.vbltDeficiencyType = model.getVblt_deficiency_type();
-        this.vbltMarriedBefore = (byte) model.getVblt_married_before();
-        this.vbltPregnantBefore = (byte) model.getVblt_pregnant_before();
-        this.vbltChildren = (byte) model.getVblt_children();
-        this.vbltPregnantOrBreastfeeding = (byte) model.getVblt_pregnant_or_breastfeeding();
+        this.vbltMarriedBefore = model.getVblt_married_before();
+        this.vbltPregnantBefore = model.getVblt_pregnant_before();
+        this.vbltChildren = model.getVblt_children();
+        this.vbltPregnantOrBreastfeeding = model.getVblt_pregnant_or_breastfeeding();
         this.vbltIsEmployed = model.getVblt_is_employed();
         this.vbltTestedHiv = model.getVblt_tested_hiv();
-        this.vbltSexuallyActive = (byte) model.getVblt_sexually_active();
-        this.vbltMultiplePartners = (byte) model.getVblt_multiple_partners();
-        this.vbltIsMigrant = (byte) model.getVblt_is_migrant();
-        this.vbltTraffickingVictim = (byte) model.getVblt_trafficking_victim();
-        this.vbltSexualExploitation = (byte) model.getVblt_sexual_exploitation();
+        this.vbltSexuallyActive = model.getVblt_sexually_active();
+        this.vbltMultiplePartners = model.getVblt_multiple_partners();
+        this.vbltIsMigrant = model.getVblt_is_migrant();
+        this.vbltTraffickingVictim = model.getVblt_trafficking_victim();
+        this.vbltSexualExploitation = model.getVblt_sexual_exploitation();
         this.vbltSexploitationTime = model.getVblt_sexploitation_time();
-        this.vbltVbgVictim = (byte) model.getVblt_vbg_victim();
+        this.vbltVbgVictim = model.getVblt_vbg_victim();
         this.vbltVbgType = model.getVblt_vbg_type();
         this.vbltVbgTime = model.getVblt_vbg_time();
-        this.vbltAlcoholDrugsUse = (byte) model.getVblt_alcohol_drugs_use();
-        this.vbltStiHistory = (byte) model.getVblt_sti_history();
-        this.vbltSexWorker = (byte) model.getVblt_sex_worker();
-        this.vbltHouseSustainer = (byte) model.getVblt_house_sustainer();
+        this.vbltAlcoholDrugsUse = model.getVblt_alcohol_drugs_use();
+        this.vbltStiHistory = model.getVblt_sti_history();
+        this.vbltSexWorker = model.getVblt_sex_worker();
+        this.vbltHouseSustainer = model.getVblt_house_sustainer();
         this.status = Integer.valueOf(model.getStatus());
     }
 
@@ -969,13 +970,15 @@ public class Beneficiaries implements java.io.Serializable
             beneficiary.put("id", id);
         }
         
-        if (dateUpdated == null || dateUpdated.after(dateCreated) || lastPulledAt == null || lastPulledAt.equals("null")) {
+        if ( lastPulledAt == null || lastPulledAt.equals("null")) {
 			beneficiary.put("nui", nui);
 			beneficiary.put("name", name);
 			beneficiary.put("surname", surname);
 			beneficiary.put("nick_name", nickName);
 			beneficiary.put("organization_id", partners == null ? null : partners.getId());
 			beneficiary.put("date_of_birth", dateOfBirth == null ? null : dateFormat.format(dateOfBirth));
+			beneficiary.put("date_created", dateCreated == null ? null : dateFormat.format(dateCreated));
+			beneficiary.put("date_updated", dateUpdated == null ? null : dateFormat.format(dateUpdated));
 			beneficiary.put("gender", String.valueOf(gender));
 			beneficiary.put("address", address);
 			beneficiary.put("phone_number", phoneNumber);
@@ -1046,15 +1049,15 @@ public class Beneficiaries implements java.io.Serializable
     }
 
     public void update(BeneficiarySyncModel model, String timestamp) {
-        Long t = Long.valueOf(timestamp);
         this.offlineId = model.getId();
-        this.dateUpdated = new Date(t);
         this.nui = model.getNui();
         this.name = model.getName();
         this.surname = model.getSurname();
         this.nickName = model.getNick_name();
         this.partners.setId(model.getOrganization_id());
         this.dateOfBirth = model.getDate_of_birth();
+        this.dateCreated = model.getDate_created();
+        this.dateUpdated = model.getDate_updated();
         this.gender = model.getGender();
         this.address = model.getAddress();
         this.phoneNumber = model.getPhone_number();
@@ -1068,31 +1071,31 @@ public class Beneficiaries implements java.io.Serializable
         this.us = new Us(model.getUs_id());
         this.status = Integer.valueOf(model.getStatus());
         this.vbltLivesWith = model.getVblt_lives_with();
-        this.vbltIsOrphan = (byte) model.getVblt_is_orphan();
-        this.vbltIsStudent = (byte) model.getVblt_is_student();
+        this.vbltIsOrphan = model.getVblt_is_orphan();
+        this.vbltIsStudent = model.getVblt_is_student();
         this.vbltSchoolGrade = model.getVblt_school_grade();
         this.vbltSchoolName = model.getVblt_school_name();
-        this.vbltIsDeficient = (byte) model.getVblt_is_deficient();
+        this.vbltIsDeficient = model.getVblt_is_deficient();
         this.vbltDeficiencyType = model.getVblt_deficiency_type();
-        this.vbltMarriedBefore = (byte) model.getVblt_married_before();
-        this.vbltPregnantBefore = (byte) model.getVblt_pregnant_before();
-        this.vbltChildren = (byte) model.getVblt_children();
-        this.vbltPregnantOrBreastfeeding = (byte) model.getVblt_pregnant_or_breastfeeding();
+        this.vbltMarriedBefore = model.getVblt_married_before();
+        this.vbltPregnantBefore = model.getVblt_pregnant_before();
+        this.vbltChildren = model.getVblt_children();
+        this.vbltPregnantOrBreastfeeding = model.getVblt_pregnant_or_breastfeeding();
         this.vbltIsEmployed = model.getVblt_is_employed();
         this.vbltTestedHiv = model.getVblt_tested_hiv();
-        this.vbltSexuallyActive = (byte) model.getVblt_sexually_active();
-        this.vbltMultiplePartners = (byte) model.getVblt_multiple_partners();
-        this.vbltIsMigrant = (byte) model.getVblt_is_migrant();
-        this.vbltTraffickingVictim = (byte) model.getVblt_trafficking_victim();
-        this.vbltSexualExploitation = (byte) model.getVblt_sexual_exploitation();
+        this.vbltSexuallyActive = model.getVblt_sexually_active();
+        this.vbltMultiplePartners = model.getVblt_multiple_partners();
+        this.vbltIsMigrant = model.getVblt_is_migrant();
+        this.vbltTraffickingVictim = model.getVblt_trafficking_victim();
+        this.vbltSexualExploitation = model.getVblt_sexual_exploitation();
         this.vbltSexploitationTime = model.getVblt_sexploitation_time();
-        this.vbltVbgVictim = (byte) model.getVblt_vbg_victim();
+        this.vbltVbgVictim = model.getVblt_vbg_victim();
         this.vbltVbgType = model.getVblt_vbg_type();
         this.vbltVbgTime = model.getVblt_vbg_time();
-        this.vbltAlcoholDrugsUse = (byte) model.getVblt_alcohol_drugs_use();
-        this.vbltStiHistory = (byte) model.getVblt_sti_history();
-        this.vbltSexWorker = (byte) model.getVblt_sex_worker();
-        this.vbltHouseSustainer = (byte) model.getVblt_house_sustainer();
+        this.vbltAlcoholDrugsUse = model.getVblt_alcohol_drugs_use();
+        this.vbltStiHistory = model.getVblt_sti_history();
+        this.vbltSexWorker = model.getVblt_sex_worker();
+        this.vbltHouseSustainer = model.getVblt_house_sustainer();
     }
     
     public void fill(ObjectNode obj, String field, Object value) {

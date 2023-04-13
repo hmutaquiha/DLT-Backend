@@ -46,9 +46,8 @@ import dlt.dltbackendmaster.serializers.UssSerializer;
 @Table(name = "users", catalog = "dreams_db")
 @NamedNativeQueries({
                     @NamedNativeQuery(name = "Users.findByLocalities", query = "SELECT u.* FROM users u "
-                                                                       + "LEFT JOIN users_districts ud on ud.user_id = u.id "
-                                                                       + "Left JOIN locality l on l.district_id = ud.district_id "
-                                                                       + "where l.id in (:localities)", resultClass = Users.class ),
+                                                                       + "LEFT JOIN users_localities ul on ul.user_id = u.id "
+                                                                       + "where ul.locality_id in (:localities)", resultClass = Users.class ),
 
                     @NamedNativeQuery(name = "Users.findByDistricts", query = "SELECT u.* FROM users u  "
                           											    + "LEFT JOIN users_districts ud on ud.user_id = u.id "
@@ -553,6 +552,7 @@ public class Users implements java.io.Serializable
             || lastPulledAt.equals("null")) {
 
             int[] usIds = us.stream().mapToInt(Us::getId).toArray();
+            int[] localitiesIds = localities.stream().mapToInt(Locality::getId).toArray();
 
             user.put("name", name);
             user.put("surname", surname);
@@ -562,7 +562,8 @@ public class Users implements java.io.Serializable
             user.put("password", password);
             user.put("entry_point", entryPoint);
             user.put("status", status);
-            user.put("us_ids", Arrays.toString(usIds));
+            user.put("us_ids", Arrays.toString(usIds).replace("[", "").replace("]", ""));
+            user.put("localities_ids", Arrays.toString(localitiesIds).replace("[", "").replace("]", ""));
             user.put("partner_id", partners == null? null : partners.getId());
             user.put("profile_id", profiles.getId());
             user.put("online_id", id); // flag to control if entity is synchronized with the backend

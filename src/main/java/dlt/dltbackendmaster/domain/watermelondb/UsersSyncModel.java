@@ -18,6 +18,7 @@ public class UsersSyncModel {
 	private String us_ids;
 	private Integer online_id;
 	private String organization_name;
+	private String password_last_change_date;
 	
 	public UsersSyncModel() {}
 	
@@ -133,6 +134,7 @@ public class UsersSyncModel {
 				+ "partner_id" + partner_id + "\n"
 				+ "profile_id: " + profile_id + "\n"
 				+ "us_id: " + us_ids + "\n"
+				+ "password_last_change_date: "+password_last_change_date+ "\n"
 				+ "online_id: " + online_id + "\n";
 		return object;
 	}
@@ -143,6 +145,14 @@ public class UsersSyncModel {
 
 	public void setOrganization_name(String organization_name) {
 		this.organization_name = organization_name;
+	}
+
+	public String getPassword_last_change_date() {
+		return password_last_change_date;
+	}
+
+	public void setPassword_last_change_date(String password_last_change_date) {
+		this.password_last_change_date = password_last_change_date;
 	}
 	
 }

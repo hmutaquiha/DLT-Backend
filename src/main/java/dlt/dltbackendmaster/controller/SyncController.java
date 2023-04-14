@@ -41,6 +41,7 @@ import dlt.dltbackendmaster.domain.Profiles;
 import dlt.dltbackendmaster.domain.Province;
 import dlt.dltbackendmaster.domain.References;
 import dlt.dltbackendmaster.domain.ReferencesServices;
+import dlt.dltbackendmaster.domain.ReferencesServicesId;
 import dlt.dltbackendmaster.domain.Services;
 import dlt.dltbackendmaster.domain.SubServices;
 import dlt.dltbackendmaster.domain.Us;
@@ -538,12 +539,6 @@ public class SyncController
 					}
 				}
 			}
-			
-			/**
-			 * TODO: Uncomment when update is developed on mobile
-			 * Currently Referrals are not updated on Mobile Devices - This code is causing referral to never change status
-			 * 
-			 * 
 			if (references != null && references.getUpdated().size() > 0) {
 				List<ReferenceSyncModel> updatedList = mapper.convertValue(references.getUpdated(),
 						new TypeReference<List<ReferenceSyncModel>>() {
@@ -600,7 +595,6 @@ public class SyncController
 					}
 				}
 			}
-			 */
 
 		} catch (JsonProcessingException e) {
 			// TODO Auto-generated catch block

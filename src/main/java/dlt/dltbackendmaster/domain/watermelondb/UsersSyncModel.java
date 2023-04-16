@@ -12,7 +12,7 @@ public class UsersSyncModel {
 	private String password;
 	private String entry_point;
 	private String status;
-	private Integer locality_id;
+	private String localities_ids;
 	private Integer partner_id;
 	private Integer profile_id;
 	private String us_ids;
@@ -88,11 +88,11 @@ public class UsersSyncModel {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	public Integer getLocality_id() {
-		return locality_id;
+	public String getLocalities_ids() {
+		return localities_ids;
 	}
-	public void setLocality_id(Integer locality_id) {
-		this.locality_id = locality_id;
+	public void setLocalities_ids(String localities_ids) {
+		this.localities_ids = localities_ids;
 	}
 	public Integer getPartner_id() {
 		return partner_id;
@@ -130,7 +130,7 @@ public class UsersSyncModel {
 				+ "password: " + password + "\n"
 				+ "entry_point: " + entry_point + "\n"
 				+ "status: " + status + "\n"
-				+ "locality_id: " + locality_id + "\n"
+				+ "localities_ids: " + localities_ids + "\n"
 				+ "partner_id" + partner_id + "\n"
 				+ "profile_id: " + profile_id + "\n"
 				+ "us_id: " + us_ids + "\n"

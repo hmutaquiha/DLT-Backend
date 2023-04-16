@@ -52,6 +52,9 @@ import dlt.dltbackendmaster.serializers.UssSerializer;
 				+ "LEFT JOIN users_districts ud on ud.user_id = u.id "
 				+ "Left JOIN locality l on l.district_id = ud.district_id "
 				+ "where l.id in (:localities)", resultClass = Users.class),
+				+ "LEFT JOIN users_localities ul on ul.user_id = u.id "
+				+ "where ul.locality_id in (:localities)", resultClass = Users.class),
+
 
 		@NamedNativeQuery(name = "Users.findByDistricts", query = "SELECT u.* FROM users u  "
 				+ "LEFT JOIN users_districts ud on ud.user_id = u.id "
@@ -124,7 +127,8 @@ public class Users implements java.io.Serializable {
 	private String recoverPasswordToken;
 
 	private Date passwordLastChangeDate;
-	
+
+
 	private Set<Locality> localities = new HashSet<Locality>(0);
 
 	private Set<District> districts = new HashSet<District>(0);
@@ -241,7 +245,9 @@ public class Users implements java.io.Serializable {
 		this.offlineId = model.getId();
 		this.dateCreated = regDate;
 		this.dateUpdated = regDate;
+
 		this.passwordLastChangeDate = lastChangeDate;
+
 	}
 
 	@Id
@@ -548,9 +554,14 @@ public class Users implements java.io.Serializable {
 
 			int[] usIds = us.stream().mapToInt(Us::getId).toArray();
 
+
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		    String dateString = dateFormat.format(passwordLastChangeDate != null? passwordLastChangeDate : dateCreated);
 		        
+
+			int[] localitiesIds = localities.stream().mapToInt(Locality::getId).toArray();
+
+
 			user.put("name", name);
 			user.put("surname", surname);
 			user.put("phone_number", phoneNumber);
@@ -559,12 +570,19 @@ public class Users implements java.io.Serializable {
 			user.put("password", password);
 			user.put("entry_point", entryPoint);
 			user.put("status", status);
+
 			user.put("us_ids", Arrays.toString(usIds));
+
+			user.put("us_ids", Arrays.toString(usIds).replace("[", "").replace("]", ""));
+			user.put("localities_ids", Arrays.toString(localitiesIds).replace("[", "").replace("]", ""));
+
 			user.put("partner_id", partners == null ? null : partners.getId());
 			user.put("profile_id", profiles.getId());
 			user.put("online_id", id); // flag to control if entity is synchronized with the backend
 			user.put("organization_name", partners == null ? null : partners.getName());
+
 			user.put("password_last_change_date", dateString);
+
 
 		} else { // ensure online_id is updated first
 			user.put("online_id", id);
@@ -574,7 +592,8 @@ public class Users implements java.io.Serializable {
 
 	public void update(UsersSyncModel model, String timestamp) {
 		Long t = Long.valueOf(timestamp);
-			
+
+
 		this.offlineId = model.getId();
 		this.dateUpdated = new Date(t);
 		this.name = model.getName();
@@ -600,6 +619,7 @@ public class Users implements java.io.Serializable {
 		} catch (ParseException e) {
 		    e.printStackTrace();
 		}
+
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)

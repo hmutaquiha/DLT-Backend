@@ -49,9 +49,17 @@ import dlt.dltbackendmaster.serializers.UssSerializer;
 @Table(name = "users", catalog = "dreams_db")
 @NamedNativeQueries({
 		@NamedNativeQuery(name = "Users.findByLocalities", query = "SELECT u.* FROM users u "
-				+ "LEFT JOIN users_districts ud on ud.user_id = u.id "
 				+ "LEFT JOIN users_localities ul on ul.user_id = u.id "
 				+ "where ul.locality_id in (:localities)", resultClass = Users.class),
+		@NamedNativeQuery(name = "Users.findByLocalitiesAndDateCreated", query = "SELECT u.* FROM users u "
+				+ "LEFT JOIN users_localities ul on ul.user_id = u.id "
+				+ "where ul.locality_id in (:localities) "
+				+ "and u.date_created >= :lastpulledat", resultClass = Users.class),
+		@NamedNativeQuery(name = "Users.findByLocalitiesAndDateUpdated", query = "SELECT u.* FROM users u "
+				+ "LEFT JOIN users_localities ul on ul.user_id = u.id "
+				+ "where ul.locality_id in (:localities) "
+				+ "and u.date_created < :lastpulledat "
+				+ "and u.date_updated >= :lastpulledat", resultClass = Users.class),
 
 		@NamedNativeQuery(name = "Users.findByDistricts", query = "SELECT u.* FROM users u  "
 				+ "LEFT JOIN users_districts ud on ud.user_id = u.id "
@@ -547,7 +555,7 @@ public class Users implements java.io.Serializable {
 			user.put("id", id);
 		}
 
-		if (dateUpdated == null || dateUpdated.after(dateCreated) || lastPulledAt == null
+		if (dateUpdated == null || dateUpdated.compareTo(dateCreated) >= 0 || lastPulledAt == null
 				|| lastPulledAt.equals("null")) {
 
 			int[] usIds = us.stream().mapToInt(Us::getId).toArray();

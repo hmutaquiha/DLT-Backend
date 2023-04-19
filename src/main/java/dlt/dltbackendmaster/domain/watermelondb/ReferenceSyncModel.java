@@ -24,7 +24,7 @@ public class ReferenceSyncModel {
 	private String other_reason;
 	private String user_created;
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone="Africa/Maputo")
 	private Date date_created;
 	private Integer status;
 	private Integer us_id;

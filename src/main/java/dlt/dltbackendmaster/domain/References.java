@@ -164,6 +164,27 @@ import dlt.dltbackendmaster.domain.watermelondb.ReferenceSyncModel;
 														            + " where r.status in (0,1) "
 														            + " and (r.notifyTo.id = :userId or r.referredBy.id = :userId) "
 														            ),
+		@NamedQuery(name = "References.findByReferenceNotifyToOrReferredByAndDateCreated", 
+																	query = "SELECT distinct r FROM  References r "		
+																	+ "left join fetch r.beneficiaries "
+																	+ "left join fetch r.referredBy "
+																	+ "left join fetch r.us "
+																	+ "left join fetch r.notifyTo "
+															        + " where r.status in (0,1) "
+															        + " and (r.notifyTo.id = :userId or r.referredBy.id = :userId) "
+															        + " and r.dateCreated >= :lastpulledat"
+															        ),
+		@NamedQuery(name = "References.findByReferenceNotifyToOrReferredByAndDateUpdated", 
+																	query = "SELECT distinct r FROM  References r "		
+																	+ "left join fetch r.beneficiaries "
+																	+ "left join fetch r.referredBy "
+																	+ "left join fetch r.us "
+																	+ "left join fetch r.notifyTo "
+															        + " where r.status in (0,1) "
+															        + " and (r.notifyTo.id = :userId or r.referredBy.id = :userId) "
+															        + " and r.dateCreated < :lastpulledat "
+															        + " and r.dateUpdated >= :lastpulledat"
+															        ),
 		@NamedQuery(name = "References.findByBeneficiaryId", query = "SELECT distinct r FROM  References r "		
 																	+ "left join fetch r.beneficiaries "
 																	+ "left join fetch r.referredBy "
@@ -241,8 +262,6 @@ public class References implements java.io.Serializable {
 	}
 
 	public References(ReferenceSyncModel model, String timestamp) {
-		Long t = Long.valueOf(timestamp);
-		Date regDate = new Date(t);
 		this.offlineId = model.getId();
 		this.beneficiaries = new Beneficiaries();
 		this.beneficiaries.setId(model.getBeneficiary_id());
@@ -263,8 +282,8 @@ public class References implements java.io.Serializable {
 		this.cancelReason = model.getCancel_reason();
 		this.otherReason = model.getOther_reason();
 		this.userCreated = model.getUser_created();
-		this.dateCreated = regDate;
-		this.dateUpdated = regDate;
+		this.dateCreated = model.getDate_created();
+		this.dateUpdated = model.getDate_created();
 		this.beneficiaryOfflineId = model.getBeneficiary_offline_id();
 	}
 
@@ -478,7 +497,7 @@ public class References implements java.io.Serializable {
 			reference.put("id", id);
 		}
 
-		if (dateUpdated == null || dateUpdated.after(dateCreated) || lastPulledAt == null
+		if (dateUpdated == null || dateUpdated.compareTo(dateCreated) >= 0 || lastPulledAt == null
 				|| lastPulledAt.equals("null")) {
             reference.put("beneficiary_offline_id", beneficiaries.getOfflineId());
 			reference.put("referred_by", referredBy.getId());

@@ -70,7 +70,7 @@ import dlt.dltbackendmaster.serializers.UssSerializer;
 
 @NamedQueries({ @NamedQuery(name = "Users.findAll", query = "SELECT u FROM Users u"),
 		@NamedQuery(name = "Users.findByUsername", query = "SELECT u FROM Users u where u.username = :username"),
-		@NamedQuery(name = "Users.findByUsId", query = "SELECT u FROM Users u INNER JOIN u.us us where us.id in (:us)"),
+		@NamedQuery(name = "Users.findByUsId", query = "SELECT u FROM Users u INNER JOIN u.us us where us.id in (:us) and u.status = 1"),
 		@NamedQuery(name = "Users.findByResetPasswordToken", query = "SELECT u FROM Users u where u.recoverPasswordToken = :recoverPasswordToken"),
 		@NamedQuery(name = "Users.findByProfiles", query = "SELECT u FROM Users u where u.profiles.id in (:profiles)"),
 		@NamedQuery(name = "Users.findByProfilesAndOrganization", query = "SELECT u FROM Users u where u.profiles.id in (:profiles) and u.partners.id = :organizationId"),

@@ -91,6 +91,8 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 												            + " and bi.dateCreated < :lastpulledat "
 												            + " and bi.dateUpdated >= :lastpulledat"
 												            ),
+	@NamedQuery(name = "BeneficiaryIntervention.findAllByBeneficiaryAndDate", 
+		query = "select b from BeneficiariesInterventions b where b.beneficiaries.id = :beneficiaryId and b.id.date > :date"),
 })
 public class BeneficiariesInterventions implements java.io.Serializable {
 	

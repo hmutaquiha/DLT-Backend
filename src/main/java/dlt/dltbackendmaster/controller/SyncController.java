@@ -461,10 +461,9 @@ public class SyncController
 								beneficiaryId = beneficiary.getId();
 							}
 							reference.setBeneficiaries(new Beneficiaries(beneficiaryId));
-							reference.setDateUpdated(new Date());
-							reference.setUpdatedBy(user.getId());
 						}
 						reference.setUserCreated(user.getId() + "");
+						reference.setDateUpdated(new Date());
 						service.Save(reference);
 						referenceIds.put(reference.getOfflineId(), reference.getId());
 					}

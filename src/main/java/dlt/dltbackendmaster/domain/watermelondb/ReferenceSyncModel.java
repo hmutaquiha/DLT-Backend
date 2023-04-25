@@ -15,6 +15,7 @@ public class ReferenceSyncModel {
 	private String refer_to;
 	private Integer notify_to;
 	private String reference_note;
+	private Date date;
 	private String description;
 	private String book_number;
 	private String reference_code;
@@ -91,6 +92,14 @@ public class ReferenceSyncModel {
 
 	public void setReference_note(String reference_note) {
 		this.reference_note = reference_note;
+	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
 	}
 
 	public String getDescription() {

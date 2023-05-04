@@ -2,9 +2,12 @@ package dlt.dltbackendmaster.controller;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import javax.persistence.EntityExistsException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -167,6 +170,10 @@ public class CustomSyncController {
 					partnersSO, usSO, beneficiarySO, beneficiaryInterventionSO, neighborhoodSO, serviceSO, subServiceSO,
 					referencesSO, referencesServicesSO, lastPulledAt);
 			// System.out.println("PULLING " + object);
+			
+			if(beneficiariesCreated.size()>0) {
+				createBeneficiariesAndUsersAssociation(beneficiariesCreated.get(0), users.get(0));
+			}
 
 			return new ResponseEntity<>(object, HttpStatus.OK);
 		} catch (Exception e) {
@@ -175,6 +182,19 @@ public class CustomSyncController {
 			e.printStackTrace();
 			return new ResponseEntity<>("Parameter not present", HttpStatus.BAD_REQUEST);
 		}
+	}
+
+	private void createBeneficiariesAndUsersAssociation(Beneficiaries beneficiary, Users user) {
+		
+			List<UsersBeneficiariesCustomSync> userBeneficiariesSync = usersBeneficiariesCustomSyncService
+					.findByUserIdAndBeneficiaryId(user.getId(), beneficiary.getId());
+			if(userBeneficiariesSync.size()==0) {
+				UsersBeneficiariesCustomSync userBeneficiary = new UsersBeneficiariesCustomSync();
+				userBeneficiary.setUser(user);
+				userBeneficiary.setBeneficiary(beneficiary);
+				userBeneficiary.setSyncDate(new Date());
+				service.Save(userBeneficiary);
+			}
 	}
 
 	@SuppressWarnings({ "rawtypes" })

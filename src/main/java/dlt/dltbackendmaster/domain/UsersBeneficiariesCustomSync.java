@@ -33,11 +33,11 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 @Table(name = "users_beneficiaries_sync", catalog = "dreams_db", uniqueConstraints = @UniqueConstraint(columnNames = {
 		"user_id", "beneficiary_id" }))
 @NamedQueries({
-		@NamedQuery(name = "UsersBeneficiariesCustomSync.findByUserId", 
-				query = "SELECT ub FROM UsersBeneficiariesCustomSync ub "
-						+ " INNER JOIN fetch ub.user u " 
-						+ " INNER JOIN fetch ub.beneficiary b " 
-						+ " where u.id = :userId"), })
+		@NamedQuery(name = "UsersBeneficiariesCustomSync.findByUserId", query = "SELECT ub FROM UsersBeneficiariesCustomSync ub "
+				+ " INNER JOIN fetch ub.user u " + " INNER JOIN fetch ub.beneficiary b " + " where u.id = :userId"),
+		@NamedQuery(name = "UsersBeneficiariesCustomSync.findByUserIdAndBeneficiaryId", query = "SELECT ub FROM UsersBeneficiariesCustomSync ub "
+				+ " INNER JOIN fetch ub.user u " + " INNER JOIN fetch ub.beneficiary b " + " where u.id = :userId "
+				+ " and b.id =:beneficiaryId"), })
 public class UsersBeneficiariesCustomSync implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -63,9 +63,8 @@ public class UsersBeneficiariesCustomSync implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "beneficiary_id", nullable = false, insertable = false, updatable = false)
+	@JoinColumn(name = "beneficiary_id")
 	@JsonProperty("beneficiary")
 	@JsonSerialize(using = BeneficiarySerializer.class)
 	public Beneficiaries getBeneficiary() {

@@ -25,4 +25,11 @@ public class UsersBeneficiariesCustomSyncServiceImpl implements UsersBeneficiari
 				.GetAllEntityByNamedQuery("UsersBeneficiariesCustomSync.findByUserId", userId);
 		return usersBeneficiaries;
 	}
+
+	@Override
+	public List<UsersBeneficiariesCustomSync> findByUserIdAndBeneficiaryId(Integer userId, Integer beneficiaryId) {
+		List<UsersBeneficiariesCustomSync> usersBeneficiaries = daoService
+				.GetAllEntityByNamedQuery("UsersBeneficiariesCustomSync.findByUserIdAndBeneficiaryId", userId, beneficiaryId);
+		return usersBeneficiaries;
+	}
 }

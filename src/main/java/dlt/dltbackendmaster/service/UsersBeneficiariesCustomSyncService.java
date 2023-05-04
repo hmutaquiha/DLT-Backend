@@ -13,4 +13,6 @@ import dlt.dltbackendmaster.domain.UsersBeneficiariesCustomSync;
 public interface UsersBeneficiariesCustomSyncService {
 
 	List<UsersBeneficiariesCustomSync> getUserBeneficiariesSync(Integer userId);
+	
+	List<UsersBeneficiariesCustomSync> findByUserIdAndBeneficiaryId(Integer userId, Integer BeneficiaryId);
 }

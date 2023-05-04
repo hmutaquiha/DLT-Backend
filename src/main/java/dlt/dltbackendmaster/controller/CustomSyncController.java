@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,16 +29,20 @@ import dlt.dltbackendmaster.domain.Services;
 import dlt.dltbackendmaster.domain.SubServices;
 import dlt.dltbackendmaster.domain.Us;
 import dlt.dltbackendmaster.domain.Users;
+import dlt.dltbackendmaster.domain.UsersBeneficiariesCustomSync;
 import dlt.dltbackendmaster.domain.watermelondb.SyncObject;
 import dlt.dltbackendmaster.serializers.SyncSerializer;
 import dlt.dltbackendmaster.service.DAOService;
 import dlt.dltbackendmaster.service.SequenceGenerator;
+import dlt.dltbackendmaster.service.UsersBeneficiariesCustomSyncService;
 
 @RestController
 @RequestMapping("/custom/sync")
 public class CustomSyncController {
 
 	private final DAOService service;
+	@Autowired
+	private UsersBeneficiariesCustomSyncService usersBeneficiariesCustomSyncService;
 
 	@Autowired
 	public CustomSyncController(DAOService service) {
@@ -171,4 +176,146 @@ public class CustomSyncController {
 			return new ResponseEntity<>("Parameter not present", HttpStatus.BAD_REQUEST);
 		}
 	}
+
+	@SuppressWarnings({ "rawtypes" })
+	@GetMapping(path = "/userBeneficiariesSync", produces = "application/json")
+	public ResponseEntity getUserBeneficiaries(@RequestParam(name = "lastPulledAt", required = false) @Nullable String lastPulledAt,@RequestParam(name = "userId") Integer userId) throws ParseException {
+
+		List<UsersBeneficiariesCustomSync> userBeneficiariesSync = usersBeneficiariesCustomSyncService
+				.getUserBeneficiariesSync(userId);
+		System.out.println("-------userBeneficiariesSync---------" + userBeneficiariesSync);
+
+		List<Users> usersCreated = new ArrayList<Users>();
+		List<Users> usersUpdated = new ArrayList<Users>();
+		List<Integer> listDeleted;
+
+		List<Locality> localityCreated = new ArrayList<Locality>();
+		List<Locality> localityUpdated = new ArrayList<Locality>();
+
+		List<Province> provincesCreated = new ArrayList<Province>();
+		List<District> districtsCreated = new ArrayList<District>();
+
+		List<Partners> partnersCreated = new ArrayList<Partners>();
+		List<Partners> partnersUpdated = new ArrayList<Partners>();
+
+		List<Profiles> profilesCreated = new ArrayList<Profiles>();
+		List<Profiles> profilesUpdated = new ArrayList<Profiles>();
+
+		List<Us> usCreated = new ArrayList<Us>();
+		List<Us> usUpdated = new ArrayList<Us>();
+
+		List<Beneficiaries> beneficiariesCreated = new ArrayList<Beneficiaries>();
+		List<Beneficiaries> beneficiariesUpdated = new ArrayList<Beneficiaries>();
+
+		List<BeneficiariesInterventions> beneficiariesInterventionsCreated = new ArrayList<BeneficiariesInterventions>();
+		List<BeneficiariesInterventions> beneficiariesInterventionsUpdated = new ArrayList<BeneficiariesInterventions>();
+
+		List<Neighborhood> neighborhoodsCreated = new ArrayList<>();
+		List<Neighborhood> neighborhoodUpdated = new ArrayList<>();
+
+		List<Services> servicesCreated = new ArrayList<>();
+		List<Services> servicesUpdated = new ArrayList<>();
+
+		List<SubServices> subServicesCreated = new ArrayList<>();
+		List<SubServices> subServicesUpdated = new ArrayList<>();
+
+		List<References> referencesCreated = new ArrayList<References>();
+		List<References> referencesUpdated = new ArrayList<References>();
+
+		List<ReferencesServices> referenceServicesCreated = new ArrayList<ReferencesServices>();
+		List<ReferencesServices> referenceServicesUpdated = new ArrayList<ReferencesServices>();
+
+		usersUpdated = new ArrayList<Users>();
+		listDeleted = new ArrayList<Integer>();
+
+		beneficiariesCreated = userBeneficiariesSync.stream()
+			    .map(UsersBeneficiariesCustomSync::getBeneficiary)
+			    .collect(Collectors.toList());
+		
+		List<Integer> beneficiariesIds = beneficiariesCreated.stream().map(Beneficiaries::getId).collect(Collectors.toList());
+		List<Integer> neighborhoodsIds = beneficiariesCreated.stream()
+			    .map(beneficiary -> beneficiary.getNeighborhood().getId())
+			    .collect(Collectors.toList());
+		List<Integer> partnersIds = beneficiariesCreated.stream()
+			    .map(beneficiary -> beneficiary.getPartners().getId())
+			    .collect(Collectors.toList());
+		List<Integer> districtsIds = beneficiariesCreated.stream()
+			    .map(beneficiary -> beneficiary.getDistrict().getId())
+			    .collect(Collectors.toList());
+		List<Integer> provincesIds = beneficiariesCreated.stream()
+			    .map(beneficiary -> beneficiary.getDistrict().getProvince().getId())
+			    .collect(Collectors.toList());
+		List<Integer> localitiesIds = beneficiariesCreated.stream()
+			    .map(beneficiary -> beneficiary.getLocality().getId())
+			    .collect(Collectors.toList());
+
+		
+		if (beneficiariesCreated.size() > 0) {
+
+			beneficiariesInterventionsCreated = service.GetAllEntityByNamedQuery(
+					"BeneficiaryIntervention.findByBeneficiariesIds", beneficiariesIds);
+
+			referencesCreated = service.GetAllEntityByNamedQuery("References.findByBeneficiariesIds",
+					beneficiariesIds);
+
+			for (References ref : referencesCreated) {
+				List<ReferencesServices> refServicesByRef = new ArrayList<ReferencesServices>();
+				refServicesByRef = service.GetAllEntityByNamedQuery("ReferencesServices.findByReference", ref.getId());
+				referenceServicesCreated.addAll(refServicesByRef);
+			}
+
+			neighborhoodsCreated = service.GetAllEntityByNamedQuery("Neighborhood.findByIds",
+					neighborhoodsIds);
+
+			partnersCreated = service.GetAllEntityByNamedQuery("Partners.findByIds",
+					partnersIds);
+
+			districtsCreated = service.GetAllEntityByNamedQuery("District.findByIds",
+					districtsIds);
+
+			provincesCreated = service.GetAllEntityByNamedQuery("Province.findByIds",
+					provincesIds);
+
+			localityCreated = service.GetAllEntityByNamedQuery("Locality.findByIds",
+					localitiesIds);
+		}
+
+		try {
+			SyncObject<Users> usersSO = new SyncObject<Users>(usersCreated, usersUpdated, listDeleted);
+			SyncObject<Province> provinceSO = new SyncObject<Province>(provincesCreated, new ArrayList<Province>(),
+					listDeleted);
+			SyncObject<District> districtSO = new SyncObject<District>(districtsCreated, new ArrayList<District>(),
+					listDeleted);
+			SyncObject<Locality> localitySO = new SyncObject<Locality>(localityCreated, localityUpdated, listDeleted);
+			SyncObject<Partners> partnersSO = new SyncObject<Partners>(partnersCreated, partnersUpdated, listDeleted);
+			SyncObject<Profiles> profilesSO = new SyncObject<Profiles>(profilesCreated, profilesUpdated, listDeleted);
+			SyncObject<Us> usSO = new SyncObject<Us>(usCreated, usUpdated, listDeleted);
+			SyncObject<Beneficiaries> beneficiarySO = new SyncObject<Beneficiaries>(beneficiariesCreated,
+					beneficiariesUpdated, listDeleted);
+			SyncObject<BeneficiariesInterventions> beneficiaryInterventionSO = new SyncObject<BeneficiariesInterventions>(
+					beneficiariesInterventionsCreated, beneficiariesInterventionsUpdated, listDeleted);
+			SyncObject<Neighborhood> neighborhoodSO = new SyncObject<Neighborhood>(neighborhoodsCreated,
+					neighborhoodUpdated, listDeleted);
+			SyncObject<Services> serviceSO = new SyncObject<Services>(servicesCreated, servicesUpdated, listDeleted);
+			SyncObject<SubServices> subServiceSO = new SyncObject<SubServices>(subServicesCreated, subServicesUpdated,
+					listDeleted);
+			SyncObject<References> referencesSO = new SyncObject<References>(referencesCreated, referencesUpdated,
+					listDeleted);
+			SyncObject<ReferencesServices> referencesServicesSO = new SyncObject<ReferencesServices>(
+					referenceServicesCreated, referenceServicesUpdated, listDeleted);
+
+			String object = SyncSerializer.createSyncObject(usersSO, provinceSO, districtSO, localitySO, profilesSO,
+					partnersSO, usSO, beneficiarySO, beneficiaryInterventionSO, neighborhoodSO, serviceSO, subServiceSO,
+					referencesSO, referencesServicesSO, lastPulledAt);
+			// System.out.println("PULLING " + object);
+
+			return new ResponseEntity<>(object, HttpStatus.OK);
+		} catch (Exception e) {
+			// TODO: handle exception
+
+			e.printStackTrace();
+			return new ResponseEntity<>("Parameter not present", HttpStatus.BAD_REQUEST);
+		}
+	}
+
 }

@@ -183,7 +183,6 @@ public class CustomSyncController {
 
 		List<UsersBeneficiariesCustomSync> userBeneficiariesSync = usersBeneficiariesCustomSyncService
 				.getUserBeneficiariesSync(userId);
-		System.out.println("-------userBeneficiariesSync---------" + userBeneficiariesSync);
 
 		List<Users> usersCreated = new ArrayList<Users>();
 		List<Users> usersUpdated = new ArrayList<Users>();

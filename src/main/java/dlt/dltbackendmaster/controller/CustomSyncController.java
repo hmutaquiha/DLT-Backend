@@ -188,7 +188,7 @@ public class CustomSyncController {
 		
 			List<UsersBeneficiariesCustomSync> userBeneficiariesSync = usersBeneficiariesCustomSyncService
 					.findByUserIdAndBeneficiaryId(user.getId(), beneficiary.getId());
-			if(userBeneficiariesSync.size()==0) {
+			if(userBeneficiariesSync.isEmpty()) {
 				UsersBeneficiariesCustomSync userBeneficiary = new UsersBeneficiariesCustomSync();
 				userBeneficiary.setUser(user);
 				userBeneficiary.setBeneficiary(beneficiary);

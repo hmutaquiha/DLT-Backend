@@ -41,14 +41,14 @@ import dlt.dltbackendmaster.service.UsersBeneficiariesCustomSyncService;
 
 @RestController
 @RequestMapping("/custom/sync")
-public class CustomSyncController {
+public class CustomizedSyncController {
 
 	private final DAOService service;
 	@Autowired
 	private UsersBeneficiariesCustomSyncService usersBeneficiariesCustomSyncService;
 
 	@Autowired
-	public CustomSyncController(DAOService service) {
+	public CustomizedSyncController(DAOService service) {
 		this.service = service;
 		new SequenceGenerator(service);
 	}

@@ -175,7 +175,9 @@ public class SyncController
 			beneficiariesUpdated = new ArrayList<Beneficiaries>();
 			
 			for (Beneficiaries beneficiary : beneficiariesCreated) {
-				localitiesIds.add(beneficiary.getLocality().getId());
+				if (beneficiary.getLocality() != null) {
+					localitiesIds.add(beneficiary.getLocality().getId());	
+				}
 			}
 
 

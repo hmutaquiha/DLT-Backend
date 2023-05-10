@@ -373,6 +373,11 @@ public class SyncController {
 		beneficiariesInterventionsCreated.addAll(beneficiariesInterventionsCreatedCustomized);
 		beneficiariesInterventionsUpdated.addAll(beneficiariesInterventionsUpdatedCustomized);
 
+		List<BeneficiariesInterventions> uniqueBeneficiariesIntervetnionsCreated = beneficiariesInterventionsCreated.stream().distinct()
+				.collect(Collectors.toList());
+		List<BeneficiariesInterventions> uniqueBeneficiariesIntervetnionsUpdated = beneficiariesInterventionsUpdated.stream().distinct()
+				.collect(Collectors.toList());
+
 		neighborhoodsCreated.addAll(neighborhoodsCreatedCustomized);
 		neighborhoodsUpdated.addAll(neighborhoodUpdatedCustomized);
 
@@ -394,7 +399,7 @@ public class SyncController {
 			SyncObject<Beneficiaries> beneficiarySO = new SyncObject<Beneficiaries>(beneficiariesCreated,
 					beneficiariesUpdated, listDeleted);
 			SyncObject<BeneficiariesInterventions> beneficiaryInterventionSO = new SyncObject<BeneficiariesInterventions>(
-					beneficiariesInterventionsCreated, beneficiariesInterventionsUpdated, listDeleted);
+					uniqueBeneficiariesIntervetnionsCreated, uniqueBeneficiariesIntervetnionsUpdated, listDeleted);
 			SyncObject<Neighborhood> neighborhoodSO = new SyncObject<Neighborhood>(uniqueNeighborhoodCreated,
 					uniqueNeighborhoodUpdated, listDeleted);
 			SyncObject<Services> serviceSO = new SyncObject<Services>(servicesCreated, servicesUpdated, listDeleted);

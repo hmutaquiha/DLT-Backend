@@ -125,7 +125,16 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 																+ " left join fetch b.us "
                             									+ " where (b.dateUpdated >= :lastpulledat) "
                             									+ " or (b.dateUpdated >= :lastpulledat "
-                            									+ " and b.dateCreated = b.dateUpdated)"),                
+                            									+ " and b.dateCreated = b.dateUpdated)"),
+                @NamedQuery(name = "Beneficiary.findByIdsAndDateUpdated",query = "select b from Beneficiaries b "
+										                		+ " left join fetch b.neighborhood "
+																+ " left join fetch b.partners "
+																+ " left join fetch b.locality "
+																+ " left join fetch b.us "
+																+ " where b.id in :beneficiariesIds "
+																+ " and b.dateCreated < :lastpulledat "
+																+ " and b.dateUpdated >= :lastpulledat"
+																+ ""),
                 @NamedQuery(name = "Beneficiary.findCountByLocalities", query = "SELECT count(b.id) as total FROM Beneficiaries b "
 																+ " where b.locality.id in (:localities) "
 																+ " and b.status = 1 "

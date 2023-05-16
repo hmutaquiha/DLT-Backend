@@ -19,7 +19,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -34,9 +33,26 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 		"user_id", "beneficiary_id" }))
 @NamedQueries({
 		@NamedQuery(name = "UsersBeneficiariesCustomSync.findByUserId", query = "SELECT ub FROM UsersBeneficiariesCustomSync ub "
-				+ " INNER JOIN fetch ub.user u " + " INNER JOIN fetch ub.beneficiary b " + " where u.id = :userId"),
+				+ " INNER JOIN fetch ub.user u " 
+				+ " INNER JOIN fetch ub.beneficiary b " 
+				+ " where u.id = :userId"),
+		@NamedQuery(name = "UsersBeneficiariesCustomSync.findByUserIdAndDateCreated", query = "SELECT ub FROM UsersBeneficiariesCustomSync ub "
+				+ " INNER JOIN fetch ub.user u " 
+				+ " INNER JOIN fetch ub.beneficiary b " 
+				+ " where u.id = :userId "
+				+ " and b.dateCreated >= :lastpulledat "
+				+ ""),
+		@NamedQuery(name = "UsersBeneficiariesCustomSync.findByUserIdAndDateUpdated", query = "SELECT ub FROM UsersBeneficiariesCustomSync ub "
+				+ " INNER JOIN fetch ub.user u " 
+				+ " INNER JOIN fetch ub.beneficiary b " 
+				+ " where u.id = :userId "
+                + " and b.dateCreated < :lastpulledat "
+                + " and b.dateUpdated >= :lastpulledat "
+				+ ""),
 		@NamedQuery(name = "UsersBeneficiariesCustomSync.findByUserIdAndBeneficiaryId", query = "SELECT ub FROM UsersBeneficiariesCustomSync ub "
-				+ " INNER JOIN fetch ub.user u " + " INNER JOIN fetch ub.beneficiary b " + " where u.id = :userId "
+				+ " INNER JOIN fetch ub.user u " 
+				+ " INNER JOIN fetch ub.beneficiary b " 
+				+ " where u.id = :userId "
 				+ " and b.id =:beneficiaryId"), })
 public class UsersBeneficiariesCustomSync implements java.io.Serializable {
 

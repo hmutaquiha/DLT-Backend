@@ -18,6 +18,6 @@ public interface UsersBeneficiariesCustomSyncService {
 	List<UsersBeneficiariesCustomSync> getUserBeneficiariesSyncByDateCreated(Integer userId, Date dateCreated);
 
 	List<UsersBeneficiariesCustomSync> getUserBeneficiariesSyncByDateUpdated(Integer userId, Date dateUpdated);
-	
+
 	List<UsersBeneficiariesCustomSync> findByUserIdAndBeneficiaryId(Integer userId, Integer BeneficiaryId);
 }

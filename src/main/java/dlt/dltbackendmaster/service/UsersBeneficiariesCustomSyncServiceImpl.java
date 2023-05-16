@@ -22,8 +22,8 @@ public class UsersBeneficiariesCustomSyncServiceImpl implements UsersBeneficiari
 	@Override
 	public List<UsersBeneficiariesCustomSync> getUserBeneficiariesSync(Integer userId) {
 
-		List<UsersBeneficiariesCustomSync> usersBeneficiaries = daoService
-				.GetAllEntityByNamedQuery("UsersBeneficiariesCustomSync.findByUserId", userId);
+		List<UsersBeneficiariesCustomSync> usersBeneficiaries = daoService.GetAllEntityByNamedQuery("UsersBeneficiariesCustomSync.findByUserId",
+					userId);
 		return usersBeneficiaries;
 	}
 

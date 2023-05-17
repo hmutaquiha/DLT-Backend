@@ -394,7 +394,7 @@ public class SyncController {
 		}
 
 		beneficiariesUpdated.addAll(beneficiariesUpdatedCustomized);
-		
+
 		List<Beneficiaries> uniqueBeneficiariesCreated = beneficiariesCreated.stream().distinct()
 				.collect(Collectors.toList());
 		List<Beneficiaries> uniqueBeneficiariesUpdated = beneficiariesUpdated.stream().distinct()
@@ -413,7 +413,6 @@ public class SyncController {
 				.collect(Collectors.toList());
 		List<ReferencesServices> uniqueReferenceServicesUpdated = referenceServicesUpdated.stream().distinct()
 				.collect(Collectors.toList());
-
 
 		beneficiariesInterventionsCreated.addAll(beneficiariesInterventionsCreatedCustomized);
 		beneficiariesInterventionsUpdated.addAll(beneficiariesInterventionsUpdatedCustomized);
@@ -526,6 +525,7 @@ public class SyncController {
 				for (BeneficiarySyncModel created : createdList) {
 					if (created.getOnline_id() == null) {
 						Beneficiaries beneficiary = new Beneficiaries(created, lastPulledAt);
+						setPartner(created, beneficiary);
 						beneficiary.setCreatedBy(user.getId());
 						beneficiary.setDateUpdated(new Date());
 						Integer beneficiaryId = (Integer) service.Save(beneficiary);
@@ -546,6 +546,7 @@ public class SyncController {
 					if (updated.getOnline_id() == null) {
 						Beneficiaries beneficiary = new Beneficiaries(updated, lastPulledAt);
 						beneficiary.setCreatedBy(user.getId());
+						setPartner(updated, beneficiary);
 						Integer beneficiaryId = (Integer) service.Save(beneficiary);
 						vulnerabilityHistoryService.saveVulnerabilityHistory(beneficiary);
 						beneficiariesIds.put(updated.getId(), beneficiaryId);
@@ -553,6 +554,7 @@ public class SyncController {
 					} else {
 						Beneficiaries beneficiary = service.find(Beneficiaries.class, updated.getOnline_id());
 						beneficiary.setUpdatedBy(user.getId());
+						setPartner(updated, beneficiary);
 						beneficiary.update(updated, lastPulledAt);
 						service.update(beneficiary);
 						vulnerabilityHistoryService.saveVulnerabilityHistory(beneficiary);
@@ -768,6 +770,17 @@ public class SyncController {
 			return new ResponseEntity<>("Json Processing Error!", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		return new ResponseEntity<>(HttpStatus.OK);
+	}
+
+	private void setPartner(BeneficiarySyncModel syncModel, Beneficiaries beneficiary) {
+		String partner_id = syncModel.getPartner_id();
+		if (partner_id != null) {
+			Beneficiaries benPartner = service
+					.GetUniqueEntityByNamedQuery("Beneficiary.findByOfflineId", partner_id);
+			if (benPartner != null) {
+				beneficiary.setPartnerId(benPartner.getId());
+			}
+		}
 	}
 
 	private void defineLevelAndParms(Users user) {

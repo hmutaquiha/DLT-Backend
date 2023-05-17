@@ -1,6 +1,5 @@
 package dlt.dltbackendmaster.service;
 
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,17 +19,10 @@ public class UsersBeneficiariesCustomSyncServiceImpl implements UsersBeneficiari
 	public DAOService daoService;
 
 	@Override
-	public List<UsersBeneficiariesCustomSync> getUserBeneficiariesSync(Integer userId, Date lastPulledAt) {
+	public List<UsersBeneficiariesCustomSync> getUserBeneficiariesSync(Integer userId) {
 
-		List<UsersBeneficiariesCustomSync> usersBeneficiaries;
-
-		if (lastPulledAt == null || lastPulledAt.equals(null)) {
-			usersBeneficiaries = daoService.GetAllEntityByNamedQuery("UsersBeneficiariesCustomSync.findByUserId",
-					userId);
-		} else {
-			usersBeneficiaries = daoService.GetAllEntityByNamedQuery("UsersBeneficiariesCustomSync.findByUserIdAndSyncDate",
-					userId, lastPulledAt);
-		}
+		List<UsersBeneficiariesCustomSync> usersBeneficiaries = daoService
+				.GetAllEntityByNamedQuery("UsersBeneficiariesCustomSync.findByUserId", userId);
 		return usersBeneficiaries;
 	}
 

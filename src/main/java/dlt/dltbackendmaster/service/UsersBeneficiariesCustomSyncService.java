@@ -1,6 +1,5 @@
 package dlt.dltbackendmaster.service;
 
-import java.util.Date;
 import java.util.List;
 
 import dlt.dltbackendmaster.domain.UsersBeneficiariesCustomSync;
@@ -13,7 +12,7 @@ import dlt.dltbackendmaster.domain.UsersBeneficiariesCustomSync;
  */
 public interface UsersBeneficiariesCustomSyncService {
 
-	List<UsersBeneficiariesCustomSync> getUserBeneficiariesSync(Integer userId, Date lastPulledAt);
+	List<UsersBeneficiariesCustomSync> getUserBeneficiariesSync(Integer userId);
 	
 	List<UsersBeneficiariesCustomSync> findByUserIdAndBeneficiaryId(Integer userId, Integer BeneficiaryId);
 }

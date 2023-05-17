@@ -125,7 +125,16 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 																+ " left join fetch b.us "
                             									+ " where (b.dateUpdated >= :lastpulledat) "
                             									+ " or (b.dateUpdated >= :lastpulledat "
-                            									+ " and b.dateCreated = b.dateUpdated)"),                
+                            									+ " and b.dateCreated = b.dateUpdated)"),
+                @NamedQuery(name = "Beneficiary.findByIdsAndDateUpdated",query = "select b from Beneficiaries b "
+										                		+ " left join fetch b.neighborhood "
+																+ " left join fetch b.partners "
+																+ " left join fetch b.locality "
+																+ " left join fetch b.us "
+																+ " where b.id in :beneficiariesIds "
+																+ " and b.dateCreated < :lastpulledat "
+																+ " and b.dateUpdated >= :lastpulledat"
+																+ ""),
                 @NamedQuery(name = "Beneficiary.findCountByLocalities", query = "SELECT count(b.id) as total FROM Beneficiaries b "
 																+ " where b.locality.id in (:localities) "
 																+ " and b.status = 1 "
@@ -376,7 +385,6 @@ public class Beneficiaries implements java.io.Serializable
         this.phoneNumber = model.getPhone_number();
         this.EMail = model.getE_mail();
         this.via = model.getVia();
-        this.partnerId = model.getPartner_id();
         this.nationality = 1;
         this.enrollmentDate = model.getEnrollment_date();
         this.entryPoint = model.getEntry_point();
@@ -428,7 +436,6 @@ public class Beneficiaries implements java.io.Serializable
         this.phoneNumber = model.getPhone_number();
         this.EMail = model.getE_mail();
         this.via = model.getVia();
-        this.partnerId = model.getPartner_id();
         this.entryPoint = model.getEntry_point();
         this.neighborhood = new Neighborhood(model.getNeighborhood_id());
         this.us = new Us(model.getUs_id());
@@ -1023,7 +1030,7 @@ public class Beneficiaries implements java.io.Serializable
 			beneficiary.put("e_mail", EMail);
 			beneficiary.put("enrollment_date", enrollmentDate != null ? shortDateFormat.format(enrollmentDate) : null);
             beneficiary.put("via", via);
-            beneficiary.put("partner_id", partnerId);
+            beneficiary.put("partner_id", String.valueOf(partnerId));
             beneficiary.put("nationality", nationality);
             beneficiary.put("entry_point", entryPoint);
 			if (neighborhood == null) {
@@ -1102,7 +1109,6 @@ public class Beneficiaries implements java.io.Serializable
         this.EMail = model.getE_mail();
         this.enrollmentDate = model.getEnrollment_date();
         this.via = model.getVia();
-        this.partnerId = model.getPartner_id();
         this.nationality = model.getNationality();
         this.entryPoint = model.getEntry_point();
         this.neighborhood.setId(model.getNeighborhood_id());

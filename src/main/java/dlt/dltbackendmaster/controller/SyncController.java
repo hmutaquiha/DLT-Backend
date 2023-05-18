@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -775,8 +776,9 @@ public class SyncController {
 	private void setPartner(BeneficiarySyncModel syncModel, Beneficiaries beneficiary) {
 		String partner_id = syncModel.getPartner_id();
 		if (partner_id != null) {
-			Beneficiaries benPartner = service
-					.GetUniqueEntityByNamedQuery("Beneficiary.findByOfflineId", partner_id);
+			Beneficiaries benPartner = StringUtils.isNumeric(partner_id)
+					? service.GetUniqueEntityByNamedQuery("Beneficiary.findById", Integer.valueOf(partner_id))
+					: service.GetUniqueEntityByNamedQuery("Beneficiary.findByOfflineId", partner_id);
 			if (benPartner != null) {
 				beneficiary.setPartnerId(benPartner.getId());
 			}

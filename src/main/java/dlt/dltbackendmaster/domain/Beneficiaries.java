@@ -62,6 +62,13 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 																+ " left join fetch b.us "
                 												+ " where nui = :nui "
                 												+ ""),
+                @NamedQuery(name = "Beneficiary.findById", query = "SELECT b FROM Beneficiaries b "
+										                		+ " left join fetch b.neighborhood "
+																+ " left join fetch b.partners "
+																+ " left join fetch b.locality "
+																+ " left join fetch b.us "
+																+ " where b.id = :id "
+																+ ""),
                 @NamedQuery(name = "Beneficiary.findByOfflineId", query = "SELECT b FROM Beneficiaries b "
 										                		+ " left join fetch b.neighborhood "
 																+ " left join fetch b.partners "

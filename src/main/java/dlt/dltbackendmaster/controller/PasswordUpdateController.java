@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import dlt.dltbackendmaster.domain.Users;
 import dlt.dltbackendmaster.security.EmailSender;
 import dlt.dltbackendmaster.service.DAOService;
+import dlt.dltbackendmaster.util.EnvConstants;
 import dlt.dltbackendmaster.util.Utility;
 import net.bytebuddy.utility.RandomString;
 
@@ -45,16 +46,21 @@ public class PasswordUpdateController {
 		}
 
         try {
+            String token = RandomString.make(45);
+        	// Generate reset confirmation Link
+            String utilSiteUrl = Utility.getSiteURL(request);
+            String validatedSiteUrl = getValidatedSiteUrl(utilSiteUrl);
+            String validatedOriginUrl = getValidatedOrigin(validatedSiteUrl);
+            String confirmUpdatePasswordLink = validatedSiteUrl + "/users/confirm-update?token=" + token;
+
             user.setRecoverPassword(passwordEncoder.encode(users.getRecoverPassword()));
             user.setNewPassword(0);
             user.setIsEnabled(Byte.valueOf("0"));
-            user.setRecoverPasswordOrigin(users.getRecoverPasswordOrigin());
-            String token = RandomString.make(45);
+            user.setRecoverPasswordOrigin(validatedOriginUrl);
+
             user.setRecoverPasswordToken(token);
             Users updatedUser = service.update(user);
-            // Generate reset confirmation Link
-            String confirmUpdatePasswordLink = Utility.getSiteURL(request) + "/users/confirm-update?token=" + token;
-            // Send E-mail
+                        // Send E-mail
             emailSender.sendEmail(user.getName()+" "+user.getSurname(), user.getName() + " " + user.getSurname(),
                                   null,
                                   user.getEmail(),
@@ -65,6 +71,20 @@ public class PasswordUpdateController {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+	private String getValidatedOrigin(String siteURL) {
+		if("http://localhost:8083".equals(siteURL) || siteURL.endsWith(":8083")) {
+			return EnvConstants.DEV_PASSWORD_UPDATE_ORIGIN_URL;
+		}
+	    return siteURL;
+	}
+
+	private String getValidatedSiteUrl(String siteURL) {
+		if("dreams".equals(siteURL)) {
+			return EnvConstants.PROD_PASSWORD_CONFIRMATION_HOME_URL;
+		}
+		return siteURL;
+	}
 
 	@GetMapping(path = "/confirm-update")
 	public ResponseEntity<String> confirmPasswordUpdate(HttpServletRequest request,

@@ -48,10 +48,12 @@ public class PasswordUpdateController {
         try {
             String token = RandomString.make(45);
         	// Generate reset confirmation Link
-            String utilSiteUrl = Utility.getSiteURL(request);
-            String validatedSiteUrl = getValidatedSiteUrl(utilSiteUrl);
-            String validatedOriginUrl = getValidatedOrigin(validatedSiteUrl);
-            String confirmUpdatePasswordLink = validatedSiteUrl + "/users/confirm-update?token=" + token;
+            String apiHome = Utility.getSiteURL(request);
+             		
+            String validatedApiHome = getApiHome(apiHome);
+            String validatedOriginUrl = getValidatedOrigin(validatedApiHome);
+            
+            String confirmUpdatePasswordLink = validatedApiHome + "/users/confirm-update?token=" + token;
 
             user.setRecoverPassword(passwordEncoder.encode(users.getRecoverPassword()));
             user.setNewPassword(0);
@@ -76,12 +78,12 @@ public class PasswordUpdateController {
 		if("http://localhost:8083".equals(siteURL) || siteURL.endsWith(":8083")) {
 			return EnvConstants.DEV_PASSWORD_UPDATE_ORIGIN_URL;
 		}
-	    return siteURL;
+	    return EnvConstants.PROD_PASSWORD_UPDATE_ORIGIN_URL;
 	}
 
-	private String getValidatedSiteUrl(String siteURL) {
-		if("dreams".equals(siteURL)) {
-			return EnvConstants.PROD_PASSWORD_CONFIRMATION_HOME_URL;
+	private String getApiHome(String siteURL) {
+		if("http://dreams/dlt-api-0.1".equals(siteURL)) {
+			return EnvConstants.PROD_PASSWORD_UPDATE_API_HOME;
 		}
 		return siteURL;
 	}

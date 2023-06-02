@@ -27,7 +27,6 @@ import dlt.dltbackendmaster.domain.ReferencesServices;
 import dlt.dltbackendmaster.domain.Services;
 import dlt.dltbackendmaster.domain.SubServices;
 import dlt.dltbackendmaster.domain.Us;
-import dlt.dltbackendmaster.domain.Users;
 import dlt.dltbackendmaster.domain.UsersSync;
 import dlt.dltbackendmaster.domain.watermelondb.BeneficiaryInterventionSyncModel;
 import dlt.dltbackendmaster.domain.watermelondb.BeneficiarySyncModel;

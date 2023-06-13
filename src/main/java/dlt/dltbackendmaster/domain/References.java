@@ -42,6 +42,8 @@ import dlt.dltbackendmaster.domain.watermelondb.ReferenceSyncModel;
 																+ "left join fetch r.notifyTo "
 																+ "where r.status <> 3 "
 																+ "and b.nui like :searchNui "
+																+ " AND (:searchUserCreator IS NULL OR b.createdBy = :searchUserCreator) "
+												                + " AND (:searchDistrict IS NULL OR b.district.id = :searchDistrict) "	
 																+ "order by r.id desc "),
 		@NamedQuery(name = "References.findAllByUser", query = "SELECT r FROM References r "
 																+ "left join fetch r.beneficiaries "
@@ -58,6 +60,8 @@ import dlt.dltbackendmaster.domain.watermelondb.ReferenceSyncModel;
 																+ "left join fetch r.notifyTo "
 																+ "where r.status <> 3 "
 																+ "and b.nui like :searchNui "
+																+ " AND (:searchUserCreator IS NULL OR b.createdBy = :searchUserCreator) "
+												                + " AND (:searchDistrict IS NULL OR b.district.id = :searchDistrict) "
 																+ "and (r.userCreated in (:strUsersIds) "
 																+ "or r.notifyTo.id in (:usersIds) "
 																+ "or r.referredBy.id in (:usersIds) "
@@ -102,6 +106,8 @@ import dlt.dltbackendmaster.domain.watermelondb.ReferenceSyncModel;
 																+ "left join fetch r.beneficiaries b "
 																+ "where b.locality.id in (:localities) "
 																+ "and b.nui like :searchNui "
+																+ " AND (:searchUserCreator IS NULL OR b.createdBy = :searchUserCreator) "
+												                + " AND (:searchDistrict IS NULL OR b.district.id = :searchDistrict) "
 																+ "and r.status <> 3 "
 																+ "order by r.id desc"
 																),
@@ -112,6 +118,8 @@ import dlt.dltbackendmaster.domain.watermelondb.ReferenceSyncModel;
 																+ "left join fetch r.beneficiaries b "
 																+ "where b.district.id in (:districts) "
 																+ "and b.nui like :searchNui "
+																+ " AND (:searchUserCreator IS NULL OR b.createdBy = :searchUserCreator) "
+												                + " AND (:searchDistrict IS NULL OR b.district.id = :searchDistrict) "
 																+ "and r.status <> 3 "
 																+ "order by r.id desc"
 																),
@@ -122,6 +130,8 @@ import dlt.dltbackendmaster.domain.watermelondb.ReferenceSyncModel;
 																+ "left join fetch r.beneficiaries b "
 																+ "where b.district.province.id in (:provinces) "
 																+ "and b.nui like :searchNui "
+																+ " AND (:searchUserCreator IS NULL OR b.createdBy = :searchUserCreator) "
+												                + " AND (:searchDistrict IS NULL OR b.district.id = :searchDistrict) ""
 																+ "and r.status <> 3 "
 																+ "order by r.id desc"
 																),

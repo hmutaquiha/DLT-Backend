@@ -64,7 +64,7 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 	@NamedQuery(name = "BeneficiaryIntervention.findByDateUpdated",
 		query = "select b from BeneficiariesInterventions b where (b.dateUpdated >= :lastpulledat) or (b.dateUpdated >= :lastpulledat and b.dateCreated = b.dateUpdated)"),
 	@NamedQuery(name = "BeneficiaryIntervention.findByBeneficiaryId", 
-		query = "SELECT b FROM BeneficiariesInterventions b where b.beneficiaries.id = :beneficiary_id"),
+		query = "SELECT b FROM BeneficiariesInterventions b where b.beneficiaries.id = :beneficiary_id and b.status = 1"),
 	@NamedQuery(name = "BeneficiaryIntervention.findByBeneficiariesIds", 
 		query = "SELECT b FROM BeneficiariesInterventions b where b.beneficiaries.id in :beneficiaries_ids"),
 	@NamedQuery(name = "BeneficiaryIntervention.findByBeneficiariesIdsAndDateCreated", 
@@ -74,6 +74,7 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 	@NamedQuery(name = "BeneficiaryIntervention.findInterventionsPerBeneficiary", 
 		query = " select count(inter.beneficiaries.id) as interventions, inter.beneficiaries.id as beneficiary_id"
 				+ " from BeneficiariesInterventions inter "
+				+ " where inter.status = 1 "
 				+ " group by inter.beneficiaries.id " ),
 	@NamedQuery(name = "BeneficiaryIntervention.findByReferenceNotifyToOrBeneficiaryCreatedBy", query = "SELECT bi FROM BeneficiariesInterventions bi "
 															+ " where bi.beneficiaries.createdBy = :userId"

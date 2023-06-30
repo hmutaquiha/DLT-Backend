@@ -1,6 +1,7 @@
 package dlt.dltbackendmaster.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -86,6 +87,13 @@ public class BeneficiariyInterventionServiceImpl implements BeneficiariyInterven
 
 		List<CountIntervention> beneficiariesInterventions = daoService
 				.GetAllEntityByNamedQuery("BeneficiaryIntervention.findInterventionsPerBeneficiary");
+
+		return beneficiariesInterventions;
+	}
+	
+	@Override
+	public List<BeneficiariesInterventions> findByBeneficiariesIds(int pageIndex, int pageSize, Integer[] params) {	
+        List<BeneficiariesInterventions> beneficiariesInterventions = daoService.GetByParamsPagedEntityByNamedQuery("BeneficiaryIntervention.findInterventionsByBeneficiariesIds", pageIndex, pageSize, Arrays.asList(params));
 
 		return beneficiariesInterventions;
 	}

@@ -108,6 +108,11 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 												            ),
 	@NamedQuery(name = "BeneficiaryIntervention.findAllByBeneficiaryAndDate", 
 		query = "select b from BeneficiariesInterventions b where b.beneficiaries.id = :beneficiaryId and b.id.date > :date"),
+	@NamedQuery(name = "BeneficiaryIntervention.findInterventionsByBeneficiariesIds", 
+																query = " SELECT bi "
+																		+ "FROM BeneficiariesInterventions bi "
+																		+ "left join fetch bi.beneficiaries b "
+																		+ "where b.id in :beneficiariesIds "),
 })
 public class BeneficiariesInterventions implements java.io.Serializable {
 	
@@ -210,7 +215,6 @@ public class BeneficiariesInterventions implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "beneficiary_id", nullable = false, insertable = false, updatable = false)
 	@JsonProperty("beneficiary")

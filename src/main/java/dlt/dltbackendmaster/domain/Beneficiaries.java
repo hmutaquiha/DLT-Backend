@@ -234,6 +234,15 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 																+ " where b.nui =:nui "
 																+ " and b.locality.id in :localitiesIds "												         											     
 												                ),
+				@NamedQuery(name = "Beneficiary.findByIds", query = "SELECT b FROM Beneficiaries b "
+																+ " left join fetch b.neighborhood "
+																+ " left join fetch b.partners "
+																+ " left join fetch b.locality "
+																+ " left join fetch b.us "
+																+ " where b.status = 1 "
+																+ " and b.id in :ids "
+																+ " order by b.id desc"
+																+ ""),
 })
 public class Beneficiaries implements java.io.Serializable
 {
@@ -548,7 +557,7 @@ public class Beneficiaries implements java.io.Serializable
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "us_id", nullable = false)
+    @JoinColumn(name = "us_id")
 	@JsonSerialize(using = UsSerializer.class)
     public Us getUs() {
         return this.us;
@@ -1131,7 +1140,7 @@ public class Beneficiaries implements java.io.Serializable
         this.nationality = model.getNationality();
         this.entryPoint = model.getEntry_point();
         this.neighborhood.setId(model.getNeighborhood_id());
-        this.us = new Us(model.getUs_id());
+        this.us = model.getUs_id() == 0? null : new Us(model.getUs_id());
         this.status = Integer.valueOf(model.getStatus());
         this.vbltLivesWith = model.getVblt_lives_with();
         this.vbltIsOrphan = model.getVblt_is_orphan();

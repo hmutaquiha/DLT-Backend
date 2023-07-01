@@ -112,7 +112,8 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 																query = " SELECT bi "
 																		+ "FROM BeneficiariesInterventions bi "
 																		+ "left join fetch bi.beneficiaries b "
-																		+ "where b.id in :beneficiariesIds "),
+																		+ "left join fetch b.partners "
+																    	+ "where b.id in :beneficiariesIds "),
 })
 public class BeneficiariesInterventions implements java.io.Serializable {
 	

@@ -2,6 +2,7 @@ package dlt.dltbackendmaster.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -92,8 +93,8 @@ public class BeneficiariyInterventionServiceImpl implements BeneficiariyInterven
 	}
 	
 	@Override
-	public List<BeneficiariesInterventions> findByBeneficiariesIds(int pageIndex, int pageSize, Integer[] params) {	
-        List<BeneficiariesInterventions> beneficiariesInterventions = daoService.GetByParamsPagedEntityByNamedQuery("BeneficiaryIntervention.findInterventionsByBeneficiariesIds", pageIndex, pageSize, Arrays.asList(params));
+	public List<BeneficiariesInterventions> findByBeneficiariesIds(Integer[] params) {	
+        List<BeneficiariesInterventions> beneficiariesInterventions = daoService.GetAllEntityByNamedQuery("BeneficiaryIntervention.findInterventionsByBeneficiariesIds", Arrays.asList(params));
 
 		return beneficiariesInterventions;
 	}

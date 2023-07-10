@@ -24,7 +24,6 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -64,7 +63,7 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 	@NamedQuery(name = "BeneficiaryIntervention.findByDateUpdated",
 		query = "select b from BeneficiariesInterventions b where (b.dateUpdated >= :lastpulledat) or (b.dateUpdated >= :lastpulledat and b.dateCreated = b.dateUpdated)"),
 	@NamedQuery(name = "BeneficiaryIntervention.findByBeneficiaryId", 
-		query = "SELECT b FROM BeneficiariesInterventions b where b.beneficiaries.id = :beneficiary_id"),
+		query = "SELECT b FROM BeneficiariesInterventions b where b.beneficiaries.id = :beneficiary_id and b.status = 1"),
 	@NamedQuery(name = "BeneficiaryIntervention.findByBeneficiariesIds", 
 		query = "SELECT b FROM BeneficiariesInterventions b where b.beneficiaries.id in :beneficiaries_ids"),
 	@NamedQuery(name = "BeneficiaryIntervention.findByBeneficiariesIdsAndDateCreated", 
@@ -74,6 +73,7 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 	@NamedQuery(name = "BeneficiaryIntervention.findInterventionsPerBeneficiary", 
 		query = " select count(inter.beneficiaries.id) as interventions, inter.beneficiaries.id as beneficiary_id"
 				+ " from BeneficiariesInterventions inter "
+				+ " where inter.status = 1 "
 				+ " group by inter.beneficiaries.id " ),
 	@NamedQuery(name = "BeneficiaryIntervention.findByReferenceNotifyToOrBeneficiaryCreatedBy", query = "SELECT bi FROM BeneficiariesInterventions bi "
 															+ " where bi.beneficiaries.createdBy = :userId"
@@ -85,6 +85,7 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 												            ),
 	@NamedQuery(name = "BeneficiaryIntervention.findByReferenceNotifyToOrBeneficiaryCreatedByAndDateCreated", query = "SELECT bi FROM BeneficiariesInterventions bi "
 															+ " where (bi.beneficiaries.createdBy = :userId "
+												            + " and bi.dateCreated >= :lastpulledat "
 															+ " or bi.beneficiaries.id in "
 															+ " ("
 															+ "		SELECT distinct r.beneficiaries.id FROM  References r "										
@@ -92,7 +93,6 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 												            + " 	and r.notifyTo.id = :userId"
 											                + "		and r.dateCreated >= :lastpulledat"
 												            + "	))"
-												            + " and bi.dateCreated >= :lastpulledat "
 												            ),
 	@NamedQuery(name = "BeneficiaryIntervention.findByReferenceNotifyToOrBeneficiaryCreatedByAndDateUpdated", query = "SELECT bi FROM BeneficiariesInterventions bi "
 															+ " where (bi.beneficiaries.createdBy = :userId"
@@ -107,7 +107,7 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 												            + " and bi.dateUpdated >= :lastpulledat"
 												            ),
 	@NamedQuery(name = "BeneficiaryIntervention.findAllByBeneficiaryAndDate", 
-		query = "select b from BeneficiariesInterventions b where b.beneficiaries.id = :beneficiaryId and b.id.date > :date"),
+		query = "select b from BeneficiariesInterventions b where b.beneficiaries.id = :beneficiaryId and b.id.date >= :date"),
 	@NamedQuery(name = "BeneficiaryIntervention.findInterventionsByBeneficiariesIds", 
 																query = " SELECT bi "
 																		+ "FROM BeneficiariesInterventions bi "

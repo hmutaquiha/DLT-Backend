@@ -4,8 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-
-import javax.persistence.ElementCollection;
+import java.util.Set;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,9 +16,6 @@ import org.springframework.security.core.userdetails.UserDetails;
  */
 public class Account extends Users implements Serializable, UserDetails {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	private Boolean isaccountenabled;
@@ -31,29 +27,33 @@ public class Account extends Users implements Serializable, UserDetails {
 		super();
 	}
 
-	public Account(int id, Locality locality, Partners partner, Profiles profiles, Us us, String surname, String name,
-			String phoneNumber, String email, String username, String password, String entryPoint, int status,
+	public Account(int id, Set<Locality> locality, Partners partner, Profiles profiles, Set<Province> provinces, Set<District> districts, String surname, String name,
+			String phoneNumber, String email, String username, String password, String entryPoint, Set<Us> us, int status,
+			int newPassword,
 			Byte isLocked, Byte isExpired, Byte isCredentialsExpired, Byte isEnabled, int createdBy, Date dateCreated,
-			Integer updatedBy, Date dateUpdated) {
-		
-		super(id, locality, partner, profiles, us, surname, name,
-				phoneNumber, email, username, password, entryPoint, status,
+			Integer updatedBy, Date dateUpdated, Date passwordLastChangeDate) {
+
+		super(id, locality, partner, profiles, provinces, districts, surname, name,
+				phoneNumber, email, username, password, newPassword, entryPoint, us, status,
 				isLocked, isExpired, isCredentialsExpired, isEnabled, createdBy, dateCreated,
-				updatedBy, dateUpdated);
-		
+				updatedBy, dateUpdated, passwordLastChangeDate);
+
 		this.isaccountenabled = isEnabled == 0 ? false : true;
 		this.isaccountexpired = isExpired == 0 ? false : true;
 		this.isaccountlocked = isLocked == 0 ? false : true;
 		this.iscredentialsexpired = isCredentialsExpired == 0 ? false : true;
-		
+
 	}
-	
+
 	public Account(Users user) {
-		super(user.getId(), user.getLocality(), user.getPartners(), user.getProfiles(), user.getUs(), user.getSurname(),
-				user.getName(),user.getPhoneNumber(), user.getEmail(), user.getUsername(), user.getPassword(), user.getEntryPoint(), 
-				user.getStatus(),user.getIsLocked(), user.getIsExpired(), user.getIsCredentialsExpired(), user.getIsEnabled(), 
-				user.getCreatedBy(), user.getDateCreated(), user.getUpdatedBy(), user.getDateUpdated());
-		
+		super(user.getId(), user.getLocalities(), user.getPartners(), user.getProfiles(), user.getProvinces(), user.getDistricts(), user.getSurname(),
+				user.getName(), user.getPhoneNumber(), user.getEmail(), user.getUsername(), user.getPassword(),
+				user.getNewPassword(), user.getEntryPoint(), user.getUs(),
+				user.getStatus(), user.getIsLocked(), user.getIsExpired(), user.getIsCredentialsExpired(),
+				user.getIsEnabled(),
+				user.getCreatedBy(), user.getDateCreated(), user.getUpdatedBy(), user.getDateUpdated(), user.getPasswordLastChangeDate());
+
+		this.setNewPassword(user.getNewPassword());
 		this.isaccountenabled = user.getIsEnabled() == 0 ? false : true;
 		this.isaccountexpired = user.getIsExpired() == 0 ? false : true;
 		this.isaccountlocked = user.getIsLocked() == 0 ? false : true;
@@ -80,7 +80,6 @@ public class Account extends Users implements Serializable, UserDetails {
 		return isaccountenabled;
 	}
 
-
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		GrantedAuthority authority = () -> getProfiles().getName();
@@ -89,14 +88,12 @@ public class Account extends Users implements Serializable, UserDetails {
 		return authorities;
 	}
 
-	
 	public Users toUser() {
-	
-		return new Users(getId(), getLocality(), getPartners(), getProfiles(), getUs(), 
-				getSurname(), getName(), getPhoneNumber(), getEmail(), getUsername(), getPassword(), 
-				getEntryPoint(), getStatus(), getIsLocked(), getIsExpired(), getIsCredentialsExpired(), 
-				getIsEnabled(), getCreatedBy(), getDateCreated(), getUpdatedBy(), getDateUpdated());
-	}
 
+		return new Users(getId(), getLocalities(), getPartners(), getProfiles(), getProvinces(), getDistricts(), 
+				getSurname(), getName(), getPhoneNumber(), getEmail(), getUsername(), getPassword(), getNewPassword(),
+				getEntryPoint(), getUs(), getStatus(), getIsLocked(), getIsExpired(), getIsCredentialsExpired(),
+				getIsEnabled(), getCreatedBy(), getDateCreated(), getUpdatedBy(), getDateUpdated(), getPasswordLastChangeDate());
+	}
 
 }

@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+import dlt.dltbackendmaster.domain.BeneficiariesInterventions;
+import dlt.dltbackendmaster.domain.ReferencesServicesObject;
+
 /**
  * This interface holds the service implementations called by the API controller 
  * @author derciobucuane
@@ -17,6 +20,8 @@ public interface DAOService {
 	<T> Serializable Save(T klass);
 
 	<T> void delete(T klass);
+	
+	<T> int UpdateEntitiesByNamedQuery(String query, Object... params);
 
 	<T> T update(T klass);
 
@@ -30,6 +35,10 @@ public interface DAOService {
 
 	<T> List<T> GetAllEntityByNamedQuery(String query, Object... params);
 	
+	<T> List<T> GetAllPagedEntityByNamedQuery(String query, int pageIndex, int pageSize, String searchNui, Integer searchUserCreator, Integer searchDistrict, Object... params);
+	
+    <T> List<T> GetAllEntityByNamedNativeQuery(String query, Object... params);
+	
 	<T> T find(Class<T> klass, Object id);
 
 	<T> List<T> findByQuery(String hql, Map<String, Object> entidade, Map<String, Object> namedParams);
@@ -39,4 +48,8 @@ public interface DAOService {
 	<T> List<T> findByJPQuery(String hql, Map<String, Object> namedParams);
 
 	<T> List<T> findByJPQueryFilter(String hql, Map<String, Object> namedParams, int f, int m);
+	
+	<T> ReferencesServicesObject registerServiceCompletionStatus(BeneficiariesInterventions intervention);
+
+	<T> List<T> GetByParamsPagedEntityByNamedQuery(String query, int pageIndex, int pageSize, Object... params);
 }

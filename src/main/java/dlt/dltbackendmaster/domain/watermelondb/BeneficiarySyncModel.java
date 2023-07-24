@@ -2,8 +2,9 @@ package dlt.dltbackendmaster.domain.watermelondb;
 
 import java.util.Date;
 
-import dlt.dltbackendmaster.domain.DeficiencyType;
-import dlt.dltbackendmaster.domain.LivesWith;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class BeneficiarySyncModel extends BasicLifeCycleSyncModel
 {
@@ -16,37 +17,52 @@ public class BeneficiarySyncModel extends BasicLifeCycleSyncModel
     private String address;
     private String phone_number;
     private String e_mail;
-    private Boolean via;
-    private Integer partner_id;
+    private Date enrollment_date;
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone="Africa/Maputo")
+    private Date date_created;
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone="Africa/Maputo")
+    private Date date_updated;
+    private Integer via;
+    private Integer nationality;
+    private String partner_id;
     private String entry_point;
-    private Integer neighbourhood_id;
+    private Integer neighborhood_id;
+    private Integer locality_id;
+    private String locality_name;
+    private Integer district_id;
+    private String district_code;
+    private Integer province_id;
     private Integer us_id;
     private String vblt_lives_with;
-    private Boolean vblt_is_orphan;
-    private Boolean vblt_is_student;
+    private Byte vblt_is_orphan;
+    private Byte vblt_is_student;
     private Integer vblt_school_grade;
     private String vblt_school_name;
-    private Boolean vblt_is_deficient;
+    private Byte vblt_is_deficient;
     private String vblt_deficiency_type;
-    private Boolean vblt_married_before;
-    private Boolean vblt_pregnant_before;
-    private Boolean vblt_children;
-    private Boolean vblt_pregnant_or_breastfeeding;
-    private Boolean vblt_is_employed;
-    private Boolean vblt_tested_hiv;
-    private Boolean vblt_sexually_active;
-    private Boolean vblt_multiple_partners;
-    private Boolean vblt_is_migrant;
-    private Boolean vblt_trafficking_victim;
-    private Boolean vblt_sexual_exploitation;
+    private Byte vblt_married_before;
+    private Byte vblt_pregnant_before;
+    private Byte vblt_children;
+    private Byte vblt_pregnant_or_breastfeeding;
+    private String vblt_is_employed;
+    private String vblt_tested_hiv;
+    private Byte vblt_sexually_active;
+    private Byte vblt_multiple_partners;
+    private Byte vblt_is_migrant;
+    private Byte vblt_trafficking_victim;
+    private Byte vblt_sexual_exploitation;
     private String vblt_sexploitation_time;
-    private Boolean vblt_vbg_victim;
+    private Byte vblt_vbg_victim;
     private String vblt_vbg_type;
     private String vblt_vbg_time;
-    private Boolean vblt_alcohol_drugs_use;
-    private Boolean vblt_sti_history;
-    private Boolean vblt_sex_worker;
-    private Boolean vblt_house_sustainer;
+    private Byte vblt_alcohol_drugs_use;
+    private Byte vblt_sti_history;
+    private Byte vblt_sex_worker;
+    private Byte vblt_house_sustainer;
+    private String references_a;
+    private String offline_id;
 
     public BeneficiarySyncModel() {}
 
@@ -117,21 +133,53 @@ public class BeneficiarySyncModel extends BasicLifeCycleSyncModel
     public String getE_mail() {
         return e_mail;
     }
+    
+    public Date getEnrollment_date() {
+        return enrollment_date;
+    }
 
-    public Boolean getVia() {
+    public void setEnrollment_date(Date enrollment_date) {
+        this.enrollment_date = enrollment_date;
+    }
+
+    public Date getDate_created() {
+        return date_created;
+    }
+
+    public void setDate_created(Date date_created) {
+        this.date_created = date_created;
+    }
+
+    public Date getDate_updated() {
+        return date_updated;
+    }
+
+    public void setDate_updated(Date date_updated) {
+        this.date_updated = date_updated;
+    }
+	
+    public Integer getVia() {
         return via;
     }
 
-    public void setVia(Boolean via) {
+    public void setVia(Integer via) {
         this.via = via;
     }
 
-    public Integer getPartner_id() {
+    public String getPartner_id() {
         return partner_id;
     }
 
-    public void setPartner_id(Integer partner_id) {
+    public void setPartner_id(String partner_id) {
         this.partner_id = partner_id;
+    }
+
+    public Integer getNationality() {
+        return nationality;
+    }
+
+    public void setNationality(Integer nationality) {
+        this.nationality = nationality;
     }
 
     public String getEntry_point() {
@@ -142,12 +190,52 @@ public class BeneficiarySyncModel extends BasicLifeCycleSyncModel
         this.entry_point = entry_point;
     }
 
-    public Integer getNeighbourhood_id() {
-        return neighbourhood_id;
+    public Integer getNeighborhood_id() {
+        return neighborhood_id;
     }
 
-    public void setNeighbourhood_id(Integer neighborhood_id) {
-        this.neighbourhood_id = neighborhood_id;
+    public void setNeighborhood_id(Integer neighborhood_id) {
+        this.neighborhood_id = neighborhood_id;
+    }
+
+    public Integer getLocality_id() {
+		return locality_id;
+	}
+
+	public void setLocality_id(Integer locality_id) {
+		this.locality_id = locality_id;
+	}
+
+	public String getLocality_name() {
+		return locality_name;
+	}
+
+	public void setLocality_name(String locality_name) {
+		this.locality_name = locality_name;
+	}
+	
+	public Integer getDistrict_id() {
+        return district_id;
+    }
+
+    public void setDistrict_id(Integer district_id) {
+        this.district_id = district_id;
+    }
+
+    public String getDistrict_code() {
+        return district_code;
+    }
+
+    public void setDistrict_code(String district_code) {
+        this.district_code = district_code;
+    }
+
+    public Integer getProvince_id() {
+        return province_id;
+    }
+
+    public void setProvince_id(Integer province_id) {
+        this.province_id = province_id;
     }
 
     public Integer getUs_id() {
@@ -166,19 +254,19 @@ public class BeneficiarySyncModel extends BasicLifeCycleSyncModel
 		this.vblt_lives_with = vblt_lives_with;
 	}
 
-	public Boolean getVblt_is_orphan() {
+	public Byte getVblt_is_orphan() {
 		return vblt_is_orphan;
 	}
 
-	public void setVblt_is_orphan(Boolean vblt_is_orphan) {
+	public void setVblt_is_orphan(Byte vblt_is_orphan) {
 		this.vblt_is_orphan = vblt_is_orphan;
 	}
 
-	public Boolean getVblt_is_student() {
+	public Byte getVblt_is_student() {
 		return vblt_is_student;
 	}
 
-	public void setVblt_is_student(Boolean vblt_is_student) {
+	public void setVblt_is_student(Byte vblt_is_student) {
 		this.vblt_is_student = vblt_is_student;
 	}
 
@@ -198,11 +286,11 @@ public class BeneficiarySyncModel extends BasicLifeCycleSyncModel
 		this.vblt_school_name = vblt_school_name;
 	}
 
-	public Boolean getVblt_is_deficient() {
+	public Byte getVblt_is_deficient() {
 		return vblt_is_deficient;
 	}
 
-	public void setVblt_is_deficient(Boolean vblt_is_deficient) {
+	public void setVblt_is_deficient(Byte vblt_is_deficient) {
 		this.vblt_is_deficient = vblt_is_deficient;
 	}
 
@@ -214,91 +302,91 @@ public class BeneficiarySyncModel extends BasicLifeCycleSyncModel
 		this.vblt_deficiency_type = vblt_deficiency_type;
 	}
 
-	public Boolean getVblt_married_before() {
+	public Byte getVblt_married_before() {
 		return vblt_married_before;
 	}
 
-	public void setVblt_married_before(Boolean vblt_married_before) {
+	public void setVblt_married_before(Byte vblt_married_before) {
 		this.vblt_married_before = vblt_married_before;
 	}
 
-	public Boolean getVblt_pregnant_before() {
+	public Byte getVblt_pregnant_before() {
 		return vblt_pregnant_before;
 	}
 
-	public void setVblt_pregnant_before(Boolean vblt_pregnant_before) {
+	public void setVblt_pregnant_before(Byte vblt_pregnant_before) {
 		this.vblt_pregnant_before = vblt_pregnant_before;
 	}
 
-	public Boolean getVblt_children() {
+	public Byte getVblt_children() {
 		return vblt_children;
 	}
 
-	public void setVblt_children(Boolean vblt_children) {
+	public void setVblt_children(Byte vblt_children) {
 		this.vblt_children = vblt_children;
 	}
 
-	public Boolean getVblt_pregnant_or_breastfeeding() {
+	public Byte getVblt_pregnant_or_breastfeeding() {
 		return vblt_pregnant_or_breastfeeding;
 	}
 
-	public void setVblt_pregnant_or_breastfeeding(Boolean vblt_pregnant_or_breastfeeding) {
+	public void setVblt_pregnant_or_breastfeeding(Byte vblt_pregnant_or_breastfeeding) {
 		this.vblt_pregnant_or_breastfeeding = vblt_pregnant_or_breastfeeding;
 	}
 
-	public Boolean getVblt_is_employed() {
+	public String getVblt_is_employed() {
 		return vblt_is_employed;
 	}
 
-	public void setVblt_is_employed(Boolean vblt_is_employed) {
+	public void setVblt_is_employed(String vblt_is_employed) {
 		this.vblt_is_employed = vblt_is_employed;
 	}
 
-	public Boolean getVblt_tested_hiv() {
+	public String getVblt_tested_hiv() {
 		return vblt_tested_hiv;
 	}
 
-	public void setVblt_tested_hiv(Boolean vblt_tested_hiv) {
+	public void setVblt_tested_hiv(String vblt_tested_hiv) {
 		this.vblt_tested_hiv = vblt_tested_hiv;
 	}
 
-	public Boolean getVblt_sexually_active() {
+	public Byte getVblt_sexually_active() {
 		return vblt_sexually_active;
 	}
 
-	public void setVblt_sexually_active(Boolean vblt_sexually_active) {
+	public void setVblt_sexually_active(Byte vblt_sexually_active) {
 		this.vblt_sexually_active = vblt_sexually_active;
 	}
 
-	public Boolean getVblt_multiple_partners() {
+	public Byte getVblt_multiple_partners() {
 		return vblt_multiple_partners;
 	}
 
-	public void setVblt_multiple_partners(Boolean vblt_multiple_partners) {
+	public void setVblt_multiple_partners(Byte vblt_multiple_partners) {
 		this.vblt_multiple_partners = vblt_multiple_partners;
 	}
 
-	public Boolean getVblt_is_migrant() {
+	public Byte getVblt_is_migrant() {
 		return vblt_is_migrant;
 	}
 
-	public void setVblt_is_migrant(Boolean vblt_is_migrant) {
+	public void setVblt_is_migrant(Byte vblt_is_migrant) {
 		this.vblt_is_migrant = vblt_is_migrant;
 	}
 
-	public Boolean getVblt_trafficking_victim() {
+	public Byte getVblt_trafficking_victim() {
 		return vblt_trafficking_victim;
 	}
 
-	public void setVblt_trafficking_victim(Boolean vblt_trafficking_victim) {
+	public void setVblt_trafficking_victim(Byte vblt_trafficking_victim) {
 		this.vblt_trafficking_victim = vblt_trafficking_victim;
 	}
 
-	public Boolean getVblt_sexual_exploitation() {
+	public Byte getVblt_sexual_exploitation() {
 		return vblt_sexual_exploitation;
 	}
 
-	public void setVblt_sexual_exploitation(Boolean vblt_sexual_exploitation) {
+	public void setVblt_sexual_exploitation(Byte vblt_sexual_exploitation) {
 		this.vblt_sexual_exploitation = vblt_sexual_exploitation;
 	}
 
@@ -310,11 +398,11 @@ public class BeneficiarySyncModel extends BasicLifeCycleSyncModel
 		this.vblt_sexploitation_time = vblt_sexploitation_time;
 	}
 
-	public Boolean getVblt_vbg_victim() {
+	public Byte getVblt_vbg_victim() {
 		return vblt_vbg_victim;
 	}
 
-	public void setVblt_vbg_victim(Boolean vblt_vbg_victim) {
+	public void setVblt_vbg_victim(Byte vblt_vbg_victim) {
 		this.vblt_vbg_victim = vblt_vbg_victim;
 	}
 
@@ -334,40 +422,56 @@ public class BeneficiarySyncModel extends BasicLifeCycleSyncModel
 		this.vblt_vbg_time = vblt_vbg_time;
 	}
 
-	public Boolean getVblt_alcohol_drugs_use() {
+	public Byte getVblt_alcohol_drugs_use() {
 		return vblt_alcohol_drugs_use;
 	}
 
-	public void setVblt_alcohol_drugs_use(Boolean vblt_alcohol_drugs_use) {
+	public void setVblt_alcohol_drugs_use(Byte vblt_alcohol_drugs_use) {
 		this.vblt_alcohol_drugs_use = vblt_alcohol_drugs_use;
 	}
 
-	public Boolean getVblt_sti_history() {
+	public Byte getVblt_sti_history() {
 		return vblt_sti_history;
 	}
 
-	public void setVblt_sti_history(Boolean vblt_sti_history) {
+	public void setVblt_sti_history(Byte vblt_sti_history) {
 		this.vblt_sti_history = vblt_sti_history;
 	}
 
-	public Boolean getVblt_sex_worker() {
+	public Byte getVblt_sex_worker() {
 		return vblt_sex_worker;
 	}
 
-	public void setVblt_sex_worker(Boolean vblt_sex_worker) {
+	public void setVblt_sex_worker(Byte vblt_sex_worker) {
 		this.vblt_sex_worker = vblt_sex_worker;
 	}
 
-	public Boolean getVblt_house_sustainer() {
+	public Byte getVblt_house_sustainer() {
 		return vblt_house_sustainer;
 	}
 
-	public void setVblt_house_sustainer(Boolean vblt_house_sustainer) {
+	public void setVblt_house_sustainer(Byte vblt_house_sustainer) {
 		this.vblt_house_sustainer = vblt_house_sustainer;
 	}
 
 	public void setE_mail(String e_mail) {
 		this.e_mail = e_mail;
+	}
+
+	public String getReferences_a() {
+		return references_a;
+	}
+
+	public void setReferences_a(String references_a) {
+		this.references_a = references_a;
+	}
+
+	public String getOffline_id() {
+		return offline_id;
+	}
+
+	public void setOffline_id(String offline_id) {
+		this.offline_id = offline_id;
 	}
 
 }

@@ -1,5 +1,5 @@
 package dlt.dltbackendmaster.domain;
-// Generated Jan 25, 2022, 4:05:43 PM by Hibernate Tools 5.2.12.Final
+// Generated Jun 13, 2022, 9:37:47 AM by Hibernate Tools 5.2.12.Final
 
 import java.util.Date;
 import java.util.HashSet;
@@ -24,11 +24,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Table(name = "us_type", catalog = "dreams_db")
 public class UsType implements java.io.Serializable {
 
+	private static final long serialVersionUID = 4843139494353941070L;
 	private Integer id;
 	private String name;
 	private String level;
 	private String type;
 	private String description;
+	private String entryPoint;
 	private int status;
 	private int createdBy;
 	private Date dateCreated;
@@ -110,6 +112,15 @@ public class UsType implements java.io.Serializable {
 		this.description = description;
 	}
 
+	@Column(name = "entry_point")
+	public String getEntryPoint() {
+		return entryPoint;
+	}
+
+	public void setEntryPoint(String entryPoint) {
+		this.entryPoint = entryPoint;
+	}
+
 	@Column(name = "status", nullable = false)
 	public int getStatus() {
 		return this.status;
@@ -119,6 +130,7 @@ public class UsType implements java.io.Serializable {
 		this.status = status;
 	}
 
+	@JsonIgnore
 	@Column(name = "created_by", nullable = false)
 	public int getCreatedBy() {
 		return this.createdBy;
@@ -128,6 +140,7 @@ public class UsType implements java.io.Serializable {
 		this.createdBy = createdBy;
 	}
 
+	@JsonIgnore
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "date_created", nullable = false, length = 19)
 	public Date getDateCreated() {
@@ -138,6 +151,7 @@ public class UsType implements java.io.Serializable {
 		this.dateCreated = dateCreated;
 	}
 
+	@JsonIgnore
 	@Column(name = "updated_by")
 	public Integer getUpdatedBy() {
 		return this.updatedBy;
@@ -147,6 +161,7 @@ public class UsType implements java.io.Serializable {
 		this.updatedBy = updatedBy;
 	}
 
+	@JsonIgnore
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "date_updated", length = 19)
 	public Date getDateUpdated() {

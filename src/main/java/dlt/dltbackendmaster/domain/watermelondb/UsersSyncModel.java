@@ -12,11 +12,13 @@ public class UsersSyncModel {
 	private String password;
 	private String entry_point;
 	private String status;
-	private Integer locality_id;
+	private String localities_ids;
 	private Integer partner_id;
 	private Integer profile_id;
-	private Integer us_id;
+	private String us_ids;
 	private Integer online_id;
+	private String organization_name;
+	private String password_last_change_date;
 	
 	public UsersSyncModel() {}
 	
@@ -86,11 +88,11 @@ public class UsersSyncModel {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	public Integer getLocality_id() {
-		return locality_id;
+	public String getLocalities_ids() {
+		return localities_ids;
 	}
-	public void setLocality_id(Integer locality_id) {
-		this.locality_id = locality_id;
+	public void setLocalities_ids(String localities_ids) {
+		this.localities_ids = localities_ids;
 	}
 	public Integer getPartner_id() {
 		return partner_id;
@@ -104,11 +106,11 @@ public class UsersSyncModel {
 	public void setProfile_id(Integer profile_id) {
 		this.profile_id = profile_id;
 	}
-	public Integer getUs_id() {
-		return us_id;
+	public String getUs_ids() {
+		return us_ids;
 	}
-	public void setUs_id(Integer us_id) {
-		this.us_id = us_id;
+	public void setUs_ids(String us_id) {
+		this.us_ids = us_id;
 	}
 	public Integer getOnline_id() {
 		return online_id;
@@ -128,12 +130,29 @@ public class UsersSyncModel {
 				+ "password: " + password + "\n"
 				+ "entry_point: " + entry_point + "\n"
 				+ "status: " + status + "\n"
-				+ "locality_id: " + locality_id + "\n"
+				+ "localities_ids: " + localities_ids + "\n"
 				+ "partner_id" + partner_id + "\n"
 				+ "profile_id: " + profile_id + "\n"
-				+ "us_id: " + us_id + "\n"
+				+ "us_id: " + us_ids + "\n"
+				+ "password_last_change_date: "+password_last_change_date+ "\n"
 				+ "online_id: " + online_id + "\n";
 		return object;
+	}
+
+	public String getOrganization_name() {
+		return organization_name;
+	}
+
+	public void setOrganization_name(String organization_name) {
+		this.organization_name = organization_name;
+	}
+
+	public String getPassword_last_change_date() {
+		return password_last_change_date;
+	}
+
+	public void setPassword_last_change_date(String password_last_change_date) {
+		this.password_last_change_date = password_last_change_date;
 	}
 	
 }

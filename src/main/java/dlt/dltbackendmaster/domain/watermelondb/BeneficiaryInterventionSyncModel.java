@@ -1,21 +1,31 @@
 package dlt.dltbackendmaster.domain.watermelondb;
 
+import java.util.Date;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class BeneficiaryInterventionSyncModel
 {
     private String id;
     private Integer beneficiary_id;
+    private String beneficiary_offline_id;
     private Integer sub_service_id;
     private String result;
     private String date;
     private Integer us_id;
     private Integer activist_id;
-    private Integer entry_point;
+    private String entry_point;
     private String provider;
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone="Africa/Maputo")
+	private Date date_created;
     private String remarks;
     private Integer status;
     private String _status;
     private String _changed;
-    private Integer online_id;
+    private String online_id;
 
     public BeneficiaryInterventionSyncModel() {}
 
@@ -35,7 +45,15 @@ public class BeneficiaryInterventionSyncModel
         this.beneficiary_id = beneficiary_id;
     }
 
-    public Integer getSub_service_id() {
+    public String getBeneficiary_offline_id() {
+		return beneficiary_offline_id;
+	}
+
+	public void setBeneficiary_offline_id(String beneficiaty_offline_id) {
+		this.beneficiary_offline_id = beneficiaty_offline_id;
+	}
+
+	public Integer getSub_service_id() {
         return sub_service_id;
     }
 
@@ -75,11 +93,11 @@ public class BeneficiaryInterventionSyncModel
         this.activist_id = activist_id;
     }
 
-    public Integer getEntry_point() {
+    public String getEntry_point() {
         return entry_point;
     }
 
-    public void setEntry_point(Integer entry_point) {
+    public void setEntry_point(String entry_point) {
         this.entry_point = entry_point;
     }
 
@@ -91,7 +109,15 @@ public class BeneficiaryInterventionSyncModel
         this.provider = provider;
     }
 
-    public String getRemarks() {
+    public Date getDate_created() {
+		return date_created;
+	}
+
+	public void setDate_created(Date date_created) {
+		this.date_created = date_created;
+	}
+
+	public String getRemarks() {
         return remarks;
     }
 
@@ -123,11 +149,11 @@ public class BeneficiaryInterventionSyncModel
         this._changed = _changed;
     }
 
-    public Integer getOnline_id() {
+    public String getOnline_id() {
         return online_id;
     }
 
-    public void setOnline_id(Integer online_id) {
+    public void setOnline_id(String online_id) {
         this.online_id = online_id;
     }
 }

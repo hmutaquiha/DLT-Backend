@@ -18,11 +18,12 @@ public class UsTypeSerializer extends JsonSerializer<UsType> {
 		usType.setDescription(value.getDescription());
 		usType.setLevel(value.getLevel());
 		usType.setType(value.getType());
+		usType.setEntryPoint(value.getEntryPoint());
 		usType.setStatus(value.getStatus());
-		usType.setDateCreated(value.getDateCreated());
+		/*usType.setDateCreated(value.getDateCreated());
 		usType.setDateUpdated(value.getDateUpdated());
 		usType.setCreatedBy(value.getCreatedBy());
-		usType.setUpdatedBy(value.getUpdatedBy());
+		usType.setUpdatedBy(value.getUpdatedBy());*/
 		gen.writeObject(usType);
 	}
 

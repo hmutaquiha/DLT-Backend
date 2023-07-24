@@ -27,6 +27,12 @@ public interface DAORepository {
 	<T> T GetUniqueEntityByNamedQuery(String query, Object... params);
 
 	<T> List<T> GetAllEntityByNamedQuery(String query, Object... params);
+	
+	<T> List<T> GetAllPagedEntityByNamedQuery(String query, int pageIndex, int pageSize,String searchNui, Integer searchUserCreator, Integer searchDistrict , Object... params);
+	
+	<T> List<T> GetByParamsPagedEntityByNamedQuery(String query, int pageIndex, int pageSize, Object... params);
+	
+	<T> List<T> GetAllEntityByNamedNativeQuery(String query, Object... params);
 
 	<T> T find(Class<T> klass, Object id);
 
@@ -39,4 +45,6 @@ public interface DAORepository {
 	<T> List<T> findByJPQueryFilter(String hql, Map<String, Object> namedParams, int f, int m);
 
 	<T> void delete(T klass);
+	
+	<T> int UpdateEntitiesByNamedQuery(String query, Object... params);
 }

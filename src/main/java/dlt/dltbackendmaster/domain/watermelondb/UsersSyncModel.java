@@ -151,14 +151,24 @@ public class UsersSyncModel {
 	public void setOnline_id(Integer online_id) {
 		this.online_id = online_id;
 	}
-
+	
 	public String toString() {
-		String object = "" + "id: " + id + "\n" + "name: " + name + "\n" + "surname: " + surname + "\n"
-				+ "phone_number: " + phone_number + "\n" + "email: " + email + "\n" + "username: " + username + "\n"
-				+ "password: " + password + "\n" + "entry_point: " + entry_point + "\n" + "status: " + status + "\n"
-				+ "localities_ids: " + localities_ids + "\n" + "partner_id" + partner_id + "\n" + "profile_id: "
-				+ profile_id + "\n" + "us_id: " + us_ids + "\n" + "password_last_change_date: "
-				+ password_last_change_date + "\n" + "online_id: " + online_id + "\n";
+		String object = ""
+				+ "id: " + id + "\n"
+				+ "name: " + name + "\n"
+				+ "surname: " + surname + "\n"
+				+ "phone_number: " + phone_number + "\n"
+				+ "email: " + email + "\n"
+				+ "username: " + username + "\n"
+				+ "password: " + password + "\n"
+				+ "entry_point: " + entry_point + "\n"
+				+ "status: " + status + "\n"
+				+ "localities_ids: " + localities_ids + "\n"
+				+ "partner_id" + partner_id + "\n"
+				+ "profile_id: " + profile_id + "\n"
+				+ "us_id: " + us_ids + "\n"
+				+ "password_last_change_date: "+password_last_change_date+ "\n"
+				+ "online_id: " + online_id + "\n";
 		return object;
 	}
 

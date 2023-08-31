@@ -309,6 +309,8 @@ public class ReferencesServices implements java.io.Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
+		if (id == null)
+			return false;
 		ReferencesServices other = (ReferencesServices) obj;
 		if (id.getReferenceId() != other.id.getReferenceId() || id.getServiceId() != other.id.getServiceId())
 			return false;

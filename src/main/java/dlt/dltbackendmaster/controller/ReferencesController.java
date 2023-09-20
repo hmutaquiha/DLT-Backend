@@ -5,8 +5,6 @@ import static dlt.dltbackendmaster.util.ProfilesConstants.MANAGER;
 import static dlt.dltbackendmaster.util.ProfilesConstants.MENTOR;
 import static dlt.dltbackendmaster.util.ProfilesConstants.NURSE;
 
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -381,7 +379,7 @@ public class ReferencesController {
 				List<Integer> localitiesId = user.getLocalities().stream().map(Locality::getId)
 						.collect(Collectors.toList());
 
-				referencesTotal = service.GetUniqueEntityByNamedQuery("References.findCountPendingByLocalities",new Date(searchStartDate * 1000L), new Date(searchEndDate * 1000L),  localitiesId);
+				referencesTotal = service.GetUniqueEntityByNamedQuery("References.findCountPendingByLocalities",new Date(searchStartDate * 1000L), localitiesId, new Date(searchEndDate * 1000L));
 
 			} else if (user.getDistricts().size() > 0) {
 
@@ -395,7 +393,7 @@ public class ReferencesController {
 				List<Integer> provincesId = user.getProvinces().stream().map(Province::getId)
 						.collect(Collectors.toList());
 
-				referencesTotal = service.GetUniqueEntityByNamedQuery("References.findCountPendingByProvinces",new Date(searchStartDate * 1000L), new Date(searchEndDate * 1000L), provincesId);
+				referencesTotal = service.GetUniqueEntityByNamedQuery("References.findCountPendingByProvinces", new Date(searchStartDate * 1000L), provincesId, new Date(searchEndDate * 1000L));
 
 			} else {
 				referencesTotal = service.GetUniqueEntityByNamedQuery("References.findCountAllPending", new Date(searchStartDate * 1000L), new Date(searchEndDate * 1000L));

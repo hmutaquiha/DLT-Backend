@@ -1,9 +1,10 @@
 package dlt.dltbackendmaster.controller;
 
+import java.time.Instant;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -79,7 +80,12 @@ public class BeneficiaryInterventionController {
 
 			for (ReferencesServices referenceServices : referencesServices) {
 
-				Set<BeneficiariesInterventions> interventions = beneficiary.getBeneficiariesInterventionses();
+				// Get only interventions provided on or after referral date
+				References reference = referenceServices.getReferences();
+				List<BeneficiariesInterventions> interventions = service.GetAllEntityByNamedQuery(
+						"BeneficiaryIntervention.findAllByBeneficiaryAndDate",
+						Instant.ofEpochMilli(reference.getDate().getTime()).atZone(ZoneId.systemDefault()).toLocalDate(),
+						beneficiary.getId());
 				Integer referenceServiceStatus = ServiceCompletionRules.getReferenceServiceStatus(interventions,
 						serviceId);
 
@@ -90,7 +96,6 @@ public class BeneficiaryInterventionController {
 					referenceServices = service.update(referenceServices);
 
 					// Actualizar o status da referências
-					References reference = referenceServices.getReferences();
 					Integer referenceStatus = ServiceCompletionRules.getReferenceStatus(reference, interventions);
 
 					if (referenceStatus.intValue() != reference.getStatus()) {

@@ -47,7 +47,6 @@ import dlt.dltbackendmaster.domain.ReferencesServicesId;
 import dlt.dltbackendmaster.domain.Services;
 import dlt.dltbackendmaster.domain.SubServices;
 import dlt.dltbackendmaster.domain.Us;
-import dlt.dltbackendmaster.domain.UsersSync;
 import dlt.dltbackendmaster.domain.UsersBeneficiariesCustomSync;
 import dlt.dltbackendmaster.domain.UsersSync;
 import dlt.dltbackendmaster.domain.watermelondb.BeneficiaryInterventionSyncModel;
@@ -59,6 +58,7 @@ import dlt.dltbackendmaster.domain.watermelondb.UsersSyncModel;
 import dlt.dltbackendmaster.serializers.SyncSerializer;
 import dlt.dltbackendmaster.service.DAOService;
 import dlt.dltbackendmaster.service.SequenceGenerator;
+import dlt.dltbackendmaster.service.UserLastSyncService;
 import dlt.dltbackendmaster.service.UsersBeneficiariesCustomSyncService;
 import dlt.dltbackendmaster.service.VulnerabilityHistoryService;
 import dlt.dltbackendmaster.util.ServiceCompletionRules;
@@ -77,6 +77,9 @@ public class SyncController {
 
 	@Autowired
 	private VulnerabilityHistoryService vulnerabilityHistoryService;
+	
+	@Autowired
+	private UserLastSyncService userLastSyncService;
 
 	@Autowired
 	public SyncController(DAOService service) {
@@ -205,7 +208,10 @@ public class SyncController {
 			beneficiariesCreated.addAll(refBeneficiaries);
 
 			for (Beneficiaries beneficiary : beneficiariesCreated) {
-				if (beneficiary.getLocality() != null) {
+				if (beneficiary.getLocality() != null 
+						&& !user.getProfiles().getName().equals("MENTORA") 
+						&& !user.getProfiles().getName().equals("ENFERMEIRA") 
+						&& !user.getProfiles().getName().equals("CONSELHEIRA")) {
 					localitiesIds.add(beneficiary.getLocality().getId());
 				}
 				beneficiariesInterventionsCreated.addAll(beneficiary.getBeneficiariesInterventionses());
@@ -234,10 +240,10 @@ public class SyncController {
 					Arrays.asList(localitiesIds.toArray()));
 			neighborhoodsUpdated = new ArrayList<Neighborhood>();
 
-			servicesCreated = service.GetAllEntityByNamedQuery("Service.findAll");
+			servicesCreated = service.GetAllEntityByNamedQuery("Service.findAny");
 			servicesUpdated = new ArrayList<Services>();
 
-			subServicesCreated = service.GetAllEntityByNamedQuery("SubService.findAll");
+			subServicesCreated = service.GetAllEntityByNamedQuery("SubService.findAny");
 			subServicesUpdated = new ArrayList<SubServices>();
 
 			// ReferencesServices
@@ -266,7 +272,6 @@ public class SyncController {
 					referenceServicesCreatedCustomized.addAll(refServicesByRef);
 				}
 			}
-			
 			beneficiariesCreated.addAll(beneficiariesCreatedCustomized);
 		} else {
 			Long t = Long.valueOf(lastPulledAt);
@@ -332,11 +337,11 @@ public class SyncController {
 			neighborhoodsCreated = service.GetAllEntityByNamedQuery("Neighborhood.findByDateCreated", validatedDate);
 			neighborhoodsUpdated = service.GetAllEntityByNamedQuery("Neighborhood.findByDateUpdated", validatedDate);
 
-			servicesCreated = service.GetAllEntityByNamedQuery("Service.findByDateCreated", validatedDate);
-			servicesUpdated = service.GetAllEntityByNamedQuery("Service.findByDateUpdated", validatedDate);
+			servicesCreated = service.GetAllEntityByNamedQuery("Service.findAnyByDateCreated", validatedDate);
+			servicesUpdated = service.GetAllEntityByNamedQuery("Service.findAnyByDateUpdated", validatedDate);
 
-			subServicesCreated = service.GetAllEntityByNamedQuery("SubService.findByDateCreated", validatedDate);
-			subServicesUpdated = service.GetAllEntityByNamedQuery("SubService.findByDateUpdated", validatedDate);
+			subServicesCreated = service.GetAllEntityByNamedQuery("SubService.findAnyByDateCreated", validatedDate);
+			subServicesUpdated = service.GetAllEntityByNamedQuery("SubService.findAnyByDateUpdated", validatedDate);
 
 			referencesCreated = service.GetAllEntityByNamedQuery(
 					"References.findByReferenceNotifyToOrReferredByAndDateCreated", user.getId(), validatedDate);
@@ -392,7 +397,6 @@ public class SyncController {
 					referenceServicesUpdatedCustomized.addAll(refServicesByRef);
 				}
 			}
-			
 			beneficiariesUpdated.addAll(beneficiariesUpdatedCustomized);
 		}
 
@@ -450,6 +454,8 @@ public class SyncController {
 			String object = SyncSerializer.createSyncObject(usersSO, provinceSO, districtSO, localitySO, profilesSO,
 					partnersSO, usSO, beneficiarySO, beneficiaryInterventionSO, neighborhoodSO, serviceSO, subServiceSO,
 					referencesSO, referencesServicesSO, lastPulledAt);
+			
+			userLastSyncService.saveLastSyncDate(username);
 
 			return new ResponseEntity<>(object, HttpStatus.OK);
 		} catch (Exception e) {
@@ -697,13 +703,29 @@ public class SyncController {
 
 					} else {
 						String[] keys = updated.getOnline_id().split(",");
-						BeneficiariesInterventionsId bId = new BeneficiariesInterventionsId(Integer.valueOf(keys[0]),
-								Integer.valueOf(keys[1]), LocalDate.parse(keys[2]));
+						Integer beneficiaryId = Integer.valueOf(keys[0]);
+						Integer subServiceId = Integer.valueOf(keys[1]);
+						LocalDate interventionDate = LocalDate.parse(keys[2]);
+						BeneficiariesInterventionsId bId = new BeneficiariesInterventionsId(beneficiaryId, subServiceId,
+								interventionDate);
 						BeneficiariesInterventions intervention = service.find(BeneficiariesInterventions.class, bId);
 						if (intervention != null) {
+							intervention.setDateUpdated(new Date());
 							intervention.setUpdatedBy(String.valueOf(user.getId()));
 							intervention.update(updated, lastPulledAt);
 							service.update(intervention);
+
+							// If there was an update on the key, intervention must be deleted
+							if (updated.getSub_service_id() != subServiceId || !updated.getDate().equals(keys[2])) {
+
+								BeneficiariesInterventionsId bId1 = new BeneficiariesInterventionsId(beneficiaryId,
+										subServiceId, interventionDate);
+								BeneficiariesInterventions intervToDelete = service
+										.find(BeneficiariesInterventions.class, bId1);
+
+								service.delete(intervToDelete);
+
+							}
 						}
 					}
 				}
@@ -764,6 +786,8 @@ public class SyncController {
 					}
 				}
 			}
+			
+			userLastSyncService.saveLastSyncDate(username);
 
 		} catch (JsonProcessingException e) {
 			// TODO Auto-generated catch block

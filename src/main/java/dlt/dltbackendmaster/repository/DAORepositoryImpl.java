@@ -2,6 +2,7 @@ package dlt.dltbackendmaster.repository;
 
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -99,6 +100,32 @@ public class DAORepositoryImpl implements DAORepository {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public <T> T GetUniqueEntityByNamedQuery(String query, String searchNui, Integer searchUserCreator, Integer searchDistrict, Object... params) {
+		Query q = getCurrentSession().getNamedQuery(query);
+		
+		int i = 0;
+		for (Parameter param : q.getParameters()) {
+			if(!"searchNui".equals(param.getName()) && !"searchUserCreator".equals(param.getName()) && !"searchDistrict".equals(param.getName())) {
+				q.setParameter(param, params[i]);
+				i++;
+			}else {
+				q.setParameter("searchNui", "%"+searchNui+"%");
+				q.setParameter("searchUserCreator",searchUserCreator); 
+				q.setParameter("searchDistrict", searchDistrict); 
+			}	
+		}
+
+		List<T> results = q.list();
+
+		T foundentity = null;
+		if (!results.isEmpty()) {
+			// ignores multiple results
+			foundentity = results.get(0);
+		}
+		return foundentity;
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public <T> List<T> GetAllEntityByNamedQuery(String query, Object... params) {
 		Query q = getCurrentSession().getNamedQuery(query);
 		int i = 0;
@@ -135,7 +162,54 @@ public class DAORepositoryImpl implements DAORepository {
 
 		return results;
 	}
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public <T> List<T> GetAllPagedEntityByNamedQuery(String query, int pageIndex, int pageSize, String searchUsername, Integer searchUserCreator, Object... params) {
+		Query q = getCurrentSession().getNamedQuery(query);
+		int i = 0;
+		
 
+		for (Parameter param : q.getParameters()) {
+			if(!"searchUsername".equals(param.getName()) && !"searchUserCreator".equals(param.getName())) {
+				q.setParameter(param, params[i]);
+				i++;
+			}else {
+				q.setParameter("searchUsername", "%"+searchUsername+"%");
+				q.setParameter("searchUserCreator", searchUserCreator); 
+			}	
+		}
+
+		List<T> results = q
+				.setFirstResult(pageIndex*pageSize)
+				.setMaxResults(pageSize)
+				.getResultList();
+
+		return results;
+	}
+
+    @Override
+    public <T> List<T> GetAllPagedEntityByNamedQuery(String query, int pageIndex, int pageSize, Date searchStartDate,
+            Date searchEndDate, Object... params) {
+        Query q = getCurrentSession().getNamedQuery(query);
+        int i = 0;
+        
+        for (Parameter param : q.getParameters()) {
+            if(!"searchEndDate".equals(param.getName()) && !"searchStartDate".equals(param.getName())) {
+                q.setParameter(param, params[i]);
+                i++;
+            }else {
+                q.setParameter("searchStartDate", searchStartDate);
+                q.setParameter("searchEndDate", searchEndDate); 
+            }   
+        }
+        List<T> results = q
+                .setFirstResult(pageIndex*pageSize)
+                .setMaxResults(pageSize)
+                .getResultList();
+
+        return results;
+    }
+    
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public <T> List<T> GetAllEntityByNamedNativeQuery(String query, Object... params) {
         Query q = getCurrentSession().getNamedNativeQuery(query);
@@ -284,4 +358,5 @@ public class DAORepositoryImpl implements DAORepository {
 
 		return results;
 	}
+
 }

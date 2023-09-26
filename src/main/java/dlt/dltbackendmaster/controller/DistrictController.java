@@ -2,6 +2,9 @@ package dlt.dltbackendmaster.controller;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.security.auth.login.AccountLockedException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import dlt.dltbackendmaster.domain.District;
@@ -94,5 +98,29 @@ public class DistrictController {
         }
         
     }
+
+	@GetMapping("/districtsIds")
+	public ResponseEntity<List<District>> getIds(@RequestParam("id") List<String> districtsID){
+		try {
+			List<Integer> distIds = districtsID.stream().map(Integer::parseInt).collect(Collectors.toList());
+			
+			List<District> districts = service.GetAllEntityByNamedQuery("District.findByIds", distIds);
+			return ResponseEntity.ok(districts);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}		
+	}
+	
+	@GetMapping(path = "/districts/get-districts", produces = "application/json")
+	public ResponseEntity<List<District>>  getNames() throws AccountLockedException {
+		try {
+			List<District> user = service.GetAllEntityByNamedQuery("District.findDistricts");
+
+			return new ResponseEntity<>(user, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 	
 }

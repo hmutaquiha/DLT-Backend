@@ -161,10 +161,16 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 																+ " or b.id in (SELECT r.beneficiaries.id from References r "
 																+ "				where r.notifyTo.id = :userId)) "
 																+ " and b.status = 1 "
+																+ " and b.nui like :searchNui "
+                												+ " AND (:searchUserCreator IS NULL OR b.createdBy = :searchUserCreator OR b.updatedBy =:searchUserCreator) "
+												                + " AND (:searchDistrict IS NULL OR b.district.id = :searchDistrict) "
 																+ ""),
                 @NamedQuery(name = "Beneficiary.findCountByDistricts", query = "SELECT count(b.id) as total FROM Beneficiaries b "
 																+ " where b.district.id in (:districts)"
 																+ " and b.status = 1 "
+																+ " and b.nui like :searchNui "
+                												+ " AND (:searchUserCreator IS NULL OR b.createdBy = :searchUserCreator OR b.updatedBy =:searchUserCreator) "
+												                + " AND (:searchDistrict IS NULL OR b.district.id = :searchDistrict) "
 																+ ""),
                 @NamedQuery(name = "Beneficiary.findCountByDistrictAndGender", query = "SELECT count(b.id) as total FROM Beneficiaries b "
 																+ " where b.district.id = :district "
@@ -174,9 +180,15 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 				@NamedQuery(name = "Beneficiary.findCountByProvinces", query = "SELECT count(b.id) as total FROM Beneficiaries b "
 																+ " where b.district.province.id in (:provinces) "
 																+ " and b.status = 1 "
+																+ " and b.nui like :searchNui "
+                												+ " AND (:searchUserCreator IS NULL OR b.createdBy = :searchUserCreator OR b.updatedBy =:searchUserCreator) "
+												                + " AND (:searchDistrict IS NULL OR b.district.id = :searchDistrict) "
 																+ ""),
 				@NamedQuery(name = "Beneficiary.findCountAll", query = "SELECT count(b.id) as total FROM Beneficiaries b "
 																+ " where b.status = 1 "
+																+ " and b.nui like :searchNui "
+                												+ " AND (:searchUserCreator IS NULL OR b.createdBy = :searchUserCreator OR b.updatedBy =:searchUserCreator) "
+												                + " AND (:searchDistrict IS NULL OR b.district.id = :searchDistrict) "
 																+ ""),
 				@NamedQuery(name = "Beneficiary.findByReferenceNotifyToOrBeneficiaryCreatedBy", query = "SELECT  b FROM  Beneficiaries b "
 																+ " left join  b.neighborhood nb "
@@ -511,7 +523,7 @@ public class Beneficiaries implements java.io.Serializable
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "neighbourhood_id", nullable = false)
+    @JoinColumn(name = "neighbourhood_id", nullable = true)
 	@JsonSerialize(using = NeighborhoodSerializer.class)
     public Neighborhood getNeighborhood() {
         return this.neighborhood;
@@ -1065,7 +1077,6 @@ public class Beneficiaries implements java.io.Serializable
 				beneficiary.put("locality_name", "");
 			} else {
 				beneficiary.put("neighborhood_id", neighborhood.getId());
-				Locality locality = neighborhood.getLocality();
 				if (locality == null) {
 					beneficiary.put("locality_id", "");
 					beneficiary.put("locality_name", "");
@@ -1138,7 +1149,7 @@ public class Beneficiaries implements java.io.Serializable
         this.via = model.getVia();
         this.nationality = model.getNationality();
         this.entryPoint = model.getEntry_point();
-        this.neighborhood.setId(model.getNeighborhood_id());
+        this.neighborhood = model.getNeighborhood_id() == 0? null : new Neighborhood(model.getNeighborhood_id());
         this.us = model.getUs_id() == 0? null : new Us(model.getUs_id());
         this.status = Integer.valueOf(model.getStatus());
         this.vbltLivesWith = model.getVblt_lives_with();

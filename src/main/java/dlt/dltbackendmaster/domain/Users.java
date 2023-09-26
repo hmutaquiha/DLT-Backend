@@ -68,9 +68,20 @@ import dlt.dltbackendmaster.serializers.UssSerializer;
 				+ "left join fetch u.users_provinces up on up.user_id = u.id "
 				+ "where up.province_id in (:provinces)", resultClass = Users.class), })
 
-@NamedQueries({ @NamedQuery(name = "Users.findAll", query = "SELECT u FROM Users u"),
+@NamedQueries({ @NamedQuery(name = "Users.findAll", query = "SELECT u FROM Users u "
+															+ " Where u.username like :searchUsername "
+															+ " AND (:searchUserCreator IS NULL OR u.createdBy = :searchUserCreator OR u.updatedBy =:searchUserCreator) "
+															+ ""),
+		@NamedQuery(name = "Users.findByAlocatProvinces", query = "SELECT u.id as id, u.username as username FROM Users u INNER JOIN u.provinces p where p.id in (:provinces)"),
+		@NamedQuery(name = "Users.findByAlocatDistricts", query = "SELECT u.id as id, u.username as username FROM Users u INNER JOIN u.districts d where d.id in (:districts)"),
 		@NamedQuery(name = "Users.findByUsername", query = "SELECT u FROM Users u where u.username = :username"),
 		@NamedQuery(name = "Users.findByUsId", query = "SELECT u FROM Users u INNER JOIN u.us us where us.id in (:us) and u.status = 1"),
+		@NamedQuery(name = "Users.findByLocalityId", query = "SELECT u "
+															+ "FROM Users u "
+															+ "INNER JOIN u.us us "
+															+ "INNER JOIN us.locality l "
+															+ "where l.id in (:l) "
+															+ "and u.status = 1"),
 		@NamedQuery(name = "Users.findByResetPasswordToken", query = "SELECT u FROM Users u where u.recoverPasswordToken = :recoverPasswordToken"),
 		@NamedQuery(name = "Users.findByProfiles", query = "SELECT u FROM Users u where u.profiles.id in (:profiles)"),
 		@NamedQuery(name = "Users.findByProfilesAndOrganization", query = "SELECT u FROM Users u where u.profiles.id in (:profiles) and u.partners.id = :organizationId"),

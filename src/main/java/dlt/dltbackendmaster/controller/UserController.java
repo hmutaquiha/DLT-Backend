@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import dlt.dltbackendmaster.domain.Locality;
@@ -65,6 +67,28 @@ public class UserController {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
+	@GetMapping(path = "/paged", produces = "application/json")
+    public ResponseEntity<List<Users>> get(
+    		@RequestParam(name = "userId") Integer userId, 
+    		@RequestParam(name = "level") String level, 
+    		@RequestParam(name = "params",required = false) @Nullable Integer[] params,
+    		@RequestParam(name = "pageIndex") int pageIndex,
+    		@RequestParam(name = "pageSize") int pageSize,
+    		@RequestParam(name = "searchUsername", required = false) @Nullable String searchUsername,
+    		@RequestParam(name = "searchUserCreator", required = false) @Nullable Integer searchUserCreator
+    		) {
+
+        try {
+            List<Users> users = service.GetAllPagedEntityByNamedQuery("Users.findAll", pageIndex, pageSize, searchUsername, searchUserCreator);
+
+            return new ResponseEntity<List<Users>>(users, HttpStatus.OK);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            System.out.println(e.getMessage());
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 	@GetMapping(path = "/{Id}", produces = "application/json")
 	public ResponseEntity<Users> get(@PathVariable Integer Id) {
@@ -99,7 +123,6 @@ public class UserController {
 						+ HttpStatus.FORBIDDEN);
 				return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
 			}
-
 		} catch (Exception e) {
 			logger.warn("User " + user.getUsername()
 					+ " tried to register, but the system had unkown error, check error code returned "
@@ -200,6 +223,22 @@ public class UserController {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
+	@GetMapping(path = "/locality/{Id}", produces = "application/json")
+	public ResponseEntity<List<Users>> getByLocality(@PathVariable Integer Id) {
+
+		if (Id == null) {
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		}
+
+		try {
+			List<Users> user = service.GetAllEntityByNamedQuery("Users.findByLocalityId", Id);
+
+			return new ResponseEntity<>(user, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
 	@GetMapping(path = "/byProfilesAndUser/{profiles}/{userId}", produces = "application/json")
 	public ResponseEntity<List<Users>> getByProfilesAndUser(@PathVariable List<String> profiles,
@@ -274,4 +313,29 @@ public class UserController {
 		}
 	}
 
+	@GetMapping("/provinces")
+	public ResponseEntity<List<Users>> getUsersPrv(@RequestParam("provinces") List<String> provinces){
+		try {
+			List<Integer> provIds = provinces.stream().map(Integer::parseInt).collect(Collectors.toList());
+			
+			List<Users> user = service.GetAllEntityByNamedQuery("Users.findByAlocatProvinces", provIds);
+			return ResponseEntity.ok(user);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}		
+	}
+
+	@GetMapping("/districts")
+	public ResponseEntity<List<Users>> getUsers(@RequestParam("districts") List<String> districts){
+		try {
+			List<Integer> distIds = districts.stream().map(Integer::parseInt).collect(Collectors.toList());
+			
+			List<Users> user = service.GetAllEntityByNamedQuery("Users.findByAlocatDistricts", distIds);
+			return ResponseEntity.ok(user);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}		
+	}
 }

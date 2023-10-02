@@ -123,7 +123,6 @@ public class UserController {
 						+ HttpStatus.FORBIDDEN);
 				return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
 			}
-
 		} catch (Exception e) {
 			logger.warn("User " + user.getUsername()
 					+ " tried to register, but the system had unkown error, check error code returned "
@@ -338,6 +337,5 @@ public class UserController {
 			e.printStackTrace();
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}		
-	}	
-	
+	}
 }

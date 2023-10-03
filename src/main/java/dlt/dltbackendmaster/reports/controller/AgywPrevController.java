@@ -1,5 +1,6 @@
 package dlt.dltbackendmaster.reports.controller;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import dlt.dltbackendmaster.reports.AgywPrevReport;
+import dlt.dltbackendmaster.reports.domain.NewlyEnrolledAgywAndServices;
 import dlt.dltbackendmaster.reports.domain.ResultObject;
 import dlt.dltbackendmaster.service.DAOService;
 
@@ -41,6 +43,21 @@ public class AgywPrevController {
 		try {
 			Map<Integer, Map<String, ResultObject>> reportObject = report.getAgywPrevResultObject(districts, startDate,
 					endDate);
+
+			return new ResponseEntity<>(reportObject, HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@GetMapping(produces = "application/json", path = "/getNewlyEnrolledAgywAndServices")
+	public ResponseEntity <List<Object> > getNewlyEnrolledAgywAndServices() {
+
+		AgywPrevReport report = new AgywPrevReport(service);
+
+		try {
+			List<Object> reportObject =report.getNewlyEnrolledAgywAndServices();
 
 			return new ResponseEntity<>(reportObject, HttpStatus.OK);
 		} catch (Exception e) {

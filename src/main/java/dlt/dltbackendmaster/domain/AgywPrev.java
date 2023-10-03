@@ -24,7 +24,9 @@ import dlt.dltbackendmaster.reports.queries.AgywPrevQueries;
 @Table(name = "agyw_prev_mview", catalog = "dreams_db")
 @NamedNativeQueries({
 		@NamedNativeQuery(name = "AgywPrev.findAll", query = "SELECT * FROM agyw_prev_mview", resultClass = AgywPrev.class),
-		@NamedNativeQuery(name = "AgywPrev.findByDistricts", query = AgywPrevQueries.AGYW_PREV, resultClass = AgywPrev.class) })
+		@NamedNativeQuery(name = "AgywPrev.findByDistricts", query = AgywPrevQueries.AGYW_PREV, resultClass = AgywPrev.class), 
+		@NamedNativeQuery(name = "AgywPrev.findByNewlyEnrolledAgywAndServices", query = AgywPrevQueries.NEWLY_ENROLLED_AGYW_AND_SERVICES), 
+		})
 public class AgywPrev implements Serializable {
 
 	private static final long serialVersionUID = 1L;

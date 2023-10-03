@@ -604,4 +604,10 @@ public class AgywPrevReport {
 
 		return ro;
 	}
+
+	public List<Object>  getNewlyEnrolledAgywAndServices() {
+		List<Object> dataObjs = service.GetAllEntityByNamedNativeQuery("AgywPrev.findByNewlyEnrolledAgywAndServices");
+		 
+	    return dataObjs;
+	}
 }

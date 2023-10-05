@@ -196,6 +196,8 @@ public class UserController {
 		try {
 			user.setNewPassword(0);
 			user.setPassword(passwordEncoder.encode(users.getRecoverPassword()));
+			user.setUpdatedBy(user.getId());
+			user.setDateUpdated(new Date());
 			user.setPasswordLastChangeDate(new Date());
 			Users updatedUser = service.update(user);
 			logger.warn("User " + user.getUsername() + " changed password ");

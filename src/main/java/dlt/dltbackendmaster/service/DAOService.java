@@ -47,6 +47,8 @@ public interface DAOService {
     <T> List<T> GetAllPagedEntityByNamedQuery(String query, int pageIndex, int pageSize, Date searchStartDate, Date searchEndDate, Object... params);
 
     <T> List<T> GetAllEntityByNamedNativeQuery(String query, Object... params);
+    
+    <T> List<T> GetAllPagedEntityByNamedNativeQuery(String query, int pageIndex, int pageSize, Date startDate, Date endDate, List<Integer> districts, Object... params);
 	
 	<T> T find(Class<T> klass, Object id);
 

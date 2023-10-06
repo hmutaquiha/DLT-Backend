@@ -42,6 +42,8 @@ public interface DAORepository {
 	<T> List<T> GetByParamsPagedEntityByNamedQuery(String query, int pageIndex, int pageSize, Object... params);
 	
 	<T> List<T> GetAllEntityByNamedNativeQuery(String query, Object... params);
+	
+	<T> List<T> GetAllPagedEntityByNamedNativeQuery(String query, int pageIndex, int pageSize, Date startDate, Date endDate, List<Integer>districts, Object... params);
 
 	<T> T find(Class<T> klass, Object id);
 

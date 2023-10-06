@@ -1,5 +1,8 @@
 package dlt.dltbackendmaster.reports.controller;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -52,12 +55,36 @@ public class AgywPrevController {
 	}
 	
 	@GetMapping(produces = "application/json", path = "/getNewlyEnrolledAgywAndServices")
-	public ResponseEntity <List<Object> > getNewlyEnrolledAgywAndServices() {
+	public ResponseEntity <List<Object> > getNewlyEnrolledAgywAndServices(
+			@RequestParam(name = "districts") Integer[] districts, 
+			@RequestParam(name = "startDate") Long startDate,
+			@RequestParam(name = "endDate") Long endDate,
+			@RequestParam(name = "pageIndex") int pageIndex,
+    		@RequestParam(name = "pageSize") int pageSize) {
+		AgywPrevReport report = new AgywPrevReport(service);
+		try {
+			List<Object> reportObject = report.getNewlyEnrolledAgywAndServices(districts,new Date(startDate * 1000L), new Date(endDate * 1000L),
+					  pageIndex, pageSize);
+
+			return new ResponseEntity<>(reportObject, HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+		
+	@GetMapping(produces = "application/json", path = "/countNewlyEnrolledAgywAndServices")
+	public ResponseEntity <List<Object> > countNewlyEnrolledAgywAndServices(
+			@RequestParam(name = "districts") Integer[] districts, 
+			@RequestParam(name = "startDate") Long startDate,
+			@RequestParam(name = "endDate") Long endDate
+			) {
 
 		AgywPrevReport report = new AgywPrevReport(service);
 
 		try {
-			List<Object> reportObject =report.getNewlyEnrolledAgywAndServices();
+			List<Object> reportObject =report.countNewlyEnrolledAgywAndServices(districts, new Date(startDate * 1000L), new Date(endDate * 1000L));
 
 			return new ResponseEntity<>(reportObject, HttpStatus.OK);
 		} catch (Exception e) {

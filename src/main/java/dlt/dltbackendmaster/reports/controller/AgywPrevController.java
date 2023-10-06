@@ -63,7 +63,7 @@ public class AgywPrevController {
     		@RequestParam(name = "pageSize") int pageSize) {
 		AgywPrevReport report = new AgywPrevReport(service);
 		try {
-			List<Object> reportObject = report.getNewlyEnrolledAgywAndServices(districts,new Date(startDate * 1000L), new Date(endDate * 1000L),
+			List<Object> reportObject = report.getNewlyEnrolledAgywAndServices(districts,new Date(startDate), new Date(endDate),
 					  pageIndex, pageSize);
 
 			return new ResponseEntity<>(reportObject, HttpStatus.OK);
@@ -84,7 +84,7 @@ public class AgywPrevController {
 		AgywPrevReport report = new AgywPrevReport(service);
 
 		try {
-			List<Object> reportObject =report.countNewlyEnrolledAgywAndServices(districts, new Date(startDate * 1000L), new Date(endDate * 1000L));
+			List<Object> reportObject =report.countNewlyEnrolledAgywAndServices(districts, new Date(startDate), new Date(endDate));
 
 			return new ResponseEntity<>(reportObject, HttpStatus.OK);
 		} catch (Exception e) {

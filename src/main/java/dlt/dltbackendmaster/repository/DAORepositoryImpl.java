@@ -224,6 +224,27 @@ public class DAORepositoryImpl implements DAORepository {
     }
     
     @SuppressWarnings({ "unchecked", "rawtypes" })
+    public <T> List<T> GetByNamedNativeQuery(String query, List<Integer> districts, Date startDate, Date endDate, Object... params) {
+        Query q = getCurrentSession().getNamedNativeQuery(query);
+        int i = 0;
+   
+        for (Parameter param : q.getParameters()) {
+			if(!"districts".equals(param.getName()) && !"startDate".equals(param.getName()) && !"endDate".equals(param.getName())) {
+				q.setParameter(param, params[i]);
+				i++;
+			}else {
+				q.setParameter("districts", districts);
+				q.setParameter("startDate", startDate);
+				q.setParameter("endDate", endDate); 
+			}	
+		}
+
+        List<T> results = q.getResultList();
+
+        return results;
+    }
+    
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public <T> List<T> GetAllPagedEntityByNamedNativeQuery(String query, int pageIndex, int pageSize, Date startDate, Date endDate,  List<Integer>districts, Object... params) {
         Query q = getCurrentSession().getNamedNativeQuery(query);
         int i = 0;

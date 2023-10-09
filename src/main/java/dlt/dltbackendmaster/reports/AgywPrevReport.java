@@ -616,4 +616,10 @@ public class AgywPrevReport {
 		List<Object> total = service.GetByNamedNativeQuery("AgywPrev.countNewlyEnrolledAgywAndServices", Arrays.asList(districts), startDate, endDate);
 	    return total;
 	}
+	
+	public List<Object>  getNewlyEnrolledAgywAndServicesSummary(Integer[] districts, Date startDate,	Date endDate, int pageIndex, int pageSize) {
+		List<Object> dataObjs = service.GetAllPagedEntityByNamedNativeQuery("AgywPrev.findByNewlyEnrolledAgywAndServicesSummary", pageIndex, pageSize, startDate, endDate, Arrays.asList(districts));
+
+	return dataObjs;
+	}
 }

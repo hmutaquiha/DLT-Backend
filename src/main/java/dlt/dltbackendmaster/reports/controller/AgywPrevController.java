@@ -111,4 +111,23 @@ public class AgywPrevController {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
+	@GetMapping(produces = "application/json", path = "/countNewlyEnrolledAgywAndServicesSummary")
+	public ResponseEntity <List<Object> > countNewlyEnrolledAgywAndServicesSummary(
+			@RequestParam(name = "districts") Integer[] districts, 
+			@RequestParam(name = "startDate") Long startDate,
+			@RequestParam(name = "endDate") Long endDate
+			) {
+
+		AgywPrevReport report = new AgywPrevReport(service);
+
+		try {
+			List<Object> reportObject =report.countNewlyEnrolledAgywAndServicesSummary(districts, new Date(startDate), new Date(endDate));
+
+			return new ResponseEntity<>(reportObject, HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 }

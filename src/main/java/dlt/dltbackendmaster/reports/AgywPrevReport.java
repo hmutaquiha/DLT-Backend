@@ -622,4 +622,9 @@ public class AgywPrevReport {
 
 	return dataObjs;
 	}
+	
+	public List<Object> countNewlyEnrolledAgywAndServicesSummary(Integer[] districts, Date startDate, Date endDate) {
+		List<Object> total = service.GetByNamedNativeQuery("AgywPrev.countNewlyEnrolledAgywAndServicesSummary", Arrays.asList(districts), startDate, endDate);
+	    return total;
+	}
 }

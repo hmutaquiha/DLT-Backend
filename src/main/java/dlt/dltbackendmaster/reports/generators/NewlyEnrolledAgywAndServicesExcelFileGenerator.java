@@ -13,6 +13,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.tomcat.util.http.fileupload.ByteArrayOutputStream;
+import org.springframework.stereotype.Service;
 
 import dlt.dltbackendmaster.reports.domain.NewlyEnrolledAgywAndServices;
 
@@ -20,6 +21,7 @@ import dlt.dltbackendmaster.reports.domain.NewlyEnrolledAgywAndServices;
  * Excel File Exporter
  *  @author Francisco Macuacua
  */
+@Service
 public class NewlyEnrolledAgywAndServicesExcelFileGenerator {
 	
 	public byte[] exportExcelFile(List<NewlyEnrolledAgywAndServices> newlyEnrolledAgywAndServices, String[] headers) {
@@ -38,45 +40,45 @@ public class NewlyEnrolledAgywAndServicesExcelFileGenerator {
             }
 
             // Adjusts 3 columns to set the width to fit the contents.
-            sheet.autoSizeColumn(0);
-            sheet.autoSizeColumn(1);
-            sheet.autoSizeColumn(2);
-            sheet.autoSizeColumn(3);
-            sheet.autoSizeColumn(4);
-            sheet.autoSizeColumn(5);
-            sheet.autoSizeColumn(6);
-            sheet.autoSizeColumn(7);
-            sheet.autoSizeColumn(8);
-            sheet.autoSizeColumn(9);
-            sheet.autoSizeColumn(10);
-            sheet.autoSizeColumn(11);
-            sheet.autoSizeColumn(12);
-            sheet.autoSizeColumn(13);
-            sheet.autoSizeColumn(14);
-            sheet.autoSizeColumn(15);
-            sheet.autoSizeColumn(16);
-            sheet.autoSizeColumn(17);            
-            sheet.autoSizeColumn(18);
-            sheet.autoSizeColumn(19);
-            sheet.autoSizeColumn(20);
-            sheet.autoSizeColumn(21);
-            sheet.autoSizeColumn(22);
-            sheet.autoSizeColumn(23);            
-            sheet.autoSizeColumn(24);
-            sheet.autoSizeColumn(25);
-            sheet.autoSizeColumn(26);
-            sheet.autoSizeColumn(27);
-            sheet.autoSizeColumn(28);
-            sheet.autoSizeColumn(29);
-            sheet.autoSizeColumn(30);
-            sheet.autoSizeColumn(31);
-            sheet.autoSizeColumn(32);
-            sheet.autoSizeColumn(33);
-            sheet.autoSizeColumn(34);
-            sheet.autoSizeColumn(35);
-            sheet.autoSizeColumn(36);
-            sheet.autoSizeColumn(37);
-            sheet.autoSizeColumn(38);          
+//            sheet.autoSizeColumn(0);
+//            sheet.autoSizeColumn(1);
+//            sheet.autoSizeColumn(2);
+//            sheet.autoSizeColumn(3);
+//            sheet.autoSizeColumn(4);
+//            sheet.autoSizeColumn(5);
+//            sheet.autoSizeColumn(6);
+//            sheet.autoSizeColumn(7);
+//            sheet.autoSizeColumn(8);
+//            sheet.autoSizeColumn(9);
+//            sheet.autoSizeColumn(10);
+//            sheet.autoSizeColumn(11);
+//            sheet.autoSizeColumn(12);
+//            sheet.autoSizeColumn(13);
+//            sheet.autoSizeColumn(14);
+//            sheet.autoSizeColumn(15);
+//            sheet.autoSizeColumn(16);
+//            sheet.autoSizeColumn(17);            
+//            sheet.autoSizeColumn(18);
+//            sheet.autoSizeColumn(19);
+//            sheet.autoSizeColumn(20);
+//            sheet.autoSizeColumn(21);
+//            sheet.autoSizeColumn(22);
+//            sheet.autoSizeColumn(23);            
+//            sheet.autoSizeColumn(24);
+//            sheet.autoSizeColumn(25);
+//            sheet.autoSizeColumn(26);
+//            sheet.autoSizeColumn(27);
+//            sheet.autoSizeColumn(28);
+//            sheet.autoSizeColumn(29);
+//            sheet.autoSizeColumn(30);
+//            sheet.autoSizeColumn(31);
+//            sheet.autoSizeColumn(32);
+//            sheet.autoSizeColumn(33);
+//            sheet.autoSizeColumn(34);
+//            sheet.autoSizeColumn(35);
+//            sheet.autoSizeColumn(36);
+//            sheet.autoSizeColumn(37);
+//            sheet.autoSizeColumn(38);          
 
             // Write to ByteArrayOutputStream
             workbook.write(outputStream);
@@ -125,15 +127,6 @@ public class NewlyEnrolledAgywAndServicesExcelFileGenerator {
      */
     private void createNewRow(Workbook workbook, Sheet sheet, int rowIndex, NewlyEnrolledAgywAndServices  newlyEnrolled) {
         Row row = sheet.createRow(rowIndex);
-        CellStyle cellStyle = workbook.createCellStyle();
-        cellStyle.setBorderTop(BorderStyle.THIN);
-        cellStyle.setTopBorderColor(IndexedColors.BLACK.index);
-        cellStyle.setBorderRight(BorderStyle.THIN);
-        cellStyle.setRightBorderColor(IndexedColors.BLACK.index);
-        cellStyle.setBorderBottom(BorderStyle.THIN);
-        cellStyle.setBottomBorderColor(IndexedColors.BLACK.index);
-        cellStyle.setBorderLeft(BorderStyle.THIN);
-        cellStyle.setLeftBorderColor(IndexedColors.BLACK.index);
 
         Cell cell = row.createCell(0);
         cell.setCellValue(newlyEnrolled.getProvincia());
@@ -252,8 +245,6 @@ public class NewlyEnrolledAgywAndServicesExcelFileGenerator {
         cell = row.createCell(38);
         cell.setCellValue(newlyEnrolled.getServico_status());
         
-        
-        cell.setCellStyle(cellStyle);
     }
 
 }

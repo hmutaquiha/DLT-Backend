@@ -32,6 +32,9 @@ import dlt.dltbackendmaster.service.DAOService;
 public class AgywPrevController {
 
 	private final DAOService service;
+	
+	@Autowired
+	private NewlyEnrolledAgywAndServicesExcelFileGenerator excelFileExporter;
 
 	@Autowired
 	public AgywPrevController(DAOService service) {
@@ -83,9 +86,9 @@ public class AgywPrevController {
 				new Date(endDate));
 		
 		int pageSize = 1000;
-		int total = Integer.parseInt(counter.get(0).toString());
-		double pagesDouble = total/pageSize;
-		int pages =  (int) Math.ceil(pagesDouble);
+		double total = Double.parseDouble(counter.get(0).toString());
+		double pagesExactly = total/pageSize;
+		int pages =  (int) Math.ceil(pagesExactly);
 
 		List<NewlyEnrolledAgywAndServices> rows = new ArrayList<>();
 		
@@ -123,7 +126,6 @@ public class AgywPrevController {
 		String fileName = "report.xlsx";
 
 		// Export Excel file
-		NewlyEnrolledAgywAndServicesExcelFileGenerator excelFileExporter = new NewlyEnrolledAgywAndServicesExcelFileGenerator();
 		byte[] excelBytes = excelFileExporter.exportExcelFile(rows, headersRow);
 
 		// Prepare and return the Excel file as a response

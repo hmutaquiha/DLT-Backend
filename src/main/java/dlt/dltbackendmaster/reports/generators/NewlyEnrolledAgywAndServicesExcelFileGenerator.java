@@ -41,44 +41,6 @@ public class NewlyEnrolledAgywAndServicesExcelFileGenerator {
 
             // Adjusts 3 columns to set the width to fit the contents.
 //            sheet.autoSizeColumn(0);
-//            sheet.autoSizeColumn(1);
-//            sheet.autoSizeColumn(2);
-//            sheet.autoSizeColumn(3);
-//            sheet.autoSizeColumn(4);
-//            sheet.autoSizeColumn(5);
-//            sheet.autoSizeColumn(6);
-//            sheet.autoSizeColumn(7);
-//            sheet.autoSizeColumn(8);
-//            sheet.autoSizeColumn(9);
-//            sheet.autoSizeColumn(10);
-//            sheet.autoSizeColumn(11);
-//            sheet.autoSizeColumn(12);
-//            sheet.autoSizeColumn(13);
-//            sheet.autoSizeColumn(14);
-//            sheet.autoSizeColumn(15);
-//            sheet.autoSizeColumn(16);
-//            sheet.autoSizeColumn(17);            
-//            sheet.autoSizeColumn(18);
-//            sheet.autoSizeColumn(19);
-//            sheet.autoSizeColumn(20);
-//            sheet.autoSizeColumn(21);
-//            sheet.autoSizeColumn(22);
-//            sheet.autoSizeColumn(23);            
-//            sheet.autoSizeColumn(24);
-//            sheet.autoSizeColumn(25);
-//            sheet.autoSizeColumn(26);
-//            sheet.autoSizeColumn(27);
-//            sheet.autoSizeColumn(28);
-//            sheet.autoSizeColumn(29);
-//            sheet.autoSizeColumn(30);
-//            sheet.autoSizeColumn(31);
-//            sheet.autoSizeColumn(32);
-//            sheet.autoSizeColumn(33);
-//            sheet.autoSizeColumn(34);
-//            sheet.autoSizeColumn(35);
-//            sheet.autoSizeColumn(36);
-//            sheet.autoSizeColumn(37);
-//            sheet.autoSizeColumn(38);          
 
             // Write to ByteArrayOutputStream
             workbook.write(outputStream);

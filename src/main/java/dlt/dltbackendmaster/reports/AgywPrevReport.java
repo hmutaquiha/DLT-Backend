@@ -606,25 +606,14 @@ public class AgywPrevReport {
 		return ro;
 	}
 
-	public List<Object>  getNewlyEnrolledAgywAndServices(Integer[] districts, Date startDate,	Date endDate, int pageIndex, int pageSize) {
-		List<Object> dataObjs = service.GetAllPagedEntityByNamedNativeQuery("AgywPrev.findByNewlyEnrolledAgywAndServices", pageIndex, pageSize, startDate, endDate, Arrays.asList(districts));
+	public List<Object>  getNewlyEnrolledAgywAndServices(Integer[] districts, Date startDate,	Date endDate) {
+		List<Object> dataObjs = service.GetByNamedNativeQuery("AgywPrev.findByNewlyEnrolledAgywAndServices", Arrays.asList(districts), startDate, endDate);
 
 	return dataObjs;
 	}
-	
-	public List<Object> countNewlyEnrolledAgywAndServices(Integer[] districts, Date startDate, Date endDate) {
-		List<Object> total = service.GetByNamedNativeQuery("AgywPrev.countNewlyEnrolledAgywAndServices", Arrays.asList(districts), startDate, endDate);
-	    return total;
-	}
-	
 	public List<Object>  getNewlyEnrolledAgywAndServicesSummary(Integer[] districts, Date startDate,	Date endDate, int pageIndex, int pageSize) {
 		List<Object> dataObjs = service.GetAllPagedEntityByNamedNativeQuery("AgywPrev.findByNewlyEnrolledAgywAndServicesSummary", pageIndex, pageSize, startDate, endDate, Arrays.asList(districts));
 
 	return dataObjs;
-	}
-	
-	public List<Object> countNewlyEnrolledAgywAndServicesSummary(Integer[] districts, Date startDate, Date endDate) {
-		List<Object> total = service.GetByNamedNativeQuery("AgywPrev.countNewlyEnrolledAgywAndServicesSummary", Arrays.asList(districts), startDate, endDate);
-	    return total;
 	}
 }

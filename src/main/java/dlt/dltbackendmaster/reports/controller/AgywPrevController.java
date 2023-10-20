@@ -134,11 +134,47 @@ public class AgywPrevController {
 	public JSONArray convertListToJsonArray(List<NewlyEnrolledAgywAndServices> rows) {
 	    JSONArray jsonArray = new JSONArray();
 	    
-	    for (NewlyEnrolledAgywAndServices data : rows) {
+	    for (NewlyEnrolledAgywAndServices data : rows) {	        
 	        JSONObject jsonItem = new JSONObject();
-	        jsonItem.put("propertyName1", data.getProvedor());
-	        jsonItem.put("propertyName2", data.getDistrito());
-	        // Add more properties as needed
+            jsonItem.put("provincia", data.getProvincia());
+            jsonItem.put("distrito", data.getDistrito());
+            jsonItem.put("onde_mora", data.getOnde_mora());
+            jsonItem.put("ponto_entrada", data.getPonto_entrada());
+            jsonItem.put("organizacao", data.getOrganizacao());
+            jsonItem.put("data_registo", data.getData_registo());
+            jsonItem.put("registado_por", data.getRegistado_por());
+            jsonItem.put("data_actualizacao", data.getData_actualizacao());
+            jsonItem.put("actualizado_por", data.getActualizado_por());
+            jsonItem.put("nui", data.getNui());
+            jsonItem.put("sexo", data.getSexo());
+            jsonItem.put("idade_registo", data.getIdade_registo());
+            jsonItem.put("idade_actual", data.getIdade_actual());
+            jsonItem.put("faixa_registo", data.getFaixa_registo());
+            jsonItem.put("faixa_actual", data.getFaixa_actual());
+            jsonItem.put("data_nascimento", data.getData_nascimento());
+            jsonItem.put("agyw_prev", data.getAgyw_prev());
+            jsonItem.put("com_quem_mora", data.getCom_quem_mora());
+            jsonItem.put("sustenta_casa", data.getSustenta_casa());
+            jsonItem.put("e_orfa", data.getE_orfa());
+            jsonItem.put("vai_escola", data.getVai_escola());
+            jsonItem.put("tem_deficiencia", data.getTem_deficiencia());
+            jsonItem.put("tipo_deficiencia", data.getTipo_deficiencia());
+            jsonItem.put("foi_casada", data.getFoi_casada());
+            jsonItem.put("esteve_gravida", data.getEsteve_gravida());
+            jsonItem.put("tem_filhos", data.getTem_filhos());
+            jsonItem.put("gravida_amamentar", data.getGravida_amamentar());
+            jsonItem.put("trabalha", data.getTrabalha());
+            jsonItem.put("teste_hiv", data.getTeste_hiv());
+            jsonItem.put("area_servico", data.getArea_servico());
+            jsonItem.put("a_servico", data.getA_servico());
+            jsonItem.put("sub_servico", data.getSub_servico());
+            jsonItem.put("pacote_servico", data.getPacote_servico());
+            jsonItem.put("ponto_entrada_servico", data.getPonto_entrada_servico());
+            jsonItem.put("localizacao", data.getLocalizacao());
+            jsonItem.put("data_servico", data.getData_servico());
+            jsonItem.put("provedor", data.getProvedor());
+            jsonItem.put("observacoes", data.getObservacoes());
+            jsonItem.put("servico_status", data.getServico_status());
 	        
 	        jsonArray.add(jsonItem);
 	    }

@@ -2,6 +2,7 @@ package dlt.dltbackendmaster.reports.controller;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +37,6 @@ import dlt.dltbackendmaster.service.DAOService;
 public class AgywPrevController {
 
 	private final DAOService service;
-	
 
 	@Autowired
 	public AgywPrevController(DAOService service) {
@@ -90,7 +90,6 @@ public class AgywPrevController {
 		List<Object> reportObjectList = report.getNewlyEnrolledAgywAndServices(districts, new Date(startDate),
 				new Date(endDate));
 		Object[][] reportObjectArray = reportObjectList.toArray(new Object[0][0]);
-		
 
 		for (Object[] obj : reportObjectArray) {
 			rows.add(new NewlyEnrolledAgywAndServices(String.valueOf(obj[0]), String.valueOf(obj[1]),
@@ -129,56 +128,73 @@ public class AgywPrevController {
 
 		return new ResponseEntity<>(null, headers, HttpStatus.OK);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public JSONArray convertListToJsonArray(List<NewlyEnrolledAgywAndServices> rows) {
-	    JSONArray jsonArray = new JSONArray();
-	    
-	    for (NewlyEnrolledAgywAndServices data : rows) {	        
-	        JSONObject jsonItem = new JSONObject();
-            jsonItem.put("provincia", data.getProvincia());
-            jsonItem.put("distrito", data.getDistrito());
-            jsonItem.put("onde_mora", data.getOnde_mora());
-            jsonItem.put("ponto_entrada", data.getPonto_entrada());
-            jsonItem.put("organizacao", data.getOrganizacao());
-            jsonItem.put("data_registo", data.getData_registo());
-            jsonItem.put("registado_por", data.getRegistado_por());
-            jsonItem.put("data_actualizacao", data.getData_actualizacao());
-            jsonItem.put("actualizado_por", data.getActualizado_por());
-            jsonItem.put("nui", data.getNui());
-            jsonItem.put("sexo", data.getSexo());
-            jsonItem.put("idade_registo", data.getIdade_registo());
-            jsonItem.put("idade_actual", data.getIdade_actual());
-            jsonItem.put("faixa_registo", data.getFaixa_registo());
-            jsonItem.put("faixa_actual", data.getFaixa_actual());
-            jsonItem.put("data_nascimento", data.getData_nascimento());
-            jsonItem.put("agyw_prev", data.getAgyw_prev());
-            jsonItem.put("com_quem_mora", data.getCom_quem_mora());
-            jsonItem.put("sustenta_casa", data.getSustenta_casa());
-            jsonItem.put("e_orfa", data.getE_orfa());
-            jsonItem.put("vai_escola", data.getVai_escola());
-            jsonItem.put("tem_deficiencia", data.getTem_deficiencia());
-            jsonItem.put("tipo_deficiencia", data.getTipo_deficiencia());
-            jsonItem.put("foi_casada", data.getFoi_casada());
-            jsonItem.put("esteve_gravida", data.getEsteve_gravida());
-            jsonItem.put("tem_filhos", data.getTem_filhos());
-            jsonItem.put("gravida_amamentar", data.getGravida_amamentar());
-            jsonItem.put("trabalha", data.getTrabalha());
-            jsonItem.put("teste_hiv", data.getTeste_hiv());
-            jsonItem.put("area_servico", data.getArea_servico());
-            jsonItem.put("a_servico", data.getA_servico());
-            jsonItem.put("sub_servico", data.getSub_servico());
-            jsonItem.put("pacote_servico", data.getPacote_servico());
-            jsonItem.put("ponto_entrada_servico", data.getPonto_entrada_servico());
-            jsonItem.put("localizacao", data.getLocalizacao());
-            jsonItem.put("data_servico", data.getData_servico());
-            jsonItem.put("provedor", data.getProvedor());
-            jsonItem.put("observacoes", data.getObservacoes());
-            jsonItem.put("servico_status", data.getServico_status());
-	        
-	        jsonArray.add(jsonItem);
-	    }
-	    
-	    return jsonArray;
+		JSONArray jsonArray = new JSONArray();
+
+		int chunkSize = 500;
+		List<List<NewlyEnrolledAgywAndServices>> sublists = splitList(rows, chunkSize);
+
+		for (List<NewlyEnrolledAgywAndServices> sublist : sublists) {
+
+			for (NewlyEnrolledAgywAndServices data : sublist) {
+				JSONObject jsonItem = new JSONObject();
+				jsonItem.put("provincia", data.getProvincia());
+				jsonItem.put("distrito", data.getDistrito());
+				jsonItem.put("onde_mora", data.getOnde_mora());
+				jsonItem.put("ponto_entrada", data.getPonto_entrada());
+				jsonItem.put("organizacao", data.getOrganizacao());
+				jsonItem.put("data_registo", data.getData_registo());
+				jsonItem.put("registado_por", data.getRegistado_por());
+				jsonItem.put("data_actualizacao", data.getData_actualizacao());
+				jsonItem.put("actualizado_por", data.getActualizado_por());
+				jsonItem.put("nui", data.getNui());
+				jsonItem.put("sexo", data.getSexo());
+				jsonItem.put("idade_registo", data.getIdade_registo());
+				jsonItem.put("idade_actual", data.getIdade_actual());
+				jsonItem.put("faixa_registo", data.getFaixa_registo());
+				jsonItem.put("faixa_actual", data.getFaixa_actual());
+				jsonItem.put("data_nascimento", data.getData_nascimento());
+				jsonItem.put("agyw_prev", data.getAgyw_prev());
+				jsonItem.put("com_quem_mora", data.getCom_quem_mora());
+				jsonItem.put("sustenta_casa", data.getSustenta_casa());
+				jsonItem.put("e_orfa", data.getE_orfa());
+				jsonItem.put("vai_escola", data.getVai_escola());
+				jsonItem.put("tem_deficiencia", data.getTem_deficiencia());
+				jsonItem.put("tipo_deficiencia", data.getTipo_deficiencia());
+				jsonItem.put("foi_casada", data.getFoi_casada());
+				jsonItem.put("esteve_gravida", data.getEsteve_gravida());
+				jsonItem.put("tem_filhos", data.getTem_filhos());
+				jsonItem.put("gravida_amamentar", data.getGravida_amamentar());
+				jsonItem.put("trabalha", data.getTrabalha());
+				jsonItem.put("teste_hiv", data.getTeste_hiv());
+				jsonItem.put("area_servico", data.getArea_servico());
+				jsonItem.put("a_servico", data.getA_servico());
+				jsonItem.put("sub_servico", data.getSub_servico());
+				jsonItem.put("pacote_servico", data.getPacote_servico());
+				jsonItem.put("ponto_entrada_servico", data.getPonto_entrada_servico());
+				jsonItem.put("localizacao", data.getLocalizacao());
+				jsonItem.put("data_servico", data.getData_servico());
+				jsonItem.put("provedor", data.getProvedor());
+				jsonItem.put("observacoes", data.getObservacoes());
+				jsonItem.put("servico_status", data.getServico_status());
+
+				jsonArray.add(jsonItem);				
+			}
+			
+		}
+
+		return jsonArray;
 	}
+
+	public static <T> List<List<T>> splitList(List<T> originalList, int chunkSize) {
+		List<List<T>> sublists = new ArrayList<>();
+		for (int i = 0; i < originalList.size(); i += chunkSize) {
+			int end = Math.min(originalList.size(), i + chunkSize);
+			sublists.add(originalList.subList(i, end));
+		}
+		return sublists;
+	}
+
 }

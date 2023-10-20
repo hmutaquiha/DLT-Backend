@@ -1146,7 +1146,7 @@ public class Beneficiaries implements java.io.Serializable
         this.name = model.getName();
         this.surname = model.getSurname();
         this.nickName = model.getNick_name();
-        this.partners.setId(model.getOrganization_id());
+        this.partners = model.getOrganization_id() == 0 ? null : new Partners(model.getOrganization_id());
         this.dateOfBirth = model.getDate_of_birth();
         this.dateCreated = model.getDate_created();
         this.dateUpdated = model.getDate_updated();
@@ -1158,7 +1158,7 @@ public class Beneficiaries implements java.io.Serializable
         this.via = model.getVia();
         this.nationality = model.getNationality();
         this.entryPoint = model.getEntry_point();
-        this.neighborhood = model.getNeighborhood_id() == 0? null : new Neighborhood(model.getNeighborhood_id());
+        this.neighborhood = model.getNeighborhood_id() == 0 ? null : new Neighborhood(model.getNeighborhood_id());
         this.us = model.getUs_id() == 0? null : new Us(model.getUs_id());
         this.status = Integer.valueOf(model.getStatus());
         this.vbltLivesWith = model.getVblt_lives_with();

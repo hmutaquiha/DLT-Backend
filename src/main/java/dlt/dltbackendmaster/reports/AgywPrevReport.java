@@ -215,8 +215,8 @@ public class AgywPrevReport {
 				}
 				if (completedSocialAssetsOldCurriculum(agywPrev) || completedSAAJEducationSessions(agywPrev)
 						|| (agywPrev.getVblt_sexually_active() != null && agywPrev.getVblt_sexually_active() == 1
-										&& completedHIVTestingServices(agywPrev)
-										&& completedCondomsPromotionOrProvision(agywPrev))) {
+								&& completedHIVTestingServices(agywPrev)
+								&& completedCondomsPromotionOrProvision(agywPrev))) {
 					addBeneficiary(reportObject, agywPrev.getDistrict_id(),
 							getAgeBandIndex(agywPrev.getCurrent_age_band()), getEnrollmentTimeIndex(enrollmentTime),
 							COMPLETED_PRIMARY_SERVICE, agywPrev.getBeneficiary_id());
@@ -559,10 +559,11 @@ public class AgywPrevReport {
 
 		try {
 			String searchNui = null;
+			String searchName = null;
 			Integer searchUserCreator = null;
 			Integer searchDistrict = null;
-			Long totalBeneficiaries = service.GetUniqueEntityByNamedQuery("Beneficiary.findCountByDistricts", searchNui, searchUserCreator, searchDistrict,
-					Arrays.asList(district));
+			Long totalBeneficiaries = service.GetUniqueEntityByNamedQuery("Beneficiary.findCountByDistricts", searchNui,
+					searchName, searchUserCreator, searchDistrict, Arrays.asList(district));
 			Long maleBeneficiaries = service.GetUniqueEntityByNamedQuery("Beneficiary.findCountByDistrictAndGender",
 					'1', district);
 			Long femaleBeneficiaries = service.GetUniqueEntityByNamedQuery("Beneficiary.findCountByDistrictAndGender",

@@ -2,7 +2,6 @@ package dlt.dltbackendmaster.reports.controller;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +23,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import dlt.dltbackendmaster.reports.AgywPrevReport;
 import dlt.dltbackendmaster.reports.domain.NewlyEnrolledAgywAndServices;
 import dlt.dltbackendmaster.reports.domain.ResultObject;
-import dlt.dltbackendmaster.reports.generators.NewlyEnrolledAgywAndServicesExcelFileGenerator;
 import dlt.dltbackendmaster.service.DAOService;
 
 /**
@@ -38,9 +36,7 @@ import dlt.dltbackendmaster.service.DAOService;
 public class AgywPrevController {
 
 	private final DAOService service;
-
-	@Autowired
-	private NewlyEnrolledAgywAndServicesExcelFileGenerator excelFileExporter;
+	
 
 	@Autowired
 	public AgywPrevController(DAOService service) {

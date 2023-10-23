@@ -7,8 +7,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -20,11 +18,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dlt.dltbackendmaster.reports.AgywPrevReport;
 import dlt.dltbackendmaster.reports.domain.NewlyEnrolledAgywAndServices;
 import dlt.dltbackendmaster.reports.domain.ResultObject;
 import dlt.dltbackendmaster.service.DAOService;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.core.io.JsonStringEncoder;
+import java.io.StringWriter;
+import java.util.List;
 
 /**
  * Controller resposável pela comunicação dos dados do relatório
@@ -79,13 +86,13 @@ public class AgywPrevController {
 	}
 
 	@SuppressWarnings("unchecked")
-	@GetMapping(path = "/getNewlyEnrolledAgywAndServicesJsonGenerated")
-	public ResponseEntity<byte[]> getNewlyEnrolledAgywAndServicesJsonGenerated(
+	@GetMapping(path = "/getNewlyEnrolledAgywAndServices")
+	public ResponseEntity<byte[]> getNewlyEnrolledAgywAndServices(
 			@RequestParam(name = "districts") Integer[] districts, @RequestParam(name = "startDate") Long startDate,
 			@RequestParam(name = "endDate") Long endDate) throws JsonProcessingException {
 		AgywPrevReport report = new AgywPrevReport(service);
 
-		JSONArray rows = new JSONArray();
+		List<NewlyEnrolledAgywAndServices> rows = new ArrayList<>();
 
 		List<Object> reportObjectList = report.getNewlyEnrolledAgywAndServices(districts, new Date(startDate),
 				new Date(endDate));
@@ -105,11 +112,11 @@ public class AgywPrevController {
 					String.valueOf(obj[38])));
 		}
 
-		JSONArray convertListToJsonArray = convertListToJsonArray(rows);
+		 String serializeToJson = serializeToJson(rows);
 
 		try (FileWriter file = new FileWriter("target/reports/new_enrolled.json")) {
 			// We can write any JSONArray or JSONObject instance to the file
-			file.write(convertListToJsonArray.toJSONString());
+			file.write(serializeToJson);
 			file.flush();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -129,6 +136,7 @@ public class AgywPrevController {
 		return new ResponseEntity<>(null, headers, HttpStatus.OK);
 	}
 
+	/*
 	@SuppressWarnings("unchecked")
 	public JSONArray convertListToJsonArray(List<NewlyEnrolledAgywAndServices> rows) {
 		JSONArray jsonArray = new JSONArray();
@@ -187,6 +195,7 @@ public class AgywPrevController {
 
 		return jsonArray;
 	}
+	*/
 
 	public static <T> List<List<T>> splitList(List<T> originalList, int chunkSize) {
 		List<List<T>> sublists = new ArrayList<>();
@@ -196,5 +205,32 @@ public class AgywPrevController {
 		}
 		return sublists;
 	}
+	
+
+	public static String serializeToJson(List<NewlyEnrolledAgywAndServices> objects) {
+	    try {
+	        ObjectMapper objectMapper = new ObjectMapper();
+	        String jsonString = objectMapper.writeValueAsString(objects);
+
+	        // Remove trailing commas
+	        jsonString = removeTrailingComma(jsonString);
+
+	        return jsonString;
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return "[]"; // Return an empty array on failure
+	    }
+	}
+
+	private static String removeTrailingComma(String jsonString) {
+	    // Remove trailing comma within arrays
+	    jsonString = jsonString.replaceAll(",\\s*]", "]");
+	    // Remove trailing comma within objects
+	    jsonString = jsonString.replaceAll(",\\s*}", "}");
+
+	    return jsonString;
+	}
+
+
 
 }

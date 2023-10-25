@@ -624,7 +624,7 @@ public class Beneficiaries implements java.io.Serializable
     }
 
     @Temporal(TemporalType.DATE)
-    @Column(name = "date_of_birth", nullable = false, length = 10)
+    @Column(name = "date_of_birth", nullable = true, length = 10)
     public Date getDateOfBirth() {
         return this.dateOfBirth;
     }

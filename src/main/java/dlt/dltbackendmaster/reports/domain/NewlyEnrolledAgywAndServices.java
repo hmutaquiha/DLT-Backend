@@ -7,18 +7,59 @@ package dlt.dltbackendmaster.reports.domain;
  *
  */
 public class NewlyEnrolledAgywAndServices {
-	private String provincia;
 
-	public NewlyEnrolledAgywAndServices(String provincia, String distrito, String onde_mora, String ponto_entrada,
-			String organizacao, String data_registo, String registado_por, String data_actualizacao,
-			String actualizado_por, String nui, String sexo, String idade_registo, String idade_actual,
-			String faixa_registo, String faixa_actual, String data_nascimento, String agyw_prev, String com_quem_mora,
-			String sustenta_casa, String e_orfa, String vai_escola, String tem_deficiencia, String tipo_deficiencia,
-			String foi_casada, String esteve_gravida, String tem_filhos, String gravida_amamentar, String trabalha,
-			String teste_hiv, String area_servico, String a_servico, String sub_servico, String pacote_servico,
-			String ponto_entrada_servico, String localizacao, String data_servico, String provedor, String observacoes,
-			String servico_status) {
+	private int index;
+	private String provincia;
+	private String distrito;
+	private String onde_mora;
+	private String ponto_entrada;
+	private String organizacao;
+	private String data_registo;
+	private String registado_por;
+	private String data_actualizacao;
+	private String actualizado_por;
+	private String nui;
+	private String sexo;
+	private String idade_registo;
+	private String idade_actual;
+	private String faixa_registo;
+	private String faixa_actual;
+	private String data_nascimento;
+	private String agyw_prev;
+	private String com_quem_mora;
+	private String sustenta_casa;
+	private String e_orfa;
+	private String vai_escola;
+	private String tem_deficiencia;
+	private String tipo_deficiencia;
+	private String foi_casada;
+	private String esteve_gravida;
+	private String tem_filhos;
+	private String gravida_amamentar;
+	private String trabalha;
+	private String teste_hiv;
+	private String area_servico;
+	private String a_servico;
+	private String sub_servico;
+	private String pacote_servico;
+	private String ponto_entrada_servico;
+	private String localizacao;
+	private String data_servico;
+	private String provedor;
+	private String observacoes;
+	private String servico_status;
+
+	public NewlyEnrolledAgywAndServices(int index, String provincia, String distrito, String onde_mora,
+			String ponto_entrada, String organizacao, String data_registo, String registado_por,
+			String data_actualizacao, String actualizado_por, String nui, String sexo, String idade_registo,
+			String idade_actual, String faixa_registo, String faixa_actual, String data_nascimento, String agyw_prev,
+			String com_quem_mora, String sustenta_casa, String e_orfa, String vai_escola, String tem_deficiencia,
+			String tipo_deficiencia, String foi_casada, String esteve_gravida, String tem_filhos,
+			String gravida_amamentar, String trabalha, String teste_hiv, String area_servico, String a_servico,
+			String sub_servico, String pacote_servico, String ponto_entrada_servico, String localizacao,
+			String data_servico, String provedor, String observacoes, String servico_status) {
 		super();
+		this.index = index;
 		this.provincia = provincia;
 		this.distrito = distrito;
 		this.onde_mora = onde_mora;
@@ -60,44 +101,13 @@ public class NewlyEnrolledAgywAndServices {
 		this.servico_status = servico_status;
 	}
 
-	private String distrito;
-	private String onde_mora;
-	private String ponto_entrada;
-	private String organizacao;
-	private String data_registo;
-	private String registado_por;
-	private String data_actualizacao;
-	private String actualizado_por;
-	private String nui;
-	private String sexo;
-	private String idade_registo;
-	private String idade_actual;
-	private String faixa_registo;
-	private String faixa_actual;
-	private String data_nascimento;
-	private String agyw_prev;
-	private String com_quem_mora;
-	private String sustenta_casa;
-	private String e_orfa;
-	private String vai_escola;
-	private String tem_deficiencia;
-	private String tipo_deficiencia;
-	private String foi_casada;
-	private String esteve_gravida;
-	private String tem_filhos;
-	private String gravida_amamentar;
-	private String trabalha;
-	private String teste_hiv;
-	private String area_servico;
-	private String a_servico;
-	private String sub_servico;
-	private String pacote_servico;
-	private String ponto_entrada_servico;
-	private String localizacao;
-	private String data_servico;
-	private String provedor;
-	private String observacoes;
-	private String servico_status;
+	public int getIndex() {
+		return index;
+	}
+
+	public void setIndex(int index) {
+		this.index = index;
+	}
 
 	public String getProvincia() {
 		return provincia;

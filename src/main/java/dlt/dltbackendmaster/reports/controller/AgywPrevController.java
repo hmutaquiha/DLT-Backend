@@ -1,6 +1,5 @@
 package dlt.dltbackendmaster.reports.controller;
 
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -18,18 +17,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dlt.dltbackendmaster.reports.AgywPrevReport;
 import dlt.dltbackendmaster.reports.domain.NewlyEnrolledAgywAndServices;
 import dlt.dltbackendmaster.reports.domain.ResultObject;
 import dlt.dltbackendmaster.service.DAOService;
+import net.sf.jasperreports.engine.DefaultJasperReportsContext;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.JasperReportsContext;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
 import net.sf.jasperreports.export.SimpleExporterInput;
@@ -46,6 +46,8 @@ import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
 @RequestMapping("/api/agyw-prev")
 public class AgywPrevController {
 
+	private static final String REPORT_TEMPLATE = "/reports/NewEnrolledReportTemplateLandscape.jrxml";
+	private static final String REPORT_OUTPUT = "target/reports/NewEnrolledReportOutputLandscape.xlsx";
 	private final DAOService service;
 
 	@Autowired
@@ -92,7 +94,7 @@ public class AgywPrevController {
 	@GetMapping(path = "/getNewlyEnrolledAgywAndServices")
 	public ResponseEntity<byte[]> getNewlyEnrolledAgywAndServices(@RequestParam(name = "districts") Integer[] districts,
 			@RequestParam(name = "startDate") Long startDate, @RequestParam(name = "endDate") Long endDate)
-			throws JsonProcessingException {
+			throws IOException {
 		AgywPrevReport report = new AgywPrevReport(service);
 
 		List<NewlyEnrolledAgywAndServices> rows = new ArrayList<>();
@@ -104,7 +106,7 @@ public class AgywPrevController {
 		int i = 1;
 		try {
 			for (Object[] obj : reportObjectArray) {
-				rows.add(new NewlyEnrolledAgywAndServices(i, String.valueOf(obj[0]), String.valueOf(obj[1]),
+				rows.add(new NewlyEnrolledAgywAndServices(i+"", String.valueOf(obj[0]), String.valueOf(obj[1]),
 						String.valueOf(obj[2]), String.valueOf(obj[3]), String.valueOf(obj[4]), String.valueOf(obj[5]),
 						String.valueOf(obj[6]), String.valueOf(obj[7]), String.valueOf(obj[8]), String.valueOf(obj[9]),
 						String.valueOf(obj[10]), String.valueOf(obj[11]), String.valueOf(obj[12]),
@@ -119,7 +121,7 @@ public class AgywPrevController {
 						String.valueOf(obj[37]), String.valueOf(obj[38])));
 				i++;
 				
-				if (rows.size()==500) {
+				if (rows.size()==100) {
 					break;
 				}
 			}
@@ -127,7 +129,7 @@ public class AgywPrevController {
 
 			// Compile the .jrxml template to a .jasper file
 			InputStream jrxmlStream = AgywPrevController.class
-					.getResourceAsStream("/reports/NewEnrolledReportTemplateLandscape.jrxml");
+					.getResourceAsStream(REPORT_TEMPLATE);
 			JasperReport jasperReport = JasperCompileManager.compileReport(jrxmlStream);
 
 			// Convert data to a JRBeanCollectionDataSource
@@ -136,23 +138,27 @@ public class AgywPrevController {
 			// Generate the report
 			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, null, dataSource);
 
-			// Export the report to XLSX
-			JRXlsxExporter exporter = new JRXlsxExporter();
-
-			exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
-			exporter.setExporterOutput(
-					new SimpleOutputStreamExporterOutput("target/reports/NewEnrolledReportOutputLandscape.xlsx"));
-
 			SimpleXlsxReportConfiguration configuration = new SimpleXlsxReportConfiguration();
 			configuration.setOnePagePerSheet(true);
 			configuration.setDetectCellType(true);
 			configuration.setAutoFitPageHeight(true);
 			configuration.setIgnoreGraphics(false);
-
+			// Set text wrapping
+            configuration.setWhitePageBackground(false);
+            configuration.setRemoveEmptySpaceBetweenColumns(true);
+            configuration.setWrapText(true); // Enable text wrapping
+            
+            // Apply the configuration to the exporter
+            JasperReportsContext jasperReportsContext = DefaultJasperReportsContext.getInstance();
+            
+			// Export the report to XLSX
+			JRXlsxExporter exporter = new JRXlsxExporter(jasperReportsContext);
+			exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+			exporter.setExporterOutput(
+					new SimpleOutputStreamExporterOutput(REPORT_OUTPUT));
 			exporter.setConfiguration(configuration);
-
 			exporter.exportReport();
-
+			
 			System.out.println("Report generated and exported to XLSX with borders successfully.");
 		} catch (JRException e) {
 			e.printStackTrace();

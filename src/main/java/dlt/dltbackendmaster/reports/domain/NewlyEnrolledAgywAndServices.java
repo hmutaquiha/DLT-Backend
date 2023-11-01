@@ -8,7 +8,7 @@ package dlt.dltbackendmaster.reports.domain;
  */
 public class NewlyEnrolledAgywAndServices {
 
-	private int index;
+	private String index;
 	private String provincia;
 	private String distrito;
 	private String onde_mora;
@@ -49,7 +49,7 @@ public class NewlyEnrolledAgywAndServices {
 	private String observacoes;
 	private String servico_status;
 
-	public NewlyEnrolledAgywAndServices(int index, String provincia, String distrito, String onde_mora,
+	public NewlyEnrolledAgywAndServices(String index, String provincia, String distrito, String onde_mora,
 			String ponto_entrada, String organizacao, String data_registo, String registado_por,
 			String data_actualizacao, String actualizado_por, String nui, String sexo, String idade_registo,
 			String idade_actual, String faixa_registo, String faixa_actual, String data_nascimento, String agyw_prev,
@@ -101,11 +101,11 @@ public class NewlyEnrolledAgywAndServices {
 		this.servico_status = servico_status;
 	}
 
-	public int getIndex() {
+	public String getIndex() {
 		return index;
 	}
 
-	public void setIndex(int index) {
+	public void setIndex(String index) {
 		this.index = index;
 	}
 

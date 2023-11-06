@@ -74,6 +74,42 @@ public class AgywPrevController {
 		}
 	}
 
+	@GetMapping(produces = "application/json", path = "/countNewlyEnrolledAgywAndServices")
+	public ResponseEntity<List<Object>> countNewlyEnrolledAgywAndServices(
+			@RequestParam(name = "districts") Integer[] districts, @RequestParam(name = "startDate") Long startDate,
+			@RequestParam(name = "endDate") Long endDate) {
+
+		AgywPrevReport report = new AgywPrevReport(service);
+
+		try {
+			List<Object> reportObject = report.countNewlyEnrolledAgywAndServices(districts, new Date(startDate),
+					new Date(endDate));
+
+			return new ResponseEntity<>(reportObject, HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@GetMapping(produces = "application/json", path = "/countNewlyEnrolledAgywAndServicesSummary")
+	public ResponseEntity<List<Object>> countNewlyEnrolledAgywAndServicesSummary(
+			@RequestParam(name = "districts") Integer[] districts, @RequestParam(name = "startDate") Long startDate,
+			@RequestParam(name = "endDate") Long endDate) {
+
+		AgywPrevReport report = new AgywPrevReport(service);
+
+		try {
+			List<Object> reportObject = report.countNewlyEnrolledAgywAndServicesSummary(districts, new Date(startDate),
+					new Date(endDate));
+
+			return new ResponseEntity<>(reportObject, HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
 	@GetMapping(produces = "application/json", path = "/getNewlyEnrolledAgywAndServicesSummary")
 	public ResponseEntity<List<Object>> getNewlyEnrolledAgywAndServicesSummary(
 			@RequestParam(name = "districts") Integer[] districts, @RequestParam(name = "startDate") Long startDate,
@@ -150,7 +186,7 @@ public class AgywPrevController {
 			JRXlsxExporter exporter = new JRXlsxExporter(jasperReportsContext);
 			exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
 			exporter.setExporterOutput(
-					new SimpleOutputStreamExporterOutput(REPORT_OUTPUT +"_"+ pageIndex +"_"+ OUTPUT_EXTENSION));
+					new SimpleOutputStreamExporterOutput(REPORT_OUTPUT + "_" + pageIndex + "_" + OUTPUT_EXTENSION));
 			exporter.setConfiguration(configuration);
 			exporter.exportReport();
 

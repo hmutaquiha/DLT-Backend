@@ -47,7 +47,8 @@ import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
 public class AgywPrevController {
 
 	private static final String REPORT_TEMPLATE = "/reports/NewEnrolledReportTemplateLandscape.jrxml";
-	private static final String REPORT_OUTPUT = "target/reports/NewEnrolledReportOutputLandscape.xlsx";
+	private static final String REPORT_OUTPUT = "target/reports/NewEnrolledReportOutputLandscape";
+	private static final String OUTPUT_EXTENSION = ".xlsx";
 	private final DAOService service;
 
 	@Autowired
@@ -90,23 +91,23 @@ public class AgywPrevController {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@GetMapping(path = "/getNewlyEnrolledAgywAndServices")
 	public ResponseEntity<byte[]> getNewlyEnrolledAgywAndServices(@RequestParam(name = "districts") Integer[] districts,
-			@RequestParam(name = "startDate") Long startDate, @RequestParam(name = "endDate") Long endDate)
+			@RequestParam(name = "startDate") Long startDate, @RequestParam(name = "endDate") Long endDate,
+			@RequestParam(name = "pageIndex") int pageIndex, @RequestParam(name = "pageSize") int pageSize)
 			throws IOException {
 		AgywPrevReport report = new AgywPrevReport(service);
 
 		List<NewlyEnrolledAgywAndServices> rows = new ArrayList<>();
 
 		List<Object> reportObjectList = report.getNewlyEnrolledAgywAndServices(districts, new Date(startDate),
-				new Date(endDate));
+				new Date(endDate), pageIndex, pageSize);
 		Object[][] reportObjectArray = reportObjectList.toArray(new Object[0][0]);
 
 		int i = 1;
 		try {
 			for (Object[] obj : reportObjectArray) {
-				rows.add(new NewlyEnrolledAgywAndServices(i+"", String.valueOf(obj[0]), String.valueOf(obj[1]),
+				rows.add(new NewlyEnrolledAgywAndServices(i + "", String.valueOf(obj[0]), String.valueOf(obj[1]),
 						String.valueOf(obj[2]), String.valueOf(obj[3]), String.valueOf(obj[4]), String.valueOf(obj[5]),
 						String.valueOf(obj[6]), String.valueOf(obj[7]), String.valueOf(obj[8]), String.valueOf(obj[9]),
 						String.valueOf(obj[10]), String.valueOf(obj[11]), String.valueOf(obj[12]),
@@ -120,16 +121,10 @@ public class AgywPrevController {
 						String.valueOf(obj[34]), String.valueOf(obj[35]), String.valueOf(obj[36]),
 						String.valueOf(obj[37]), String.valueOf(obj[38])));
 				i++;
-				
-				if (rows.size()==100) {
-					break;
-				}
 			}
-//			System.out.println("---------index------------" + i);
 
 			// Compile the .jrxml template to a .jasper file
-			InputStream jrxmlStream = AgywPrevController.class
-					.getResourceAsStream(REPORT_TEMPLATE);
+			InputStream jrxmlStream = AgywPrevController.class.getResourceAsStream(REPORT_TEMPLATE);
 			JasperReport jasperReport = JasperCompileManager.compileReport(jrxmlStream);
 
 			// Convert data to a JRBeanCollectionDataSource
@@ -139,27 +134,27 @@ public class AgywPrevController {
 			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, null, dataSource);
 
 			SimpleXlsxReportConfiguration configuration = new SimpleXlsxReportConfiguration();
-			configuration.setOnePagePerSheet(true);
+//				configuration.setOnePagePerSheet(true);
 			configuration.setDetectCellType(true);
 			configuration.setAutoFitPageHeight(true);
 			configuration.setIgnoreGraphics(false);
 			// Set text wrapping
-            configuration.setWhitePageBackground(false);
-            configuration.setRemoveEmptySpaceBetweenColumns(true);
-            configuration.setWrapText(true); // Enable text wrapping
-            
-            // Apply the configuration to the exporter
-            JasperReportsContext jasperReportsContext = DefaultJasperReportsContext.getInstance();
-            
+			configuration.setWhitePageBackground(false);
+			configuration.setRemoveEmptySpaceBetweenColumns(true);
+			configuration.setWrapText(true); // Enable text wrapping
+
+			// Apply the configuration to the exporter
+			JasperReportsContext jasperReportsContext = DefaultJasperReportsContext.getInstance();
+
 			// Export the report to XLSX
 			JRXlsxExporter exporter = new JRXlsxExporter(jasperReportsContext);
 			exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
 			exporter.setExporterOutput(
-					new SimpleOutputStreamExporterOutput(REPORT_OUTPUT));
+					new SimpleOutputStreamExporterOutput(REPORT_OUTPUT +"_"+ pageIndex +"_"+ OUTPUT_EXTENSION));
 			exporter.setConfiguration(configuration);
 			exporter.exportReport();
-			
-			System.out.println("Report generated and exported to XLSX with borders successfully.");
+
+			System.out.println("Report " + pageIndex + " generated and exported to XLSX with borders successfully.");
 		} catch (JRException e) {
 			e.printStackTrace();
 		}

@@ -1,5 +1,6 @@
 package dlt.dltbackendmaster.reports.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -8,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -128,11 +131,13 @@ public class AgywPrevController {
 	}
 
 	@GetMapping(path = "/getNewlyEnrolledAgywAndServices")
-	public ResponseEntity<byte[]> getNewlyEnrolledAgywAndServices(@RequestParam(name = "districts") Integer[] districts,
+	public ResponseEntity<String> getNewlyEnrolledAgywAndServices(@RequestParam(name = "districts") Integer[] districts,
 			@RequestParam(name = "startDate") Long startDate, @RequestParam(name = "endDate") Long endDate,
 			@RequestParam(name = "pageIndex") int pageIndex, @RequestParam(name = "pageSize") int pageSize)
 			throws IOException {
 		AgywPrevReport report = new AgywPrevReport(service);
+
+		String generatedFileName = REPORT_OUTPUT + "_" + pageIndex + "_" + OUTPUT_EXTENSION;
 
 		List<NewlyEnrolledAgywAndServices> rows = new ArrayList<>();
 
@@ -185,25 +190,16 @@ public class AgywPrevController {
 			// Export the report to XLSX
 			JRXlsxExporter exporter = new JRXlsxExporter(jasperReportsContext);
 			exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
-			exporter.setExporterOutput(
-					new SimpleOutputStreamExporterOutput(REPORT_OUTPUT + "_" + pageIndex + "_" + OUTPUT_EXTENSION));
+			exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(generatedFileName));
 			exporter.setConfiguration(configuration);
 			exporter.exportReport();
 
-			System.out.println("Report " + pageIndex + " generated and exported to XLSX with borders successfully.");
+			System.out.println(generatedFileName + ": generated and exported to XLSX with borders successfully.");
 		} catch (JRException e) {
 			e.printStackTrace();
 		}
 
-		// File name
-		String fileName = "report.xlsx";
-
-		// Prepare and return the Excel file as a response
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-		headers.setContentDispositionFormData("attachment", fileName);
-
-		return new ResponseEntity<>(null, headers, HttpStatus.OK);
+		return new ResponseEntity<>(generatedFileName, HttpStatus.OK);
 	}
 
 	public static <T> List<List<T>> splitList(List<T> originalList, int chunkSize) {
@@ -237,6 +233,18 @@ public class AgywPrevController {
 		jsonString = jsonString.replaceAll(",\\s*}", "}");
 
 		return jsonString;
+	}
+
+	@GetMapping("/downloadFile")
+	public ResponseEntity<Resource> downloadFile(@RequestParam(name = "filePath") String filePath) throws IOException {
+		File file = new File(filePath);
+		Resource resource = new FileSystemResource(file);
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Content-Disposition", "attachment; filename=" + file.getName());
+
+		return ResponseEntity.ok().headers(headers).contentLength(file.length())
+				.contentType(MediaType.APPLICATION_OCTET_STREAM).body(resource);
 	}
 
 }

@@ -50,7 +50,7 @@ import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
 public class AgywPrevController {
 
 	private static final String REPORT_TEMPLATE = "/reports/NewEnrolledReportTemplateLandscape.jrxml";
-	private static final String REPORT_OUTPUT = "target/reports/NewEnrolledReportOutputLandscape";
+	private static final String REPORT_OUTPUT = "target/reports/DLT2.0_SUMARIO_NOVAS_RAMJ_VULNERABILIDADES_E_SERVICOS";
 	private static final String OUTPUT_EXTENSION = ".xlsx";
 	private final DAOService service;
 

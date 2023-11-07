@@ -3,6 +3,10 @@ package dlt.dltbackendmaster.reports.controller;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -49,9 +53,9 @@ import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
 @RequestMapping("/api/agyw-prev")
 public class AgywPrevController {
 
+	private static final String REPORT_NAME = "DLT2.0_SUMARIO_NOVAS_RAMJ_VULNERABILIDADES_E_SERVICOS";
+	private static final String REPORTS_HOME = "target/reports";
 	private static final String REPORT_TEMPLATE = "/reports/NewEnrolledReportTemplateLandscape.jrxml";
-	private static final String REPORT_OUTPUT = "target/reports/DLT2.0_SUMARIO_NOVAS_RAMJ_VULNERABILIDADES_E_SERVICOS";
-	private static final String OUTPUT_EXTENSION = ".xlsx";
 	private final DAOService service;
 
 	@Autowired
@@ -133,11 +137,24 @@ public class AgywPrevController {
 	@GetMapping(path = "/getNewlyEnrolledAgywAndServices")
 	public ResponseEntity<String> getNewlyEnrolledAgywAndServices(@RequestParam(name = "districts") Integer[] districts,
 			@RequestParam(name = "startDate") Long startDate, @RequestParam(name = "endDate") Long endDate,
-			@RequestParam(name = "pageIndex") int pageIndex, @RequestParam(name = "pageSize") int pageSize)
-			throws IOException {
+			@RequestParam(name = "pageIndex") int pageIndex, @RequestParam(name = "pageSize") int pageSize,
+			@RequestParam(name = "username") String username) throws IOException {
+
 		AgywPrevReport report = new AgywPrevReport(service);
 
-		String generatedFileName = REPORT_OUTPUT + "_" + pageIndex + "_" + OUTPUT_EXTENSION;
+		Date initialDate = new Date(startDate);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		String formattedInitialDate = sdf.format(initialDate);
+
+		Date finalDate = new Date(endDate);
+		SimpleDateFormat sdfFinal = new SimpleDateFormat("yyyy-MM-dd");
+		String formattedFinalDate = sdfFinal.format(finalDate);
+
+		createDirectory(REPORTS_HOME + "/" + username);
+
+		String generatedFileName = REPORTS_HOME + "/" + username + "/" + REPORT_NAME + "_" + formattedInitialDate + "_"
+				+ formattedFinalDate + "_" + pageIndex + "_" + ".xlsx";
+		;
 
 		List<NewlyEnrolledAgywAndServices> rows = new ArrayList<>();
 
@@ -233,6 +250,23 @@ public class AgywPrevController {
 		jsonString = jsonString.replaceAll(",\\s*}", "}");
 
 		return jsonString;
+	}
+
+	public void createDirectory(String directoryPath) {
+		// Create a Path object for the directory
+		Path dirPath = Paths.get(directoryPath);
+
+		try {
+			// Create the directory if it does not exist
+			if (!Files.exists(dirPath)) {
+				Files.createDirectories(dirPath);
+				System.out.println("Directory created successfully.");
+			} else {
+				System.out.println("Directory already exists.");
+			}
+		} catch (IOException e) {
+			System.err.println("Error creating the directory: " + e.getMessage());
+		}
 	}
 
 	@GetMapping("/downloadFile")

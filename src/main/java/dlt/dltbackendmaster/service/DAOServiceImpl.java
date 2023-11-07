@@ -79,6 +79,11 @@ public class DAOServiceImpl implements DAOService {
 	}
 
 	@Transactional
+	public <T> T GetUniqueEntityByNamedQuery(String query, String searchNui, String searchName, Integer searchUserCreator, Integer searchDistrict, Object... params) {
+		return repository.GetUniqueEntityByNamedQuery(query, searchNui, searchName, searchUserCreator, searchDistrict, params);
+	}
+
+	@Transactional
 	public <T> T GetUniqueEntityByNamedQuery(String query, String searchNui, Integer searchUserCreator, Integer searchDistrict, Object... params) {
 		return repository.GetUniqueEntityByNamedQuery(query, searchNui, searchUserCreator, searchDistrict, params);
 	}
@@ -94,15 +99,21 @@ public class DAOServiceImpl implements DAOService {
 	}
 
 	@Transactional
+	public <T> List<T> GetAllPagedEntityByNamedQuery(String query, int pageIndex, int pageSize, String searchNui, String searchName, Integer searchUserCreator, Integer searchDistrict,
+			Object... params) {
+		return repository.GetAllPagedEntityByNamedQuery(query, pageIndex, pageSize, searchNui, searchName, searchUserCreator, searchDistrict, params);
+	}
+
+	@Transactional
 	public <T> List<T> GetAllPagedEntityByNamedQuery(String query, int pageIndex, int pageSize, String searchNui, Integer searchUserCreator, Integer searchDistrict,
 			Object... params) {
 		return repository.GetAllPagedEntityByNamedQuery(query, pageIndex, pageSize, searchNui, searchUserCreator, searchDistrict, params);
 	}
 	
 	@Transactional
-	public <T> List<T> GetAllPagedEntityByNamedQuery(String query, int pageIndex, int pageSize, String searchUsername, Integer searchUserCreator,
+	public <T> List<T> GetAllPagedUserEntityByNamedQuery(String query, int pageIndex, int pageSize, String searchUsername, Integer searchUserCreator, Integer searchDistrict,
 			Object... params) {
-		return repository.GetAllPagedEntityByNamedQuery(query, pageIndex, pageSize, searchUsername, searchUserCreator, params);
+		return repository.GetAllPagedUserEntityByNamedQuery(query, pageIndex, pageSize, searchUsername, searchUserCreator, searchDistrict, params);
 	}
 
     @Transactional

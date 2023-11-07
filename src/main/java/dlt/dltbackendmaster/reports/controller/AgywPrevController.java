@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -188,8 +189,13 @@ public class AgywPrevController {
 			// Convert data to a JRBeanCollectionDataSource
 			JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(rows);
 
+			// Create a Map to store report parameters
+            Map<String, Object> parameters = new HashMap<>();
+            parameters.put("date_start", formattedInitialDate);
+            parameters.put("date_end", formattedFinalDate);
+            
 			// Generate the report
-			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, null, dataSource);
+			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
 
 			SimpleXlsxReportConfiguration configuration = new SimpleXlsxReportConfiguration();
 //				configuration.setOnePagePerSheet(true);

@@ -173,12 +173,13 @@ public class AgywPrevController {
 						String.valueOf(obj[13]), String.valueOf(obj[14]), String.valueOf(obj[15]),
 						String.valueOf(obj[16]), String.valueOf(obj[17]), String.valueOf(obj[18]),
 						String.valueOf(obj[19]), String.valueOf(obj[20]), String.valueOf(obj[21]),
-						String.valueOf(obj[22]), String.valueOf(obj[23]), String.valueOf(obj[24]),
-						String.valueOf(obj[25]), String.valueOf(obj[26]), String.valueOf(obj[27]),
-						String.valueOf(obj[28]), String.valueOf(obj[29]), String.valueOf(obj[30]),
-						String.valueOf(obj[31]), String.valueOf(obj[32]), String.valueOf(obj[33]),
-						String.valueOf(obj[34]), String.valueOf(obj[35]), String.valueOf(obj[36]),
-						String.valueOf(obj[37]), String.valueOf(obj[38])));
+						String.valueOf(obj[22] != null ? obj[22] : ""), String.valueOf(obj[23]),
+						String.valueOf(obj[24]), String.valueOf(obj[25]), String.valueOf(obj[26]),
+						String.valueOf(obj[27]), String.valueOf(obj[28]), String.valueOf(obj[29]),
+						String.valueOf(obj[30]), String.valueOf(obj[31]), String.valueOf(obj[32]),
+						String.valueOf(obj[33]), String.valueOf(obj[34]), String.valueOf(obj[35]),
+						String.valueOf(obj[36] != null ? obj[36] : ""), String.valueOf(obj[37] != null ? obj[37] : ""),
+						String.valueOf(obj[38])));
 				i++;
 			}
 
@@ -190,10 +191,10 @@ public class AgywPrevController {
 			JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(rows);
 
 			// Create a Map to store report parameters
-            Map<String, Object> parameters = new HashMap<>();
-            parameters.put("date_start", formattedInitialDate);
-            parameters.put("date_end", formattedFinalDate);
-            
+			Map<String, Object> parameters = new HashMap<>();
+			parameters.put("date_start", formattedInitialDate);
+			parameters.put("date_end", formattedFinalDate);
+
 			// Generate the report
 			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
 

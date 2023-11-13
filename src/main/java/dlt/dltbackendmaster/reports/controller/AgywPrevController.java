@@ -54,7 +54,7 @@ import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
 @RequestMapping("/api/agyw-prev")
 public class AgywPrevController {
 
-	private static final String REPORT_NAME = "DLT2.0_SUMARIO_NOVAS_RAMJ_VULNERABILIDADES_E_SERVICOS";
+	private static final String REPORT_NAME = "DLT2.0_NOVAS_RAMJ_VULNERABILIDADES_E_SERVICOS_POR_PROVINCIA_DI_DF";
 	private static final String REPORTS_HOME = "target/reports";
 	private static final String REPORT_TEMPLATE = "/reports/NewEnrolledReportTemplateLandscape.jrxml";
 	private final DAOService service;
@@ -155,7 +155,6 @@ public class AgywPrevController {
 
 		String generatedFileName = REPORTS_HOME + "/" + username + "/" + REPORT_NAME + "_" + formattedInitialDate + "_"
 				+ formattedFinalDate + "_" + pageIndex + "_" + ".xlsx";
-		;
 
 		List<NewlyEnrolledAgywAndServices> rows = new ArrayList<>();
 

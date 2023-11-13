@@ -156,7 +156,7 @@ public class AgywPrevController {
 
 		createDirectory(REPORTS_HOME + "/" + username);
 
-		String generatedFileName = REPORTS_HOME + "/" + username + "/" + REPORT_NAME +"_"+province+ "_" + formattedInitialDate + "_"
+		String generatedFileName = REPORTS_HOME + "/" + username + "/" + REPORT_NAME +"_"+province.toUpperCase()+ "_" + formattedInitialDate + "_"
 				+ formattedFinalDate + "__" + pageIndex + "__" + ".xlsx";
 
 		List<NewlyEnrolledAgywAndServices> rows = new ArrayList<>();

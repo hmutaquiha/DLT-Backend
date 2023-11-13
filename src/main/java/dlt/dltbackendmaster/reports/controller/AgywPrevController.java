@@ -54,7 +54,7 @@ import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
 @RequestMapping("/api/agyw-prev")
 public class AgywPrevController {
 
-	private static final String REPORT_NAME = "DLT2.0_NOVAS_RAMJ_VULNERABILIDADES_E_SERVICOS_POR_PROVINCIA_DI_DF";
+	private static final String REPORT_NAME = "DLT2.0_NOVAS_RAMJ_VULNERABILIDADES_E_SERVICOS_POR";
 	private static final String REPORTS_HOME = "target/reports";
 	private static final String REPORT_TEMPLATE = "/reports/NewEnrolledReportTemplateLandscape.jrxml";
 	private final DAOService service;
@@ -120,6 +120,7 @@ public class AgywPrevController {
 
 	@GetMapping(produces = "application/json", path = "/getNewlyEnrolledAgywAndServicesSummary")
 	public ResponseEntity<List<Object>> getNewlyEnrolledAgywAndServicesSummary(
+			@RequestParam(name = "province") String province,
 			@RequestParam(name = "districts") Integer[] districts, @RequestParam(name = "startDate") Long startDate,
 			@RequestParam(name = "endDate") Long endDate, @RequestParam(name = "pageIndex") int pageIndex,
 			@RequestParam(name = "pageSize") int pageSize) {
@@ -136,7 +137,9 @@ public class AgywPrevController {
 	}
 
 	@GetMapping(path = "/getNewlyEnrolledAgywAndServices")
-	public ResponseEntity<String> getNewlyEnrolledAgywAndServices(@RequestParam(name = "districts") Integer[] districts,
+	public ResponseEntity<String> getNewlyEnrolledAgywAndServices(
+			@RequestParam(name = "province") String province,	
+			@RequestParam(name = "districts") Integer[] districts,
 			@RequestParam(name = "startDate") Long startDate, @RequestParam(name = "endDate") Long endDate,
 			@RequestParam(name = "pageIndex") int pageIndex, @RequestParam(name = "pageSize") int pageSize,
 			@RequestParam(name = "username") String username) throws IOException {
@@ -153,7 +156,7 @@ public class AgywPrevController {
 
 		createDirectory(REPORTS_HOME + "/" + username);
 
-		String generatedFileName = REPORTS_HOME + "/" + username + "/" + REPORT_NAME + "_" + formattedInitialDate + "_"
+		String generatedFileName = REPORTS_HOME + "/" + username + "/" + REPORT_NAME +"_"+province+ "_" + formattedInitialDate + "_"
 				+ formattedFinalDate + "_" + pageIndex + "_" + ".xlsx";
 
 		List<NewlyEnrolledAgywAndServices> rows = new ArrayList<>();

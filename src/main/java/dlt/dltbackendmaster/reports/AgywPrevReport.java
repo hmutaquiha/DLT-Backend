@@ -617,7 +617,7 @@ public class AgywPrevReport {
 
 	return dataObjs;
 	}
-	public List<Object>  getNewlyEnrolledAgywAndServicesSummary(Integer[] districts, Date startDate,	Date endDate, int pageIndex, int pageSize) {
+	public List<Object>  getNewlyEnrolledAgywAndServicesSummary(Integer[] districts, Date startDate,	Date endDate) {
 		List<Object> dataObjs = service.GetByNamedNativeQuery("AgywPrev.findByNewlyEnrolledAgywAndServicesSummary", Arrays.asList(districts), startDate, endDate);
 
 	return dataObjs;

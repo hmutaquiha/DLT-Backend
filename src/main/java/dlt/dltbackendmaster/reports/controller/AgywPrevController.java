@@ -259,7 +259,7 @@ public class AgywPrevController {
 	public ResponseEntity<String> getNewlyEnrolledAgywAndServicesSummary(
 			@RequestParam(name = "province") String province, @RequestParam(name = "districts") Integer[] districts,
 			@RequestParam(name = "startDate") Long startDate, @RequestParam(name = "endDate") Long endDate,
-			@RequestParam(name = "pageIndex") int pageIndex, @RequestParam(name = "pageSize") int pageSize,
+			@RequestParam(name = "pageIndex") int pageIndex, 
 			@RequestParam(name = "username") String username) {
 		Date initialDate = new Date(startDate);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -280,7 +280,7 @@ public class AgywPrevController {
 		AgywPrevReport report = new AgywPrevReport(service);
 
 		List<Object> reportObjectList = report.getNewlyEnrolledAgywAndServicesSummary(districts, new Date(startDate),
-				new Date(endDate), pageIndex, pageSize);
+				new Date(endDate));
 		Object[][] reportObjectArray = reportObjectList.toArray(new Object[0][0]);
 
 		int i = 1;

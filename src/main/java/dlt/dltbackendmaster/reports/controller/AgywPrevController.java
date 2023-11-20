@@ -260,7 +260,8 @@ public class AgywPrevController {
 	public ResponseEntity<String> getNewlyEnrolledAgywAndServicesSummary(
 			@RequestParam(name = "province") String province, @RequestParam(name = "districts") Integer[] districts,
 			@RequestParam(name = "startDate") Long startDate, @RequestParam(name = "endDate") Long endDate,
-			@RequestParam(name = "pageIndex") int pageIndex, @RequestParam(name = "username") String username) {
+			@RequestParam(name = "pageNumber") int pageNumber, @RequestParam(name = "nextIndex") int nextIndex,
+			@RequestParam(name = "username") String username) {
 		String generatedReportResponse;
 
 		Date initialDate = new Date(startDate);
@@ -274,8 +275,8 @@ public class AgywPrevController {
 		createDirectory(REPORTS_HOME + "/" + username);
 
 		String generatedFileName = REPORTS_HOME + "/" + username + "/" + SUMMARY_REPORT_NAME + "_"
-				+ province.toUpperCase() + "_" + formattedInitialDate + "_" + formattedFinalDate + "_" + pageIndex + "_"
-				+ ".xlsx";
+				+ province.toUpperCase() + "_" + formattedInitialDate + "_" + formattedFinalDate + "_" + pageNumber
+				+ "_" + ".xlsx";
 
 		List<SummaryNewlyEnrolledAgywAndServices> rows = new ArrayList<>();
 
@@ -285,30 +286,29 @@ public class AgywPrevController {
 				new Date(endDate));
 		Object[][] reportObjectArray = reportObjectList.toArray(new Object[0][0]);
 
-		int i = 1;
 		try {
 			for (Object[] obj : reportObjectArray) {
-				rows.add(new SummaryNewlyEnrolledAgywAndServices(i + "", String.valueOf(obj[0] != null ? obj[0] : ""),
-						String.valueOf(obj[1] != null ? obj[1] : ""), String.valueOf(obj[2] != null ? obj[2] : ""),
-						String.valueOf(obj[3] != null ? obj[3] : ""), String.valueOf(obj[4] != null ? obj[4] : ""),
-						String.valueOf(obj[5] != null ? obj[5] : ""), String.valueOf(obj[6] != null ? obj[6] : ""),
-						String.valueOf(obj[7] != null ? obj[7] : ""), String.valueOf(obj[8] != null ? obj[8] : ""),
-						String.valueOf(obj[9] != null ? obj[9] : ""), String.valueOf(obj[10] != null ? obj[10] : ""),
-						String.valueOf(obj[11] != null ? obj[11] : ""), String.valueOf(obj[12] != null ? obj[12] : ""),
-						String.valueOf(obj[13] != null ? obj[13] : ""), String.valueOf(obj[14] != null ? obj[14] : ""),
-						String.valueOf(obj[15] != null ? obj[15] : ""), String.valueOf(obj[16] != null ? obj[16] : ""),
-						String.valueOf(obj[17] != null ? obj[17] : ""), String.valueOf(obj[18] != null ? obj[18] : ""),
-						String.valueOf(obj[19] != null ? obj[19] : ""), String.valueOf(obj[20] != null ? obj[20] : ""),
-						String.valueOf(obj[21] != null ? obj[21] : ""), String.valueOf(obj[22] != null ? obj[22] : ""),
-						String.valueOf(obj[23] != null ? obj[23] : ""), String.valueOf(obj[24] != null ? obj[24] : ""),
-						String.valueOf(obj[25] != null ? obj[25] : ""), String.valueOf(obj[26] != null ? obj[26] : ""),
-						String.valueOf(obj[27] != null ? obj[27] : ""), String.valueOf(obj[28] != null ? obj[28] : ""),
-						String.valueOf(obj[29] != null ? obj[29] : ""), String.valueOf(obj[30] != null ? obj[30] : ""),
-						String.valueOf(obj[31] != null ? obj[31] : ""), String.valueOf(obj[32] != null ? obj[32] : ""),
-						String.valueOf(obj[33] != null ? obj[33] : ""), String.valueOf(obj[34] != null ? obj[34] : ""),
-						String.valueOf(obj[35] != null ? obj[35] : ""),
+				rows.add(new SummaryNewlyEnrolledAgywAndServices(nextIndex + "",
+						String.valueOf(obj[0] != null ? obj[0] : ""), String.valueOf(obj[1] != null ? obj[1] : ""),
+						String.valueOf(obj[2] != null ? obj[2] : ""), String.valueOf(obj[3] != null ? obj[3] : ""),
+						String.valueOf(obj[4] != null ? obj[4] : ""), String.valueOf(obj[5] != null ? obj[5] : ""),
+						String.valueOf(obj[6] != null ? obj[6] : ""), String.valueOf(obj[7] != null ? obj[7] : ""),
+						String.valueOf(obj[8] != null ? obj[8] : ""), String.valueOf(obj[9] != null ? obj[9] : ""),
+						String.valueOf(obj[10] != null ? obj[10] : ""), String.valueOf(obj[11] != null ? obj[11] : ""),
+						String.valueOf(obj[12] != null ? obj[12] : ""), String.valueOf(obj[13] != null ? obj[13] : ""),
+						String.valueOf(obj[14] != null ? obj[14] : ""), String.valueOf(obj[15] != null ? obj[15] : ""),
+						String.valueOf(obj[16] != null ? obj[16] : ""), String.valueOf(obj[17] != null ? obj[17] : ""),
+						String.valueOf(obj[18] != null ? obj[18] : ""), String.valueOf(obj[19] != null ? obj[19] : ""),
+						String.valueOf(obj[20] != null ? obj[20] : ""), String.valueOf(obj[21] != null ? obj[21] : ""),
+						String.valueOf(obj[22] != null ? obj[22] : ""), String.valueOf(obj[23] != null ? obj[23] : ""),
+						String.valueOf(obj[24] != null ? obj[24] : ""), String.valueOf(obj[25] != null ? obj[25] : ""),
+						String.valueOf(obj[26] != null ? obj[26] : ""), String.valueOf(obj[27] != null ? obj[27] : ""),
+						String.valueOf(obj[28] != null ? obj[28] : ""), String.valueOf(obj[29] != null ? obj[29] : ""),
+						String.valueOf(obj[30] != null ? obj[30] : ""), String.valueOf(obj[31] != null ? obj[31] : ""),
+						String.valueOf(obj[32] != null ? obj[32] : ""), String.valueOf(obj[33] != null ? obj[33] : ""),
+						String.valueOf(obj[34] != null ? obj[34] : ""), String.valueOf(obj[35] != null ? obj[35] : ""),
 						String.valueOf(obj[36] != null ? obj[36] : "")));
-				i++;
+				nextIndex++;
 			}
 
 			// Compile the .jrxml template to a .jasper file
@@ -350,7 +350,7 @@ public class AgywPrevController {
 
 			ObjectMapper objectMapper = new ObjectMapper();
 			generatedReportResponse = objectMapper
-					.writeValueAsString(new ReportResponse(generatedFileName, rows.size()));
+					.writeValueAsString(new ReportResponse(generatedFileName, rows.size(), nextIndex));
 
 			System.out.println(generatedFileName + ": generated and exported to XLSX with borders successfully.");
 		} catch (Exception e) {

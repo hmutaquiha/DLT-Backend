@@ -876,7 +876,7 @@
 				<textElement>
 					<font fontName="DejaVu Sans"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{data_ultima_sessao_prep}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{index}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

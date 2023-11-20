@@ -11,11 +11,13 @@ package dlt.dltbackendmaster.reports.domain;
 public class ReportResponse {
 	private String fileName;
 	private int fileSize;
+	private int nextIndex;
 
-	public ReportResponse(String fileName, int fileSize) {
+	public ReportResponse(String fileName, int fileSize, int nextIndex) {
 		super();
 		this.fileName = fileName;
 		this.fileSize = fileSize;
+		this.nextIndex = nextIndex;
 	}
 
 	public String getFileName() {
@@ -32,5 +34,13 @@ public class ReportResponse {
 
 	public void setFileSize(int fileSize) {
 		this.fileSize = fileSize;
+	}
+
+	public int getNextIndex() {
+		return nextIndex;
+	}
+
+	public void setNextIndex(int nextIndex) {
+		this.nextIndex = nextIndex;
 	}
 }

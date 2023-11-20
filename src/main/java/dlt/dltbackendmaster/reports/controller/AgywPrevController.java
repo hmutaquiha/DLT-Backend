@@ -29,6 +29,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dlt.dltbackendmaster.reports.AgywPrevReport;
 import dlt.dltbackendmaster.reports.domain.NewlyEnrolledAgywAndServices;
+import dlt.dltbackendmaster.reports.domain.ReportResponse;
 import dlt.dltbackendmaster.reports.domain.ResultObject;
 import dlt.dltbackendmaster.reports.domain.SummaryNewlyEnrolledAgywAndServices;
 import dlt.dltbackendmaster.service.DAOService;
@@ -259,8 +260,9 @@ public class AgywPrevController {
 	public ResponseEntity<String> getNewlyEnrolledAgywAndServicesSummary(
 			@RequestParam(name = "province") String province, @RequestParam(name = "districts") Integer[] districts,
 			@RequestParam(name = "startDate") Long startDate, @RequestParam(name = "endDate") Long endDate,
-			@RequestParam(name = "pageIndex") int pageIndex, 
-			@RequestParam(name = "username") String username) {
+			@RequestParam(name = "pageIndex") int pageIndex, @RequestParam(name = "username") String username) {
+		String generatedReportResponse;
+
 		Date initialDate = new Date(startDate);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		String formattedInitialDate = sdf.format(initialDate);
@@ -313,43 +315,49 @@ public class AgywPrevController {
 			InputStream jrxmlStream = AgywPrevController.class.getResourceAsStream(SUMMARY_REPORT_TEMPLATE);
 			JasperReport jasperReport = JasperCompileManager.compileReport(jrxmlStream);
 
-			// Convert data to a JRBeanCollectionDataSource
-			JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(rows);
+			if (rows.size() > 0) {
+				// Convert data to a JRBeanCollectionDataSource
+				JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(rows);
 
-			// Create a Map to store report parameters
-			Map<String, Object> parameters = new HashMap<>();
-			parameters.put("date_start", formattedInitialDate);
-			parameters.put("date_end", formattedFinalDate);
+				// Create a Map to store report parameters
+				Map<String, Object> parameters = new HashMap<>();
+				parameters.put("date_start", formattedInitialDate);
+				parameters.put("date_end", formattedFinalDate);
 
-			// Generate the report
-			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
+				// Generate the report
+				JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
 
-			SimpleXlsxReportConfiguration configuration = new SimpleXlsxReportConfiguration();
+				SimpleXlsxReportConfiguration configuration = new SimpleXlsxReportConfiguration();
 //					configuration.setOnePagePerSheet(true);
-			configuration.setDetectCellType(true);
-			configuration.setAutoFitPageHeight(true);
-			configuration.setIgnoreGraphics(false);
-			// Set text wrapping
-			configuration.setWhitePageBackground(false);
-			configuration.setRemoveEmptySpaceBetweenColumns(true);
-			configuration.setWrapText(true); // Enable text wrapping
+				configuration.setDetectCellType(true);
+				configuration.setAutoFitPageHeight(true);
+				configuration.setIgnoreGraphics(false);
+				// Set text wrapping
+				configuration.setWhitePageBackground(false);
+				configuration.setRemoveEmptySpaceBetweenColumns(true);
+				configuration.setWrapText(true); // Enable text wrapping
 
-			// Apply the configuration to the exporter
-			JasperReportsContext jasperReportsContext = DefaultJasperReportsContext.getInstance();
+				// Apply the configuration to the exporter
+				JasperReportsContext jasperReportsContext = DefaultJasperReportsContext.getInstance();
 
-			// Export the report to XLSX
-			JRXlsxExporter exporter = new JRXlsxExporter(jasperReportsContext);
-			exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
-			exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(generatedFileName));
-			exporter.setConfiguration(configuration);
-			exporter.exportReport();
+				// Export the report to XLSX
+				JRXlsxExporter exporter = new JRXlsxExporter(jasperReportsContext);
+				exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+				exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(generatedFileName));
+				exporter.setConfiguration(configuration);
+				exporter.exportReport();
+			}
+
+			ObjectMapper objectMapper = new ObjectMapper();
+			generatedReportResponse = objectMapper
+					.writeValueAsString(new ReportResponse(generatedFileName, rows.size()));
 
 			System.out.println(generatedFileName + ": generated and exported to XLSX with borders successfully.");
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		return new ResponseEntity<>(generatedFileName, HttpStatus.OK);
+		return new ResponseEntity<>(generatedReportResponse, HttpStatus.OK);
 	}
 
 }

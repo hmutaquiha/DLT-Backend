@@ -163,6 +163,8 @@ public class BeneficiaryController
 			) {
 		try {
 			Long beneficiariesTotal;
+            
+            searchName = searchName.replaceAll(" ", "%");
 			
 			if (level.equals("CENTRAL")) {
 				beneficiariesTotal = service.GetUniqueEntityByNamedQuery("Beneficiary.findCountAll", searchNui, searchName, searchUserCreator, searchDistrict);

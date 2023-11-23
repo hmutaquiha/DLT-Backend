@@ -57,6 +57,8 @@ public class BeneficiaryController
 
         try {
             List<Beneficiaries> beneficiaries = null;
+            
+            searchName = searchName.replaceAll(" ", "%");
 
             if (level.equals("CENTRAL")) {
                 beneficiaries = service.GetAllPagedEntityByNamedQuery("Beneficiary.findAll", pageIndex, pageSize, searchNui, searchName, searchUserCreator, searchDistrict);
@@ -161,6 +163,8 @@ public class BeneficiaryController
 			) {
 		try {
 			Long beneficiariesTotal;
+            
+            searchName = searchName.replaceAll(" ", "%");
 			
 			if (level.equals("CENTRAL")) {
 				beneficiariesTotal = service.GetUniqueEntityByNamedQuery("Beneficiary.findCountAll", searchNui, searchName, searchUserCreator, searchDistrict);

@@ -34,11 +34,15 @@ public interface DAOService {
 
 	<T> T GetUniqueEntityByNamedQuery(String query, Object... params);
 
+	<T> T GetUniqueEntityByNamedQuery(String query, String searchNui, String searchName, Integer searchUserCreator, Integer searchDistrict, Object... params);
+
 	<T> T GetUniqueEntityByNamedQuery(String query, String searchNui, Integer searchUserCreator, Integer searchDistrict, Object... params);
 
 	<T> T GetUniqueEntityByNamedQuery(String query, String searchStartDate, String searchEndDate, Object... params);
 
 	<T> List<T> GetAllEntityByNamedQuery(String query, Object... params);
+	
+	<T> List<T> GetAllPagedEntityByNamedQuery(String query, int pageIndex, int pageSize, String searchNui, String searchName, Integer searchUserCreator, Integer searchDistrict, Object... params);
 	
 	<T> List<T> GetAllPagedEntityByNamedQuery(String query, int pageIndex, int pageSize, String searchNui, Integer searchUserCreator, Integer searchDistrict, Object... params);
 	

@@ -55,7 +55,7 @@ import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
 @RestController
 @RequestMapping("/api/agyw-prev")
 public class AgywPrevController {
-	private static final String REPORTS_HOME = System.getProperty("user.dir");
+	private static final String REPORTS_HOME = System.getProperty("user.dir") + "/webapps/reports";
 	private static final String REPORT_TEMPLATE = "/reports/NewEnrolledReportTemplateLandscape.jrxml";
 	private static final String REPORT_NAME = "DLT2.0_NOVAS_RAMJ_VULNERABILIDADES_E_SERVICOS_POR";
 	private static final String SUMMARY_REPORT_TEMPLATE = "/reports/SummaryNewEnrolledReportTemplateLandscape.jrxml";

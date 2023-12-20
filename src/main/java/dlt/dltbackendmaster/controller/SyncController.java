@@ -901,7 +901,7 @@ public class SyncController {
 	}
 
 	@GetMapping(path = "/usersLastSync/paged", produces = "application/json")
-	public ResponseEntity<List<Users>> get(@RequestParam(name = "userId") Integer userId,
+	public ResponseEntity<List<UserLastSync>> get(@RequestParam(name = "userId") Integer userId,
 			@RequestParam(name = "level") String level,
 			@RequestParam(name = "params", required = false) @Nullable Integer[] params,
 			@RequestParam(name = "pageIndex") int pageIndex, @RequestParam(name = "pageSize") int pageSize,
@@ -910,10 +910,25 @@ public class SyncController {
 			@RequestParam(name = "searchDistrict", required = false) @Nullable Integer searchDistrict) {
 
 		try {
-			List<Users> users = service.GetAllPagedUserEntityByNamedQuery("UserLastSync.findAll", pageIndex, pageSize,
-					searchUsername, searchUserCreator, searchDistrict);
+			Users user = service.find(Users.class, userId);
+//			List<Integer> profilesIds = profiles.stream().map(Integer::parseInt).collect(Collectors.toList());
+			List<Integer> districtsIds = user.getDistricts().stream().map(District::getId).collect(Collectors.toList());
+			List<Integer> provincesIds = user.getProvinces().stream().map(Province::getId).collect(Collectors.toList());
+			List<UserLastSync> users = new ArrayList<UserLastSync>();
 
-			return new ResponseEntity<List<Users>>(users, HttpStatus.OK);
+			if (!districtsIds.isEmpty()) {
+				users = service.GetAllPagedUserEntityByNamedQuery("UserLastSync.findByDistricts", pageIndex, pageSize,
+						searchUsername, searchUserCreator, searchDistrict, districtsIds);
+
+			} else if (!provincesIds.isEmpty()) {
+				users = service.GetAllPagedUserEntityByNamedQuery("UserLastSync.findByProvinces", pageIndex, pageSize,
+						searchUsername, searchUserCreator, searchDistrict, provincesIds);
+			} else {
+				users = service.GetAllPagedUserEntityByNamedQuery("UserLastSync.findAll", pageIndex, pageSize,
+						searchUsername, searchUserCreator, searchDistrict);
+			}
+
+			return new ResponseEntity<List<UserLastSync>>(users, HttpStatus.OK);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			System.out.println(e.getMessage());

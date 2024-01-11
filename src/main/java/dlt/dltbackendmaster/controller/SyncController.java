@@ -518,28 +518,12 @@ public class SyncController {
 		SyncObject<ReferenceServicesSyncModel> referencesServices;
 
 		try {
-			users = SyncSerializer.readUsersSyncObject(changes);
 			beneficiaries = SyncSerializer.readBeneficiariesSyncObject(changes);
 			interventions = SyncSerializer.readInterventionsSyncObject(changes);
 			references = SyncSerializer.readReferencesSyncObject(changes);
 			referencesServices = SyncSerializer.readReferenceServicesSyncObject(changes);
 
 			// created entities
-			if (users != null && users.getCreated().size() > 0) {
-
-				List<UsersSyncModel> createdList = mapper.convertValue(users.getCreated(),
-						new TypeReference<List<UsersSyncModel>>() {
-						});
-
-				for (UsersSyncModel created : createdList) {
-
-					if (created.getOnline_id() == null) {
-						UsersSync newUser = new UsersSync(created, lastPulledAt);
-						newUser.setCreatedBy(userId);
-						service.Save(newUser);
-					}
-				}
-			}
 			if (beneficiaries != null && beneficiaries.getCreated().size() > 0) {
 				List<BeneficiarySyncModel> createdList = mapper.convertValue(beneficiaries.getCreated(),
 						new TypeReference<List<BeneficiarySyncModel>>() {
@@ -610,6 +594,11 @@ public class SyncController {
 								if (beneficiaryId == null) {
 									Beneficiaries beneficiary = service.GetUniqueEntityByNamedQuery(
 											"Beneficiary.findByOfflineId", created.getBeneficiary_offline_id());
+									if (beneficiary == null) {
+										logger.warn("Beneficiary with offline ID " + created.getBeneficiary_offline_id()
+												+ " not found.");
+										continue;
+									}
 									beneficiaryId = beneficiary.getId();
 								}
 								intervention.setBeneficiaries(new Beneficiaries(beneficiaryId));
@@ -649,6 +638,11 @@ public class SyncController {
 								if (beneficiaryId == null) {
 									Beneficiaries beneficiary = service.GetUniqueEntityByNamedQuery(
 											"Beneficiary.findByOfflineId", created.getBeneficiary_offline_id());
+									if (beneficiary == null) {
+										logger.warn("Beneficiary with offline ID " + created.getBeneficiary_offline_id()
+												+ " not found.");
+										continue;
+									}
 									beneficiaryId = beneficiary.getId();
 								}
 								reference.setBeneficiaries(new Beneficiaries(beneficiaryId));
@@ -701,27 +695,6 @@ public class SyncController {
 			}
 
 			// updated entities
-			if (users != null && users.getUpdated().size() > 0) {
-				List<UsersSyncModel> updatedList = mapper.convertValue(users.getUpdated(),
-						new TypeReference<List<UsersSyncModel>>() {
-						});
-
-				for (UsersSyncModel updated : updatedList) {
-
-					if (updated.getOnline_id() == null) {
-						UsersSync newUser = new UsersSync(updated, lastPulledAt);
-						newUser.setCreatedBy(userId);
-						service.Save(newUser);
-
-					} else {
-						UsersSync updatedUser = service.find(UsersSync.class, updated.getOnline_id());
-						updatedUser.update(updated, lastPulledAt);
-						updatedUser.setUpdatedBy(userId);
-						service.update(updatedUser);
-
-					}
-				}
-			}
 			if (interventions != null && interventions.getUpdated().size() > 0) {
 				List<BeneficiaryInterventionSyncModel> updatedList = mapper.convertValue(interventions.getUpdated(),
 						new TypeReference<List<BeneficiaryInterventionSyncModel>>() {
@@ -739,6 +712,11 @@ public class SyncController {
 								if (beneficiaryId == null) {
 									Beneficiaries beneficiary = service.GetUniqueEntityByNamedQuery(
 											"Beneficiary.findByOfflineId", updated.getBeneficiary_offline_id());
+									if (beneficiary == null) {
+										logger.warn("Beneficiary with offline ID " + updated.getBeneficiary_offline_id()
+												+ " not found.");
+										continue;
+									}
 									beneficiaryId = beneficiary.getId();
 								}
 								intervention.setBeneficiaries(new Beneficiaries(beneficiaryId));
@@ -796,6 +774,11 @@ public class SyncController {
 								if (beneficiaryId == null) {
 									Beneficiaries beneficiary = service.GetUniqueEntityByNamedQuery(
 											"Beneficiary.findByOfflineId", updated.getBeneficiary_offline_id());
+									if (beneficiary == null) {
+										logger.warn("Beneficiary with offline ID " + updated.getBeneficiary_offline_id()
+												+ " not found.");
+										continue;
+									}
 									beneficiaryId = beneficiary.getId();
 								}
 								reference.setBeneficiaries(new Beneficiaries(beneficiaryId));

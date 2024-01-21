@@ -745,7 +745,8 @@ public class SyncController {
 							service.update(intervention);
 
 							// If there was an update on the key, intervention must be deleted
-							if (updated.getSub_service_id() != subServiceId || !updated.getDate().equals(keys[2])) {
+							if (updated.getSub_service_id().intValue() != subServiceId.intValue()
+									|| !updated.getDate().equals(keys[2])) {
 
 								BeneficiariesInterventionsId bId1 = new BeneficiariesInterventionsId(beneficiaryId,
 										subServiceId, interventionDate);
@@ -809,6 +810,11 @@ public class SyncController {
 
 					if (updated.getOnline_id() == null) {
 						try {
+							if (!StringUtils.isNumeric(updated.getReference_id())) {
+								References reference = service.GetUniqueEntityByNamedQuery("References.findByOfflineId",
+										updated.getReference_id());
+								updated.setReference_id(String.valueOf(reference.getId()));
+							}
 							ReferencesServices referenceServices = new ReferencesServices(updated, lastPulledAt);
 							referenceServices.setCreatedBy(userId);
 							service.Save(referenceServices);

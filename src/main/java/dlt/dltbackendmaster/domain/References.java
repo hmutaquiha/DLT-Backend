@@ -334,6 +334,8 @@ import dlt.dltbackendmaster.domain.watermelondb.ReferenceSyncModel;
 																+ "and r.dateCreated < :lastpulledat "
 																+ "and r.dateUpdated >= :lastpulledat"
 																),
+		@NamedQuery(name = "References.findByOfflineId", query = "SELECT r FROM References r "
+																+ "where r.offlineId = :offlineId "),
 		
 })
 public class References implements java.io.Serializable {

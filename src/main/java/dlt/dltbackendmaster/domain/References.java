@@ -337,6 +337,11 @@ import dlt.dltbackendmaster.domain.watermelondb.ReferenceSyncModel;
 		@NamedQuery(name = "References.findByOfflineId", query = "SELECT r FROM References r "
 																+ "where r.offlineId = :offlineId "),
 		
+		@NamedQuery(name = "References.countByBeneficiary",
+													    query = "SELECT ref.beneficiaries.id AS beneficiary_id, COUNT(ref.beneficiaries.id) AS total " 
+													            +"FROM References ref " 
+													            +"WHERE ref.beneficiaries.id = :beneficiaryId " 
+													            +"GROUP BY ref.beneficiaries.id"),
 })
 public class References implements java.io.Serializable {
 

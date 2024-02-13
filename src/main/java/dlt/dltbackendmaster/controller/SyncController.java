@@ -794,10 +794,15 @@ public class SyncController {
 						}
 
 					} else {
-						References reference = service.find(References.class, updated.getOnline_id());
-						reference.setUpdatedBy(userId);
-						reference.update(updated, lastPulledAt);
-						service.update(reference);
+						try {
+							References reference = service.find(References.class, updated.getOnline_id());
+							reference.setUpdatedBy(userId);
+							reference.update(updated, lastPulledAt);
+							service.update(reference);
+						} catch (NullPointerException e) {
+							logger.warn(e.getMessage());
+							continue;
+						}
 					}
 				}
 			}

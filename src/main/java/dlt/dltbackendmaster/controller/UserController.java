@@ -226,6 +226,22 @@ public class UserController {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+
+	@GetMapping(path = "/usAndOrganization/{Id}/{organization}", produces = "application/json")
+	public ResponseEntity<List<Users>> getByUsAndOrganization(@PathVariable Integer Id, @PathVariable Integer organization) {
+
+		if (Id == null) {
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		}
+
+		try {
+			List<Users> user = service.GetAllEntityByNamedQuery("Users.findByUsAndOrganization", organization, Id);
+
+			return new ResponseEntity<>(user, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 	
 	@GetMapping(path = "/locality/{Id}", produces = "application/json")
 	public ResponseEntity<List<Users>> getByLocality(@PathVariable Integer Id) {

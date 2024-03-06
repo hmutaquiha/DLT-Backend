@@ -230,7 +230,7 @@ public class UserController {
 	@GetMapping(path = "/usAndOrganization/{Id}/{organization}", produces = "application/json")
 	public ResponseEntity<List<Users>> getByUsAndOrganization(@PathVariable Integer Id, @PathVariable Integer organization) {
 
-		if (Id == null) {
+		if (Id == null || organization == null) {
 			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 		}
 

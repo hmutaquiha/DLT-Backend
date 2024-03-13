@@ -329,8 +329,16 @@ public class ServiceCompletionRules {
 		return subServices.containsAll(ServicesConstants.LITERACIA_FINANCEIRA_AFLATOUN);
 	}
 
+	public static boolean completedSimplifiedFinancialLiteracyAflatoun(List<Integer> subServices) {
+		return subServices.containsAll(ServicesConstants.SIMPLIFIED_LITERACIA_FINANCEIRA_AFLATOUN);
+	}
+
 	public static boolean completedFinancialLiteracyAflatoun(AgywPrev agywPrev) {
 		return agywPrev.getFinancial_literacy_aflatoun() >= 7;
+	}
+
+	public static boolean completedSimplifiedFinancialLiteracyAflatoun(AgywPrev agywPrev) {
+		return agywPrev.getFinancial_literacy_aflatoun() >= 1;
 	}
 
 	public static boolean completedFinancialLiteracyAflateen(List<Integer> subServices) {

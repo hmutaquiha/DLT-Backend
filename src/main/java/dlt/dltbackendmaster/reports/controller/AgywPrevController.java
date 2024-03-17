@@ -226,21 +226,21 @@ public class AgywPrevController {
 			// Write Title and Merge cells for session headers
 
 			Cell cell1 = sessionRow.createCell(0);
-			cell1.setCellValue("Informação Demográfica");
+			cell1.setCellValue("Dados da Beneficiária");
 			cell1.setCellStyle(alignCellStyle);
 
-			Cell cell2 = sessionRow.createCell(17);
-			cell2.setCellValue("Vulnerabilidades Gerais");
+			Cell cell2 = sessionRow.createCell(9);
+			cell2.setCellValue("Serviços Primários");
 			cell2.setCellStyle(alignCellStyle);
 
-			Cell cell3 = sessionRow.createCell(30);
-			cell3.setCellValue("Serviços e Sub-Serviços");
+			Cell cell3 = sessionRow.createCell(23);
+			cell3.setCellValue("Serviços Secundários");
 			cell3.setCellStyle(alignCellStyle);
 
 			// Merge cells for session headers
-			sheet.addMergedRegion(new CellRangeAddress(3, 3, 0, 16)); // Merge first 17 columns
-			sheet.addMergedRegion(new CellRangeAddress(3, 3, 17, 29)); // Merge next 13 columns
-			sheet.addMergedRegion(new CellRangeAddress(3, 3, 30, 39)); // Merge last 10 columns
+			sheet.addMergedRegion(new CellRangeAddress(3, 3, 0, 8)); // Merge first 17 columns
+			sheet.addMergedRegion(new CellRangeAddress(3, 3, 9, 22)); // Merge next 13 columns
+			sheet.addMergedRegion(new CellRangeAddress(3, 3, 23, 36)); // Merge last 10 columns
 
 			// Define headers
 			String[] headers = { "Província", "Distrito", "NUI", "Idade Actual", "Faixa Etária Actual",
@@ -569,21 +569,21 @@ public class AgywPrevController {
 			// Write Title and Merge cells for session headers
 
 			Cell cell1 = sessionRow.createCell(0);
-			cell1.setCellValue("Informação Demográfica");
+			cell1.setCellValue("Dados da Beneficiária");
 			cell1.setCellStyle(alignCellStyle);
 
-			Cell cell2 = sessionRow.createCell(17);
-			cell2.setCellValue("Vulnerabilidades Gerais");
+			Cell cell2 = sessionRow.createCell(9);
+			cell2.setCellValue("Serviços Primários");
 			cell2.setCellStyle(alignCellStyle);
 
-			Cell cell3 = sessionRow.createCell(30);
-			cell3.setCellValue("Serviços e Sub-Serviços");
+			Cell cell3 = sessionRow.createCell(23);
+			cell3.setCellValue("Serviços Secundários");
 			cell3.setCellStyle(alignCellStyle);
 
 			// Merge cells for session headers
-			sheet.addMergedRegion(new CellRangeAddress(3, 3, 0, 16)); // Merge first 17 columns
-			sheet.addMergedRegion(new CellRangeAddress(3, 3, 17, 29)); // Merge next 13 columns
-			sheet.addMergedRegion(new CellRangeAddress(3, 3, 30, 39)); // Merge last 10 columns
+			sheet.addMergedRegion(new CellRangeAddress(3, 3, 0, 8)); // Merge first 17 columns
+			sheet.addMergedRegion(new CellRangeAddress(3, 3, 9, 22)); // Merge next 13 columns
+			sheet.addMergedRegion(new CellRangeAddress(3, 3, 23, 36)); // Merge last 10 columns
 
 			// Define headers
 			String[] headers = { "Província", "Distrito", "NUI", "Idade Actual", "Faixa Etária Actual",

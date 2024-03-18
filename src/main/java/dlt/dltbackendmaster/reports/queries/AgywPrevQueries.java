@@ -946,7 +946,7 @@ public class AgywPrevQueries {
 			+ "	(	select *,max(service_date) max_data_servico\n"
 			+ "		from agyw_prev_mview\n"
 			+ "		where intervention_status=1\n"
-			+ "		-- and provincia_id=2\n"
+			+ "		and district_id = :district\n"
 			+ "		group by beneficiary_id,service_id,sub_service_id\n"
 			+ "	) v on servico_ano.beneficiary_id=v.beneficiary_id\n"
 			+ "	left join province pr on v.province_id = pr.id\n"

@@ -104,6 +104,10 @@ public class ServiceCompletionRules {
 		return agywPrev.getGirl_violence_prevention() > 4;
 	}
 
+	public static boolean completedSimplifiedAvanteRaparigaViolencePrevention(AgywPrev agywPrev) {
+		return agywPrev.getGirl_violence_prevention() >= 4;
+	}
+
 	public static boolean startedAvanteRaparigaViolencePrevention(List<Integer> subServices) {
 		return containsAny(ServicesConstants.RAPARIGAS_VIOLENCE_PREVENTION, subServices);
 	}
@@ -411,6 +415,10 @@ public class ServiceCompletionRules {
 
 	public static boolean completedViolencePrevention15Plus(AgywPrev agywPrev) {
 		return agywPrev.getViolence_prevention_15_plus() > 2;
+	}
+
+	public static boolean completedSimplifiedViolencePrevention15Plus(AgywPrev agywPrev) {
+		return agywPrev.getViolence_prevention_15_plus() >= 2;
 	}
 
 	public static boolean startedViolencePrevention15Plus(AgywPrev agywPrev) {

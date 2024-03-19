@@ -301,6 +301,7 @@ public class AgywPrevQueries {
 			+ "				and nui <> '' "
 			+ "				and service_date is not null "
 			+ "				and service_date <> '' "
+			+ "				and current_age > 9 "
 			+ "				and service_date between '2000-01-01' and :end\n"
 			+ "				and beneficiary_id in"
 			+ "				(\n"

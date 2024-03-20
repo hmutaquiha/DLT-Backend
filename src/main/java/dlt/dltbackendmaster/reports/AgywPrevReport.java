@@ -736,7 +736,7 @@ public class AgywPrevReport {
 		return dataObjs;
 	}
 
-	public List<Object> getBeneficiariesVulnerabilitiesAndServices(Integer[] districts, Date startDate, Date endDate,
+	public List<Object> getBeneficiariesVulnerabilitiesAndServices(Integer[] districts, String startDate, String endDate,
 			int pageIndex, int pageSize) {
 		List<Object> dataObjs = service.GetAllPagedEntityByNamedNativeQuery(
 				"AgywPrev.findByBeneficiariesVulnerabilitiesAndServices", pageIndex, pageSize, startDate, endDate,
@@ -745,8 +745,8 @@ public class AgywPrevReport {
 		return dataObjs;
 	}
 
-	public List<Object> getBeneficiariesVulnerabilitiesAndServicesSummary(Integer district, Date startDate,
-			Date endDate) {
+	public List<Object> getBeneficiariesVulnerabilitiesAndServicesSummary(Integer district, String startDate,
+			String endDate) {
 		List<Object> dataObjs = service.GetByNamedNativeQuery(
 				"AgywPrev.findByBeneficiariesVulnerabilitiesAndServicesSummary", district, startDate, endDate);
 		return dataObjs;

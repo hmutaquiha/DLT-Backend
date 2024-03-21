@@ -18,6 +18,7 @@ import org.hibernate.query.NativeQuery;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * This class implements the DAO Repository Interface
@@ -164,9 +165,48 @@ public class DAORepositoryImpl implements DAORepository {
 
 		return results;
 	}
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public <T> List<T> GetEntityByNamedQuery(String query, int beneficiaryId,List<Integer> servicesIds) {
+		Query q = getCurrentSession().getNamedQuery(query);
+		
+		q.setParameter("beneficiaryId", beneficiaryId);
+		q.setParameter("servicesIds",servicesIds); 
+				
+		List<T> results = q.getResultList();
+
+		return results;
+	}
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public <T> List<T> GetEntityByNamedQuery(String query, Integer beneficiaryId, Integer ageBand,
+			Integer level) {
+		Query q = getCurrentSession().getNamedQuery(query);
+		
+		q.setParameter("beneficiaryId", beneficiaryId);
+		q.setParameter("ageBand",ageBand); 
+		q.setParameter("level",level); 
+				
+		List<T> results = q.getResultList();
+
+		return results;
+	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public <T> List<T> GetAllPagedEntityByNamedQuery(String query, int pageIndex, int pageSize, String searchNui, Integer searchUserCreator, Integer searchDistrict, Object... params) {
+	public <T> List<T> GetEntityByNamedQuery(String query, String name, Date dateOfBirth, int locality) {
+		Query q = getCurrentSession().getNamedQuery(query);
+
+		q.setParameter("name", name);
+		q.setParameter("dateOfBirth", dateOfBirth);
+		q.setParameter("locality", locality);
+
+		List<T> results = q.getResultList();
+
+		return results;
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public <T> List<T> GetAllPagedEntityByNamedQuery(String query, int pageIndex, int pageSize, String searchNui,Integer searchUserCreator, Integer searchDistrict, Object... params) {
 		Query q = getCurrentSession().getNamedQuery(query);
 		int i = 0;
 		
@@ -278,16 +318,16 @@ public class DAORepositoryImpl implements DAORepository {
     }
     
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public <T> List<T> GetByNamedNativeQuery(String query, List<Integer> districts, Date startDate, Date endDate, Object... params) {
+    public <T> List<T> GetByNamedNativeQuery(String query, Integer district, Date startDate, Date endDate, Object... params) {
         Query q = getCurrentSession().getNamedNativeQuery(query);
         int i = 0;
    
         for (Parameter param : q.getParameters()) {
-			if(!"districts".equals(param.getName()) && !"startDate".equals(param.getName()) && !"endDate".equals(param.getName())) {
+			if(!"district".equals(param.getName()) && !"startDate".equals(param.getName()) && !"endDate".equals(param.getName())) {
 				q.setParameter(param, params[i]);
 				i++;
 			}else {
-				q.setParameter("districts", districts);
+				q.setParameter("district", district);
 				q.setParameter("startDate", startDate);
 				q.setParameter("endDate", endDate); 
 			}	

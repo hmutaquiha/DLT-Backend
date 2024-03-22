@@ -339,24 +339,26 @@ public class AgywPrevReport {
 
 			if (agywPrev.getCurrent_age_band() == 1) { // 9-14
 				// AVANTE RAPARIGA
-				if (completedSimplifiedAvanteRapariga(agywPrev) && completedSimplifiedSAAJEducationSessions(agywPrev)) {
+				if (completedSimplifiedAvanteRapariga(agywPrev) && completedSimplifiedSAAJEducationSessions(agywPrev)
+						&& completedSimplifiedFinancialLiteracyAflatoun(agywPrev)) {
 					addBeneficiary(reportObject, agywPrev.getDistrict_id(),
 							getAgeBandIndex(agywPrev.getCurrent_age_band()), getEnrollmentTimeIndex(enrollmentTime),
 							COMPLETED_PRIMARY_PACKAGE, agywPrev.getBeneficiary_id());
 				}
-				if (completedSimplifiedAvanteRapariga(agywPrev) || completedSimplifiedSAAJEducationSessions(agywPrev)) {
+				if (completedSimplifiedAvanteRapariga(agywPrev) || completedSimplifiedSAAJEducationSessions(agywPrev)
+						|| completedSimplifiedFinancialLiteracyAflatoun(agywPrev)) {
 					addBeneficiary(reportObject, agywPrev.getDistrict_id(),
 							getAgeBandIndex(agywPrev.getCurrent_age_band()), getEnrollmentTimeIndex(enrollmentTime),
 							COMPLETED_PRIMARY_SERVICE, agywPrev.getBeneficiary_id());
 				}
 				if (startedSimplifiedAvanteRapariga(agywPrev) || startedSAAJEducationSessions(agywPrev)
 						|| startedAvanteRaparigaViolencePrevention(agywPrev) || startedPostViolenceCare_US(agywPrev)
-						|| startedPostViolenceCare_CM(agywPrev) || startedFinancialLiteracyAflatoun(agywPrev)) {
+						|| startedPostViolenceCare_CM(agywPrev)) {
 					addBeneficiary(reportObject, agywPrev.getDistrict_id(),
 							getAgeBandIndex(agywPrev.getCurrent_age_band()), getEnrollmentTimeIndex(enrollmentTime),
 							STARTED_SERVICE, agywPrev.getBeneficiary_id());
 				}
-				if (completedAvanteRaparigaViolencePrevention(agywPrev)) {
+				if (completedSimplifiedAvanteRaparigaViolencePrevention(agywPrev)) {
 					addBeneficiary(reportObject, agywPrev.getDistrict_id(),
 							getAgeBandIndex(agywPrev.getCurrent_age_band()), getEnrollmentTimeIndex(enrollmentTime),
 							COMPLETED_VIOLENCE_SERVICE, agywPrev.getBeneficiary_id());
@@ -394,7 +396,7 @@ public class AgywPrevReport {
 							STARTED_SERVICE, agywPrev.getBeneficiary_id());
 
 				}
-				if (completedViolencePrevention15Plus(agywPrev)) {
+				if (completedSimplifiedViolencePrevention15Plus(agywPrev)) {
 					addBeneficiary(reportObject, agywPrev.getDistrict_id(),
 							getAgeBandIndex(agywPrev.getCurrent_age_band()), getEnrollmentTimeIndex(enrollmentTime),
 							COMPLETED_VIOLENCE_SERVICE, agywPrev.getBeneficiary_id());
@@ -725,14 +727,16 @@ public class AgywPrevReport {
 		return dataObjs;
 	}
 
-	public List<Object> getNewlyEnrolledAgywAndServicesSummary(Integer[] districts, Date startDate, Date endDate,int pageIndex, int pageSize) {
-		List<Object> dataObjs = service.GetAllPagedEntityByNamedNativeQuery("AgywPrev.findByNewlyEnrolledAgywAndServicesSummary", pageIndex, pageSize, startDate,
-				endDate, Arrays.asList(districts));
+	public List<Object> getNewlyEnrolledAgywAndServicesSummary(Integer[] districts, Date startDate, Date endDate,
+			int pageIndex, int pageSize) {
+		List<Object> dataObjs = service.GetAllPagedEntityByNamedNativeQuery(
+				"AgywPrev.findByNewlyEnrolledAgywAndServicesSummary", pageIndex, pageSize, startDate, endDate,
+				Arrays.asList(districts));
 
 		return dataObjs;
 	}
 
-	public List<Object> getBeneficiariesVulnerabilitiesAndServices(Integer[] districts, Date startDate, Date endDate,
+	public List<Object> getBeneficiariesVulnerabilitiesAndServices(Integer[] districts, String startDate, String endDate,
 			int pageIndex, int pageSize) {
 		List<Object> dataObjs = service.GetAllPagedEntityByNamedNativeQuery(
 				"AgywPrev.findByBeneficiariesVulnerabilitiesAndServices", pageIndex, pageSize, startDate, endDate,
@@ -741,9 +745,10 @@ public class AgywPrevReport {
 		return dataObjs;
 	}
 
-	public List<Object> getBeneficiariesVulnerabilitiesAndServicesSummary(Integer district, Date startDate,
-			Date endDate) {
-		List<Object> dataObjs = service.GetByNamedNativeQuery("AgywPrev.findByBeneficiariesVulnerabilitiesAndServicesSummary", district, startDate,	endDate);
+	public List<Object> getBeneficiariesVulnerabilitiesAndServicesSummary(Integer district, String startDate,
+			String endDate) {
+		List<Object> dataObjs = service.GetByNamedNativeQuery(
+				"AgywPrev.findByBeneficiariesVulnerabilitiesAndServicesSummary", district, startDate, endDate);
 		return dataObjs;
 	}
 

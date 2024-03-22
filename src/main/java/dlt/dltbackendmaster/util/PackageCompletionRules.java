@@ -59,8 +59,7 @@ public class PackageCompletionRules {
 		if (ageBand.equals("9-14")) {
 
 			return ServiceCompletionRules.startedSimplifiedAvanteRapariga(subServices)
-					|| ServiceCompletionRules.startedSimplifiedSAAJEducationSessions(subServices)
-					|| ServiceCompletionRules.startedSimplifiedFinancialLiteracyAflateen(subServices);
+					|| ServiceCompletionRules.startedSimplifiedSAAJEducationSessions(subServices);
 
 		} else { // 15-24 Years
 			return ServiceCompletionRules.startedGuiaFacilitacao(subServices)
@@ -120,7 +119,11 @@ public class PackageCompletionRules {
 		if (ageBand.equals("9-14")) {
 
 			return ServiceCompletionRules.completedSimplifiedAvanteRapariga(subServices)
-					|| ServiceCompletionRules.completedSimplifiedSAAJEducationSessions(subServices);
+					|| ServiceCompletionRules.completedSimplifiedSAAJEducationSessions(subServices)
+					|| ServiceCompletionRules.completedSimplifiedFinancialLiteracyAflatoun(subServices)
+					|| beneficiary.getVbltSexuallyActive() == 1
+							&& (ServiceCompletionRules.completedHIVTestingServices(subServices)
+									|| ServiceCompletionRules.completedCondomsPromotionOrProvision(subServices));
 
 		} else { // 15-24 Years
 			return ServiceCompletionRules.completedCondomsPromotionOrProvision(subServices)
@@ -176,7 +179,11 @@ public class PackageCompletionRules {
 		if (ageBand.equals("9-14")) {
 
 			return ServiceCompletionRules.completedSimplifiedAvanteRapariga(subServices)
-					&& ServiceCompletionRules.completedSimplifiedSAAJEducationSessions(subServices);
+					&& ServiceCompletionRules.completedSimplifiedSAAJEducationSessions(subServices)
+					&& (beneficiary.getVbltSexuallyActive() == 0 || beneficiary.getVbltSexuallyActive() == 1
+							&& ServiceCompletionRules.completedHIVTestingServices(subServices)
+							&& ServiceCompletionRules.completedCondomsPromotionOrProvision(subServices))
+					&& ServiceCompletionRules.completedSimplifiedFinancialLiteracyAflatoun(subServices);
 
 		} else { // 15-24 Years
 			return ServiceCompletionRules.completedCondomsPromotionOrProvision(subServices)
@@ -219,7 +226,7 @@ public class PackageCompletionRules {
 					|| (beneficiary.getVbltSexuallyActive() == 0
 							&& (ServiceCompletionRules.completedHIVTestingServices(subServices)
 									|| ServiceCompletionRules.completedCondomsPromotionOrProvision(subServices)));
-		} else { // 15-24 Year
+		} else { // 15-24 Years
 			return (ageBand.equals("15-19") && ServiceCompletionRules.hadScoolAllowance(subServices))
 					|| satisfiesCommonServices || ServiceCompletionRules.completedPrep(subServices);
 		}
@@ -240,8 +247,7 @@ public class PackageCompletionRules {
 					|| ServiceCompletionRules.completedSimplifiedPostViolenceCare_CM(subServices);
 		} else { // 15-24 Year
 			return ServiceCompletionRules.completedContraceptionsPromotionOrProvision(subServices)
-					|| ServiceCompletionRules.hadScoolAllowance(subServices)
-					|| ServiceCompletionRules.completedCombinedSocioEconomicApproaches(subServices);
+					|| ServiceCompletionRules.hadScoolAllowance(subServices);
 		}
 	}
 }

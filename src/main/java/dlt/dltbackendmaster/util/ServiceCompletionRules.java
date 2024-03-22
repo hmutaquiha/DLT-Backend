@@ -104,6 +104,10 @@ public class ServiceCompletionRules {
 		return agywPrev.getGirl_violence_prevention() > 4;
 	}
 
+	public static boolean completedSimplifiedAvanteRaparigaViolencePrevention(AgywPrev agywPrev) {
+		return agywPrev.getGirl_violence_prevention() >= 4;
+	}
+
 	public static boolean startedAvanteRaparigaViolencePrevention(List<Integer> subServices) {
 		return containsAny(ServicesConstants.RAPARIGAS_VIOLENCE_PREVENTION, subServices);
 	}
@@ -329,8 +333,16 @@ public class ServiceCompletionRules {
 		return subServices.containsAll(ServicesConstants.LITERACIA_FINANCEIRA_AFLATOUN);
 	}
 
+	public static boolean completedSimplifiedFinancialLiteracyAflatoun(List<Integer> subServices) {
+		return subServices.containsAll(ServicesConstants.SIMPLIFIED_LITERACIA_FINANCEIRA_AFLATOUN);
+	}
+
 	public static boolean completedFinancialLiteracyAflatoun(AgywPrev agywPrev) {
 		return agywPrev.getFinancial_literacy_aflatoun() >= 7;
+	}
+
+	public static boolean completedSimplifiedFinancialLiteracyAflatoun(AgywPrev agywPrev) {
+		return agywPrev.getFinancial_literacy_aflatoun() >= 1;
 	}
 
 	public static boolean completedFinancialLiteracyAflateen(List<Integer> subServices) {
@@ -403,6 +415,10 @@ public class ServiceCompletionRules {
 
 	public static boolean completedViolencePrevention15Plus(AgywPrev agywPrev) {
 		return agywPrev.getViolence_prevention_15_plus() > 2;
+	}
+
+	public static boolean completedSimplifiedViolencePrevention15Plus(AgywPrev agywPrev) {
+		return agywPrev.getViolence_prevention_15_plus() >= 2;
 	}
 
 	public static boolean startedViolencePrevention15Plus(AgywPrev agywPrev) {

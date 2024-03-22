@@ -152,8 +152,19 @@ public class DAOServiceImpl implements DAOService {
 	public <T> List<T> GetByNamedNativeQuery(String query,  Integer district, Date startDate, Date endDate, Object... params) {
 		return repository.GetByNamedNativeQuery(query, district,  startDate,  endDate, params);
 	}
+	
+	@Transactional
+	public <T> List<T> GetByNamedNativeQuery(String query,  Integer district, String startDate, String endDate, Object... params) {
+		return repository.GetByNamedNativeQuery(query, district,  startDate,  endDate, params);
+	}
+	
 	@Transactional
 	public <T> List<T> GetAllPagedEntityByNamedNativeQuery(String query, int pageIndex, int pageSize, Date startDate, Date endDate, List<Integer> districts, Object... params) {
+		return repository.GetAllPagedEntityByNamedNativeQuery(query, pageIndex, pageSize, startDate, endDate, districts, params);
+	}
+	
+	@Transactional
+	public <T> List<T> GetAllPagedEntityByNamedNativeQuery(String query, int pageIndex, int pageSize, String startDate, String endDate, List<Integer> districts, Object... params) {
 		return repository.GetAllPagedEntityByNamedNativeQuery(query, pageIndex, pageSize, startDate, endDate, districts, params);
 	}
 

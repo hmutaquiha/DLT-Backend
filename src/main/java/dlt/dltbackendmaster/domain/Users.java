@@ -51,6 +51,15 @@ import dlt.dltbackendmaster.serializers.UssSerializer;
 		@NamedNativeQuery(name = "Users.findByLocalities", query = "SELECT u.* FROM users u "
 				+ "LEFT JOIN users_localities ul on ul.user_id = u.id "
 				+ "where ul.locality_id in (:localities)", resultClass = Users.class),
+		@NamedNativeQuery(name = "Users.findByUsAndOrganization", query = "SELECT distinct u.* FROM users u "
+				+ "LEFT JOIN users_us uu on uu.user_id = u.id  "
+				+ "LEFT JOIN users_localities ul on ul.user_id = u.id "
+				+ "INNER JOIN us us on ul.locality_id = us.locality_id "
+				+ "where (uu.us_id in (:us) "
+				+ "or u.profile_id = 18 "
+				+ "and us.id = :us) "
+				+ "and u.partner_id = :organization "
+				+ "and u.status = 1", resultClass = Users.class),
 		@NamedNativeQuery(name = "Users.findByLocalitiesAndDateCreated", query = "SELECT u.* FROM users u "
 				+ "LEFT JOIN users_localities ul on ul.user_id = u.id "
 				+ "where ul.locality_id in (:localities) "

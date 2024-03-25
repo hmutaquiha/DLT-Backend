@@ -79,6 +79,11 @@ public class DAOServiceImpl implements DAOService {
 	}
 
 	@Transactional
+	public <T> T GetUniqueEntityByNamedQuery(String query, String searchNui, String searchName, Integer searchUserCreator, Integer searchDistrict, Object... params) {
+		return repository.GetUniqueEntityByNamedQuery(query, searchNui, searchName, searchUserCreator, searchDistrict, params);
+	}
+
+	@Transactional
 	public <T> T GetUniqueEntityByNamedQuery(String query, String searchNui, Integer searchUserCreator, Integer searchDistrict, Object... params) {
 		return repository.GetUniqueEntityByNamedQuery(query, searchNui, searchUserCreator, searchDistrict, params);
 	}
@@ -92,6 +97,27 @@ public class DAOServiceImpl implements DAOService {
 	public <T> List<T> GetAllEntityByNamedQuery(String query, Object... params) {
 		return repository.GetAllEntityByNamedQuery(query, params);
 	}
+		
+	@Transactional
+	public <T> List<T> GetEntityByNamedQuery(String query,  String name, Date dateOfBirth, int locality) {
+		return repository.GetEntityByNamedQuery(query,  name,  dateOfBirth,  locality);
+	}
+	
+	@Transactional
+	public <T> List<T> GetEntityByNamedQuery(String query, int beneficiaryId, List<Integer> servicesIds) {
+		return repository.GetEntityByNamedQuery(query, beneficiaryId, servicesIds);
+	}
+	
+	@Transactional
+	public <T> List<T> GetEntityByNamedQuery(String query, Integer beneficiaryId, Integer ageBand, Integer level) {
+		return repository.GetEntityByNamedQuery(query, beneficiaryId, ageBand, level );
+	}
+
+	@Transactional
+	public <T> List<T> GetAllPagedEntityByNamedQuery(String query, int pageIndex, int pageSize, String searchNui, String searchName, Integer searchUserCreator, Integer searchDistrict,
+			Object... params) {
+		return repository.GetAllPagedEntityByNamedQuery(query, pageIndex, pageSize, searchNui, searchName, searchUserCreator, searchDistrict, params);
+	}
 
 	@Transactional
 	public <T> List<T> GetAllPagedEntityByNamedQuery(String query, int pageIndex, int pageSize, String searchNui, Integer searchUserCreator, Integer searchDistrict,
@@ -100,9 +126,9 @@ public class DAOServiceImpl implements DAOService {
 	}
 	
 	@Transactional
-	public <T> List<T> GetAllPagedEntityByNamedQuery(String query, int pageIndex, int pageSize, String searchUsername, Integer searchUserCreator,
+	public <T> List<T> GetAllPagedUserEntityByNamedQuery(String query, int pageIndex, int pageSize, String searchUsername, Integer searchUserCreator, Integer searchDistrict,
 			Object... params) {
-		return repository.GetAllPagedEntityByNamedQuery(query, pageIndex, pageSize, searchUsername, searchUserCreator, params);
+		return repository.GetAllPagedUserEntityByNamedQuery(query, pageIndex, pageSize, searchUsername, searchUserCreator, searchDistrict, params);
 	}
 
     @Transactional
@@ -120,6 +146,26 @@ public class DAOServiceImpl implements DAOService {
 	@Transactional
 	public <T> List<T> GetAllEntityByNamedNativeQuery(String query, Object... params) {
 		return repository.GetAllEntityByNamedNativeQuery(query, params);
+	}
+	
+	@Transactional
+	public <T> List<T> GetByNamedNativeQuery(String query,  Integer district, Date startDate, Date endDate, Object... params) {
+		return repository.GetByNamedNativeQuery(query, district,  startDate,  endDate, params);
+	}
+	
+	@Transactional
+	public <T> List<T> GetByNamedNativeQuery(String query,  Integer district, String startDate, String endDate, Object... params) {
+		return repository.GetByNamedNativeQuery(query, district,  startDate,  endDate, params);
+	}
+	
+	@Transactional
+	public <T> List<T> GetAllPagedEntityByNamedNativeQuery(String query, int pageIndex, int pageSize, Date startDate, Date endDate, List<Integer> districts, Object... params) {
+		return repository.GetAllPagedEntityByNamedNativeQuery(query, pageIndex, pageSize, startDate, endDate, districts, params);
+	}
+	
+	@Transactional
+	public <T> List<T> GetAllPagedEntityByNamedNativeQuery(String query, int pageIndex, int pageSize, String startDate, String endDate, List<Integer> districts, Object... params) {
+		return repository.GetAllPagedEntityByNamedNativeQuery(query, pageIndex, pageSize, startDate, endDate, districts, params);
 	}
 
 	@Override

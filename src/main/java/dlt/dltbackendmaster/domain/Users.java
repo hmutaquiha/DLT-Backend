@@ -51,6 +51,15 @@ import dlt.dltbackendmaster.serializers.UssSerializer;
 		@NamedNativeQuery(name = "Users.findByLocalities", query = "SELECT u.* FROM users u "
 				+ "LEFT JOIN users_localities ul on ul.user_id = u.id "
 				+ "where ul.locality_id in (:localities)", resultClass = Users.class),
+		@NamedNativeQuery(name = "Users.findByUsAndOrganization", query = "SELECT distinct u.* FROM users u "
+				+ "LEFT JOIN users_us uu on uu.user_id = u.id  "
+				+ "LEFT JOIN users_localities ul on ul.user_id = u.id "
+				+ "INNER JOIN us us on ul.locality_id = us.locality_id "
+				+ "where (uu.us_id in (:us) "
+				+ "or u.profile_id = 18 "
+				+ "and us.id = :us) "
+				+ "and u.partner_id = :organization "
+				+ "and u.status = 1", resultClass = Users.class),
 		@NamedNativeQuery(name = "Users.findByLocalitiesAndDateCreated", query = "SELECT u.* FROM users u "
 				+ "LEFT JOIN users_localities ul on ul.user_id = u.id "
 				+ "where ul.locality_id in (:localities) "
@@ -68,9 +77,11 @@ import dlt.dltbackendmaster.serializers.UssSerializer;
 				+ "left join fetch u.users_provinces up on up.user_id = u.id "
 				+ "where up.province_id in (:provinces)", resultClass = Users.class), })
 
-@NamedQueries({ @NamedQuery(name = "Users.findAll", query = "SELECT u FROM Users u "
+@NamedQueries({ @NamedQuery(name = "Users.findAll", query = "SELECT distinct u FROM Users u "
+															+ " LEFT JOIN u.districts d "
 															+ " Where u.username like :searchUsername "
 															+ " AND (:searchUserCreator IS NULL OR u.createdBy = :searchUserCreator OR u.updatedBy =:searchUserCreator) "
+											                + " AND (:searchDistrict IS NULL OR d.id = :searchDistrict) "
 															+ ""),
 		@NamedQuery(name = "Users.findByAlocatProvinces", query = "SELECT u.id as id, u.username as username FROM Users u INNER JOIN u.provinces p where p.id in (:provinces)"),
 		@NamedQuery(name = "Users.findByAlocatDistricts", query = "SELECT u.id as id, u.username as username FROM Users u INNER JOIN u.districts d where d.id in (:districts)"),
@@ -157,6 +168,10 @@ public class Users implements java.io.Serializable {
 	private String recoverPasswordOrigin;
 
 	public Users() {
+	}
+	
+	public Users(Integer id) {
+		this.id = id;
 	}
 
 	public Users(Partners partners, Profiles profiles, String surname, String name, String phoneNumber, String email,

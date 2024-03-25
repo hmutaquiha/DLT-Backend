@@ -76,11 +76,12 @@ public class UserController {
     		@RequestParam(name = "pageIndex") int pageIndex,
     		@RequestParam(name = "pageSize") int pageSize,
     		@RequestParam(name = "searchUsername", required = false) @Nullable String searchUsername,
-    		@RequestParam(name = "searchUserCreator", required = false) @Nullable Integer searchUserCreator
+    		@RequestParam(name = "searchUserCreator", required = false) @Nullable Integer searchUserCreator,
+    		@RequestParam(name = "searchDistrict", required = false) @Nullable Integer searchDistrict
     		) {
 
         try {
-            List<Users> users = service.GetAllPagedEntityByNamedQuery("Users.findAll", pageIndex, pageSize, searchUsername, searchUserCreator);
+            List<Users> users = service.GetAllPagedUserEntityByNamedQuery("Users.findAll", pageIndex, pageSize, searchUsername, searchUserCreator, searchDistrict);
 
             return new ResponseEntity<List<Users>>(users, HttpStatus.OK);
         } catch (Exception e) {
@@ -196,6 +197,8 @@ public class UserController {
 		try {
 			user.setNewPassword(0);
 			user.setPassword(passwordEncoder.encode(users.getRecoverPassword()));
+			user.setUpdatedBy(user.getId());
+			user.setDateUpdated(new Date());
 			user.setPasswordLastChangeDate(new Date());
 			Users updatedUser = service.update(user);
 			logger.warn("User " + user.getUsername() + " changed password ");
@@ -217,6 +220,22 @@ public class UserController {
 
 		try {
 			List<Users> user = service.GetAllEntityByNamedQuery("Users.findByUsId", Id);
+
+			return new ResponseEntity<>(user, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@GetMapping(path = "/usAndOrganization/{Id}/{organization}", produces = "application/json")
+	public ResponseEntity<List<Users>> getByUsAndOrganization(@PathVariable Integer Id, @PathVariable Integer organization) {
+
+		if (Id == null || organization == null) {
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		}
+
+		try {
+			List<Users> user = service.GetAllEntityByNamedQuery("Users.findByUsAndOrganization", organization, Id);
 
 			return new ResponseEntity<>(user, HttpStatus.OK);
 		} catch (Exception e) {

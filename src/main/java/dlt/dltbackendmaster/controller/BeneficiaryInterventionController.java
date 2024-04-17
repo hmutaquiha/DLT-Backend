@@ -71,6 +71,14 @@ public class BeneficiaryInterventionController {
 			SubServices subService = service.find(SubServices.class, intervention.getId().getSubServiceId());
 			intervention.setSubServices(subService);
 
+			if (subService.getServices().getServiceType().equals("1")) {
+				beneficiary.setClinicalInterventions(beneficiary.getClinicalInterventions() + 1);
+			} else {
+				beneficiary.setCommunityInterventions(beneficiary.getCommunityInterventions() + 1);
+			}
+
+			service.update(beneficiary);
+
 			// Actualizar o status dos serviços solicitados
 			Integer serviceId = subService.getServices().getId();
 			List<ReferencesServices> referencesServices = service.GetAllEntityByNamedQuery(
@@ -168,6 +176,20 @@ public class BeneficiaryInterventionController {
 
 				SubServices subService = service.find(SubServices.class, newInterv.getId().getSubServiceId());
 				newInterv.setSubServices(subService);
+
+				if (intervention.getId().getSubServiceId() != intervention.getSubServices().getId()) {
+					SubServices subService1 = service.find(SubServices.class, intervention.getId().getSubServiceId());
+					if (!subService1.getServices().getServiceType().equals(subService.getServices().getServiceType())) {
+						if (subService1.getServices().getServiceType().equals("1")) {
+							beneficiary.setClinicalInterventions(beneficiary.getClinicalInterventions() - 1);
+							beneficiary.setCommunityInterventions(beneficiary.getCommunityInterventions() + 1);
+						} else {
+							beneficiary.setClinicalInterventions(beneficiary.getClinicalInterventions() + 1);
+							beneficiary.setCommunityInterventions(beneficiary.getCommunityInterventions() - 1);
+						}
+						service.update(beneficiary);
+					}
+				}
 
 				return new ResponseEntity<>(newInterv, HttpStatus.OK);
 			}

@@ -382,6 +382,8 @@ public class Beneficiaries implements java.io.Serializable
     private Byte vbltSexWorker;
     private Byte vbltHouseSustainer;
     private int status;
+    private Integer clinicalInterventions;
+    private Integer communityInterventions;
     private int createdBy;
     private Date dateCreated;
     private Integer updatedBy;
@@ -1033,7 +1035,25 @@ public class Beneficiaries implements java.io.Serializable
         this.status = status;
     }
 
-    @Column(name = "created_by", nullable = false)
+    @Column(name = "clinical_interventions", nullable = false)
+    public Integer getClinicalInterventions() {
+		return clinicalInterventions;
+	}
+
+	public void setClinicalInterventions(Integer clinicalInterbentions) {
+		this.clinicalInterventions = clinicalInterbentions;
+	}
+
+	@Column(name = "community_interventions", nullable = false)
+	public Integer getCommunityInterventions() {
+		return communityInterventions;
+	}
+
+	public void setCommunityInterventions(Integer communityInterventions) {
+		this.communityInterventions = communityInterventions;
+	}
+
+	@Column(name = "created_by", nullable = false)
     public int getCreatedBy() {
         return this.createdBy;
     }

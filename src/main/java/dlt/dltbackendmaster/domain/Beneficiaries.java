@@ -329,7 +329,6 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 										+ " and b.status IN (0,1) "
 										+ " order by b.id desc "
 										+ ""),
-				@NamedQuery(name = "Beneficiary.findAllActive", query = "SELECT b FROM Beneficiaries b where b.status = 1"),
 })
 public class Beneficiaries implements java.io.Serializable
 {

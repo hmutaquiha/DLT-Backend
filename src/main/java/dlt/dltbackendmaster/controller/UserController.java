@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import dlt.dltbackendmaster.domain.Locality;
+	import dlt.dltbackendmaster.domain.OldPasswords;
 import dlt.dltbackendmaster.domain.Users;
 import dlt.dltbackendmaster.security.EmailSender;
 import dlt.dltbackendmaster.security.UserDetailsServiceImpl;
@@ -195,12 +196,16 @@ public class UserController {
 		}
 
 		try {
+			String encodedPassword = passwordEncoder.encode(users.getRecoverPassword());
 			user.setNewPassword(0);
-			user.setPassword(passwordEncoder.encode(users.getRecoverPassword()));
+			user.setPassword(encodedPassword);
 			user.setUpdatedBy(user.getId());
 			user.setDateUpdated(new Date());
 			user.setPasswordLastChangeDate(new Date());
 			Users updatedUser = service.update(user);
+			
+			OldPasswords oldPassword = new OldPasswords(encodedPassword, user, new Date());
+			service.Save(oldPassword);
 			logger.warn("User " + user.getUsername() + " changed password ");
 			return new ResponseEntity<>(updatedUser, HttpStatus.OK);
 		} catch (Exception e) {

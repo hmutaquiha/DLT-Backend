@@ -583,14 +583,16 @@ public class SyncController {
 				List<BeneficiaryInterventionSyncModel> createdList = mapper.convertValue(interventions.getCreated(),
 						new TypeReference<List<BeneficiaryInterventionSyncModel>>() {
 						});
+				Map<Integer, int[]> interventionsCount = new HashMap<>();
 
 				for (BeneficiaryInterventionSyncModel created : createdList) {
 					if (created.getOnline_id() == null) {
 						try {
 							BeneficiariesInterventions intervention = new BeneficiariesInterventions(created,
 									lastPulledAt);
+							Integer beneficiaryId = null;
 							if (created.getBeneficiary_id() == 0) {
-								Integer beneficiaryId = beneficiariesIds.get(created.getBeneficiary_offline_id());
+								beneficiaryId = beneficiariesIds.get(created.getBeneficiary_offline_id());
 								if (beneficiaryId == null) {
 									Beneficiaries beneficiary = service.GetUniqueEntityByNamedQuery(
 											"Beneficiary.findByOfflineId", created.getBeneficiary_offline_id());
@@ -609,6 +611,23 @@ public class SyncController {
 							intervention.setCreatedBy(userId);
 							service.Save(intervention);
 
+							SubServices subService = service.find(SubServices.class,
+									intervention.getId().getSubServiceId());
+							String serviceType = subService.getServices().getServiceType();
+
+							int[] benIntervCount = interventionsCount.get(beneficiaryId);
+							if (benIntervCount == null) {
+								benIntervCount = serviceType.equals("1") ? new int[] { 1, 0 } : new int[] { 0, 1 };
+								interventionsCount.put(beneficiaryId, benIntervCount);
+							} else {
+								if (serviceType.equals("1")) {
+									benIntervCount[0] = benIntervCount[0] + 1;
+								} else {
+									benIntervCount[1] = benIntervCount[1] + 1;
+								}
+							}
+							interventionsCount.put(beneficiaryId, benIntervCount);
+
 							service.registerServiceCompletionStatus(intervention);
 						} catch (DataIntegrityViolationException e) {
 							logger.warn(e.getRootCause().getMessage());
@@ -616,6 +635,16 @@ public class SyncController {
 						}
 
 					}
+				}
+
+				// Update interventions counts
+				for (Integer beneficiaryId : interventionsCount.keySet()) {
+					Beneficiaries beneficiary = service.find(Beneficiaries.class, beneficiaryId);
+					int[] counts = interventionsCount.get(beneficiaryId);
+					beneficiary.setClinicalInterventions(counts[0]);
+					beneficiary.setCommunityInterventions(counts[1]);
+
+					service.update(beneficiary);
 				}
 			}
 

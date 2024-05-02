@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.gemfire.config.annotation.EnableCompression;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
@@ -44,6 +45,7 @@ import dlt.dltbackendmaster.util.ReferencesStatus;
 import dlt.dltbackendmaster.util.ServiceCompletionRules;
 
 @RestController
+@EnableCompression
 @RequestMapping("/api/references")
 public class ReferencesController {
 	private final DAOService service;

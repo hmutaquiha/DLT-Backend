@@ -26,21 +26,21 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name = "users_last_sync", catalog = "dreams_db")
 @NamedQueries({
-		@NamedQuery(name = "UserLastSync.findByUsername", query = "SELECT a FROM UserLastSync a WHERE a.username =:username"),
+		@NamedQuery(name = "UserLastSync.findByUsername", query = "SELECT a FROM UserLastSync a WHERE a.username =:username order by a.lastSyncDate desc"),
 		@NamedQuery(name = "UserLastSync.findAll", query = "SELECT distinct u FROM UserLastSync u "
 				+ " LEFT JOIN u.user.districts d "
 				+ " Where u.username like :searchUsername "
 				+ " AND (:searchUserCreator IS NULL OR u.user.createdBy = :searchUserCreator OR u.user.updatedBy =:searchUserCreator) "
-				+ " AND (:searchDistrict IS NULL OR d.id = :searchDistrict) "), })
+				+ " AND (:searchDistrict IS NULL OR d.id = :searchDistrict) order by u.lastSyncDate desc "), })
 @NamedNativeQueries({
 		@NamedNativeQuery(name = "UserLastSync.findByDistricts", query = "SELECT uls.* FROM users_last_sync uls  "
 				+ "left join users u on u.id = uls.user_id " 
 				+ "LEFT JOIN users_districts ud on ud.user_id = u.id "
-				+ "where ud.district_id in (:districts)", resultClass = UserLastSync.class),
+				+ "where ud.district_id in (:districts) order by uls.last_sync_date desc", resultClass = UserLastSync.class),
 		@NamedNativeQuery(name = "UserLastSync.findByProvinces", query = "SELECT uls.* FROM users_last_sync uls "
 				+ "left join users u on u.id = uls.user_id " 
 				+ "left join users_provinces up on up.user_id = u.id "
-				+ "where up.province_id in (:provinces)", resultClass = UserLastSync.class), })
+				+ "where up.province_id in (:provinces)  order by uls.last_sync_date desc", resultClass = UserLastSync.class), })
 
 public class UserLastSync implements java.io.Serializable {
 

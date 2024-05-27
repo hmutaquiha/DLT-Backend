@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -68,6 +69,7 @@ import dlt.dltbackendmaster.service.UserLastSyncService;
 import dlt.dltbackendmaster.service.UsersBeneficiariesCustomSyncService;
 import dlt.dltbackendmaster.service.VulnerabilityHistoryService;
 import dlt.dltbackendmaster.util.ServiceCompletionRules;
+import dlt.dltbackendmaster.util.Utility;
 
 @RestController
 @EnableCompression
@@ -429,10 +431,17 @@ public class SyncController {
 		beneficiariesInterventionsCreated.addAll(beneficiariesInterventionsCreatedCustomized);
 		beneficiariesInterventionsUpdated.addAll(beneficiariesInterventionsUpdatedCustomized);
 
-		List<BeneficiariesInterventions> uniqueBeneficiariesIntervetnionsCreated = beneficiariesInterventionsCreated
+		List<BeneficiariesInterventions> uniqueBeneficiariesInterventionsCreated = beneficiariesInterventionsCreated
 				.stream().distinct().collect(Collectors.toList());
-		List<BeneficiariesInterventions> uniqueBeneficiariesIntervetnionsUpdated = beneficiariesInterventionsUpdated
+		List<BeneficiariesInterventions> uniqueBeneficiariesInterventionsUpdated = beneficiariesInterventionsUpdated
 				.stream().distinct().collect(Collectors.toList());
+
+		// Excluir dados de beneficiárias que não tiveram qualquer registo nos últimos 6
+		// meses
+		excludeInactiveBeneficiariesData(uniqueBeneficiariesCreated, uniqueBeneficiariesInterventionsCreated,
+				uniqueReferencesCreated, uniqueReferenceServicesCreated);
+		excludeInactiveBeneficiariesData(uniqueBeneficiariesUpdated, uniqueBeneficiariesInterventionsUpdated,
+				uniqueReferencesUpdated, uniqueReferenceServicesUpdated);
 
 		try {
 			SyncObject<UsersSync> usersSO = new SyncObject<UsersSync>(usersCreated, usersUpdated, listDeleted);
@@ -447,7 +456,7 @@ public class SyncController {
 			SyncObject<Beneficiaries> beneficiarySO = new SyncObject<Beneficiaries>(uniqueBeneficiariesCreated,
 					uniqueBeneficiariesUpdated, listDeleted);
 			SyncObject<BeneficiariesInterventions> beneficiaryInterventionSO = new SyncObject<BeneficiariesInterventions>(
-					uniqueBeneficiariesIntervetnionsCreated, uniqueBeneficiariesIntervetnionsUpdated, listDeleted);
+					uniqueBeneficiariesInterventionsCreated, uniqueBeneficiariesInterventionsUpdated, listDeleted);
 			SyncObject<Neighborhood> neighborhoodSO = new SyncObject<Neighborhood>(neighborhoodsCreated,
 					neighborhoodsUpdated, listDeleted);
 			SyncObject<Services> serviceSO = new SyncObject<Services>(servicesCreated, servicesUpdated, listDeleted);
@@ -470,6 +479,72 @@ public class SyncController {
 
 			e.printStackTrace();
 			return new ResponseEntity<>("Parameter not present", HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	private void excludeInactiveBeneficiariesData(List<Beneficiaries> beneficiariesCreated,
+			List<BeneficiariesInterventions> beneficiariesInterventionsCreated, List<References> referencesCreated,
+			List<ReferencesServices> referenceServicesCreated) {
+		Date sixMonthsDate = Utility.nMonthsDate(new Date(), 6);
+		List<Integer> beneficiariesToExcludeData = new ArrayList<>();
+
+		beneficiariesLoop: for (Iterator<Beneficiaries> iterator = beneficiariesCreated.iterator(); iterator
+				.hasNext();) {
+			Beneficiaries beneficiary = iterator.next();
+			boolean toBeRemoved = true;
+			if (beneficiary.getDateCreated().after(sixMonthsDate)
+					|| beneficiary.getDateUpdated() != null && beneficiary.getDateUpdated().after(sixMonthsDate)) {
+				toBeRemoved = false;
+				continue;
+			}
+
+			if (toBeRemoved) {
+				Set<BeneficiariesInterventions> interventions = beneficiary.getBeneficiariesInterventionses();
+				for (BeneficiariesInterventions intervention : interventions) {
+					if (intervention.getDateCreated().after(sixMonthsDate) || intervention.getDateUpdated() != null
+							&& intervention.getDateUpdated().after(sixMonthsDate)) {
+						toBeRemoved = false;
+						continue beneficiariesLoop;
+					}
+				}
+
+				if (toBeRemoved) {
+					Set<References> references = beneficiary.getReferenceses();
+					for (References reference : references) {
+						if (reference.getDateCreated().after(sixMonthsDate) || reference.getDateUpdated() != null
+								&& reference.getDateUpdated().after(sixMonthsDate)) {
+							toBeRemoved = false;
+							continue beneficiariesLoop;
+						}
+					}
+				}
+			}
+			beneficiariesToExcludeData.add(beneficiary.getId());
+			iterator.remove();
+		}
+
+		for (Iterator<BeneficiariesInterventions> iterator = beneficiariesInterventionsCreated.iterator(); iterator
+				.hasNext();) {
+			BeneficiariesInterventions intervention = iterator.next();
+			if (beneficiariesToExcludeData.contains(intervention.getBeneficiaries().getId())) {
+				iterator.remove();
+			}
+		}
+
+		List<Integer> referencesToExcludeData = new ArrayList<>();
+		for (Iterator<References> iterator = referencesCreated.iterator(); iterator.hasNext();) {
+			References reference = iterator.next();
+			if (beneficiariesToExcludeData.contains(reference.getBeneficiaries().getId())) {
+				iterator.remove();
+				referencesToExcludeData.add(reference.getId());
+			}
+		}
+
+		for (Iterator<ReferencesServices> iterator = referenceServicesCreated.iterator(); iterator.hasNext();) {
+			ReferencesServices referenceService = iterator.next();
+			if (referencesToExcludeData.contains(referenceService.getReferences().getId())) {
+				iterator.remove();
+			}
 		}
 	}
 

@@ -76,13 +76,14 @@ public class UserController {
 			@RequestParam(name = "level") String level,
 			@RequestParam(name = "params", required = false) @Nullable Integer[] params,
 			@RequestParam(name = "pageIndex") int pageIndex, @RequestParam(name = "pageSize") int pageSize,
+			@RequestParam(name = "searchName", required = false) @Nullable String searchName,
 			@RequestParam(name = "searchUsername", required = false) @Nullable String searchUsername,
 			@RequestParam(name = "searchUserCreator", required = false) @Nullable Integer searchUserCreator,
 			@RequestParam(name = "searchDistrict", required = false) @Nullable Integer searchDistrict) {
 
 		try {
 			List<Users> users = service.GetAllPagedUserEntityByNamedQuery("Users.findAll", pageIndex, pageSize,
-					searchUsername, searchUserCreator, searchDistrict);
+					searchName, searchUsername, searchUserCreator, searchDistrict);
 
 			return new ResponseEntity<List<Users>>(users, HttpStatus.OK);
 		} catch (Exception e) {

@@ -29,7 +29,8 @@ import javax.persistence.TemporalType;
 		@NamedQuery(name = "UserLastSync.findByUsername", query = "SELECT a FROM UserLastSync a WHERE a.username =:username order by a.lastSyncDate desc"),
 		@NamedQuery(name = "UserLastSync.findAll", query = "SELECT distinct u FROM UserLastSync u "
 				+ " LEFT JOIN u.user.districts d "
-				+ " Where u.username like :searchUsername "
+				+ " Where concat(u.user.name, \' \' ,u.user.surname) like concat('%',:searchName,'%') "
+				+ " AND u.username like :searchUsername "
 				+ " AND (:searchUserCreator IS NULL OR u.user.createdBy = :searchUserCreator OR u.user.updatedBy =:searchUserCreator) "
 				+ " AND (:searchDistrict IS NULL OR d.id = :searchDistrict) order by u.lastSyncDate desc "), })
 @NamedNativeQueries({

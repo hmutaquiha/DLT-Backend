@@ -1005,6 +1005,7 @@ public class SyncController {
 			@RequestParam(name = "level") String level,
 			@RequestParam(name = "params", required = false) @Nullable Integer[] params,
 			@RequestParam(name = "pageIndex") int pageIndex, @RequestParam(name = "pageSize") int pageSize,
+			@RequestParam(name = "searchName", required = false) @Nullable String searchName,
 			@RequestParam(name = "searchUsername", required = false) @Nullable String searchUsername,
 			@RequestParam(name = "searchUserCreator", required = false) @Nullable Integer searchUserCreator,
 			@RequestParam(name = "searchDistrict", required = false) @Nullable Integer searchDistrict) {
@@ -1018,14 +1019,14 @@ public class SyncController {
 
 			if (!districtsIds.isEmpty()) {
 				users = service.GetAllPagedUserEntityByNamedQuery("UserLastSync.findByDistricts", pageIndex, pageSize,
-						searchUsername, searchUserCreator, searchDistrict, districtsIds);
+						searchName, searchUsername, searchUserCreator, searchDistrict, districtsIds);
 
 			} else if (!provincesIds.isEmpty()) {
 				users = service.GetAllPagedUserEntityByNamedQuery("UserLastSync.findByProvinces", pageIndex, pageSize,
-						searchUsername, searchUserCreator, searchDistrict, provincesIds);
+						searchName, searchUsername, searchUserCreator, searchDistrict, provincesIds);
 			} else {
 				users = service.GetAllPagedUserEntityByNamedQuery("UserLastSync.findAll", pageIndex, pageSize,
-						searchUsername, searchUserCreator, searchDistrict);
+						searchName, searchUsername, searchUserCreator, searchDistrict);
 			}
 
 			return new ResponseEntity<List<UserLastSync>>(users, HttpStatus.OK);

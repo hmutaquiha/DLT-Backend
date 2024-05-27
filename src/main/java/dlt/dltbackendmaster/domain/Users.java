@@ -79,7 +79,8 @@ import dlt.dltbackendmaster.serializers.UssSerializer;
 
 @NamedQueries({ @NamedQuery(name = "Users.findAll", query = "SELECT distinct u FROM Users u "
 															+ " LEFT JOIN u.districts d "
-															+ " Where u.username like :searchUsername "
+															+ " Where concat(u.name, \' \' ,u.surname) like concat('%',:searchName,'%') "
+															+ " AND u.username like :searchUsername "
 															+ " AND (:searchUserCreator IS NULL OR u.createdBy = :searchUserCreator OR u.updatedBy =:searchUserCreator) "
 											                + " AND (:searchDistrict IS NULL OR d.id = :searchDistrict) "
 															+ ""),

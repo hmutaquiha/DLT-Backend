@@ -205,8 +205,16 @@ public class UserController {
 			user.setPasswordLastChangeDate(new Date());
 			Users updatedUser = service.update(user);
 
+			List<OldPasswords> oldPasswords = service.GetAllEntityByNamedQuery("OldPasswords.findByUserId",
+					user.getId());
+
+			if (oldPasswords.size() == 3) {
+				OldPasswords oldPassword = (OldPasswords) oldPasswords.get(2);
+				service.delete(oldPassword);
+			}
 			OldPasswords oldPassword = new OldPasswords(encodedPassword, user, new Date());
 			service.Save(oldPassword);
+
 			logger.warn("User " + user.getUsername() + " changed password ");
 			return new ResponseEntity<>(updatedUser, HttpStatus.OK);
 		} catch (Exception e) {

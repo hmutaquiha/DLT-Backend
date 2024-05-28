@@ -203,28 +203,36 @@ public class SyncController {
 			profilesCreated = service.GetAllEntityByNamedQuery("Profiles.findAll");
 			profilesUpdated = new ArrayList<Profiles>();
 
-			// Beneficiary
-			beneficiariesCreated = service.GetAllEntityByNamedQuery(
-					"Beneficiary.findByReferenceNotifyToOrBeneficiaryCreatedBy", user.getId());
-			beneficiariesUpdated = new ArrayList<Beneficiaries>();
+			if (!user.getProfiles().getName().equals("SUPERVISOR")) {
+				beneficiariesCreated = service.GetAllEntityByNamedQuery(
+						"Beneficiary.findByReferenceNotifyToOrBeneficiaryCreatedBy", user.getId());
+				referencesCreated = service.GetAllEntityByNamedQuery("References.findByReferenceNotifyToOrReferredBy",
+						user.getId());
 
-			// References
-			referencesCreated = service.GetAllEntityByNamedQuery("References.findByReferenceNotifyToOrReferredBy",
-					user.getId());
-			referencesUpdated = new ArrayList<References>();
+				List<Beneficiaries> refBeneficiaries = referencesCreated.stream().map(References::getBeneficiaries)
+						.collect(Collectors.toList());
+				beneficiariesCreated.addAll(refBeneficiaries);
 
-			List<Beneficiaries> refBeneficiaries = referencesCreated.stream().map(References::getBeneficiaries)
-					.collect(Collectors.toList());
-			beneficiariesCreated.addAll(refBeneficiaries);
-
-			for (Beneficiaries beneficiary : beneficiariesCreated) {
-				if (beneficiary.getLocality() != null && !user.getProfiles().getName().equals("MENTORA")
-						&& !user.getProfiles().getName().equals("ENFERMEIRA")
-						&& !user.getProfiles().getName().equals("CONSELHEIRA")) {
-					localitiesIds.add(beneficiary.getLocality().getId());
+				for (Beneficiaries beneficiary : beneficiariesCreated) {
+					if (beneficiary.getLocality() != null && !user.getProfiles().getName().equals("MENTORA")
+							&& !user.getProfiles().getName().equals("ENFERMEIRA")
+							&& !user.getProfiles().getName().equals("CONSELHEIRA")) {
+						localitiesIds.add(beneficiary.getLocality().getId());
+					}
+					beneficiariesInterventionsCreated.addAll(beneficiary.getBeneficiariesInterventionses());
 				}
-				beneficiariesInterventionsCreated.addAll(beneficiary.getBeneficiariesInterventionses());
+
+				referenceServicesCreated = service.GetAllEntityByNamedQuery(
+						"ReferencesServices.findByReferenceNotifyToOrReferredBy", user.getId());
+			} else {
+				beneficiariesCreated = new ArrayList<Beneficiaries>();
+				referencesCreated = new ArrayList<>();
+				referenceServicesCreated = new ArrayList<>();
 			}
+			beneficiariesUpdated = new ArrayList<Beneficiaries>();
+			referencesUpdated = new ArrayList<References>();
+			beneficiariesInterventionsUpdated = new ArrayList<BeneficiariesInterventions>();
+			referenceServicesUpdated = new ArrayList<ReferencesServices>();
 
 			// localities
 			localityCreated = service.GetAllEntityByNamedQuery("Locality.findByIds",
@@ -242,8 +250,6 @@ public class SyncController {
 			usCreated = service.GetAllEntityByNamedQuery("Us.findBySyncLocalities",
 					Arrays.asList(localitiesIds.toArray()));
 
-			beneficiariesInterventionsUpdated = new ArrayList<BeneficiariesInterventions>();
-
 			// Neighborhood
 			neighborhoodsCreated = service.GetAllEntityByNamedQuery("Neighborhood.findBySyncLocalities",
 					Arrays.asList(localitiesIds.toArray()));
@@ -254,11 +260,6 @@ public class SyncController {
 
 			subServicesCreated = service.GetAllEntityByNamedQuery("SubService.findAny");
 			subServicesUpdated = new ArrayList<SubServices>();
-
-			// ReferencesServices
-			referenceServicesCreated = service
-					.GetAllEntityByNamedQuery("ReferencesServices.findByReferenceNotifyToOrReferredBy", user.getId());
-			referenceServicesUpdated = new ArrayList<ReferencesServices>();
 
 			beneficiariesCreatedCustomized = userBeneficiariesSync.stream()
 					.map(UsersBeneficiariesCustomSync::getBeneficiary).collect(Collectors.toList());

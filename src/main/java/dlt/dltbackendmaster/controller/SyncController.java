@@ -596,6 +596,7 @@ public class SyncController {
 		SyncObject<ReferenceServicesSyncModel> referencesServices;
 
 		try {
+			users = SyncSerializer.readUsersSyncObject(changes);
 			beneficiaries = SyncSerializer.readBeneficiariesSyncObject(changes);
 			interventions = SyncSerializer.readInterventionsSyncObject(changes);
 			references = SyncSerializer.readReferencesSyncObject(changes);
@@ -802,6 +803,18 @@ public class SyncController {
 			}
 
 			// updated entities
+			if (users != null && users.getUpdated().size() > 0) {
+				List<UsersSyncModel> updatedList = mapper.convertValue(users.getUpdated(),
+						new TypeReference<List<UsersSyncModel>>() {
+						});
+
+				for (UsersSyncModel updated : updatedList) {
+					Users updatedUser = service.find(Users.class, updated.getOnline_id());
+					updatedUser.setUpdatedBy(userId);
+					updatedUser.update(updated, lastPulledAt);
+					service.update(updatedUser);
+				}
+			}
 			if (interventions != null && interventions.getUpdated().size() > 0) {
 				List<BeneficiaryInterventionSyncModel> updatedList = mapper.convertValue(interventions.getUpdated(),
 						new TypeReference<List<BeneficiaryInterventionSyncModel>>() {

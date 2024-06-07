@@ -52,15 +52,21 @@ import dlt.dltbackendmaster.serializers.UssSerializer;
 				+ "LEFT JOIN users_localities ul on ul.user_id = u.id "
 				+ "where ul.locality_id in (:localities)", resultClass = Users.class),
 		@NamedNativeQuery(name = "Users.findByUsAndOrganization", query = "SELECT distinct u.* FROM users u "
-				+ "LEFT JOIN users_us uu on uu.user_id = u.id  " + "LEFT JOIN users_localities ul on ul.user_id = u.id "
-				+ "INNER JOIN us us on ul.locality_id = us.locality_id " + "where (uu.us_id in (:us) "
-				+ "or u.profile_id = 18 " + "and us.id = :us) " + "and u.partner_id = :organization "
+				+ "LEFT JOIN users_us uu on uu.user_id = u.id  " 
+				+ "LEFT JOIN users_localities ul on ul.user_id = u.id "
+				+ "INNER JOIN us us on ul.locality_id = us.locality_id " 
+				+ "where (uu.us_id in (:us) "
+				+ "or u.profile_id = 18 " 
+				+ "and us.id = :us) " 
+				+ "and u.partner_id = :organization "
 				+ "and u.status = 1", resultClass = Users.class),
 		@NamedNativeQuery(name = "Users.findByLocalitiesAndDateCreated", query = "SELECT u.* FROM users u "
-				+ "LEFT JOIN users_localities ul on ul.user_id = u.id " + "where ul.locality_id in (:localities) "
+				+ "LEFT JOIN users_localities ul on ul.user_id = u.id " 
+				+ "where ul.locality_id in (:localities) "
 				+ "and u.date_created >= :lastpulledat", resultClass = Users.class),
 		@NamedNativeQuery(name = "Users.findByLocalitiesAndDateUpdated", query = "SELECT u.* FROM users u "
-				+ "LEFT JOIN users_localities ul on ul.user_id = u.id " + "where ul.locality_id in (:localities) "
+				+ "LEFT JOIN users_localities ul on ul.user_id = u.id " 
+				+ "where ul.locality_id in (:localities) "
 				+ "and u.date_created < :lastpulledat "
 				+ "and u.date_updated >= :lastpulledat", resultClass = Users.class),
 
@@ -72,23 +78,31 @@ import dlt.dltbackendmaster.serializers.UssSerializer;
 				+ "where up.province_id in (:provinces)", resultClass = Users.class), })
 
 @NamedQueries({ @NamedQuery(name = "Users.findAll", query = "SELECT distinct u FROM Users u "
-		+ " LEFT JOIN u.districts d " + " Where concat(u.name, \' \' ,u.surname) like concat('%',:searchName,'%') "
-		+ " AND u.username like :searchUsername "
-		+ " AND (:searchUserCreator IS NULL OR u.createdBy = :searchUserCreator OR u.updatedBy =:searchUserCreator) "
-		+ " AND (:searchDistrict IS NULL OR d.id = :searchDistrict) " + ""),
+				+ " LEFT JOIN u.districts d " 
+				+ " Where concat(u.name,u.surname) like concat('%',:searchName,'%') "
+				+ " AND u.username like :searchUsername "
+				+ " AND (:searchUserCreator IS NULL OR u.createdBy = :searchUserCreator OR u.updatedBy =:searchUserCreator) "
+				+ " AND (:searchDistrict IS NULL OR d.id = :searchDistrict) " 
+				+ ""),
 		@NamedQuery(name = "Users.findByAlocatProvinces", query = "SELECT u.id as id, u.username as username FROM Users u INNER JOIN u.provinces p where p.id in (:provinces)"),
 		@NamedQuery(name = "Users.findByAlocatDistricts", query = "SELECT u.id as id, u.username as username FROM Users u INNER JOIN u.districts d where d.id in (:districts)"),
 		@NamedQuery(name = "Users.findByUsername", query = "SELECT u FROM Users u where u.username = :username"),
 		@NamedQuery(name = "Users.findByUsId", query = "SELECT u FROM Users u INNER JOIN u.us us where us.id in (:us) and u.status = 1"),
-		@NamedQuery(name = "Users.findByLocalityId", query = "SELECT u " + "FROM Users u " + "INNER JOIN u.us us "
-				+ "INNER JOIN us.locality l " + "where l.id in (:l) " + "and u.status = 1"),
+		@NamedQuery(name = "Users.findByLocalityId", query = "SELECT u " 
+				+ "FROM Users u " 
+				+ "INNER JOIN u.us us "
+				+ "INNER JOIN us.locality l " 
+				+ "where l.id in (:l) " 
+				+ "and u.status = 1"),
 		@NamedQuery(name = "Users.findByResetPasswordToken", query = "SELECT u FROM Users u where u.recoverPasswordToken = :recoverPasswordToken"),
 		@NamedQuery(name = "Users.findByProfiles", query = "SELECT u FROM Users u where u.profiles.id in (:profiles)"),
 		@NamedQuery(name = "Users.findByProfilesAndOrganization", query = "SELECT u FROM Users u where u.profiles.id in (:profiles) and u.partners.id = :organizationId"),
 		@NamedQuery(name = "Users.findByDateCreated", query = "select u from Users u where u.dateUpdated is null and u.dateCreated > :lastpulledat"),
 		@NamedQuery(name = "Users.findByDateUpdated", query = "select u from Users u where (u.dateUpdated >= :lastpulledat) or (u.dateUpdated >= :lastpulledat and u.dateCreated = u.dateUpdated)"),
 		@NamedQuery(name = "Users.findUsernames", query = "SELECT u.id as id, u.username as username FROM Users u"),
-		@NamedQuery(name = "Users.findById", query = "SELECT u " + "FROM Users u " + "left join fetch u.localities "
+		@NamedQuery(name = "Users.findById", query = "SELECT u " 
+				+ "FROM Users u " 
+				+ "left join fetch u.localities "
 				+ "where u.id = :id"), })
 public class Users implements java.io.Serializable {
 

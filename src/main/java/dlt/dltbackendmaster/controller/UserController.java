@@ -80,6 +80,8 @@ public class UserController {
 			@RequestParam(name = "searchUsername", required = false) @Nullable String searchUsername,
 			@RequestParam(name = "searchUserCreator", required = false) @Nullable Integer searchUserCreator,
 			@RequestParam(name = "searchDistrict", required = false) @Nullable Integer searchDistrict) {
+		
+		searchName = searchName.replaceAll(" ", "%");
 
 		try {
 			List<Users> users = service.GetAllPagedUserEntityByNamedQuery("Users.findAll", pageIndex, pageSize,

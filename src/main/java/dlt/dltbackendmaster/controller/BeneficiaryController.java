@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.gemfire.config.annotation.EnableCompression;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
@@ -28,6 +29,7 @@ import dlt.dltbackendmaster.service.SequenceGenerator;
 import dlt.dltbackendmaster.service.VulnerabilityHistoryService;
 
 @RestController
+@EnableCompression
 @RequestMapping("/api/beneficiaries")
 public class BeneficiaryController
 {

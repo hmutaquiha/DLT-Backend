@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.data.gemfire.config.annotation.EnableCompression;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,6 +31,7 @@ import dlt.dltbackendmaster.service.DAOService;
 import dlt.dltbackendmaster.util.ServiceCompletionRules;
 
 @RestController
+@EnableCompression
 @RequestMapping("/api/beneficiary-intervention")
 public class BeneficiaryInterventionController {
 	private final DAOService service;
@@ -70,6 +72,14 @@ public class BeneficiaryInterventionController {
 
 			SubServices subService = service.find(SubServices.class, intervention.getId().getSubServiceId());
 			intervention.setSubServices(subService);
+
+			if (subService.getServices().getServiceType().equals("1")) {
+				beneficiary.setClinicalInterventions(beneficiary.getClinicalInterventions() + 1);
+			} else {
+				beneficiary.setCommunityInterventions(beneficiary.getCommunityInterventions() + 1);
+			}
+
+			service.update(beneficiary);
 
 			// Actualizar o status dos serviços solicitados
 			Integer serviceId = subService.getServices().getId();
@@ -168,6 +178,20 @@ public class BeneficiaryInterventionController {
 
 				SubServices subService = service.find(SubServices.class, newInterv.getId().getSubServiceId());
 				newInterv.setSubServices(subService);
+
+				if (intervention.getId().getSubServiceId() != intervention.getSubServices().getId()) {
+					SubServices subService1 = service.find(SubServices.class, intervention.getId().getSubServiceId());
+					if (!subService1.getServices().getServiceType().equals(subService.getServices().getServiceType())) {
+						if (subService1.getServices().getServiceType().equals("1")) {
+							beneficiary.setClinicalInterventions(beneficiary.getClinicalInterventions() - 1);
+							beneficiary.setCommunityInterventions(beneficiary.getCommunityInterventions() + 1);
+						} else {
+							beneficiary.setClinicalInterventions(beneficiary.getClinicalInterventions() + 1);
+							beneficiary.setCommunityInterventions(beneficiary.getCommunityInterventions() - 1);
+						}
+						service.update(beneficiary);
+					}
+				}
 
 				return new ResponseEntity<>(newInterv, HttpStatus.OK);
 			}

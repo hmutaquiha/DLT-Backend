@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -19,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.gemfire.config.annotation.EnableCompression;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
@@ -67,8 +69,10 @@ import dlt.dltbackendmaster.service.UserLastSyncService;
 import dlt.dltbackendmaster.service.UsersBeneficiariesCustomSyncService;
 import dlt.dltbackendmaster.service.VulnerabilityHistoryService;
 import dlt.dltbackendmaster.util.ServiceCompletionRules;
+import dlt.dltbackendmaster.util.Utility;
 
 @RestController
+@EnableCompression
 @RequestMapping("/sync")
 public class SyncController {
 	Logger logger = LoggerFactory.getLogger(SyncController.class);
@@ -199,28 +203,36 @@ public class SyncController {
 			profilesCreated = service.GetAllEntityByNamedQuery("Profiles.findAll");
 			profilesUpdated = new ArrayList<Profiles>();
 
-			// Beneficiary
-			beneficiariesCreated = service.GetAllEntityByNamedQuery(
-					"Beneficiary.findByReferenceNotifyToOrBeneficiaryCreatedBy", user.getId());
-			beneficiariesUpdated = new ArrayList<Beneficiaries>();
+			if (!user.getProfiles().getName().equals("SUPERVISOR")) {
+				beneficiariesCreated = service.GetAllEntityByNamedQuery(
+						"Beneficiary.findByReferenceNotifyToOrBeneficiaryCreatedBy", user.getId());
+				referencesCreated = service.GetAllEntityByNamedQuery("References.findByReferenceNotifyToOrReferredBy",
+						user.getId());
 
-			// References
-			referencesCreated = service.GetAllEntityByNamedQuery("References.findByReferenceNotifyToOrReferredBy",
-					user.getId());
-			referencesUpdated = new ArrayList<References>();
+				List<Beneficiaries> refBeneficiaries = referencesCreated.stream().map(References::getBeneficiaries)
+						.collect(Collectors.toList());
+				beneficiariesCreated.addAll(refBeneficiaries);
 
-			List<Beneficiaries> refBeneficiaries = referencesCreated.stream().map(References::getBeneficiaries)
-					.collect(Collectors.toList());
-			beneficiariesCreated.addAll(refBeneficiaries);
-
-			for (Beneficiaries beneficiary : beneficiariesCreated) {
-				if (beneficiary.getLocality() != null && !user.getProfiles().getName().equals("MENTORA")
-						&& !user.getProfiles().getName().equals("ENFERMEIRA")
-						&& !user.getProfiles().getName().equals("CONSELHEIRA")) {
-					localitiesIds.add(beneficiary.getLocality().getId());
+				for (Beneficiaries beneficiary : beneficiariesCreated) {
+					if (beneficiary.getLocality() != null && !user.getProfiles().getName().equals("MENTORA")
+							&& !user.getProfiles().getName().equals("ENFERMEIRA")
+							&& !user.getProfiles().getName().equals("CONSELHEIRA")) {
+						localitiesIds.add(beneficiary.getLocality().getId());
+					}
+					beneficiariesInterventionsCreated.addAll(beneficiary.getBeneficiariesInterventionses());
 				}
-				beneficiariesInterventionsCreated.addAll(beneficiary.getBeneficiariesInterventionses());
+
+				referenceServicesCreated = service.GetAllEntityByNamedQuery(
+						"ReferencesServices.findByReferenceNotifyToOrReferredBy", user.getId());
+			} else {
+				beneficiariesCreated = new ArrayList<Beneficiaries>();
+				referencesCreated = new ArrayList<>();
+				referenceServicesCreated = new ArrayList<>();
 			}
+			beneficiariesUpdated = new ArrayList<Beneficiaries>();
+			referencesUpdated = new ArrayList<References>();
+			beneficiariesInterventionsUpdated = new ArrayList<BeneficiariesInterventions>();
+			referenceServicesUpdated = new ArrayList<ReferencesServices>();
 
 			// localities
 			localityCreated = service.GetAllEntityByNamedQuery("Locality.findByIds",
@@ -238,8 +250,6 @@ public class SyncController {
 			usCreated = service.GetAllEntityByNamedQuery("Us.findBySyncLocalities",
 					Arrays.asList(localitiesIds.toArray()));
 
-			beneficiariesInterventionsUpdated = new ArrayList<BeneficiariesInterventions>();
-
 			// Neighborhood
 			neighborhoodsCreated = service.GetAllEntityByNamedQuery("Neighborhood.findBySyncLocalities",
 					Arrays.asList(localitiesIds.toArray()));
@@ -250,11 +260,6 @@ public class SyncController {
 
 			subServicesCreated = service.GetAllEntityByNamedQuery("SubService.findAny");
 			subServicesUpdated = new ArrayList<SubServices>();
-
-			// ReferencesServices
-			referenceServicesCreated = service
-					.GetAllEntityByNamedQuery("ReferencesServices.findByReferenceNotifyToOrReferredBy", user.getId());
-			referenceServicesUpdated = new ArrayList<ReferencesServices>();
 
 			beneficiariesCreatedCustomized = userBeneficiariesSync.stream()
 					.map(UsersBeneficiariesCustomSync::getBeneficiary).collect(Collectors.toList());
@@ -427,10 +432,17 @@ public class SyncController {
 		beneficiariesInterventionsCreated.addAll(beneficiariesInterventionsCreatedCustomized);
 		beneficiariesInterventionsUpdated.addAll(beneficiariesInterventionsUpdatedCustomized);
 
-		List<BeneficiariesInterventions> uniqueBeneficiariesIntervetnionsCreated = beneficiariesInterventionsCreated
+		List<BeneficiariesInterventions> uniqueBeneficiariesInterventionsCreated = beneficiariesInterventionsCreated
 				.stream().distinct().collect(Collectors.toList());
-		List<BeneficiariesInterventions> uniqueBeneficiariesIntervetnionsUpdated = beneficiariesInterventionsUpdated
+		List<BeneficiariesInterventions> uniqueBeneficiariesInterventionsUpdated = beneficiariesInterventionsUpdated
 				.stream().distinct().collect(Collectors.toList());
+
+		// Excluir dados de beneficiárias que não tiveram qualquer registo nos últimos 6
+		// meses
+		excludeInactiveBeneficiariesData(uniqueBeneficiariesCreated, uniqueBeneficiariesInterventionsCreated,
+				uniqueReferencesCreated, uniqueReferenceServicesCreated);
+		excludeInactiveBeneficiariesData(uniqueBeneficiariesUpdated, uniqueBeneficiariesInterventionsUpdated,
+				uniqueReferencesUpdated, uniqueReferenceServicesUpdated);
 
 		try {
 			SyncObject<UsersSync> usersSO = new SyncObject<UsersSync>(usersCreated, usersUpdated, listDeleted);
@@ -445,7 +457,7 @@ public class SyncController {
 			SyncObject<Beneficiaries> beneficiarySO = new SyncObject<Beneficiaries>(uniqueBeneficiariesCreated,
 					uniqueBeneficiariesUpdated, listDeleted);
 			SyncObject<BeneficiariesInterventions> beneficiaryInterventionSO = new SyncObject<BeneficiariesInterventions>(
-					uniqueBeneficiariesIntervetnionsCreated, uniqueBeneficiariesIntervetnionsUpdated, listDeleted);
+					uniqueBeneficiariesInterventionsCreated, uniqueBeneficiariesInterventionsUpdated, listDeleted);
 			SyncObject<Neighborhood> neighborhoodSO = new SyncObject<Neighborhood>(neighborhoodsCreated,
 					neighborhoodsUpdated, listDeleted);
 			SyncObject<Services> serviceSO = new SyncObject<Services>(servicesCreated, servicesUpdated, listDeleted);
@@ -468,6 +480,73 @@ public class SyncController {
 
 			e.printStackTrace();
 			return new ResponseEntity<>("Parameter not present", HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	private void excludeInactiveBeneficiariesData(List<Beneficiaries> beneficiariesCreated,
+			List<BeneficiariesInterventions> beneficiariesInterventionsCreated, List<References> referencesCreated,
+			List<ReferencesServices> referenceServicesCreated) {
+		Date sixMonthsDate = Utility.nMonthsDate(new Date(), 6);
+		List<Integer> beneficiariesToExcludeData = new ArrayList<>();
+
+		beneficiariesLoop: for (Iterator<Beneficiaries> iterator = beneficiariesCreated.iterator(); iterator
+				.hasNext();) {
+			Beneficiaries beneficiary = iterator.next();
+			boolean toBeRemoved = true;
+			if (beneficiary.getDateCreated().after(sixMonthsDate)
+					|| beneficiary.getDateUpdated() != null && beneficiary.getDateUpdated().after(sixMonthsDate)
+							&& beneficiary.getUpdatedBy() != 7 && beneficiary.getUpdatedBy() != 1325) {
+				toBeRemoved = false;
+				continue;
+			}
+
+			if (toBeRemoved) {
+				Set<BeneficiariesInterventions> interventions = beneficiary.getBeneficiariesInterventionses();
+				for (BeneficiariesInterventions intervention : interventions) {
+					if (intervention.getDateCreated().after(sixMonthsDate) || intervention.getDateUpdated() != null
+							&& intervention.getDateUpdated().after(sixMonthsDate)) {
+						toBeRemoved = false;
+						continue beneficiariesLoop;
+					}
+				}
+
+				if (toBeRemoved) {
+					Set<References> references = beneficiary.getReferenceses();
+					for (References reference : references) {
+						if (reference.getDateCreated().after(sixMonthsDate) || reference.getDateUpdated() != null
+								&& reference.getDateUpdated().after(sixMonthsDate)) {
+							toBeRemoved = false;
+							continue beneficiariesLoop;
+						}
+					}
+				}
+			}
+			beneficiariesToExcludeData.add(beneficiary.getId());
+			iterator.remove();
+		}
+
+		for (Iterator<BeneficiariesInterventions> iterator = beneficiariesInterventionsCreated.iterator(); iterator
+				.hasNext();) {
+			BeneficiariesInterventions intervention = iterator.next();
+			if (beneficiariesToExcludeData.contains(intervention.getBeneficiaries().getId())) {
+				iterator.remove();
+			}
+		}
+
+		List<Integer> referencesToExcludeData = new ArrayList<>();
+		for (Iterator<References> iterator = referencesCreated.iterator(); iterator.hasNext();) {
+			References reference = iterator.next();
+			if (beneficiariesToExcludeData.contains(reference.getBeneficiaries().getId())) {
+				iterator.remove();
+				referencesToExcludeData.add(reference.getId());
+			}
+		}
+
+		for (Iterator<ReferencesServices> iterator = referenceServicesCreated.iterator(); iterator.hasNext();) {
+			ReferencesServices referenceService = iterator.next();
+			if (referencesToExcludeData.contains(referenceService.getReferences().getId())) {
+				iterator.remove();
+			}
 		}
 	}
 
@@ -583,14 +662,16 @@ public class SyncController {
 				List<BeneficiaryInterventionSyncModel> createdList = mapper.convertValue(interventions.getCreated(),
 						new TypeReference<List<BeneficiaryInterventionSyncModel>>() {
 						});
+				Map<Integer, int[]> interventionsCount = new HashMap<>();
 
 				for (BeneficiaryInterventionSyncModel created : createdList) {
 					if (created.getOnline_id() == null) {
 						try {
 							BeneficiariesInterventions intervention = new BeneficiariesInterventions(created,
 									lastPulledAt);
+							Integer beneficiaryId = null;
 							if (created.getBeneficiary_id() == 0) {
-								Integer beneficiaryId = beneficiariesIds.get(created.getBeneficiary_offline_id());
+								beneficiaryId = beneficiariesIds.get(created.getBeneficiary_offline_id());
 								if (beneficiaryId == null) {
 									Beneficiaries beneficiary = service.GetUniqueEntityByNamedQuery(
 											"Beneficiary.findByOfflineId", created.getBeneficiary_offline_id());
@@ -609,6 +690,23 @@ public class SyncController {
 							intervention.setCreatedBy(userId);
 							service.Save(intervention);
 
+							SubServices subService = service.find(SubServices.class,
+									intervention.getId().getSubServiceId());
+							String serviceType = subService.getServices().getServiceType();
+
+							int[] benIntervCount = interventionsCount.get(beneficiaryId);
+							if (benIntervCount == null) {
+								benIntervCount = serviceType.equals("1") ? new int[] { 1, 0 } : new int[] { 0, 1 };
+								interventionsCount.put(beneficiaryId, benIntervCount);
+							} else {
+								if (serviceType.equals("1")) {
+									benIntervCount[0] = benIntervCount[0] + 1;
+								} else {
+									benIntervCount[1] = benIntervCount[1] + 1;
+								}
+							}
+							interventionsCount.put(beneficiaryId, benIntervCount);
+
 							service.registerServiceCompletionStatus(intervention);
 						} catch (DataIntegrityViolationException e) {
 							logger.warn(e.getRootCause().getMessage());
@@ -616,6 +714,16 @@ public class SyncController {
 						}
 
 					}
+				}
+
+				// Update interventions counts
+				for (Integer beneficiaryId : interventionsCount.keySet()) {
+					Beneficiaries beneficiary = service.find(Beneficiaries.class, beneficiaryId);
+					int[] counts = interventionsCount.get(beneficiaryId);
+					beneficiary.setClinicalInterventions(counts[0]);
+					beneficiary.setCommunityInterventions(counts[1]);
+
+					service.update(beneficiary);
 				}
 			}
 
@@ -695,6 +803,18 @@ public class SyncController {
 			}
 
 			// updated entities
+			if (users != null && users.getUpdated().size() > 0) {
+				List<UsersSyncModel> updatedList = mapper.convertValue(users.getUpdated(),
+						new TypeReference<List<UsersSyncModel>>() {
+						});
+
+				for (UsersSyncModel updated : updatedList) {
+					Users updatedUser = service.find(Users.class, updated.getOnline_id());
+					updatedUser.setUpdatedBy(userId);
+					updatedUser.update(updated, lastPulledAt);
+					service.update(updatedUser);
+				}
+			}
 			if (interventions != null && interventions.getUpdated().size() > 0) {
 				List<BeneficiaryInterventionSyncModel> updatedList = mapper.convertValue(interventions.getUpdated(),
 						new TypeReference<List<BeneficiaryInterventionSyncModel>>() {
@@ -899,6 +1019,7 @@ public class SyncController {
 			@RequestParam(name = "level") String level,
 			@RequestParam(name = "params", required = false) @Nullable Integer[] params,
 			@RequestParam(name = "pageIndex") int pageIndex, @RequestParam(name = "pageSize") int pageSize,
+			@RequestParam(name = "searchName", required = false) @Nullable String searchName,
 			@RequestParam(name = "searchUsername", required = false) @Nullable String searchUsername,
 			@RequestParam(name = "searchUserCreator", required = false) @Nullable Integer searchUserCreator,
 			@RequestParam(name = "searchDistrict", required = false) @Nullable Integer searchDistrict) {
@@ -912,14 +1033,14 @@ public class SyncController {
 
 			if (!districtsIds.isEmpty()) {
 				users = service.GetAllPagedUserEntityByNamedQuery("UserLastSync.findByDistricts", pageIndex, pageSize,
-						searchUsername, searchUserCreator, searchDistrict, districtsIds);
+						searchName, searchUsername, searchUserCreator, searchDistrict, districtsIds);
 
 			} else if (!provincesIds.isEmpty()) {
 				users = service.GetAllPagedUserEntityByNamedQuery("UserLastSync.findByProvinces", pageIndex, pageSize,
-						searchUsername, searchUserCreator, searchDistrict, provincesIds);
+						searchName, searchUsername, searchUserCreator, searchDistrict, provincesIds);
 			} else {
 				users = service.GetAllPagedUserEntityByNamedQuery("UserLastSync.findAll", pageIndex, pageSize,
-						searchUsername, searchUserCreator, searchDistrict);
+						searchName, searchUsername, searchUserCreator, searchDistrict);
 			}
 
 			return new ResponseEntity<List<UserLastSync>>(users, HttpStatus.OK);

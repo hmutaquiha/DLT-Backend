@@ -126,9 +126,9 @@ public class DAOServiceImpl implements DAOService {
 	}
 	
 	@Transactional
-	public <T> List<T> GetAllPagedUserEntityByNamedQuery(String query, int pageIndex, int pageSize, String searchUsername, Integer searchUserCreator, Integer searchDistrict,
+	public <T> List<T> GetAllPagedUserEntityByNamedQuery(String query, int pageIndex, int pageSize, String searchName, String searchUsername, Integer searchUserCreator, Integer searchDistrict,
 			Object... params) {
-		return repository.GetAllPagedUserEntityByNamedQuery(query, pageIndex, pageSize, searchUsername, searchUserCreator, searchDistrict, params);
+		return repository.GetAllPagedUserEntityByNamedQuery(query, pageIndex, pageSize, searchName, searchUsername, searchUserCreator, searchDistrict, params);
 	}
 
     @Transactional

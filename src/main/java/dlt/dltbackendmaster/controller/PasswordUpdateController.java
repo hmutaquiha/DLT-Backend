@@ -1,6 +1,7 @@
 package dlt.dltbackendmaster.controller;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -109,10 +110,17 @@ public class PasswordUpdateController {
 			user.setRecoverPassword(null);
 			user.setRecoverPasswordToken(null);
 			Users updatedUser = service.update(user);
-			
+
+			List<OldPasswords> oldPasswords = service.GetAllEntityByNamedQuery("OldPasswords.findByUserId",
+					user.getId());
+
+			if (oldPasswords.size() == 3) {
+				OldPasswords oldPassword = (OldPasswords) oldPasswords.get(2);
+				service.delete(oldPassword);
+			}
 			OldPasswords oldPassword = new OldPasswords(recoverPassword, user, new Date());
 			service.Save(oldPassword);
-			
+
 			return new ResponseEntity<>("Confirmada a alteração da password do utilizador " + updatedUser.getName()
 					+ " " + user.getSurname() + "!, " + " <a href=\"" + user.getRecoverPasswordOrigin()
 					+ "/dreams#/login\">Login</a>", HttpStatus.OK);

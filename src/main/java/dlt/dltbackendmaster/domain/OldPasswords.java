@@ -12,16 +12,15 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedNativeQueries;
-import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "old_passwords", catalog = "dreams_db")
-@NamedNativeQueries({
-		@NamedNativeQuery(name = "OldPasswords.findByUserId", query = "SELECT p.password FROM old_passwords p where p.user_id = :userId order by p.id desc limit 3") })
+@NamedQueries({ @NamedQuery(name = "OldPasswords.findByUserId", query = "SELECT p FROM OldPasswords p WHERE p.user.id = :userId ORDER BY p.id DESC") })
 public class OldPasswords implements Serializable {
 
 	private static final long serialVersionUID = 5722267159631853433L;

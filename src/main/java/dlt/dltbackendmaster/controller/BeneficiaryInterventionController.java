@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.data.gemfire.config.annotation.EnableCompression;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,6 +31,7 @@ import dlt.dltbackendmaster.service.DAOService;
 import dlt.dltbackendmaster.util.ServiceCompletionRules;
 
 @RestController
+@EnableCompression
 @RequestMapping("/api/beneficiary-intervention")
 public class BeneficiaryInterventionController {
 	private final DAOService service;

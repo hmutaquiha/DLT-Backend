@@ -209,7 +209,7 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 																+ " or   b.id in "
 																+ "	("
 																+ "		SELECT r.beneficiaries.id from References r"
-												                + " 	where r.status in (0,1,2) "
+												                + " 	where r.status in (0,1) "
 												                + " 	and r.notifyTo.id = :userId"
 												                + "	)) "    											     
 												                ),
@@ -224,7 +224,7 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 																+ " or   b.id in "
 																+ "	("
 																+ "		SELECT r.beneficiaries.id from References r"
-												                + " 	where r.status in (0,1,2) "
+												                + " 	where r.status in (0,1) "
 												                + " 	and r.notifyTo.id = :userId"
 												                + " 	and r.dateCreated >= :lastpulledat"
 												                + "	))"
@@ -239,7 +239,7 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 																+ " or   b.id in "
 																+ " ("
 																+ "		SELECT r.beneficiaries.id from References r"
-												                + " 	where r.status in (0,1,2) "
+												                + " 	where r.status in (0,1) "
 												                + " 	and r.notifyTo.id = :userId "
 												                + "		and r.dateCreated >= :lastpulledat"
 												                + "	))"
@@ -412,6 +412,8 @@ public class Beneficiaries implements java.io.Serializable
         this.status = status;
         this.createdBy = createdBy;
         this.dateCreated = dateCreated;
+        this.clinicalInterventions = 0;
+        this.communityInterventions = 0;
     }
 
     public Beneficiaries(Neighborhood neighborhood, Partners partners, Locality locality, District district_id, Us us, String nui, String surname, String name,
@@ -482,6 +484,8 @@ public class Beneficiaries implements java.io.Serializable
         this.vulnerabilityHistories = vulnerabilityHistories;
         this.beneficiariesInterventionses = beneficiariesInterventionses;
         this.referenceses = referenceses;
+        this.clinicalInterventions = 0;
+        this.communityInterventions = 0;
     }
 
     public Beneficiaries(BeneficiarySyncModel model, String timestamp) {
@@ -533,6 +537,8 @@ public class Beneficiaries implements java.io.Serializable
         this.vbltSexWorker = model.getVblt_sex_worker();
         this.vbltHouseSustainer = model.getVblt_house_sustainer();
         this.status = Integer.valueOf(model.getStatus());
+        this.clinicalInterventions = 0;
+        this.communityInterventions = 0;
     }
 
     public Beneficiaries(BeneficiarySyncModel model) {
@@ -582,6 +588,8 @@ public class Beneficiaries implements java.io.Serializable
         this.vbltSexWorker = model.getVblt_sex_worker();
         this.vbltHouseSustainer = model.getVblt_house_sustainer();
         this.status = Integer.valueOf(model.getStatus());
+        this.clinicalInterventions = 0;
+        this.communityInterventions = 0;
     }
 
     public Beneficiaries(Integer id) {

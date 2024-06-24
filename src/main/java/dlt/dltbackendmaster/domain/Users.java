@@ -183,6 +183,10 @@ public class Users implements java.io.Serializable {
 		this.id = id;
 	}
 
+	public Users(Integer id) {
+		this.id = id;
+	}
+
 	public Users(Partners partners, Profiles profiles, String surname, String name, String phoneNumber, String email,
 			String username, String password, int status, int createdBy, Date dateCreated) {
 		this.partners = partners;

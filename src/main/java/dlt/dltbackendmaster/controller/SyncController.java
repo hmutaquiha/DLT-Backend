@@ -670,8 +670,8 @@ public class SyncController {
 						try {
 							BeneficiariesInterventions intervention = new BeneficiariesInterventions(created,
 									lastPulledAt);
-							Integer beneficiaryId = null;
-							if (created.getBeneficiary_id() == 0) {
+							Integer beneficiaryId = created.getBeneficiary_id();
+							if (beneficiaryId == 0) {
 								beneficiaryId = beneficiariesIds.get(created.getBeneficiary_offline_id());
 								if (beneficiaryId == null) {
 									Beneficiaries beneficiary = service.GetUniqueEntityByNamedQuery(
@@ -719,17 +719,12 @@ public class SyncController {
 
 				// Update interventions counts
 				for (Integer beneficiaryId : interventionsCount.keySet()) {
-					try {
-						Beneficiaries beneficiary = service.find(Beneficiaries.class, beneficiaryId);
-						int[] counts = interventionsCount.get(beneficiaryId);
-						beneficiary.setClinicalInterventions(counts[0]);
-						beneficiary.setCommunityInterventions(counts[1]);
+					Beneficiaries beneficiary = service.find(Beneficiaries.class, beneficiaryId);
+					int[] counts = interventionsCount.get(beneficiaryId);
+					beneficiary.setClinicalInterventions(beneficiary.getClinicalInterventions() + counts[0]);
+					beneficiary.setCommunityInterventions(beneficiary.getCommunityInterventions() + counts[1]);
 
-						service.update(beneficiary);
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+					service.update(beneficiary);
 				}
 			}
 

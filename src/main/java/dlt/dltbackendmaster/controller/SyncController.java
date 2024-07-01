@@ -495,7 +495,8 @@ public class SyncController {
 			boolean toBeRemoved = true;
 			if (beneficiary.getDateCreated().after(sixMonthsDate)
 					|| beneficiary.getDateUpdated() != null && beneficiary.getDateUpdated().after(sixMonthsDate)
-							&& beneficiary.getUpdatedBy() != 7 && beneficiary.getUpdatedBy() != 1325) {
+							&& (beneficiary.getUpdatedBy() == null || beneficiary.getUpdatedBy() != null
+									&& beneficiary.getUpdatedBy() != 7 && beneficiary.getUpdatedBy() != 1325)) {
 				toBeRemoved = false;
 				continue;
 			}

@@ -84,6 +84,16 @@ public class DAOServiceImpl implements DAOService {
 	}
 
 	@Transactional
+	public <T> T GetUniqueUserEntityByNamedQuery(String query, String searchName, String searchUsername, Integer searchUserCreator, Integer searchDistrict, Object... params) {
+		return repository.GetUniqueUserEntityByNamedQuery(query, searchName, searchUsername, searchUserCreator, searchDistrict, params);
+	}
+
+	@Transactional
+	public <T> T GetUniqueUserEntityByNamedQuery(String query, String searchName, String searchUsername, Integer searchUserCreator, Integer searchDistrict, Integer searchEntryPoint, Object... params) {
+		return repository.GetUniqueUserEntityByNamedQuery(query, searchName, searchUsername, searchUserCreator, searchDistrict, searchEntryPoint, params);
+	}
+
+	@Transactional
 	public <T> T GetUniqueEntityByNamedQuery(String query, String searchNui, Integer searchUserCreator, Integer searchDistrict, Object... params) {
 		return repository.GetUniqueEntityByNamedQuery(query, searchNui, searchUserCreator, searchDistrict, params);
 	}
@@ -129,6 +139,12 @@ public class DAOServiceImpl implements DAOService {
 	public <T> List<T> GetAllPagedUserEntityByNamedQuery(String query, int pageIndex, int pageSize, String searchName, String searchUsername, Integer searchUserCreator, Integer searchDistrict,
 			Object... params) {
 		return repository.GetAllPagedUserEntityByNamedQuery(query, pageIndex, pageSize, searchName, searchUsername, searchUserCreator, searchDistrict, params);
+	}
+	
+	@Transactional
+	public <T> List<T> GetAllPagedUserEntityByNamedQuery(String query, int pageIndex, int pageSize, String searchName, String searchUsername, Integer searchUserCreator, Integer searchDistrict, Integer searchEntryPoint,
+			Object... params) {
+		return repository.GetAllPagedUserEntityByNamedQuery(query, pageIndex, pageSize, searchName, searchUsername, searchUserCreator, searchDistrict, searchEntryPoint, params);
 	}
 
     @Transactional

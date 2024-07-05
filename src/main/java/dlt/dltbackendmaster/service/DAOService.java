@@ -36,6 +36,10 @@ public interface DAOService {
 
 	<T> T GetUniqueEntityByNamedQuery(String query, String searchNui, String searchName, Integer searchUserCreator, Integer searchDistrict, Object... params);
 
+	<T> T GetUniqueUserEntityByNamedQuery(String query, String searchName, String searchUsename, Integer searchUserCreator, Integer searchDistrict, Object... params);
+
+	<T> T GetUniqueUserEntityByNamedQuery(String query, String searchName, String searchUsename, Integer searchUserCreator, Integer searchDistrict, Integer searchEntryPoint, Object... params);
+
 	<T> T GetUniqueEntityByNamedQuery(String query, String searchNui, Integer searchUserCreator, Integer searchDistrict, Object... params);
 
 	<T> T GetUniqueEntityByNamedQuery(String query, String searchStartDate, String searchEndDate, Object... params);
@@ -51,6 +55,8 @@ public interface DAOService {
 	<T> List<T> GetAllPagedEntityByNamedQuery(String query, int pageIndex, int pageSize, String searchNui, Integer searchUserCreator, Integer searchDistrict, Object... params);
 	
 	<T> List<T> GetAllPagedUserEntityByNamedQuery(String query, int pageIndex, int pageSize, String searchName, String searchUsername, Integer searchUserCreator, Integer searchDistrict, Object... params);
+	
+	<T> List<T> GetAllPagedUserEntityByNamedQuery(String query, int pageIndex, int pageSize, String searchName, String searchUsername, Integer searchUserCreator, Integer searchDistrict, Integer searchEntryPoint, Object... params);
 	
     <T> List<T> GetAllPagedEntityByNamedQuery(String query, int pageIndex, int pageSize, Date searchStartDate, Date searchEndDate, Object... params);
 

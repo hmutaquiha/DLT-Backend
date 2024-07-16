@@ -473,8 +473,6 @@ public class SyncController {
 					partnersSO, usSO, beneficiarySO, beneficiaryInterventionSO, neighborhoodSO, serviceSO, subServiceSO,
 					referencesSO, referencesServicesSO, lastPulledAt);
 
-			userLastSyncService.saveLastSyncDate(username);
-
 			return new ResponseEntity<>(object, HttpStatus.OK);
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -570,7 +568,8 @@ public class SyncController {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@PostMapping(consumes = "application/json")
-	public ResponseEntity post(@RequestBody String changes, @RequestParam(name = "username") String username)
+	public ResponseEntity post(@RequestBody String changes, @RequestParam(name = "username") String username,
+			@RequestParam(name = "appVersion", required = false) @Nullable String appVersion)
 			throws ParseException, JsonMappingException, JsonProcessingException {
 
 		String lastPulledAt = SyncSerializer.readLastPulledAt(changes);
@@ -965,7 +964,7 @@ public class SyncController {
 				}
 			}
 
-			userLastSyncService.saveLastSyncDate(username);
+			userLastSyncService.saveLastSyncDate(username, appVersion);
 
 		} catch (JsonProcessingException e) {
 			// TODO Auto-generated catch block
@@ -1071,11 +1070,13 @@ public class SyncController {
 
 			if (!districtsIds.isEmpty()) {
 				usersTotal = ((BigInteger) service.GetUniqueUserEntityByNamedQuery("UserLastSync.countByDistricts",
-						searchName, searchUsername, searchUserCreator, searchDistrict, searchEntryPoint, districtsIds)).longValue();
+						searchName, searchUsername, searchUserCreator, searchDistrict, searchEntryPoint, districtsIds))
+						.longValue();
 
 			} else if (!provincesIds.isEmpty()) {
 				usersTotal = ((BigInteger) service.GetUniqueUserEntityByNamedQuery("UserLastSync.countByProvinces",
-						searchName, searchUsername, searchUserCreator, searchDistrict, searchEntryPoint, provincesIds)).longValue();
+						searchName, searchUsername, searchUserCreator, searchDistrict, searchEntryPoint, provincesIds))
+						.longValue();
 			} else {
 				usersTotal = service.GetUniqueUserEntityByNamedQuery("UserLastSync.countAll", searchName,
 						searchUsername, searchUserCreator, searchDistrict, searchEntryPoint);

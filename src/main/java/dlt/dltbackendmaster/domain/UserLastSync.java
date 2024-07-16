@@ -89,6 +89,7 @@ public class UserLastSync implements java.io.Serializable {
 	private String username;
 	private Users user;
 	private Date lastSyncDate;
+	private String appVersion;
 
 	public UserLastSync() {
 	}
@@ -137,5 +138,14 @@ public class UserLastSync implements java.io.Serializable {
 
 	public void setUser(Users user) {
 		this.user = user;
+	}
+
+	@Column(name = "app_version", length = 10)
+	public String getAppVersion() {
+		return appVersion;
+	}
+
+	public void setAppVersion(String appVersion) {
+		this.appVersion = appVersion;
 	}
 }

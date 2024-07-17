@@ -94,8 +94,8 @@ public class DAOServiceImpl implements DAOService {
 	}
 
 	@Transactional
-	public <T> T GetUniqueEntityByNamedQuery(String query, String searchNui, Integer searchUserCreator, Integer searchDistrict, Object... params) {
-		return repository.GetUniqueEntityByNamedQuery(query, searchNui, searchUserCreator, searchDistrict, params);
+	public <T> T GetUniqueEntityByNamedQuery(String query, String searchNui, Integer searchUserCreator, Integer searchDistrict, Date searchStartDate, Date searchEndDate, Object... params) {
+		return repository.GetUniqueEntityByNamedQuery(query, searchNui, searchUserCreator, searchDistrict, searchStartDate, searchEndDate, params);
 	}
 	
 	@Transactional
@@ -130,9 +130,9 @@ public class DAOServiceImpl implements DAOService {
 	}
 
 	@Transactional
-	public <T> List<T> GetAllPagedEntityByNamedQuery(String query, int pageIndex, int pageSize, String searchNui, Integer searchUserCreator, Integer searchDistrict,
+	public <T> List<T> GetAllPagedEntityByNamedQuery(String query, int pageIndex, int pageSize, String searchNui, Integer searchUserCreator, Integer searchDistrict, Date searchStartDate, Date searchEndDate,
 			Object... params) {
-		return repository.GetAllPagedEntityByNamedQuery(query, pageIndex, pageSize, searchNui, searchUserCreator, searchDistrict, params);
+		return repository.GetAllPagedEntityByNamedQuery(query, pageIndex, pageSize, searchNui, searchUserCreator, searchDistrict, searchStartDate, searchEndDate, params);
 	}
 	
 	@Transactional

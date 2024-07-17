@@ -190,19 +190,22 @@ public class DAORepositoryImpl implements DAORepository {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public <T> T GetUniqueEntityByNamedQuery(String query, String searchNui, Integer searchUserCreator,
-			Integer searchDistrict, Object... params) {
+			Integer searchDistrict, Date searchStartDate, Date searchEndDate, Object... params) {
 		Query q = getCurrentSession().getNamedQuery(query);
 
 		int i = 0;
 		for (Parameter param : q.getParameters()) {
 			if (!"searchNui".equals(param.getName()) && !"searchUserCreator".equals(param.getName())
-					&& !"searchDistrict".equals(param.getName())) {
+					&& !"searchDistrict".equals(param.getName()) && !"searchStartDate".equals(param.getName())
+					&& !"searchEndDate".equals(param.getName())) {
 				q.setParameter(param, params[i]);
 				i++;
 			} else {
 				q.setParameter("searchNui", "%" + searchNui + "%");
 				q.setParameter("searchUserCreator", searchUserCreator);
 				q.setParameter("searchDistrict", searchDistrict);
+				q.setParameter("searchStartDate", searchStartDate);
+				q.setParameter("searchEndDate", searchEndDate);
 			}
 		}
 
@@ -269,19 +272,23 @@ public class DAORepositoryImpl implements DAORepository {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public <T> List<T> GetAllPagedEntityByNamedQuery(String query, int pageIndex, int pageSize, String searchNui,
-			Integer searchUserCreator, Integer searchDistrict, Object... params) {
+			Integer searchUserCreator, Integer searchDistrict, Date searchStartDate, Date searchEndDate,
+			Object... params) {
 		Query q = getCurrentSession().getNamedQuery(query);
 		int i = 0;
 
 		for (Parameter param : q.getParameters()) {
 			if (!"searchNui".equals(param.getName()) && !"searchUserCreator".equals(param.getName())
-					&& !"searchDistrict".equals(param.getName())) {
+					&& !"searchDistrict".equals(param.getName()) && !"searchStartDate".equals(param.getName())
+					&& !"searchEndDate".equals(param.getName())) {
 				q.setParameter(param, params[i]);
 				i++;
 			} else {
 				q.setParameter("searchNui", "%" + searchNui + "%");
 				q.setParameter("searchUserCreator", searchUserCreator);
 				q.setParameter("searchDistrict", searchDistrict);
+				q.setParameter("searchStartDate", searchStartDate);
+				q.setParameter("searchEndDate", searchEndDate);
 			}
 		}
 

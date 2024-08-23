@@ -1,5 +1,6 @@
 package dlt.dltbackendmaster.controller;
 
+import java.math.BigInteger;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -472,8 +473,6 @@ public class SyncController {
 					partnersSO, usSO, beneficiarySO, beneficiaryInterventionSO, neighborhoodSO, serviceSO, subServiceSO,
 					referencesSO, referencesServicesSO, lastPulledAt);
 
-			userLastSyncService.saveLastSyncDate(username);
-
 			return new ResponseEntity<>(object, HttpStatus.OK);
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -495,7 +494,8 @@ public class SyncController {
 			boolean toBeRemoved = true;
 			if (beneficiary.getDateCreated().after(sixMonthsDate)
 					|| beneficiary.getDateUpdated() != null && beneficiary.getDateUpdated().after(sixMonthsDate)
-							&& beneficiary.getUpdatedBy() != 7 && beneficiary.getUpdatedBy() != 1325) {
+							&& (beneficiary.getUpdatedBy() == null || beneficiary.getUpdatedBy() != null
+									&& beneficiary.getUpdatedBy() != 7 && beneficiary.getUpdatedBy() != 1325)) {
 				toBeRemoved = false;
 				continue;
 			}
@@ -568,7 +568,8 @@ public class SyncController {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@PostMapping(consumes = "application/json")
-	public ResponseEntity post(@RequestBody String changes, @RequestParam(name = "username") String username)
+	public ResponseEntity post(@RequestBody String changes, @RequestParam(name = "username") String username,
+			@RequestParam(name = "appVersion", required = false) @Nullable String appVersion)
 			throws ParseException, JsonMappingException, JsonProcessingException {
 
 		String lastPulledAt = SyncSerializer.readLastPulledAt(changes);
@@ -669,8 +670,8 @@ public class SyncController {
 						try {
 							BeneficiariesInterventions intervention = new BeneficiariesInterventions(created,
 									lastPulledAt);
-							Integer beneficiaryId = null;
-							if (created.getBeneficiary_id() == 0) {
+							Integer beneficiaryId = created.getBeneficiary_id();
+							if (beneficiaryId == 0) {
 								beneficiaryId = beneficiariesIds.get(created.getBeneficiary_offline_id());
 								if (beneficiaryId == null) {
 									Beneficiaries beneficiary = service.GetUniqueEntityByNamedQuery(
@@ -720,8 +721,8 @@ public class SyncController {
 				for (Integer beneficiaryId : interventionsCount.keySet()) {
 					Beneficiaries beneficiary = service.find(Beneficiaries.class, beneficiaryId);
 					int[] counts = interventionsCount.get(beneficiaryId);
-					beneficiary.setClinicalInterventions(counts[0]);
-					beneficiary.setCommunityInterventions(counts[1]);
+					beneficiary.setClinicalInterventions(beneficiary.getClinicalInterventions() + counts[0]);
+					beneficiary.setCommunityInterventions(beneficiary.getCommunityInterventions() + counts[1]);
 
 					service.update(beneficiary);
 				}
@@ -962,7 +963,7 @@ public class SyncController {
 				}
 			}
 
-			userLastSyncService.saveLastSyncDate(username);
+			userLastSyncService.saveLastSyncDate(username, appVersion);
 
 		} catch (JsonProcessingException e) {
 			// TODO Auto-generated catch block
@@ -1022,7 +1023,8 @@ public class SyncController {
 			@RequestParam(name = "searchName", required = false) @Nullable String searchName,
 			@RequestParam(name = "searchUsername", required = false) @Nullable String searchUsername,
 			@RequestParam(name = "searchUserCreator", required = false) @Nullable Integer searchUserCreator,
-			@RequestParam(name = "searchDistrict", required = false) @Nullable Integer searchDistrict) {
+			@RequestParam(name = "searchDistrict", required = false) @Nullable Integer searchDistrict,
+			@RequestParam(name = "searchEntryPoint", required = false) @Nullable Integer searchEntryPoint) {
 
 		try {
 			Users user = service.find(Users.class, userId);
@@ -1033,22 +1035,57 @@ public class SyncController {
 
 			if (!districtsIds.isEmpty()) {
 				users = service.GetAllPagedUserEntityByNamedQuery("UserLastSync.findByDistricts", pageIndex, pageSize,
-						searchName, searchUsername, searchUserCreator, searchDistrict, districtsIds);
+						searchName, searchUsername, searchUserCreator, searchDistrict, searchEntryPoint, districtsIds);
 
 			} else if (!provincesIds.isEmpty()) {
 				users = service.GetAllPagedUserEntityByNamedQuery("UserLastSync.findByProvinces", pageIndex, pageSize,
-						searchName, searchUsername, searchUserCreator, searchDistrict, provincesIds);
+						searchName, searchUsername, searchUserCreator, searchDistrict, searchEntryPoint, provincesIds);
 			} else {
 				users = service.GetAllPagedUserEntityByNamedQuery("UserLastSync.findAll", pageIndex, pageSize,
-						searchName, searchUsername, searchUserCreator, searchDistrict);
+						searchName, searchUsername, searchUserCreator, searchDistrict, searchEntryPoint);
 			}
 
 			return new ResponseEntity<List<UserLastSync>>(users, HttpStatus.OK);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			System.out.println(e.getMessage());
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
+	@GetMapping(path = "/usersLastSync/countByFilters", produces = "application/json")
+	public ResponseEntity<Long> countByFilters(@RequestParam(name = "userId") Integer userId,
+			@RequestParam(name = "searchName", required = false) @Nullable String searchName,
+			@RequestParam(name = "searchUsername", required = false) @Nullable String searchUsername,
+			@RequestParam(name = "searchUserCreator", required = false) @Nullable Integer searchUserCreator,
+			@RequestParam(name = "searchDistrict", required = false) @Nullable Integer searchDistrict,
+			@RequestParam(name = "searchEntryPoint", required = false) @Nullable Integer searchEntryPoint) {
+
+		try {
+
+			Users user = service.find(Users.class, userId);
+			List<Integer> districtsIds = user.getDistricts().stream().map(District::getId).collect(Collectors.toList());
+			List<Integer> provincesIds = user.getProvinces().stream().map(Province::getId).collect(Collectors.toList());
+			Long usersTotal = null;
+
+			if (!districtsIds.isEmpty()) {
+				usersTotal = ((BigInteger) service.GetUniqueUserEntityByNamedQuery("UserLastSync.countByDistricts",
+						searchName, searchUsername, searchUserCreator, searchDistrict, searchEntryPoint, districtsIds))
+						.longValue();
+
+			} else if (!provincesIds.isEmpty()) {
+				usersTotal = ((BigInteger) service.GetUniqueUserEntityByNamedQuery("UserLastSync.countByProvinces",
+						searchName, searchUsername, searchUserCreator, searchDistrict, searchEntryPoint, provincesIds))
+						.longValue();
+			} else {
+				usersTotal = service.GetUniqueUserEntityByNamedQuery("UserLastSync.countAll", searchName,
+						searchUsername, searchUserCreator, searchDistrict, searchEntryPoint);
+			}
+
+			return new ResponseEntity<>(usersTotal, HttpStatus.OK);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+	}
 }

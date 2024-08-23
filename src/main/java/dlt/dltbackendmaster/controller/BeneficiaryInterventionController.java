@@ -209,6 +209,17 @@ public class BeneficiaryInterventionController {
 			currentIntervention.setUpdatedBy(intervention.getUpdatedBy());
 
 			BeneficiariesInterventions updatedIntervention = service.update(currentIntervention);
+			
+			if (updatedIntervention.getStatus() == 0) {
+				Beneficiaries beneficiary = updatedIntervention.getBeneficiaries();
+				if (updatedIntervention.getSubServices().getServices().getServiceType().equals("1")) {
+					beneficiary.setClinicalInterventions(beneficiary.getClinicalInterventions() - 1);
+				} else {
+					beneficiary.setCommunityInterventions(beneficiary.getCommunityInterventions() -1);
+				}
+				service.update(beneficiary);
+			}
+			
 			return new ResponseEntity<>(updatedIntervention, HttpStatus.OK);
 
 		} catch (Exception e) {

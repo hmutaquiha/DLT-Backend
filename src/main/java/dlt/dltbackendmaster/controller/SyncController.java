@@ -598,6 +598,7 @@ public class SyncController {
 		SyncObject<ReferenceServicesSyncModel> referencesServices;
 
 		try {
+			users = SyncSerializer.readUsersSyncObject(changes);
 			beneficiaries = SyncSerializer.readBeneficiariesSyncObject(changes);
 			interventions = SyncSerializer.readInterventionsSyncObject(changes);
 			references = SyncSerializer.readReferencesSyncObject(changes);

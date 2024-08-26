@@ -174,10 +174,6 @@ public class Users implements java.io.Serializable {
 
 	public Users() {
 	}
-	
-	public Users(Integer id) {
-		this.id = id;
-	}
 
 	public Users(Integer id) {
 		this.id = id;

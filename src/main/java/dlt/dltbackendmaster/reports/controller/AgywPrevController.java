@@ -8,9 +8,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -998,7 +1001,7 @@ public class AgywPrevController {
 		AgywPrevReport report = new AgywPrevReport(service);
 
 		boolean isEndOfCycle = false;
-		
+
 		Date initialDate = new Date(startDate);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		String formattedInitialDate = sdf.format(initialDate);
@@ -1006,10 +1009,13 @@ public class AgywPrevController {
 		Date finalDate = new Date(endDate);
 		String formattedFinalDate = sdf.format(finalDate); // Using the same formatter for final date
 
+		String generationDate = sdf.format(new Date());
+
 		createDirectory(REPORTS_HOME + "/" + username);
 
 		String generatedFilePath = REPORTS_HOME + "/" + username + "/" + BENEFICIARIES_WITHOUT_PP_COMPLETED + "_"
-				+ province.toUpperCase() + "_" + formattedInitialDate + "_" + formattedFinalDate + "_" + ".xlsx";
+				+ province.toUpperCase() + "_" + formattedInitialDate + "_" + formattedFinalDate + "_" + generationDate
+				+ ".xlsx";
 
 		try {
 			// Set up streaming workbook
@@ -1099,8 +1105,8 @@ public class AgywPrevController {
 
 			for (currentSheet = 0; currentSheet < currentSheet + 1; currentSheet++) {
 				if (!isEndOfCycle) {
-					Map<Integer, PrimaryPackageRO> reportObjectList = report
-							.getBeneficiariesWithoutPrimaryPackageCompleted(districts, formattedInitialDate, formattedFinalDate);
+					List<PrimaryPackageRO> reportObjectList = report.getBeneficiariesWithoutPrimaryPackageCompleted(
+							districts, formattedInitialDate, formattedFinalDate);
 
 					if (reportObjectList.size() < MAX_ROWS_NUMBER) {
 						isEndOfCycle = true;
@@ -1109,10 +1115,9 @@ public class AgywPrevController {
 						rowCount = 0;
 						sheet = workbook.createSheet(SHEET_LABEL + currentSheet);
 					}
-					for (Map.Entry<Integer, PrimaryPackageRO> reportObject : reportObjectList.entrySet()) {
+					for (PrimaryPackageRO object : reportObjectList) {
 						Row row = sheet.createRow(rowCount++);
 						// Write values to cells based on headers
-						PrimaryPackageRO object = reportObject.getValue();
 						row.createCell(0).setCellValue(object.getProvince());
 						row.createCell(1).setCellValue(object.getDistrict());
 						row.createCell(2).setCellValue(object.getNui());

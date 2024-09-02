@@ -1,5 +1,7 @@
 package dlt.dltbackendmaster.reports.domain;
 
+import static dlt.dltbackendmaster.reports.utils.ReportsConstants.*;
+
 public class PrimaryPackageRO {
 
 	private Integer beneficiaryId;
@@ -16,23 +18,19 @@ public class PrimaryPackageRO {
 	private String completedHivTesting;
 	private String completedCondoms;
 
-	public PrimaryPackageRO(Integer beneficiaryId, Integer age, String ageBand, Integer vulnerabilities) {
-		super();
-		this.beneficiaryId = beneficiaryId;
-		this.age = age;
-		this.ageBand = ageBand;
-		this.vulnerabilitiesCount = vulnerabilities;
-	}
-
 	public PrimaryPackageRO(Integer beneficiaryId, Integer age, String ageBand, Integer vulnerabilities,
-			String servicePackage, String completedSAAJ) {
+			String servicePackage) {
 		super();
 		this.beneficiaryId = beneficiaryId;
 		this.age = age;
 		this.ageBand = ageBand;
 		this.vulnerabilitiesCount = vulnerabilities;
 		this.servicePackage = servicePackage;
-		this.completedSAAJ = completedSAAJ;
+		this.completedSocialAsset = COMPLETION_STATUSES[0];
+		this.completedSAAJ = COMPLETION_STATUSES[0];
+		this.completedFinancialLiteracy = COMPLETION_STATUSES[0];
+		this.completedHivTesting = COMPLETION_STATUSES[0];
+		this.completedCondoms = COMPLETION_STATUSES[0];
 	}
 
 	public Integer getBeneficiaryId() {

@@ -10,10 +10,12 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -444,7 +446,9 @@ public class AgywPrevReport {
 
 			PrimaryPackageRO primaryPackageRO = null;
 
-			if (agywPrev.getCurrent_age_band() == 1) { // 9-14
+			Integer currentAgeBand = agywPrev.getCurrent_age_band();
+			int ageBandIndex = getAgeBandIndex(currentAgeBand);
+			if (currentAgeBand == 1) { // 9-14
 				if (agywPrev.getVblt_is_student() == 1) { // AVANTE ESTUDANTE
 					if (!((completedAvanteEstudante(agywPrev)
 							|| ageOnEndDate == 14 && completedGuiaFacilitacao(agywPrev))
@@ -457,8 +461,7 @@ public class AgywPrevReport {
 									|| agywPrev.getVblt_sexually_active() != null
 											&& agywPrev.getVblt_sexually_active() == 1
 											&& completedHIVTestingServices(agywPrev)
-											&& completedCondomsPromotionOrProvision(agywPrev))) // Não completou o
-																								// pacote primário
+											&& completedCondomsPromotionOrProvision(agywPrev))) // Não completou o pacote primário
 							&& (startedAvanteEstudante(agywPrev) || startedSAAJEducationSessions(agywPrev)
 									|| startedAvanteEstudanteViolencePrevention(agywPrev)
 									|| startedPostViolenceCare_US(agywPrev) || startedPostViolenceCare_CM(agywPrev)
@@ -467,14 +470,16 @@ public class AgywPrevReport {
 											|| startedGuiaFacilitacao(agywPrev)
 											|| agywPrev.getHiv_gbv_sessions_prep() > 0))) { // Iniciou serviço
 						primaryPackageRO = new PrimaryPackageRO(agywPrev.getBeneficiary_id(), ageOnEndDate,
-								AGE_BANDS[agywPrev.getCurrent_age_band()], agywPrev.getVulnerabilities());
+								AGE_BANDS[ageBandIndex], agywPrev.getVulnerabilities(),
+								SERVICE_PACKAGES[0]);
+						if (!startedAvanteEstudante(agywPrev) && startedGuiaFacilitacao(agywPrev)) {
+							primaryPackageRO.setServicePackage(SERVICE_PACKAGES[2]);
+						}
 						if (completedAvanteEstudante(agywPrev)) {
 							primaryPackageRO.setCompletedSocialAsset(COMPLETION_STATUSES[1]);
-							primaryPackageRO.setServicePackage(SERVICE_PACKAGES[1]);
 						}
 						if (ageOnEndDate == 14 && completedGuiaFacilitacao(agywPrev)) {
 							primaryPackageRO.setCompletedSocialAsset(COMPLETION_STATUSES[1]);
-							primaryPackageRO.setServicePackage(SERVICE_PACKAGES[2]);
 						}
 						if (completedSAAJEducationSessions(agywPrev)) {
 							primaryPackageRO.setCompletedSAAJ(COMPLETION_STATUSES[1]);
@@ -509,8 +514,7 @@ public class AgywPrevReport {
 									|| agywPrev.getVblt_sexually_active() != null
 											&& agywPrev.getVblt_sexually_active() == 1
 											&& completedHIVTestingServices(agywPrev)
-											&& completedCondomsPromotionOrProvision(agywPrev))) // Não completou o
-																								// pacote primário
+											&& completedCondomsPromotionOrProvision(agywPrev))) // Não completou o pacote primário
 							&& (startedAvanteRapariga(agywPrev) || startedSAAJEducationSessions(agywPrev)
 									|| startedAvanteRaparigaViolencePrevention(agywPrev)
 									|| startedPostViolenceCare_US(agywPrev) || startedPostViolenceCare_CM(agywPrev)
@@ -519,21 +523,23 @@ public class AgywPrevReport {
 											|| startedGuiaFacilitacao(agywPrev)
 											|| agywPrev.getHiv_gbv_sessions_prep() > 0))) { // Iniciou serviço
 						primaryPackageRO = new PrimaryPackageRO(agywPrev.getBeneficiary_id(), ageOnEndDate,
-								AGE_BANDS[agywPrev.getCurrent_age_band()], agywPrev.getVulnerabilities());
-						if (completedAvanteRapariga(agywPrev)) {
-							primaryPackageRO.setCompletedSocialAsset(COMPLETION_STATUSES[2]);
+								AGE_BANDS[ageBandIndex], agywPrev.getVulnerabilities(),
+								SERVICE_PACKAGES[1]);
+						if (!startedAvanteRapariga(agywPrev) && startedGuiaFacilitacao(agywPrev)) {
 							primaryPackageRO.setServicePackage(SERVICE_PACKAGES[2]);
+						}
+						if (completedAvanteRapariga(agywPrev)) {
+							primaryPackageRO.setCompletedSocialAsset(COMPLETION_STATUSES[1]);
 						}
 						if (ageOnEndDate == 14 && completedGuiaFacilitacao(agywPrev)) {
-							primaryPackageRO.setCompletedSocialAsset(COMPLETION_STATUSES[2]);
-							primaryPackageRO.setServicePackage(SERVICE_PACKAGES[2]);
+							primaryPackageRO.setCompletedSocialAsset(COMPLETION_STATUSES[1]);
 						}
 						if (completedSAAJEducationSessions(agywPrev)) {
-							primaryPackageRO.setCompletedSAAJ(COMPLETION_STATUSES[2]);
+							primaryPackageRO.setCompletedSAAJ(COMPLETION_STATUSES[1]);
 						}
 						if (completedFinancialLiteracy(agywPrev) || completedFinancialLiteracyAflatoun(agywPrev)
 								|| ageOnEndDate == 14 && completedFinancialLiteracyAflateen(agywPrev)) {
-							primaryPackageRO.setCompletedFinancialLiteracy(COMPLETION_STATUSES[2]);
+							primaryPackageRO.setCompletedFinancialLiteracy(COMPLETION_STATUSES[1]);
 						}
 						if (agywPrev.getVblt_sexually_active() == null || agywPrev.getVblt_sexually_active() != null
 								&& agywPrev.getVblt_sexually_active() == 0) {
@@ -553,23 +559,21 @@ public class AgywPrevReport {
 			} else { // 15-24
 				if (!(completedCondomsPromotionOrProvision(agywPrev) && completedGuiaFacilitacao(agywPrev)
 						&& completedHIVTestingServices(agywPrev)
-						&& (completedFinancialLiteracy(agywPrev) || completedFinancialLiteracyAflateen(agywPrev))) // Não
-																													// completou
-																													// opacoteprimário
+						&& (completedFinancialLiteracy(agywPrev) || completedFinancialLiteracyAflateen(agywPrev))) // Não completou opacoteprimário
 						&& (startedGuiaFacilitacaoSocialAssets15Plus(agywPrev) || startedGuiaFacilitacao(agywPrev)
 								|| startedViolencePrevention15Plus(agywPrev)
-								|| (agywPrev.getCurrent_age_band() == 2 && startedSocialAssetsOldCurriculum(agywPrev)
+								|| (currentAgeBand == 2 && startedSocialAssetsOldCurriculum(agywPrev)
 										|| startedPostViolenceCare_US(agywPrev) || startedPostViolenceCare_CM(agywPrev)
 										|| startedFinancialLiteracyAflateen(agywPrev)))) { // Iniciou serviço
 					primaryPackageRO = new PrimaryPackageRO(agywPrev.getBeneficiary_id(), ageOnEndDate,
-							AGE_BANDS[agywPrev.getCurrent_age_band()], agywPrev.getVulnerabilities(),
-							SERVICE_PACKAGES[2], COMPLETION_STATUSES[2]);
+							AGE_BANDS[ageBandIndex], agywPrev.getVulnerabilities(),
+							SERVICE_PACKAGES[2]);
+					primaryPackageRO.setCompletedSAAJ(COMPLETION_STATUSES[2]);
 					if (completedCondomsPromotionOrProvision(agywPrev)) {
 						primaryPackageRO.setCompletedCondoms(COMPLETION_STATUSES[1]);
 					}
 					if (completedGuiaFacilitacao(agywPrev)) {
 						primaryPackageRO.setCompletedSocialAsset(COMPLETION_STATUSES[1]);
-						primaryPackageRO.setServicePackage(SERVICE_PACKAGES[2]);
 					}
 					if (completedHIVTestingServices(agywPrev)) {
 						primaryPackageRO.setCompletedHivTesting(COMPLETION_STATUSES[1]);
@@ -952,10 +956,11 @@ public class AgywPrevReport {
 		return agywPrevResultObject;
 	}
 
-	public Map<Integer, PrimaryPackageRO> getBeneficiariesWithoutPrimaryPackageCompleted(Integer[] districts,
-			String startDate, String endDate) {
+	public List<PrimaryPackageRO> getBeneficiariesWithoutPrimaryPackageCompleted(Integer[] districts, String startDate,
+			String endDate) {
 
 		Map<Integer, PrimaryPackageRO> ppCompletion = processPPCompletion(districts, startDate, endDate);
+		List<PrimaryPackageRO> reportObjects = new ArrayList<>();
 
 		List<Object> dataObjs = service.GetAllEntityByNamedNativeQuery("AgywPrev.findBeneficiariesByIds",
 				ppCompletion.keySet());
@@ -968,10 +973,17 @@ public class AgywPrevReport {
 			primaryPackageRO.setDistrict((String) getValueAtIndex(object, 3));
 			primaryPackageRO.setNui((String) getValueAtIndex(object, 1));
 
-			ppCompletion.put(beneficiaryId, primaryPackageRO);
+//			ppCompletion.put(beneficiaryId, primaryPackageRO);
+			reportObjects.add(primaryPackageRO);
 		}
 
-		return ppCompletion;
+		Comparator<PrimaryPackageRO> comparator = Comparator.comparing(PrimaryPackageRO::getDistrict)
+				.thenComparing(PrimaryPackageRO::getNui);
+
+		List<PrimaryPackageRO> sorterReportObjectList = reportObjects.stream().sorted(comparator)
+				.collect(Collectors.toList());
+
+		return sorterReportObjectList;
 	}
 
 	// Method to retrieve value for a specific index from the reportObject

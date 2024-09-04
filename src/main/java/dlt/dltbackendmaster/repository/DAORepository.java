@@ -1,12 +1,9 @@
 package dlt.dltbackendmaster.repository;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
-import org.hibernate.query.Query;
-
-import java.util.Date;
 
 /**
  * This interface represents the integrated Repository for all domains 
@@ -32,7 +29,11 @@ public interface DAORepository {
 
 	<T> T GetUniqueEntityByNamedQuery(String query, String searchNui, String searchName, Integer searchUserCreator, Integer searchDistrict, Object... params);
 
-	<T> T GetUniqueEntityByNamedQuery(String query, String searchNui, Integer searchUserCreator, Integer searchDistrict, Object... params);
+	<T> T GetUniqueUserEntityByNamedQuery(String query, String searchName, String searchUsername, Integer searchUserCreator, Integer searchDistrict, Object... params);
+
+	<T> T GetUniqueUserEntityByNamedQuery(String query, String searchName, String searchUsername, Integer searchUserCreator, Integer searchDistrict, Integer searchEntryPoint, Object... params);
+
+	<T> T GetUniqueEntityByNamedQuery(String query, String searchNui, Integer searchUserCreator, Integer searchDistrict, Date searchStartDate, Date searchEndDate, Object... params);
 
 	// <T> T GetUniqueEntityByNamedQuery(String query,String searchStartDate, String searchEndDate, Object... params);
 
@@ -46,19 +47,25 @@ public interface DAORepository {
 	
 	<T> List<T> GetAllPagedEntityByNamedQuery(String query, int pageIndex, int pageSize,String searchNui, String searchName, Integer searchUserCreator, Integer searchDistrict , Object... params);
 	
-	<T> List<T> GetAllPagedEntityByNamedQuery(String query, int pageIndex, int pageSize,String searchNui, Integer searchUserCreator, Integer searchDistrict , Object... params);
+	<T> List<T> GetAllPagedEntityByNamedQuery(String query, int pageIndex, int pageSize,String searchNui, Integer searchUserCreator, Integer searchDistrict, Date searchStartDate, Date searchEndDate, Object... params);
 
-	<T> List<T> GetAllPagedUserEntityByNamedQuery(String query, int pageIndex, int pageSize,String searchUsername, Integer searchUserCreator, Integer searchDistrict, Object... params);
+	<T> List<T> GetAllPagedUserEntityByNamedQuery(String query, int pageIndex, int pageSize, String searchName, String searchUsername, Integer searchUserCreator, Integer searchDistrict, Object... params);
 
-    <T> List<T> GetAllPagedEntityByNamedQuery(String query, int pageIndex, int pageSize, Date searchStartDate, Date searchEndDate , Object... params);
+	<T> List<T> GetAllPagedUserEntityByNamedQuery(String query, int pageIndex, int pageSize, String searchName, String searchUsername, Integer searchUserCreator, Integer searchDistrict, Integer searchEntryPoint, Object... params);
+
+    <T> List<T> GetAllPagedEntityByNamedQuery(String query, int pageIndex, int pageSize, Date searchStartDate, Date searchEndDate, Object... params);
 	
 	<T> List<T> GetByParamsPagedEntityByNamedQuery(String query, int pageIndex, int pageSize, Object... params);
 	
 	<T> List<T> GetAllEntityByNamedNativeQuery(String query, Object... params);
 
 	<T> List<T> GetByNamedNativeQuery(String query, Integer district, Date startDate, Date endDate, Object... params);
+
+	<T> List<T> GetByNamedNativeQuery(String query, Integer district, String startDate, String endDate, Object... params);
 	
 	<T> List<T> GetAllPagedEntityByNamedNativeQuery(String query, int pageIndex, int pageSize, Date startDate, Date endDate, List<Integer>districts, Object... params);
+	
+	<T> List<T> GetAllPagedEntityByNamedNativeQuery(String query, int pageIndex, int pageSize, String startDate, String endDate, List<Integer>districts, Object... params);
 
 	<T> T find(Class<T> klass, Object id);
 

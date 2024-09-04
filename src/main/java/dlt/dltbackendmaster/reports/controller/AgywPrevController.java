@@ -151,13 +151,12 @@ public class AgywPrevController {
 				.contentType(MediaType.APPLICATION_OCTET_STREAM).body(resource);
 	}
 
-
 	@SuppressWarnings("null")
 	@GetMapping(produces = "application/json", path = "/getBeneficiariesNoVulnerabilities")
-	public ResponseEntity<String> getBeneficiariesNoVulnerabilities(
-			@RequestParam(name = "province") String province, @RequestParam(name = "districts") Integer[] districts,
-			@RequestParam(name = "startDate") Long startDate, @RequestParam(name = "endDate") Long endDate,
-			@RequestParam(name = "pageSize") int pageSize, @RequestParam(name = "username") String username) {
+	public ResponseEntity<String> getBeneficiariesNoVulnerabilities(@RequestParam(name = "province") String province,
+			@RequestParam(name = "districts") Integer[] districts, @RequestParam(name = "startDate") Long startDate,
+			@RequestParam(name = "endDate") Long endDate, @RequestParam(name = "pageSize") int pageSize,
+			@RequestParam(name = "username") String username) {
 
 		AgywPrevReport report = new AgywPrevReport(service);
 
@@ -167,7 +166,7 @@ public class AgywPrevController {
 		SimpleDateFormat sdfToday = new SimpleDateFormat("yyyy-MM-dd");
 		String formattedToday = sdfToday.format(today);
 
-		Date initialDate = new Date(startDate); 
+		Date initialDate = new Date(startDate);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		String formattedInitialDate = sdf.format(initialDate);
 
@@ -177,8 +176,9 @@ public class AgywPrevController {
 
 		createDirectory(REPORTS_HOME + "/" + username);
 
-		String generatedFilePath = REPORTS_HOME + "/" + username + "/" + BENEFICIARIAS_SEM_VULNERABILIDADES_ESPECIFICAS + "_"
-				+ province.toUpperCase() + "_" + formattedInitialDate + "_" + formattedFinalDate + "_" + formattedToday + ".xlsx";
+		String generatedFilePath = REPORTS_HOME + "/" + username + "/" + BENEFICIARIAS_SEM_VULNERABILIDADES_ESPECIFICAS
+				+ "_" + province.toUpperCase() + "_" + formattedInitialDate + "_" + formattedFinalDate + "_"
+				+ formattedToday + ".xlsx";
 
 		try {
 			// Set up streaming workbook
@@ -241,11 +241,12 @@ public class AgywPrevController {
 
 			// Merge cells for session headers
 			sheet.addMergedRegion(new CellRangeAddress(4, 4, 0, 16)); // Merge first 17 columns
-			
+
 			// Define headers
-			String[] headers = { "Província", "Distrito", "Onde Mora", "Ponto de Entrada", "Organização", "Data de Inscrição",
-					"Data de Registo", "Registado Por", "Data da Última Actualização", "Actualizado Por", "NUI", "Sexo", 
-					"Idade (Registo)", "Idade (Actual)", "Faixa Etária (Registo)", "Faixa Etária (Actual)", "Data de Nascimento" };
+			String[] headers = { "Província", "Distrito", "Onde Mora", "Ponto de Entrada", "Organização",
+					"Data de Inscrição", "Data de Registo", "Registado Por", "Data da Última Actualização",
+					"Actualizado Por", "NUI", "Sexo", "Idade (Registo)", "Idade (Actual)", "Faixa Etária (Registo)",
+					"Faixa Etária (Actual)", "Data de Nascimento" };
 
 			// Create a header row
 			Row headerRow = sheet.createRow(5);
@@ -386,21 +387,21 @@ public class AgywPrevController {
 			// Write Title and Merge cells for session headers
 
 			Cell cell1 = sessionRow.createCell(0);
-			cell1.setCellValue("Informação Demográfica");
+			cell1.setCellValue("Dados da Beneficiária");
 			cell1.setCellStyle(alignCellStyle);
 
-			Cell cell2 = sessionRow.createCell(17);
-			cell2.setCellValue("Vulnerabilidades Gerais");
+			Cell cell2 = sessionRow.createCell(9);
+			cell2.setCellValue("Serviços Primários");
 			cell2.setCellStyle(alignCellStyle);
 
-			Cell cell3 = sessionRow.createCell(30);
-			cell3.setCellValue("Serviços e Sub-Serviços");
+			Cell cell3 = sessionRow.createCell(23);
+			cell3.setCellValue("Serviços Secundários");
 			cell3.setCellStyle(alignCellStyle);
 
 			// Merge cells for session headers
-			sheet.addMergedRegion(new CellRangeAddress(3, 3, 0, 16)); // Merge first 17 columns
-			sheet.addMergedRegion(new CellRangeAddress(3, 3, 17, 29)); // Merge next 13 columns
-			sheet.addMergedRegion(new CellRangeAddress(3, 3, 30, 39)); // Merge last 10 columns
+			sheet.addMergedRegion(new CellRangeAddress(3, 3, 0, 8)); // Merge first 17 columns
+			sheet.addMergedRegion(new CellRangeAddress(3, 3, 9, 22)); // Merge next 13 columns
+			sheet.addMergedRegion(new CellRangeAddress(3, 3, 23, 36)); // Merge last 10 columns
 
 			// Define headers
 			String[] headers = { "Província", "Distrito", "NUI", "Idade Actual", "Faixa Etária Actual",
@@ -606,7 +607,7 @@ public class AgywPrevController {
 				if (!isEndOfCycle) {
 					// Insert data rows from the reportObjectList
 					List<Object> reportObjectList = report.getBeneficiariesVulnerabilitiesAndServices(districts,
-							new Date(startDate), new Date(endDate), currentSheet, pageSize);
+							formattedInitialDate, formattedFinalDate, currentSheet, pageSize);
 
 					if (reportObjectList.size() < MAX_ROWS_NUMBER) {
 						isEndOfCycle = true;
@@ -729,21 +730,21 @@ public class AgywPrevController {
 			// Write Title and Merge cells for session headers
 
 			Cell cell1 = sessionRow.createCell(0);
-			cell1.setCellValue("Informação Demográfica");
+			cell1.setCellValue("Dados da Beneficiária");
 			cell1.setCellStyle(alignCellStyle);
 
-			Cell cell2 = sessionRow.createCell(17);
-			cell2.setCellValue("Vulnerabilidades Gerais");
+			Cell cell2 = sessionRow.createCell(9);
+			cell2.setCellValue("Serviços Primários");
 			cell2.setCellStyle(alignCellStyle);
 
-			Cell cell3 = sessionRow.createCell(30);
-			cell3.setCellValue("Serviços e Sub-Serviços");
+			Cell cell3 = sessionRow.createCell(23);
+			cell3.setCellValue("Serviços Secundários");
 			cell3.setCellStyle(alignCellStyle);
 
 			// Merge cells for session headers
-			sheet.addMergedRegion(new CellRangeAddress(3, 3, 0, 16)); // Merge first 17 columns
-			sheet.addMergedRegion(new CellRangeAddress(3, 3, 17, 29)); // Merge next 13 columns
-			sheet.addMergedRegion(new CellRangeAddress(3, 3, 30, 39)); // Merge last 10 columns
+			sheet.addMergedRegion(new CellRangeAddress(3, 3, 0, 8)); // Merge first 17 columns
+			sheet.addMergedRegion(new CellRangeAddress(3, 3, 9, 22)); // Merge next 13 columns
+			sheet.addMergedRegion(new CellRangeAddress(3, 3, 23, 36)); // Merge last 10 columns
 
 			// Define headers
 			String[] headers = { "Província", "Distrito", "NUI", "Idade Actual", "Faixa Etária Actual",
@@ -781,7 +782,7 @@ public class AgywPrevController {
 			for (int index = 0; index < districts.length; index++) {
 				// Insert data rows from the reportObjectList
 				List<Object> reportObjectList = report.getBeneficiariesVulnerabilitiesAndServicesSummary(
-						districts[index], new Date(startDate), new Date(endDate));
+						districts[index], formattedInitialDate, formattedFinalDate);
 
 				if (rowCount > 1000000) {
 					rowCount = 0;

@@ -209,7 +209,7 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 																+ " or   b.id in "
 																+ "	("
 																+ "		SELECT r.beneficiaries.id from References r"
-												                + " 	where r.status in (0,1,2) "
+												                + " 	where r.status in (0,1) "
 												                + " 	and r.notifyTo.id = :userId"
 												                + "	)) "    											     
 												                ),
@@ -224,7 +224,7 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 																+ " or   b.id in "
 																+ "	("
 																+ "		SELECT r.beneficiaries.id from References r"
-												                + " 	where r.status in (0,1,2) "
+												                + " 	where r.status in (0,1) "
 												                + " 	and r.notifyTo.id = :userId"
 												                + " 	and r.dateCreated >= :lastpulledat"
 												                + "	))"
@@ -239,7 +239,7 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 																+ " or   b.id in "
 																+ " ("
 																+ "		SELECT r.beneficiaries.id from References r"
-												                + " 	where r.status in (0,1,2) "
+												                + " 	where r.status in (0,1) "
 												                + " 	and r.notifyTo.id = :userId "
 												                + "		and r.dateCreated >= :lastpulledat"
 												                + "	))"
@@ -382,6 +382,8 @@ public class Beneficiaries implements java.io.Serializable
     private Byte vbltSexWorker;
     private Byte vbltHouseSustainer;
     private int status;
+    private Integer clinicalInterventions;
+    private Integer communityInterventions;
     private int createdBy;
     private Date dateCreated;
     private Integer updatedBy;
@@ -410,6 +412,8 @@ public class Beneficiaries implements java.io.Serializable
         this.status = status;
         this.createdBy = createdBy;
         this.dateCreated = dateCreated;
+        this.clinicalInterventions = 0;
+        this.communityInterventions = 0;
     }
 
     public Beneficiaries(Neighborhood neighborhood, Partners partners, Locality locality, District district_id, Us us, String nui, String surname, String name,
@@ -480,6 +484,8 @@ public class Beneficiaries implements java.io.Serializable
         this.vulnerabilityHistories = vulnerabilityHistories;
         this.beneficiariesInterventionses = beneficiariesInterventionses;
         this.referenceses = referenceses;
+        this.clinicalInterventions = 0;
+        this.communityInterventions = 0;
     }
 
     public Beneficiaries(BeneficiarySyncModel model, String timestamp) {
@@ -531,6 +537,8 @@ public class Beneficiaries implements java.io.Serializable
         this.vbltSexWorker = model.getVblt_sex_worker();
         this.vbltHouseSustainer = model.getVblt_house_sustainer();
         this.status = Integer.valueOf(model.getStatus());
+        this.clinicalInterventions = 0;
+        this.communityInterventions = 0;
     }
 
     public Beneficiaries(BeneficiarySyncModel model) {
@@ -580,6 +588,8 @@ public class Beneficiaries implements java.io.Serializable
         this.vbltSexWorker = model.getVblt_sex_worker();
         this.vbltHouseSustainer = model.getVblt_house_sustainer();
         this.status = Integer.valueOf(model.getStatus());
+        this.clinicalInterventions = 0;
+        this.communityInterventions = 0;
     }
 
     public Beneficiaries(Integer id) {
@@ -1033,7 +1043,25 @@ public class Beneficiaries implements java.io.Serializable
         this.status = status;
     }
 
-    @Column(name = "created_by", nullable = false)
+    @Column(name = "clinical_interventions", nullable = false)
+    public Integer getClinicalInterventions() {
+		return clinicalInterventions;
+	}
+
+	public void setClinicalInterventions(Integer clinicalInterbentions) {
+		this.clinicalInterventions = clinicalInterbentions;
+	}
+
+	@Column(name = "community_interventions", nullable = false)
+	public Integer getCommunityInterventions() {
+		return communityInterventions;
+	}
+
+	public void setCommunityInterventions(Integer communityInterventions) {
+		this.communityInterventions = communityInterventions;
+	}
+
+	@Column(name = "created_by", nullable = false)
     public int getCreatedBy() {
         return this.createdBy;
     }

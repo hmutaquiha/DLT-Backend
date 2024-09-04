@@ -526,6 +526,8 @@ public class ServicesConstants
                                                                                         FLUXOS_DINHEIRO,
                                                                                         IMAGINANDO_MEU_FUTURO);
 
+    public static final List<Integer> SIMPLIFIED_LITERACIA_FINANCEIRA_AFLATOUN = Arrays.asList(NECESSIDADES_DESEJOS);
+
     public static final List<Integer> SIMPLIFIED_LITERACIA_FINANCEIRA_AFLATEEN = Arrays.asList(ORCAMENTOS_DINHEIRO_PODER,
                                                                                         APRENDENDO_GASTAR);
 }

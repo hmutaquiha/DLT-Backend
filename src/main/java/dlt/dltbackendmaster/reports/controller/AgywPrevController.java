@@ -8,13 +8,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
@@ -41,6 +38,7 @@ import dlt.dltbackendmaster.reports.AgywPrevReport;
 import dlt.dltbackendmaster.reports.domain.NewlyEnrolledAgywAndServices;
 import dlt.dltbackendmaster.reports.domain.PrimaryPackageRO;
 import dlt.dltbackendmaster.reports.domain.ResultObject;
+import dlt.dltbackendmaster.service.BeneficiariyService;
 import dlt.dltbackendmaster.service.DAOService;
 
 /**
@@ -71,10 +69,12 @@ public class AgywPrevController {
 	private static final String BENEFICIARIES_WITHOUT_PP_COMPLETED = "DLT2.0_BENEFICIARIAS_NAO_COMPLETARAM_PACOTE_PRIMARIO";
 
 	private final DAOService service;
+	private final BeneficiariyService beneficiariyService;
 
 	@Autowired
-	public AgywPrevController(DAOService service) {
+	public AgywPrevController(DAOService service, BeneficiariyService beneficiariyService) {
 		this.service = service;
+		this.beneficiariyService = beneficiariyService;
 	}
 
 	@SuppressWarnings("null")
@@ -87,7 +87,7 @@ public class AgywPrevController {
 
 		try {
 			Map<Integer, Map<String, ResultObject>> reportObject = report.getAgywPrevResultObject(districts, startDate,
-					endDate, reportType);
+					endDate, reportType, false);
 
 			return new ResponseEntity<>(reportObject, HttpStatus.OK);
 		} catch (Exception e) {
@@ -1167,4 +1167,39 @@ public class AgywPrevController {
 		return null;
 	}
 
+	@SuppressWarnings("null")
+	@GetMapping(path = "/saveCompletionStatus")
+	public ResponseEntity<Map<Integer, Map<String, ResultObject>>> saveCompletionStatus(
+			@RequestParam(name = "districts") Integer[] districts, @RequestParam(name = "startDate") String startDate,
+			@RequestParam(name = "endDate") String endDate){
+		AgywPrevReport report = new AgywPrevReport(service, beneficiariyService);
+
+		try {
+			Integer[] simplifiedDistrictsIds = { 44, 45 };
+			Integer[] completeDistrictsIds = Arrays.stream(districts)
+	                .filter(item -> !Arrays.asList(simplifiedDistrictsIds).contains(item))
+	                .toArray(Integer[]::new);
+			
+			report.getAgywPrevResultObject(completeDistrictsIds, startDate, endDate, 1, true);
+			
+			List<Integer> simplifiedFoundDistrictsIds= new ArrayList<>();
+			for(int i : simplifiedDistrictsIds) {
+				if(Arrays.asList(districts).contains(i))
+				{
+					simplifiedFoundDistrictsIds.add(i);
+				}
+			}
+			
+			Integer[]simplifiedFoundDistrictsArrayIds = simplifiedFoundDistrictsIds.toArray(new Integer[0]);
+			if(!simplifiedFoundDistrictsIds.isEmpty())
+			{
+				report.getAgywPrevResultObject(simplifiedFoundDistrictsArrayIds, startDate, endDate, 2, true);
+			}
+
+			return new ResponseEntity<>(null, HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 }

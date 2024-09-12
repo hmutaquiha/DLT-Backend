@@ -1,7 +1,49 @@
 package dlt.dltbackendmaster.reports;
 
 import static dlt.dltbackendmaster.reports.utils.ReportsConstants.*;
-import static dlt.dltbackendmaster.util.ServiceCompletionRules.*;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedAvanteEstudante;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedAvanteEstudanteViolencePrevention;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedAvanteRapariga;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedAvanteRaparigaViolencePrevention;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedCombinedSocioEconomicApproaches;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedCondomsPromotionOrProvision;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedContraceptionsPromotionOrProvision;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedDisagCombinedSocioEconomicApproaches;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedFinancialLiteracy;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedFinancialLiteracyAflateen;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedFinancialLiteracyAflatoun;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedGbvSessions;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedGuiaFacilitacao;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedHIVTestingServices;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedHivSessions;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedOtherSAAJServices;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedPostViolenceCare_CM;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedPostViolenceCare_US;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedPrep;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedSAAJEducationSessions;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedSimplifiedAvanteRapariga;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedSimplifiedAvanteRaparigaViolencePrevention;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedSimplifiedGuiaFacilitacao;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedSimplifiedSAAJEducationSessions;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedSimplifiedViolencePrevention15Plus;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedSocialAssetsOldCurriculum;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedViolencePrevention15Plus;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.hadSchoolAllowance;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.startedAvanteEstudante;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.startedAvanteEstudanteViolencePrevention;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.startedAvanteRapariga;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.startedAvanteRaparigaViolencePrevention;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.startedFinancialLiteracyAflateen;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.startedFinancialLiteracyAflatoun;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.startedGuiaFacilitacao;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.startedGuiaFacilitacaoSocialAssets15Plus;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.startedPostViolenceCare_CM;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.startedPostViolenceCare_US;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.startedSAAJEducationSessions;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.startedSimplifiedAvanteRapariga;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.startedSimplifiedGuiaFacilitacao;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.startedSocialAssetsOldCurriculum;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.startedViolencePrevention15Plus;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -23,6 +65,7 @@ import dlt.dltbackendmaster.domain.AgywPrev;
 import dlt.dltbackendmaster.reports.domain.PrimaryPackageRO;
 import dlt.dltbackendmaster.reports.domain.ReportObject;
 import dlt.dltbackendmaster.reports.domain.ResultObject;
+import dlt.dltbackendmaster.service.BeneficiariyService;
 import dlt.dltbackendmaster.service.DAOService;
 import dlt.dltbackendmaster.util.Utility;
 
@@ -37,12 +80,17 @@ public class AgywPrevReport {
 
 	private final DAOService service;
 
+	private BeneficiariyService beneficiariyService;
+
 	public AgywPrevReport(DAOService service) {
 		this.service = service;
 	}
-
+	public AgywPrevReport(DAOService service, BeneficiariyService beneficiariyService) {
+		this.service = service;
+		this.beneficiariyService = beneficiariyService;
+	}
 	public Map<Integer, Map<String, ResultObject>> getAgywPrevResultObject(Integer[] districts, String startDate,
-			String endDate, int reportType) {
+			String endDate, int reportType, boolean isFlagWriter) {
 		Map<Integer, Map<String, ResultObject>> agywPrevResultObject = new HashMap<>();
 
 		ReportObject reportObject = reportType == 1 ? process(districts, startDate, endDate)
@@ -52,11 +100,11 @@ public class AgywPrevReport {
 			Map<String, ResultObject> districtAgywPrevResultObject = new HashMap<>();
 			Map<String, Long> districtSummary = processDistrictSummary(district);
 			ResultObject completedOnlyPrimaryPackage = computeDiggregationCompletedOnlyPrimaryPackage(reportObject,
-					district);
+					district, isFlagWriter);
 			ResultObject completedPrimaryPackageAndSecondaryService = computeDiggregationCompletedPrimaryPackageAndSecondaryService(
-					reportObject, district);
+					reportObject, district, isFlagWriter);
 			ResultObject completedOnlyServiceNotPrimaryPackage = computeDiggregationCompletedOnlyServiceNotPrimaryPackage(
-					reportObject, district);
+					reportObject, district, isFlagWriter);
 			ResultObject startedServiceDidNotComplete = computeDiggregationStartedServiceDidNotComplete(reportObject,
 					district);
 			districtAgywPrevResultObject.put("completed-only-primary-package", completedOnlyPrimaryPackage);
@@ -128,7 +176,7 @@ public class AgywPrevReport {
 											&& completedCondomsPromotionOrProvision(agywPrev))) {
 						addBeneficiary(reportObject, agywPrev.getDistrict_id(),
 								getAgeBandIndex(agywPrev.getCurrent_age_band()), getEnrollmentTimeIndex(enrollmentTime),
-								COMPLETED_PRIMARY_PACKAGE, agywPrev.getBeneficiary_id());
+								COMPLETED_PRIMARY_PACKAGE, agywPrev.getBeneficiary_id());						
 					}
 					if ((completedAvanteEstudante(agywPrev) || ageOnEndDate == 14 && completedGuiaFacilitacao(agywPrev))
 							|| completedSAAJEducationSessions(agywPrev)
@@ -277,7 +325,6 @@ public class AgywPrevReport {
 					addBeneficiary(reportObject, agywPrev.getDistrict_id(),
 							getAgeBandIndex(agywPrev.getCurrent_age_band()), getEnrollmentTimeIndex(enrollmentTime),
 							STARTED_SERVICE, agywPrev.getBeneficiary_id());
-
 				}
 				if (completedViolencePrevention15Plus(agywPrev)) {
 					addBeneficiary(reportObject, agywPrev.getDistrict_id(),
@@ -595,7 +642,7 @@ public class AgywPrevReport {
 				.get(DISAGGREGATIONS[layering]).add(beneficiary);
 	}
 
-	public ResultObject computeDiggregationCompletedOnlyPrimaryPackage(ReportObject reportObject, Integer district) {
+	public ResultObject computeDiggregationCompletedOnlyPrimaryPackage(ReportObject reportObject, Integer district, boolean isFlagWriter) {
 		ResultObject resultObject = new ResultObject();
 
 		int total = 0;
@@ -612,6 +659,7 @@ public class AgywPrevReport {
 					if (!(completedSecondaryService.contains(beneficiaryId)
 							|| completedOnlyPrimaryPackage.contains(beneficiaryId))) {
 						completedOnlyPrimaryPackage.add(beneficiaryId);
+						if (isFlagWriter) beneficiariyService.saveCompletionStatus(beneficiaryId,2);
 					}
 				}
 				resultObject.getBeneficiaries().get(ENROLLMENT_TIMES[i]).get(AGE_BANDS[j])
@@ -628,7 +676,7 @@ public class AgywPrevReport {
 	}
 
 	public ResultObject computeDiggregationCompletedPrimaryPackageAndSecondaryService(ReportObject reportObject,
-			Integer district) {
+			Integer district, boolean isFlagWriter) {
 		ResultObject resultObject = new ResultObject();
 
 		int total = 0;
@@ -645,6 +693,7 @@ public class AgywPrevReport {
 					if (completedSecondaryService.contains(beneficiaryId)
 							&& !completedPrimaryPackageAndSecondaryService.contains(beneficiaryId)) {
 						completedPrimaryPackageAndSecondaryService.add(beneficiaryId);
+						if (isFlagWriter) beneficiariyService.saveCompletionStatus(beneficiaryId,3);
 					}
 				}
 				resultObject.getBeneficiaries().get(ENROLLMENT_TIMES[i]).get(AGE_BANDS[j])
@@ -661,7 +710,7 @@ public class AgywPrevReport {
 	}
 
 	public ResultObject computeDiggregationCompletedOnlyServiceNotPrimaryPackage(ReportObject reportObject,
-			Integer district) {
+			Integer district, boolean isFlagWriter) {
 		ResultObject resultObject = new ResultObject();
 
 		int total = 0;
@@ -689,6 +738,7 @@ public class AgywPrevReport {
 					if (!(completedPrimaryPackage.contains(beneficiaryId)
 							|| completedOnlyServiceNotPrimaryPackage.contains(beneficiaryId))) {
 						completedOnlyServiceNotPrimaryPackage.add(beneficiaryId);
+						if (isFlagWriter) beneficiariyService.saveCompletionStatus(beneficiaryId,1);
 					}
 				}
 				resultObject.getBeneficiaries().get(ENROLLMENT_TIMES[i]).get(AGE_BANDS[j])
@@ -941,7 +991,7 @@ public class AgywPrevReport {
 		for (Integer district : districts) {
 			Map<String, ResultObject> districtAgywPrevResultObject = new HashMap<>();
 			ResultObject completedOnlyServiceNotPrimaryPackage = computeDiggregationCompletedOnlyServiceNotPrimaryPackage(
-					reportObject, district);
+					reportObject, district, false);
 			ResultObject startedServiceDidNotComplete = computeDiggregationStartedServiceDidNotComplete(reportObject,
 					district);
 			districtAgywPrevResultObject.put("completed-service-not-primary-package",

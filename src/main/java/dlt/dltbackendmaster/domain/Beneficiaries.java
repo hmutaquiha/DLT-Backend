@@ -329,6 +329,9 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 										+ " and b.status IN (0,1) "
 										+ " order by b.id desc "
 										+ ""),
+				@NamedQuery(name = "Beneficiary.findByIdAndBeforeCompletedAServiceButNotFullPrimaryPackage", query = "SELECT b FROM Beneficiaries b where b.id = :beneficiary_id and b.completionStatus < 1"),
+				@NamedQuery(name = "Beneficiary.findByIdAndBeforeCompletedExactlyPrimaryPackage", query = "SELECT b FROM Beneficiaries b where b.id = :beneficiary_id and b.completionStatus < 2"),
+				@NamedQuery(name = "Beneficiary.findByIdAndBeforeCompletedPrimaryPackageAndAdditionalServices", query = "SELECT b FROM Beneficiaries b where b.id = :beneficiary_id and b.completionStatus < 3"), 
 })
 public class Beneficiaries implements java.io.Serializable
 {
@@ -394,8 +397,9 @@ public class Beneficiaries implements java.io.Serializable
     private Set<VulnerabilityHistory> vulnerabilityHistories = new HashSet<VulnerabilityHistory>(0);
     private Set<BeneficiariesInterventions> beneficiariesInterventionses = new HashSet<BeneficiariesInterventions>(0);
     private Set<References> referenceses = new HashSet<References>(0);
-
-    public Beneficiaries() {}
+	private Integer completionStatus;
+	
+	public Beneficiaries() {}
 
     public Beneficiaries(Neighborhood neighborhood, Us us, String nui, String surname, String name, String nickName,
                          Date dateOfBirth, char gender, Date enrollmentDate, Integer nationality, String entryPoint,
@@ -1161,6 +1165,15 @@ public class Beneficiaries implements java.io.Serializable
     public void setReferenceses(Set<References> referenceses) {
         this.referenceses = referenceses;
     }
+
+	@Column(name = "completion_status")
+    public Integer getCompletionStatus() {
+		return completionStatus;
+	}
+
+	public void setCompletionStatus(Integer completionStatus) {
+		this.completionStatus = completionStatus;
+	}
 
     public ObjectNode toObjectNode(String lastPulledAt) {
         ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule())

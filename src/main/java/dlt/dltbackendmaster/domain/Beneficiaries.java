@@ -329,6 +329,9 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 										+ " and b.status IN (0,1) "
 										+ " order by b.id desc "
 										+ ""),
+				@NamedQuery(name = "Beneficiary.findByIdAndBeforeCompletedAServiceButNotFullPrimaryPackage", query = "SELECT b FROM Beneficiaries b where b.id = :beneficiary_id and b.completionStatus < 1"),
+				@NamedQuery(name = "Beneficiary.findByIdAndBeforeCompletedExactlyPrimaryPackage", query = "SELECT b FROM Beneficiaries b where b.id = :beneficiary_id and b.completionStatus < 2"),
+				@NamedQuery(name = "Beneficiary.findByIdAndBeforeCompletedPrimaryPackageAndAdditionalServices", query = "SELECT b FROM Beneficiaries b where b.id = :beneficiary_id and b.completionStatus < 3"), 
 })
 public class Beneficiaries implements java.io.Serializable
 {
@@ -367,8 +370,10 @@ public class Beneficiaries implements java.io.Serializable
     private Byte vbltChildren;
     private Byte vbltPregnantOrBreastfeeding;
     private String vbltIsEmployed;
+    private Byte vbltIdp;
     private String vbltTestedHiv;
     private Byte vbltSexuallyActive;
+    private Byte vbltPregnantOrHasChildren;
     private Byte vbltMultiplePartners;
     private Byte vbltIsMigrant;
     private Byte vbltTraffickingVictim;
@@ -392,8 +397,9 @@ public class Beneficiaries implements java.io.Serializable
     private Set<VulnerabilityHistory> vulnerabilityHistories = new HashSet<VulnerabilityHistory>(0);
     private Set<BeneficiariesInterventions> beneficiariesInterventionses = new HashSet<BeneficiariesInterventions>(0);
     private Set<References> referenceses = new HashSet<References>(0);
-
-    public Beneficiaries() {}
+	private Integer completionStatus;
+	
+	public Beneficiaries() {}
 
     public Beneficiaries(Neighborhood neighborhood, Us us, String nui, String surname, String name, String nickName,
                          Date dateOfBirth, char gender, Date enrollmentDate, Integer nationality, String entryPoint,
@@ -422,8 +428,8 @@ public class Beneficiaries implements java.io.Serializable
                          Integer partnerId, String entryPoint, String vbltLivesWith, Byte vbltIsOrphan,
                          Byte vbltIsStudent, Integer vbltSchoolGrade, String vbltSchoolName, Byte vbltIsDeficient,
                          String vbltDeficiencyType, Byte vbltMarriedBefore, Byte vbltPregnantBefore, Byte vbltChildren,
-                         Byte vbltPregnantOrBreastfeeding, String vbltIsEmployed, String vbltTestedHiv,
-                         Byte vbltSexuallyActive, Byte vbltMultiplePartners, Byte vbltIsMigrant,
+                         Byte vbltPregnantOrBreastfeeding, String vbltIsEmployed, String vbltTestedHiv, Byte vbltIdp,
+                         Byte vbltSexuallyActive, Byte vbltPregnantOrHasChildren, Byte vbltMultiplePartners, Byte vbltIsMigrant,
                          Byte vbltTraffickingVictim, Byte vbltSexualExploitation, String vbltSexploitationTime,
                          Byte vbltVbgVictim, String vbltVbgType, String vbltVbgTime, Byte vbltAlcoholDrugsUse,
                          Byte vbltStiHistory, Byte vbltSexWorker, Byte vbltHouseSustainer, int status, int createdBy,
@@ -462,7 +468,9 @@ public class Beneficiaries implements java.io.Serializable
         this.vbltPregnantOrBreastfeeding = vbltPregnantOrBreastfeeding;
         this.vbltIsEmployed = vbltIsEmployed;
         this.vbltTestedHiv = vbltTestedHiv;
+        this.vbltIdp = vbltIdp;
         this.vbltSexuallyActive = vbltSexuallyActive;
+        this.vbltPregnantOrHasChildren = vbltPregnantOrHasChildren;
         this.vbltMultiplePartners = vbltMultiplePartners;
         this.vbltIsMigrant = vbltIsMigrant;
         this.vbltTraffickingVictim = vbltTraffickingVictim;
@@ -522,8 +530,10 @@ public class Beneficiaries implements java.io.Serializable
         this.vbltChildren = model.getVblt_children();
         this.vbltPregnantOrBreastfeeding = model.getVblt_pregnant_or_breastfeeding();
         this.vbltIsEmployed = model.getVblt_is_employed();
+        this.vbltIdp = model.getVblt_idp();
         this.vbltTestedHiv = model.getVblt_tested_hiv();
         this.vbltSexuallyActive = model.getVblt_sexually_active();
+        this.vbltPregnantOrHasChildren = model.getVblt_pregnant_or_has_children();
         this.vbltMultiplePartners = model.getVblt_multiple_partners();
         this.vbltIsMigrant = model.getVblt_is_migrant();
         this.vbltTraffickingVictim = model.getVblt_trafficking_victim();
@@ -908,16 +918,25 @@ public class Beneficiaries implements java.io.Serializable
         this.vbltIsEmployed = vbltIsEmployed;
     }
 
+    public void setVbltTestedHiv(String vbltTestedHiv) {
+        this.vbltTestedHiv = vbltTestedHiv;
+    }
+
+    @Column(name = "vblt_idp")
+    public Byte getVbltIdp() {
+		return vbltIdp;
+	}
+
+	public void setVbltIdp(Byte vbltIdp) {
+		this.vbltIdp = vbltIdp;
+	}
+
     @Column(name = "vblt_tested_hiv", length = 254)
     public String getVbltTestedHiv() {
         return this.vbltTestedHiv;
     }
 
-    public void setVbltTestedHiv(String vbltTestedHiv) {
-        this.vbltTestedHiv = vbltTestedHiv;
-    }
-
-    @Column(name = "vblt_sexually_active")
+	@Column(name = "vblt_sexually_active")
     public Byte getVbltSexuallyActive() {
         return this.vbltSexuallyActive;
     }
@@ -926,7 +945,16 @@ public class Beneficiaries implements java.io.Serializable
         this.vbltSexuallyActive = vbltSexuallyActive;
     }
 
-    @Column(name = "vblt_multiple_partners")
+    @Column(name = "vblt_pregnant_or_has_children")
+    public Byte getVbltPregnantOrHasChildren() {
+		return vbltPregnantOrHasChildren;
+	}
+
+	public void setVbltPregnantOrHasChildren(Byte vbltPregnantOrHasChildren) {
+		this.vbltPregnantOrHasChildren = vbltPregnantOrHasChildren;
+	}
+
+	@Column(name = "vblt_multiple_partners")
     public Byte getVbltMultiplePartners() {
         return this.vbltMultiplePartners;
     }
@@ -1138,6 +1166,15 @@ public class Beneficiaries implements java.io.Serializable
         this.referenceses = referenceses;
     }
 
+	@Column(name = "completion_status")
+    public Integer getCompletionStatus() {
+		return completionStatus;
+	}
+
+	public void setCompletionStatus(Integer completionStatus) {
+		this.completionStatus = completionStatus;
+	}
+
     public ObjectNode toObjectNode(String lastPulledAt) {
         ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule())
                                                 .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
@@ -1205,8 +1242,10 @@ public class Beneficiaries implements java.io.Serializable
             if(vbltChildren != null) beneficiary.put("vblt_children", vbltChildren);
             if(vbltPregnantOrBreastfeeding != null) beneficiary.put("vblt_pregnant_or_breastfeeding", vbltPregnantOrBreastfeeding);
             if(vbltIsEmployed != null) beneficiary.put("vblt_is_employed", vbltIsEmployed);
+            if(vbltIdp != null) beneficiary.put("vblt_idp", vbltIdp);
             if(vbltTestedHiv != null) beneficiary.put("vblt_tested_hiv", vbltTestedHiv);
             if(vbltSexuallyActive != null) beneficiary.put("vblt_sexually_active", vbltSexuallyActive);
+            if(vbltPregnantOrHasChildren != null) beneficiary.put("vblt_pregnant_or_has_children", vbltPregnantOrHasChildren);
             if(vbltMultiplePartners != null) beneficiary.put("vblt_multiple_partners", vbltMultiplePartners);
             if(vbltIsMigrant != null) beneficiary.put("vblt_is_migrant", vbltIsMigrant);
             if(vbltTraffickingVictim != null) beneficiary.put("vblt_trafficking_victim", vbltTraffickingVictim);
@@ -1267,8 +1306,10 @@ public class Beneficiaries implements java.io.Serializable
         this.vbltChildren = model.getVblt_children();
         this.vbltPregnantOrBreastfeeding = model.getVblt_pregnant_or_breastfeeding();
         this.vbltIsEmployed = model.getVblt_is_employed();
+        this.vbltIdp = model.getVblt_idp();
         this.vbltTestedHiv = model.getVblt_tested_hiv();
         this.vbltSexuallyActive = model.getVblt_sexually_active();
+        this.vbltPregnantOrHasChildren = model.getVblt_pregnant_or_has_children();
         this.vbltMultiplePartners = model.getVblt_multiple_partners();
         this.vbltIsMigrant = model.getVblt_is_migrant();
         this.vbltTraffickingVictim = model.getVblt_trafficking_victim();

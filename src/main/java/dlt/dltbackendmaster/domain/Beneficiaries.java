@@ -387,8 +387,8 @@ public class Beneficiaries implements java.io.Serializable
     private Byte vbltSexWorker;
     private Byte vbltHouseSustainer;
     private int status;
-    private Integer clinicalInterventions;
-    private Integer communityInterventions;
+    private int clinicalInterventions;
+    private int communityInterventions;
     private int createdBy;
     private Date dateCreated;
     private Integer updatedBy;
@@ -1072,20 +1072,20 @@ public class Beneficiaries implements java.io.Serializable
     }
 
     @Column(name = "clinical_interventions", nullable = false)
-    public Integer getClinicalInterventions() {
+    public int getClinicalInterventions() {
 		return clinicalInterventions;
 	}
 
-	public void setClinicalInterventions(Integer clinicalInterbentions) {
+	public void setClinicalInterventions(int clinicalInterbentions) {
 		this.clinicalInterventions = clinicalInterbentions;
 	}
 
 	@Column(name = "community_interventions", nullable = false)
-	public Integer getCommunityInterventions() {
+	public int getCommunityInterventions() {
 		return communityInterventions;
 	}
 
-	public void setCommunityInterventions(Integer communityInterventions) {
+	public void setCommunityInterventions(int communityInterventions) {
 		this.communityInterventions = communityInterventions;
 	}
 

@@ -180,6 +180,11 @@ public class BeneficiaryController
             } else {
 				beneficiary.setPartnerId(null);
 			}
+            
+            // setting interventions counts from database before update
+            Beneficiaries benefToUpdate = service.find(Beneficiaries.class, beneficiary.getId());
+            beneficiary.setClinicalInterventions(benefToUpdate.getClinicalInterventions());
+            beneficiary.setCommunityInterventions(benefToUpdate.getCommunityInterventions());
 			Beneficiaries updatedBeneficiary = service.update(beneficiary);
 
 			vulnerabilityHistoryService.saveVulnerabilityHistory(updatedBeneficiary);

@@ -43,8 +43,10 @@ public class BeneficiarySerializer extends JsonSerializer<Beneficiaries>
         beneficiary.setVbltChildren(value.getVbltChildren());
         beneficiary.setVbltPregnantOrBreastfeeding(value.getVbltPregnantOrBreastfeeding());
         beneficiary.setVbltIsEmployed(value.getVbltIsEmployed());
+        beneficiary.setVbltIdp(value.getVbltIdp());
         beneficiary.setVbltTestedHiv(value.getVbltTestedHiv());
         beneficiary.setVbltSexuallyActive(value.getVbltSexuallyActive());
+        beneficiary.setVbltPregnantOrHasChildren(value.getVbltPregnantOrHasChildren());
         beneficiary.setVbltPregnantBefore(value.getVbltPregnantBefore());
         beneficiary.setVbltMultiplePartners(value.getVbltMultiplePartners());
         beneficiary.setVbltTraffickingVictim(value.getVbltTraffickingVictim());

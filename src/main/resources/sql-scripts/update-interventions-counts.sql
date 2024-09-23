@@ -11,7 +11,7 @@ inner join
 				else 0
 		end) servicos_comunitarios
 	from beneficiaries b
-	left join beneficiaries_interventions bi on bi.beneficiary_id = b.id
+	left join beneficiaries_interventions bi on bi.beneficiary_id = b.id and bi.status=1
 	inner join sub_services ss on bi.sub_service_id = ss.id
 	inner join services s on ss.service_id = s.id
 	group by b.id, b.nui

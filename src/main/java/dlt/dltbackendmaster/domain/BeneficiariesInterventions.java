@@ -76,7 +76,8 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 		            "    COUNT(inter.beneficiaries.id) AS interventions, " +
 		            "    COUNT(CASE WHEN inter.subServices.services.serviceType = 1 THEN 1 END) AS clinicalInterventions, " +
 		            "    COUNT(CASE WHEN inter.subServices.services.serviceType = 2 THEN 1 END) AS communityInterventions " +
-		            "FROM BeneficiariesInterventions inter " +
+		            "FROM BeneficiariesInterventions inter " + 
+		            "WHERE inter.status = 1 " +
 		            "GROUP BY inter.beneficiaries.id"
 		),
 	@NamedQuery(name = "BeneficiaryIntervention.findByReferenceNotifyToOrBeneficiaryCreatedBy", query = "SELECT bi FROM BeneficiariesInterventions bi "
@@ -125,7 +126,8 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 															            "    COUNT(CASE WHEN inter.subServices.services.serviceType = 1 THEN 1 END) AS clinicalInterventions, " +
 															            "    COUNT(CASE WHEN inter.subServices.services.serviceType = 2 THEN 1 END) AS communityInterventions " +
 															            "FROM BeneficiariesInterventions inter " +
-															            "WHERE inter.beneficiaries.id = :beneficiaryId " +
+															            "WHERE inter.beneficiaries.id = :beneficiaryId " + 
+															            "AND inter.status = 1" +
 															            "GROUP BY inter.beneficiaries.id"),
 	@NamedQuery(name = "BeneficiaryIntervention.countInterventionsByBeneficiaryAndAgeBandAndLevel",
 															    query = "SELECT " +
@@ -133,7 +135,8 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 															            "    COUNT(inter.beneficiaries.id) AS interventions " +
 															            "FROM BeneficiariesInterventions inter " +
 															            "INNER JOIN fetch ServiceAgeband ab on inter.subServices.services.id = ab.serviceId " +
-															            "WHERE inter.beneficiaries.id = :beneficiaryId "+															      
+															            "WHERE inter.beneficiaries.id = :beneficiaryId "+
+															            "AND inter.status = 1" +															      
 															            "AND ab.ageBand =:ageBand " +
 															            "AND ab.level = :level " +
 															            "GROUP BY inter.beneficiaries.id"),

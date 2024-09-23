@@ -683,7 +683,7 @@ public class Users implements java.io.Serializable {
 			Date lastChangeDate = new Date(lastChangeTimestamp);
 			this.passwordLastChangeDate = lastChangeDate;
 			
-			Date lastLoginDate = dateFormat.parse(lastLogin);
+			Date lastLoginDate = lastLogin == null ? null : dateFormat.parse(lastLogin);
 			this.lastLoginDate = lastLoginDate;
 
 		} catch (ParseException e) {

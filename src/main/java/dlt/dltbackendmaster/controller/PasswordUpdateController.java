@@ -2,6 +2,7 @@ package dlt.dltbackendmaster.controller;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -20,7 +21,6 @@ import dlt.dltbackendmaster.domain.OldPasswords;
 import dlt.dltbackendmaster.domain.Users;
 import dlt.dltbackendmaster.security.EmailSender;
 import dlt.dltbackendmaster.service.DAOService;
-import dlt.dltbackendmaster.util.EnvConstants;
 import dlt.dltbackendmaster.util.Utility;
 import net.bytebuddy.utility.RandomString;
 
@@ -51,12 +51,12 @@ public class PasswordUpdateController {
 		try {
 			String token = RandomString.make(45);
 			// Generate reset confirmation Link
-			String apiHome = Utility.getSiteURL(request);
 
-			String validatedApiHome = getApiHome(apiHome);
-			String validatedOriginUrl = getValidatedOrigin(validatedApiHome);
+			Properties properties = Utility.getProperties();
+			String apiHome = properties.getProperty("api.home");
+			String originUrl = properties.getProperty("origin.url");
 
-			String confirmUpdatePasswordLink = validatedApiHome + "/users/confirm-update?token=" + token;
+			String confirmUpdatePasswordLink = apiHome + "/users/confirm-update?token=" + token;
 
 			user.setRecoverPassword(passwordEncoder.encode(users.getRecoverPassword()));
 			user.setNewPassword(0);
@@ -65,7 +65,7 @@ public class PasswordUpdateController {
 			Date today = new Date();
 			user.setDateUpdated(today);
 			user.setPasswordLastChangeDate(today);
-			user.setRecoverPasswordOrigin(validatedOriginUrl);
+			user.setRecoverPasswordOrigin(originUrl);
 
 			user.setRecoverPasswordToken(token);
 			Users updatedUser = service.update(user);
@@ -76,20 +76,6 @@ public class PasswordUpdateController {
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-	}
-
-	private String getValidatedOrigin(String siteURL) {
-		if ("http://localhost:8083".equals(siteURL) || siteURL.endsWith(":8083")) {
-			return EnvConstants.DEV_PASSWORD_UPDATE_ORIGIN_URL;
-		}
-		return EnvConstants.PROD_PASSWORD_UPDATE_ORIGIN_URL;
-	}
-
-	private String getApiHome(String siteURL) {
-		if ("http://dreams/dlt-api-0.1".equals(siteURL)) {
-			return EnvConstants.PROD_PASSWORD_UPDATE_API_HOME;
-		}
-		return siteURL;
 	}
 
 	@GetMapping(path = "/confirm-update")

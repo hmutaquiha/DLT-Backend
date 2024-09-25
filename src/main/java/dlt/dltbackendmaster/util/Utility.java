@@ -1,13 +1,9 @@
 package dlt.dltbackendmaster.util;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -62,20 +58,4 @@ public class Utility {
 
 		return modifiedDate;
 	}
-
-	public static Properties getProperties() {
-
-		Properties prop = new Properties();
-
-		try (InputStream input = new FileInputStream("src/main/resources/application.properties")) {
-			// load a properties file
-			prop.load(input);
-
-		} catch (IOException ex) {
-			ex.printStackTrace();
-		}
-
-		return prop;
-	}
-
 }

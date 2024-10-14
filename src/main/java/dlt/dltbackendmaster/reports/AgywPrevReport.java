@@ -998,6 +998,13 @@ public class AgywPrevReport {
 		return dataObjs;
 	}
 
+	public List<Object> getAgywPrevBeneficiaries(Integer[] beneficiariesIds) {
+		List<Object> dataObjs = service.GetAllEntityByNamedNativeQuery("AgywPrev.findAgywPrevBeneficiariesByIds",
+				Arrays.asList(beneficiariesIds));
+
+		return dataObjs;
+	}
+
 	public Map<Integer, Map<String, ResultObject>> getBeneficiariesNotCompletedPP(Integer[] districts, String startDate,
 			String endDate, int reportType) {
 		Map<Integer, Map<String, ResultObject>> agywPrevResultObject = new HashMap<>();

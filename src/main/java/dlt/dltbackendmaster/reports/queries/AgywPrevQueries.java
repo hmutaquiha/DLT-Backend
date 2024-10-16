@@ -849,7 +849,7 @@ public class AgywPrevQueries {
 			+ "group by a.beneficiary_id\n"
 			+ "order by provincia,distrito,nui";
 
-	public static final String Beneficiaries_No_Vulnerabilities= ""
+	public static final String BENEFICIARIES_WITHOUT_SPECIFIC_VULNERABILITIES = ""
 			+ "select  provincia,\n"
 			+ "	distrito,\n"
 			+ "	onde_mora,\n"
@@ -905,7 +905,7 @@ public class AgywPrevQueries {
 			+ "	and dt.id in (:districts) \n"
 			+ " and (b.gender = 2 and b.status = 1 \n"
 			+ "     and (b.vblt_sexual_exploitation is null\n"
-			+ "		and b.vblt_is_migrant is null and b.vblt_trafficking_victim is null\n"
+			+ "		and b.vblt_pregnant_or_has_children is null and b.vblt_trafficking_victim is null\n"
 			+ "     and b.vblt_sexually_active is null and b.vblt_multiple_partners is null\n"
 			+ "     and b.vblt_sex_worker is null and b.vblt_vbg_victim is null\n"
 			+ "     and b.vblt_alcohol_drugs_use is null and b.vblt_sti_history is null\n"

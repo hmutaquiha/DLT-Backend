@@ -51,6 +51,11 @@ public class PasswordUpdateController {
 		}
 
 		try {
+			boolean passwordUsedBefore = isPasswordUsedBefore(users.getRecoverPassword(),user.getId());
+			if(passwordUsedBefore) {
+				return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+			}
+			
 			String token = RandomString.make(45);
 			String confirmUpdatePasswordLink = appConfig.getApiHome() + "/users/confirm-update?token=" + token;
 
@@ -109,5 +114,15 @@ public class PasswordUpdateController {
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+	}
+	
+	private boolean isPasswordUsedBefore(String newPassword, int id) {
+		List<OldPasswords> oldPasswords = service.GetAllEntityByNamedQuery("OldPasswords.findByUserId",
+				id);
+		
+		for(OldPasswords oldPassword: oldPasswords) {
+			return passwordEncoder.matches(newPassword, oldPassword.getPassword());
+		}
+		return false;
 	}
 }

@@ -7,6 +7,7 @@ CREATE TABLE agyw_prev_mview
    district_id int DEFAULT 0 NOT NULL,
    neighborhood_id int DEFAULT 0,
    beneficiary_id int DEFAULT 0 NOT NULL,
+   beneficiary_us_id int DEFAULT 0,
    gender smallint,
    nui varchar(61),
    organization_id int,
@@ -89,6 +90,7 @@ from
          d.id as district_id,
          n.id as neighborhood_id,
          b.id as beneficiary_id,
+         bus.id as beneficiary_us_id,
          b.gender,
          concat(d.code,'/',b.nui) nui,
          b.organization_id,
@@ -146,6 +148,7 @@ from
       left join sub_services ss on bi.sub_service_id = ss.id
       left join services s on ss.service_id = s.id
       left join us on bi.us_id = us.id
+      left join us bus on b.us_id = bus.id
       where b.status=1
    ) a
     where intervention_date <= now()

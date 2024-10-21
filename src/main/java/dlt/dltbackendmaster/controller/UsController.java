@@ -151,7 +151,8 @@ public class UsController {
 						String.valueOf(typeId));
 				return new ResponseEntity<>(us, HttpStatus.OK);
 
-			} else if (user.getProfiles().getId() == ProfilesConstants.ADMIN) {
+			} else if (user.getProfiles().getId() == ProfilesConstants.ADMIN
+					|| user.getProfiles().getId() == ProfilesConstants.MNE_DONOR) {
 
 				List<Us> us = service.GetAllEntityByNamedQuery("Us.findByEntryPoint", String.valueOf(typeId));
 				return new ResponseEntity<>(us, HttpStatus.OK);

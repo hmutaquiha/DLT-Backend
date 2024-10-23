@@ -27,10 +27,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 @Entity
 @Table(name = "profiles", catalog = "dreams_db")
 @NamedQueries({
-    @NamedQuery(name = "Profiles.findAll", query = "SELECT c FROM Profiles c"),
+    @NamedQuery(name = "Profiles.findAll", query = "SELECT c FROM Profiles c where c.status=1"),
     @NamedQuery(name = "Profiles.findByDateCreated", query = "SELECT c FROM Profiles c WHERE c.dateCreated >= :lastpulledat"),
     @NamedQuery(name = "Profiles.findByDateUpdated", query = "SELECT c FROM Profiles c WHERE c.dateCreated < :lastpulledat and c.dateUpdated >= :lastpulledat"),
-    @NamedQuery(name = "Profiles.findProfiles", query = "SELECT p.id as id, p.name as name, p.description as description FROM Profiles p"),    
+    @NamedQuery(name = "Profiles.findProfiles", query = "SELECT p.id as id, p.name as name, p.description as description FROM Profiles p where p.status=1"),    
 })
 public class Profiles implements java.io.Serializable {
 
@@ -38,6 +38,7 @@ public class Profiles implements java.io.Serializable {
 	private Integer id;
 	private String name;
 	private String description;
+	private int status;
 	private Date dateCreated;
 	private Integer createdBy;
 	private Date dateUpdated;
@@ -51,10 +52,11 @@ public class Profiles implements java.io.Serializable {
 		this.name = name;
 	}
 
-	public Profiles(String name, String description, Date dateCreated, Integer createdBy, Date dateUpdated,
+	public Profiles(String name, String description, int status, Date dateCreated, Integer createdBy, Date dateUpdated,
 			Integer updatedBy, Set<Users> userses) {
 		this.name = name;
 		this.description = description;
+		this.status = status;
 		this.dateCreated = dateCreated;
 		this.createdBy = createdBy;
 		this.dateUpdated = dateUpdated;
@@ -94,6 +96,15 @@ public class Profiles implements java.io.Serializable {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	@Column(name = "status", nullable = false)
+    public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
@@ -151,6 +162,7 @@ public class Profiles implements java.io.Serializable {
 		profile.put("id", id);
 		profile.put("name", name);
 		profile.put("description", description);
+        profile.put("status", status);
 		profile.put("online_id", id); // flag to control if entity is synchronized with the backend
 		return profile;
 	} 

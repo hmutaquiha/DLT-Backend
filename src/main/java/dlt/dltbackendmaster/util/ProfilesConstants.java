@@ -18,4 +18,6 @@ public class ProfilesConstants {
 
 	public static final Integer COUNSELOR = 23;
 
+	public static final Integer MNE_DONOR = 25;
+
 }

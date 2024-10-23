@@ -29,7 +29,7 @@ public class ProfilesController {
 	@GetMapping(produces = "application/json")
 	public ResponseEntity<List<Profiles>> getAll() {
 		try {
-			List<Profiles> profiles = service.getAll(Profiles.class);
+			List<Profiles> profiles = service.GetAllEntityByNamedQuery("Profiles.findAll");
 
 			return new ResponseEntity<>(profiles, HttpStatus.OK);
 		} catch (Exception e) {

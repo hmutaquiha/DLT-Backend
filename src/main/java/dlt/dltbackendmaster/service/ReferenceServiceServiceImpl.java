@@ -26,4 +26,13 @@ public class ReferenceServiceServiceImpl implements ReferenceServiceService {
 
 		return referencesServices;
 	}
+
+	@Override
+	public ReferencesServices findByReferenceIdAndServiceId(Integer referenceId, Integer serviceId) {
+
+		ReferencesServices referencesServices = daoService
+				.GetUniqueEntityByNamedQuery("ReferencesServices.findByReferenceIdAndServiceId", referenceId, serviceId);
+
+		return referencesServices;
+	}
 }

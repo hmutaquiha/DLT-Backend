@@ -89,6 +89,7 @@ import dlt.dltbackendmaster.serializers.ServiceSerializer;
 													            + "and r.status = 0 "
 													            + "and r.notifyTo.id = : userId "
 																),
+	@NamedQuery(name = "ReferencesServices.findByReferenceIdAndServiceId", query = "SELECT r FROM ReferencesServices r where r.references.id = :reference_id and r.services.id = :service_id" )
 })
 public class ReferencesServices implements java.io.Serializable {
 

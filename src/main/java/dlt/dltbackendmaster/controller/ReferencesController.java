@@ -393,15 +393,15 @@ public class ReferencesController {
 				List<Integer> usersIds = users.stream().map(Users::getId).collect(Collectors.toList());
 				List<String> strUsersIds = usersIds.stream().map(String::valueOf).collect(Collectors.toList());
 
-				referencesTotal = service.GetUniqueEntityByNamedQuery("References.findCountPendingByUserPermission",
+				referencesTotal = service.GetUniqueEntityByNamedQuery("References.findCountAllPendingByUserPermission",
 						new Date(searchStartDate * 1000L), new Date(searchEndDate * 1000L), strUsersIds, ussId,
 						usersIds);
 			} else if (user.getLocalities().size() > 0) {
 				List<Integer> localitiesId = user.getLocalities().stream().map(Locality::getId)
 						.collect(Collectors.toList());
 
-				referencesTotal = service.GetUniqueEntityByNamedQuery("References.findCountPendingByLocalities",
-						new Date(searchStartDate * 1000L), localitiesId, new Date(searchEndDate * 1000L));
+				referencesTotal = service.GetUniqueEntityByNamedQuery("References.findCountAllPendingByLocalities",
+						 localitiesId);
 
 			} else if (user.getDistricts().size() > 0) {
 

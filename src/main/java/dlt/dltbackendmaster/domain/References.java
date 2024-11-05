@@ -275,6 +275,10 @@ import dlt.dltbackendmaster.domain.watermelondb.ReferenceSyncModel;
 																+ " AND ((:searchStartDate IS NULL AND :searchEndDate IS NULL) "
 																+ " OR (r.dateCreated BETWEEN :searchStartDate AND :searchEndDate)) "
 																),
+	    @NamedQuery(name = "References.findCountAllPendingByLocalities", query = "SELECT count(r.id) FROM  References r "
+																+ "where r.beneficiaries.locality.id in (:localities) "
+																+ "and r.status = 0 "
+																),
 	    @NamedQuery(name = "References.findCountByDistricts", query = "SELECT count(r.id) FROM  References r "
 																+ "where r.beneficiaries.district.id in (:districts) "
 																+ "and r.status <> 3 "

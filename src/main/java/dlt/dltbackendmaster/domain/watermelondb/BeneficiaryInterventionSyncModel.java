@@ -14,6 +14,7 @@ public class BeneficiaryInterventionSyncModel
     private Integer sub_service_id;
     private String result;
     private String date;
+    private String end_date;
     private Integer us_id;
     private Integer activist_id;
     private String entry_point;
@@ -77,7 +78,15 @@ public class BeneficiaryInterventionSyncModel
         this.date = date;
     }
 
-    public Integer getUs_id() {
+    public String getEnd_date() {
+		return end_date;
+	}
+
+	public void setEnd_date(String end_date) {
+		this.end_date = end_date;
+	}
+
+	public Integer getUs_id() {
         return us_id;
     }
 

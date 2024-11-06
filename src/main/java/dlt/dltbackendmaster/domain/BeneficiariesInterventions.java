@@ -217,6 +217,8 @@ public class BeneficiariesInterventions implements java.io.Serializable {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate date = LocalDate.parse(model.getDate(), dtf);
         this.date = date;
+        LocalDate endDate = LocalDate.parse(model.getEnd_date(), dtf);
+        this.endDate = endDate;
         this.beneficiaryOfflineId = model.getBeneficiary_offline_id();
         this.id = new BeneficiariesInterventionsId(model.getBeneficiary_id(), model.getSub_service_id(), date);
         this.beneficiaries = new Beneficiaries(model.getBeneficiary_id());
@@ -442,7 +444,7 @@ public class BeneficiariesInterventions implements java.io.Serializable {
             beneficiaryIntervention.put("entry_point", entryPoint);
             beneficiaryIntervention.put("provider", provider);
             beneficiaryIntervention.put("remarks", remarks);
-            beneficiaryIntervention.put("end_date", endDate.toString());
+            beneficiaryIntervention.put("end_date", endDate == null ? null : endDate.toString());
             beneficiaryIntervention.put("status", status);
             beneficiaryIntervention.put("online_id", id.toString()); // flag to control if entity is synchronized with the backend
             beneficiaryIntervention.put("date_created", dateFormat.format(dateCreated));

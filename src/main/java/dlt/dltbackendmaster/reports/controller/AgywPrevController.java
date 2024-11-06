@@ -217,7 +217,7 @@ public class AgywPrevController {
 			titleCell.setCellValue(titleHeaders);
 
 			// Merge the cells for the title
-			sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 16));
+			sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 17));
 
 			// Define Initial Date
 			String initialDateHeaders[] = { "Data de Início:", formattedInitialDate };
@@ -248,11 +248,11 @@ public class AgywPrevController {
 			cell1.setCellStyle(alignCellStyle);
 
 			// Merge cells for session headers
-			sheet.addMergedRegion(new CellRangeAddress(4, 4, 0, 16)); // Merge first 17 columns
+			sheet.addMergedRegion(new CellRangeAddress(4, 4, 0, 17)); // Merge first 17 columns
 
 			// Define headers
-			String[] headers = { "Província", "Distrito", "Onde Mora", "Ponto de Entrada", "Organização",
-					"Data de Inscrição", "Data de Registo", "Registado Por", "Data da Última Actualização",
+			String[] headers = { "Província", "Distrito", "Onde Mora", "Ponto de Entrada", "Nome do Ponto de Entrada", 
+					"Organização", "Data de Inscrição", "Data de Registo", "Registado Por", "Data da Última Actualização",
 					"Actualizado Por", "NUI", "Sexo", "Idade (Registo)", "Idade (Actual)", "Faixa Etária (Registo)",
 					"Faixa Etária (Actual)", "Data de Nascimento" };
 
@@ -414,13 +414,13 @@ public class AgywPrevController {
 			sheet.addMergedRegion(new CellRangeAddress(3, 3, 27, 36)); // Merge last 10 columns
 
 			// Define headers
-			String[] headers = { "Província", "Distrito", "Onde Mora", "Ponto de Entrada", "Local de Registo",
+			String[] headers = { "Província", "Distrito", "Onde Mora", "Ponto de Entrada", "Nome do Ponto de Entrada",
 					"Organização", "Data de Inscrição", "Data de Registo", "Registado Por",
 					"Data da Última Actualização", "Actualizado Por", "NUI", "Sexo", "Idade (Registo)",
 					"Idade (Actual)", "Faixa Etária (Registo)", "Faixa Etária (Actual)", "Data de Nascimento",
-					"Incluida no Indicador AGYW_PREV / Beneficiaria DREAMS ?", "Com Quem Mora", "Sustenta a Casa",
-					"Vai à escola", "Tem Deficiência", "Tipo de Deficiência", "É ou Já foi casada",
-					"Deslocado Interno?/IDP?", "Já fez teste de HIV", "Área de Serviço", "Serviço", "Sub-Serviço",
+					"Incluida no Indicador AGYW_PREV / Beneficiaria DREAMS?", "Com Quem Mora", "Deslocado Interno / IDP",
+					 "Sustenta a Casa", "Vai à escola", "Tem Deficiência", "Tipo de Deficiência", "É ou Já foi casada",
+					"Já fez teste de HIV", "Área de Serviço", "Serviço", "Sub-Serviço",
 					"Pacote de Serviço", "Ponto de Entrada de Serviço", "Localização do Serviço", "Data do Serviço",
 					"Provedor do Serviço", "Outras Observações", "Status" };
 
@@ -581,7 +581,7 @@ public class AgywPrevController {
 
 			// Define headers
 			String[] headers = { "Província", "Distrito", "Local Registo", "NUI", "Idade Actual", "Faixa Etária Actual",
-					"Número de Vulnerabilidades", "Incluida no Indicador AGYW_PREV / Beneficiaria DREAMS ?",
+					"Número de Vulnerabilidades", "Incluida no Indicador AGYW_PREV / Beneficiaria DREAMS?",
 					"Referências Clinicas não atendidas", "Referências Comunitárias não atendidas",
 					"Sessões de Recursos Sociais", "Data da Última Sessão: Recursos Sociais",
 					"Sessões de Prevenção do HIV", "Data da Última Sessão: HIV", "Sessões de Prevenção do VBG",
@@ -760,13 +760,13 @@ public class AgywPrevController {
 			sheet.addMergedRegion(new CellRangeAddress(3, 3, 27, 36)); // Merge last 10 columns
 
 			// Define headers
-			String[] headers = { "Província", "Distrito", "Onde Mora", "Ponto de Entrada", "Local de Registo",
+			String[] headers = { "Província", "Distrito", "Onde Mora", "Ponto de Entrada", "Nome do Ponto de Entrada",
 					"Organização", "Data de Inscrição", "Data de Registo", "Registado Por",
 					"Data da Última Actualização", "Actualizado Por", "NUI", "Sexo", "Idade (Registo)",
 					"Idade (Actual)", "Faixa Etária (Registo)", "Faixa Etária (Actual)", "Data de Nascimento",
-					"Incluida no Indicador AGYW_PREV / Beneficiaria DREAMS ?", "Com Quem Mora", "Sustenta a Casa",
-					"Vai à escola", "Tem Deficiência", "Tipo de Deficiência", "É ou Já foi casada",
-					"Deslocado Interno?/IDP?", "Já fez teste de HIV", "Área de Serviço", "Serviço", "Sub-Serviço",
+					"Incluida no Indicador AGYW_PREV / Beneficiaria DREAMS?", "Com Quem Mora", "Deslocado Interno / IDP",
+					"Sustenta a Casa", "Vai à escola", "Tem Deficiência", "Tipo de Deficiência", "É ou Já foi casada",
+					"Já fez teste de HIV", "Área de Serviço", "Serviço", "Sub-Serviço",
 					"Pacote de Serviço", "Ponto de Entrada de Serviço", "Localização do Serviço", "Data do Serviço",
 					"Provedor do Serviço", "Outras Observações", "Status" };
 
@@ -928,7 +928,7 @@ public class AgywPrevController {
 
 			// Define headers
 			String[] headers = { "Província", "Distrito", "Local Registo", "NUI", "Idade Actual", "Faixa Etária Actual",
-					"Número de Vulnerabilidades", "Incluida no Indicador AGYW_PREV / Beneficiaria DREAMS ?",
+					"Número de Vulnerabilidades", "Incluida no Indicador AGYW_PREV / Beneficiaria DREAMS?",
 					"Referências Clinicas não atendidas", "Referências Comunitárias não atendidas",
 					"Sessões de Recursos Sociais", "Data da Última Sessão: Recursos Sociais",
 					"Sessões de Prevenção do HIV", "Data da Última Sessão: HIV", "Sessões de Prevenção do VBG",

@@ -76,6 +76,8 @@ public class AgywPrev implements Serializable {
 	private Integer violence_prevention_15_plus;
 	private Integer financial_literacy_aflatoun;
 	private Integer financial_literacy_aflateen;
+	private Integer siyakha_light;
+	private Integer siyakha_comprehensive;
 	private Integer completion_status;
 	private Date approaches_date;
 	private Date intervention_date;
@@ -398,6 +400,22 @@ public class AgywPrev implements Serializable {
 
 	public void setFinancial_literacy_aflateen(Integer financial_literacy_aflateen) {
 		this.financial_literacy_aflateen = financial_literacy_aflateen;
+	}
+
+	public Integer getSiyakha_light() {
+		return siyakha_light;
+	}
+
+	public void setSiyakha_light(Integer siyakha_light) {
+		this.siyakha_light = siyakha_light;
+	}
+
+	public Integer getSiyakha_comprehensive() {
+		return siyakha_comprehensive;
+	}
+
+	public void setSiyakha_comprehensive(Integer siyakha_comprehensive) {
+		this.siyakha_comprehensive = siyakha_comprehensive;
 	}
 
 	public Integer getCompletion_status() {

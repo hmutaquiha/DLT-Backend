@@ -68,7 +68,7 @@ public class AgywPrevController {
 
 	private static final String BENEFICIARIES_WITHOUT_PP_COMPLETED = "DLT2.0_BENEFICIARIAS_NAO_COMPLETARAM_PACOTE_PRIMARIO";
 
-	private static final String AGYW_PREV_BENEFICIARIES = "PEPFAR_MER_2.7_AGYW_PREV_Beneficiaries";
+	private static final String AGYW_PREV_BENEFICIARIES = "PEPFAR_MER_2.8_AGYW_PREV_Beneficiaries";
 
 	private final DAOService service;
 	private final BeneficiariyService beneficiariyService;

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import dlt.dltbackendmaster.domain.ReferencesServices;
@@ -37,7 +38,9 @@ public class ReferenceServiceController {
 
 	@PutMapping(path = "/decline/{referenceId}/{serviceId}", consumes = "application/json", produces = "application/json")
 	public ResponseEntity<ReferencesServices> refuse(@PathVariable Integer referenceId,
-			@PathVariable Integer serviceId) {
+			@PathVariable Integer serviceId,
+			@RequestParam String declineReason
+			) {
 
 		if (referenceId == null || serviceId == null) {
 			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
@@ -47,6 +50,7 @@ public class ReferenceServiceController {
 			// setting interventions counts from database before update
 			ReferencesServices referencesService = referenceServiceService.findByReferenceIdAndServiceId(referenceId,serviceId);
 			referencesService.setStatus(3);
+			referencesService.setDeclineReason(declineReason);
 
 			ReferencesServices referencesServiceUpdated = service.update(referencesService);
 

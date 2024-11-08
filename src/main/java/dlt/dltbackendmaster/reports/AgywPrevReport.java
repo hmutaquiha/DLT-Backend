@@ -28,8 +28,8 @@ import dlt.dltbackendmaster.service.DAOService;
 import dlt.dltbackendmaster.util.Utility;
 
 /**
- * Classe responsável pela manipulação e retorno dos dados para compor o
- * relatório
+ * Classe responsável pela manipulação e retorno dos dados para compor
+ * relatórios
  * 
  * @author Hamilton Mutaquiha
  *
@@ -1016,6 +1016,16 @@ public class AgywPrevReport {
 				.collect(Collectors.toList());
 
 		return sorterReportObjectList;
+	}
+
+	public List<Object> getBeneficiariesWithoutCommunityIntervention(Integer districts[], String startDate,
+			String endDate) {
+		// FIXME: Check why it is considering end date as first parameter... in shoulb
+		// be disctricts
+		List<Object> dataObjs = service.GetAllEntityByNamedNativeQuery(
+				"AgywPrev.findBeneficiariesWithoutCommunityInterventions", endDate, Arrays.asList(districts),
+				startDate);
+		return dataObjs;
 	}
 
 	// Method to retrieve value for a specific index from the reportObject

@@ -70,6 +70,8 @@ public class AgywPrevController {
 
 	private static final String AGYW_PREV_BENEFICIARIES = "PEPFAR_MER_2.8_AGYW_PREV_Beneficiaries";
 
+	private static final String BENEFICIARIES_WAITING_LIST = "DLT2.0_BENEFICIARIAS_EM_LISTA_ESPERA_PROVINCIA";
+
 	private final DAOService service;
 	private final BeneficiariyService beneficiariyService;
 
@@ -1310,5 +1312,157 @@ public class AgywPrevController {
 			e.printStackTrace();
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+	}
+
+	@GetMapping(path = "/beneficiaries-in-waiting-list")
+	public ResponseEntity<String> getBeneficiariesInWaitingList(
+			@RequestParam(name = "province") String province, @RequestParam(name = "districts") Integer[] districts,
+			@RequestParam(name = "startDate") Long startDate, @RequestParam(name = "endDate") Long endDate,
+			@RequestParam(name = "username") String username) throws IOException {
+
+		AgywPrevReport report = new AgywPrevReport(service);
+
+		boolean isEndOfCycle = false;
+
+		Date initialDate = new Date(startDate);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		String formattedInitialDate = sdf.format(initialDate);
+
+		Date finalDate = new Date(endDate);
+		String formattedFinalDate = sdf.format(finalDate); // Using the same formatter for final date
+
+		String generationDate = sdf.format(new Date());
+
+		createDirectory(REPORTS_HOME + "/" + username);
+
+		String generatedFilePath = REPORTS_HOME + "/" + username + "/" + BENEFICIARIES_WAITING_LIST + "_"
+				+ province.toUpperCase() + "_" + formattedInitialDate + "_" + formattedFinalDate + "_" + generationDate
+				+ ".xlsx";
+
+		try {
+			// Set up streaming workbook
+			SXSSFWorkbook workbook = new SXSSFWorkbook();
+			workbook.setCompressTempFiles(true); // Enable compression of temporary files
+
+			// Create a sheet
+			Sheet sheet = workbook.createSheet(SHEET_LABEL);
+			// Create font for bold style
+			Font boldFont = workbook.createFont();
+			boldFont.setBold(true);
+
+			// Apply bold font style to the cells in the header row
+			CellStyle boldCellStyle = workbook.createCellStyle();
+			boldCellStyle.setFont(boldFont);
+
+			// Apply bold font style to the cells in the header row
+			CellStyle alignCellStyle = workbook.createCellStyle();
+			// alignCellStyle.setFont(boldFont);
+			alignCellStyle.setAlignment(HorizontalAlignment.CENTER);
+
+			// Define Title
+			String titleHeaders = "LISTA DE BENEFICIÁRIAS EM LISTA DE ESPERA (SEM SERVIÇOS COMUNITÁRIOS)";
+			// Create a header row
+			Row titleRow = sheet.createRow(0);
+			// Write Title
+			Cell titleCell = titleRow.createCell(0);
+			titleCell.setCellValue(titleHeaders);
+
+			// Merge the cells for the title
+			sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 17));
+
+			// Define Initial Date
+			String initialDateHeaders[] = { "Data de Início:", formattedInitialDate };
+			// Create a header row
+			Row initialHeaderRow = sheet.createRow(2);
+			// Write headers
+			for (int i = 0; i < initialDateHeaders.length; i++) {
+				Cell cell = initialHeaderRow.createCell(i);
+				cell.setCellValue(initialDateHeaders[i]);
+			}
+
+			// Define Final Date
+			String finalDateHeaders[] = { "Data de Fim:", formattedFinalDate };
+			// Create a header row
+			Row finalHeaderRow = sheet.createRow(3);
+			// Write headers
+			for (int i = 0; i < finalDateHeaders.length; i++) {
+				Cell cell = finalHeaderRow.createCell(i);
+				cell.setCellValue(finalDateHeaders[i]);
+			}
+
+			// Create a header row
+			Row sessionRow = sheet.createRow(4);
+			// Write Title and Merge cells for session headers
+
+			Cell cell1 = sessionRow.createCell(0);
+			cell1.setCellValue("Informação Demográfica");
+			cell1.setCellStyle(alignCellStyle);
+
+			// Merge cells for session headers
+			sheet.addMergedRegion(new CellRangeAddress(4, 4, 0, 17)); // Merge first 17 columns
+
+			// Define headers
+			String[] headers = { "Província", "Distrito", "Onde Mora", "Ponto de Entrada", "Nome do Ponto de Entrada", 
+					"Organização", "Data de Inscrição", "Data de Registo", "Registado Por", "Data da Última Actualização",
+					"Actualizado Por", "NUI", "Sexo", "Idade (Registo)", "Idade (Actual)", "Faixa Etária (Registo)",
+					"Faixa Etária (Actual)", "Data de Nascimento" };
+
+			// Create a header row
+			Row headerRow = sheet.createRow(5);
+			// Write headers
+			for (int i = 0; i < headers.length; i++) {
+				Cell cell = headerRow.createCell(i);
+				cell.setCellValue(headers[i]);
+			}
+
+			int rowCount = 6; // start from row 1 (row 0 is for headers)
+			int currentSheet;
+
+			for (currentSheet = 0; currentSheet < currentSheet + 1; currentSheet++) {
+				if (!isEndOfCycle) {
+					// Insert data rows from the reportObjectList
+					List<Object> reportObjectList = report.getBeneficiariesWithoutCommunityIntervention(districts, formattedInitialDate, formattedFinalDate);
+
+					if (reportObjectList.size() < MAX_ROWS_NUMBER) {
+						isEndOfCycle = true;
+					}
+
+					if (currentSheet != 0) {
+						rowCount = 0;
+						sheet = workbook.createSheet(SHEET_LABEL + currentSheet);
+					}
+					for (Object reportObject : reportObjectList) {
+						Row row = sheet.createRow(rowCount++);
+						// Write values to cells based on headers
+						for (int i = 0; i < headers.length; i++) {
+							Object value = getValueAtIndex(reportObject, i); // You need to implement this method
+							if (value != null) {
+								row.createCell(i).setCellValue(String.valueOf(value));
+							}
+						}
+					}
+				} else {
+					break;
+				}
+			}
+
+			// Write the workbook content to a file
+			FileOutputStream fileOut = new FileOutputStream(generatedFilePath);
+			workbook.write(fileOut);
+			fileOut.close();
+
+			// Dispose of temporary files backing this workbook on disk
+			workbook.dispose();
+
+			// Close the workbook
+			workbook.close();
+
+			System.out.println("Excel file has been created successfully ! - path: " + generatedFilePath);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+		return new ResponseEntity<>(generatedFilePath, HttpStatus.OK);
 	}
 }

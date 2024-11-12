@@ -1,5 +1,6 @@
 package dlt.dltbackendmaster.controller;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -39,7 +40,8 @@ public class ReferenceServiceController {
 	@PutMapping(path = "/decline/{referenceId}/{serviceId}", consumes = "application/json", produces = "application/json")
 	public ResponseEntity<ReferencesServices> refuse(@PathVariable Integer referenceId,
 			@PathVariable Integer serviceId,
-			@RequestParam String declineReason
+			@RequestParam String declineReason,
+			@RequestParam int userId
 			) {
 
 		if (referenceId == null || serviceId == null) {
@@ -51,6 +53,8 @@ public class ReferenceServiceController {
 			ReferencesServices referencesService = referenceServiceService.findByReferenceIdAndServiceId(referenceId,serviceId);
 			referencesService.setStatus(3);
 			referencesService.setDeclineReason(declineReason);
+			referencesService.setUpdatedBy(userId);
+			referencesService.setDateUpdated(new Date());
 
 			ReferencesServices referencesServiceUpdated = service.update(referencesService);
 

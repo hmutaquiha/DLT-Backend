@@ -393,15 +393,15 @@ public class ReferencesController {
 				List<Integer> usersIds = users.stream().map(Users::getId).collect(Collectors.toList());
 				List<String> strUsersIds = usersIds.stream().map(String::valueOf).collect(Collectors.toList());
 
-				referencesTotal = service.GetUniqueEntityByNamedQuery("References.findCountPendingByUserPermission",
+				referencesTotal = service.GetUniqueEntityByNamedQuery("References.findCountAllPendingByUserPermission",
 						new Date(searchStartDate * 1000L), new Date(searchEndDate * 1000L), strUsersIds, ussId,
 						usersIds);
 			} else if (user.getLocalities().size() > 0) {
 				List<Integer> localitiesId = user.getLocalities().stream().map(Locality::getId)
 						.collect(Collectors.toList());
 
-				referencesTotal = service.GetUniqueEntityByNamedQuery("References.findCountPendingByLocalities",
-						new Date(searchStartDate * 1000L), localitiesId, new Date(searchEndDate * 1000L));
+				referencesTotal = service.GetUniqueEntityByNamedQuery("References.findCountAllPendingByLocalities",
+						 localitiesId);
 
 			} else if (user.getDistricts().size() > 0) {
 
@@ -499,6 +499,81 @@ public class ReferencesController {
 
 			return new ResponseEntity<>(interventions, HttpStatus.OK);
 		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+		
+	public List<References> getAllPendingByUser(@PathVariable Integer userId) {
+		try {
+			Users user = service.find(Users.class, userId);
+
+			List<References> references = null;
+			if (Arrays.asList(MANAGER, MENTOR, NURSE, COUNSELOR).contains(user.getProfiles().getId())
+					&& user.getUs().size() > 0) {
+				List<Integer> ussId = user.getUs().stream().map(Us::getId).collect(Collectors.toList());
+
+				List<Users> users = service.GetAllEntityByNamedQuery("Users.findByUsId", ussId);
+				List<Integer> usersIds = users.stream().map(Users::getId).collect(Collectors.toList());
+				List<String> strUsersIds = usersIds.stream().map(String::valueOf).collect(Collectors.toList());
+
+				references = service.GetAllEntityByNamedQuery("References.findAnyPendingByUserPermission",
+						strUsersIds, ussId, usersIds);
+			} else if (user.getLocalities().size() > 0) {
+				List<Integer> localitiesId = user.getLocalities().stream().map(Locality::getId)
+						.collect(Collectors.toList());
+
+				references = service.GetAllEntityByNamedQuery("References.findAllPendingByLocalities",  localitiesId);
+
+			} else if (user.getDistricts().size() > 0) {
+
+				List<Integer> districtsId = user.getDistricts().stream().map(District::getId)
+						.collect(Collectors.toList());
+
+				references = service.GetAllEntityByNamedQuery("References.findAllPendingByDistricts",  districtsId);
+
+			} else if (user.getProvinces().size() > 0) {
+
+				List<Integer> provincesId = user.getProvinces().stream().map(Province::getId)
+						.collect(Collectors.toList());
+
+				references = service.GetAllEntityByNamedQuery("References.findAllPendingByProvinces", provincesId);
+
+			} else {
+				references = service.GetAllEntityByNamedQuery("References.findAnyPending");
+			}
+
+			return references;
+
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	@PutMapping(path = "/bulkCancelAll/{userId}", consumes = "application/json")
+	public ResponseEntity<ReferencesCancel> bulkCancelAll(@RequestBody ReferencesCancel referencesCancel, @PathVariable("userId") Integer userId) {
+
+		if (referencesCancel == null || userId ==null) {
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		}
+		
+		List<References> references = getAllPendingByUser(userId);
+
+		try {
+			for (References ref : references) {
+
+				References reference = this.service.find(References.class, ref.getId());
+
+				reference.setStatus(referencesCancel.getStatus());
+				reference.setCancelReason(referencesCancel.getCancelReason());
+				reference.setOtherReason(referencesCancel.getOtherReason());
+				reference.setUpdatedBy(referencesCancel.getUpdatedBy());
+				reference.setDateUpdated(new Date());
+
+				service.update(reference);
+			}
+			return new ResponseEntity<>(HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}

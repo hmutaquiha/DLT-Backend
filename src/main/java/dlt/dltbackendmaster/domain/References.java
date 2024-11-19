@@ -56,6 +56,13 @@ import dlt.dltbackendmaster.domain.watermelondb.ReferenceSyncModel;
 																+ " AND ((:searchStartDate IS NULL AND :searchEndDate IS NULL) "
 																+ " OR (r.dateCreated BETWEEN :searchStartDate AND :searchEndDate)) "
 																+ "order by r.id desc "),
+		@NamedQuery(name = "References.findAnyPending", query = "SELECT r FROM References r "
+																+ "left join fetch r.beneficiaries b "
+																+ "left join fetch r.referredBy rb "
+																+ "left join fetch r.us "
+																+ "left join fetch r.notifyTo u "
+																+ "where r.status = 0 "
+																+ "order by r.id desc "),
 		@NamedQuery(name = "References.findCountByUser", query = "SELECT count(r.id) FROM References r "
 																+ "where r.userCreated like :userCreated"),
 		@NamedQuery(name = "References.findAllByUserPermission", query = "SELECT r FROM References r "
@@ -82,6 +89,17 @@ import dlt.dltbackendmaster.domain.watermelondb.ReferenceSyncModel;
 																+ "where r.status = 0 "
 																+ " AND ((:searchStartDate IS NULL AND :searchEndDate IS NULL) "
 																+ " OR (r.dateCreated BETWEEN :searchStartDate AND :searchEndDate)) "
+																+ "and (r.userCreated in :strUsersIds "
+																+ "or r.notifyTo.id in :usersIds "
+																+ "or r.referredBy.id in :usersIds "
+																+ "or r.us.id in :ussId) "
+																+ "order by r.id desc "),
+		@NamedQuery(name = "References.findAnyPendingByUserPermission", query = "SELECT r FROM References r "
+																+ "left join fetch r.beneficiaries b "
+																+ "left join fetch r.referredBy rb "
+																+ "left join fetch r.us "
+																+ "left join fetch r.notifyTo u "
+																+ "where r.status = 0 "
 																+ "and (r.userCreated in :strUsersIds "
 																+ "or r.notifyTo.id in :usersIds "
 																+ "or r.referredBy.id in :usersIds "
@@ -144,6 +162,15 @@ import dlt.dltbackendmaster.domain.watermelondb.ReferenceSyncModel;
 																+ "and r.status = 0 "
 																+ "order by r.id desc"
 																),
+	    @NamedQuery(name = "References.findAllPendingByLocalities", query = "SELECT r FROM  References r "
+																+ "left join fetch r.referredBy rb "
+																+ "left join fetch r.notifyTo u "
+																+ "left join fetch r.us us "
+																+ "left join fetch r.beneficiaries b "
+																+ "where b.locality.id in (:localities) "													
+																+ "and r.status = 0 "
+																+ "order by r.id desc"
+																),
 		@NamedQuery(name = "References.findByDistricts", query = "SELECT r FROM  References r "
 																+ "left join fetch r.referredBy rb "
 																+ "left join fetch r.notifyTo u "
@@ -169,6 +196,15 @@ import dlt.dltbackendmaster.domain.watermelondb.ReferenceSyncModel;
 																+ "and r.status = 0 "
 																+ "order by r.id desc"
 																),
+		@NamedQuery(name = "References.findAllPendingByDistricts", query = "SELECT r FROM  References r "
+																+ "left join fetch r.referredBy rb "
+																+ "left join fetch r.notifyTo u "
+																+ "left join fetch r.us us "
+																+ "left join fetch r.beneficiaries b "
+																+ "where b.district.id in (:districts) "
+																+ "and r.status = 0 "
+																+ "order by r.id desc"
+																),
 		@NamedQuery(name = "References.findByProvinces", query = "SELECT r FROM  References r "
 																+ "left join fetch r.referredBy rb "
 																+ "left join fetch r.notifyTo u "
@@ -191,6 +227,15 @@ import dlt.dltbackendmaster.domain.watermelondb.ReferenceSyncModel;
 																+ "where b.district.province.id in (:provinces) "
 																+ " AND ((:searchStartDate IS NULL AND :searchEndDate IS NULL) "
 																+ " OR (r.dateCreated BETWEEN :searchStartDate AND :searchEndDate)) "
+																+ "and r.status = 0 "
+																+ "order by r.id desc"
+																),
+		@NamedQuery(name = "References.findAllPendingByProvinces", query = "SELECT r FROM  References r "
+																+ "left join fetch r.referredBy rb "
+																+ "left join fetch r.notifyTo u "
+																+ "left join fetch r.us us "
+																+ "left join fetch r.beneficiaries b "
+																+ "where b.district.province.id in (:provinces) "
 																+ "and r.status = 0 "
 																+ "order by r.id desc"
 																),
@@ -229,6 +274,10 @@ import dlt.dltbackendmaster.domain.watermelondb.ReferenceSyncModel;
 																+ "and r.status = 0 "
 																+ " AND ((:searchStartDate IS NULL AND :searchEndDate IS NULL) "
 																+ " OR (r.dateCreated BETWEEN :searchStartDate AND :searchEndDate)) "
+																),
+	    @NamedQuery(name = "References.findCountAllPendingByLocalities", query = "SELECT count(r.id) FROM  References r "
+																+ "where r.beneficiaries.locality.id in (:localities) "
+																+ "and r.status = 0 "
 																),
 	    @NamedQuery(name = "References.findCountByDistricts", query = "SELECT count(r.id) FROM  References r "
 																+ "where r.beneficiaries.district.id in (:districts) "

@@ -89,6 +89,7 @@ import dlt.dltbackendmaster.serializers.ServiceSerializer;
 													            + "and r.status = 0 "
 													            + "and r.notifyTo.id = : userId "
 																),
+	@NamedQuery(name = "ReferencesServices.findByReferenceIdAndServiceId", query = "SELECT r FROM ReferencesServices r where r.references.id = :reference_id and r.services.id = :service_id" )
 })
 public class ReferencesServices implements java.io.Serializable {
 
@@ -104,6 +105,7 @@ public class ReferencesServices implements java.io.Serializable {
 	private Integer updatedBy;
 	private Date dateUpdated;
 	private String offlineId;
+	private String declineReason;
 
 	public ReferencesServices() {
 	}
@@ -315,5 +317,14 @@ public class ReferencesServices implements java.io.Serializable {
 		if (id.getReferenceId() != other.id.getReferenceId() || id.getServiceId() != other.id.getServiceId())
 			return false;
 		return true;
+	}
+
+	@Column(name = "decline_reason", length = 255)
+	public String getDeclineReason() {
+		return declineReason;
+	}
+
+	public void setDeclineReason(String declineReason) {
+		this.declineReason = declineReason;
 	}
 }

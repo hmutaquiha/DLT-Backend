@@ -1,49 +1,7 @@
 package dlt.dltbackendmaster.reports;
 
 import static dlt.dltbackendmaster.reports.utils.ReportsConstants.*;
-import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedAvanteEstudante;
-import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedAvanteEstudanteViolencePrevention;
-import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedAvanteRapariga;
-import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedAvanteRaparigaViolencePrevention;
-import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedCombinedSocioEconomicApproaches;
-import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedCondomsPromotionOrProvision;
-import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedContraceptionsPromotionOrProvision;
-import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedDisagCombinedSocioEconomicApproaches;
-import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedFinancialLiteracy;
-import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedFinancialLiteracyAflateen;
-import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedFinancialLiteracyAflatoun;
-import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedGbvSessions;
-import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedGuiaFacilitacao;
-import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedHIVTestingServices;
-import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedHivSessions;
-import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedOtherSAAJServices;
-import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedPostViolenceCare_CM;
-import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedPostViolenceCare_US;
-import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedPrep;
-import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedSAAJEducationSessions;
-import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedSimplifiedAvanteRapariga;
-import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedSimplifiedAvanteRaparigaViolencePrevention;
-import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedSimplifiedGuiaFacilitacao;
-import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedSimplifiedSAAJEducationSessions;
-import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedSimplifiedViolencePrevention15Plus;
-import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedSocialAssetsOldCurriculum;
-import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedViolencePrevention15Plus;
-import static dlt.dltbackendmaster.util.ServiceCompletionRules.hadSchoolAllowance;
-import static dlt.dltbackendmaster.util.ServiceCompletionRules.startedAvanteEstudante;
-import static dlt.dltbackendmaster.util.ServiceCompletionRules.startedAvanteEstudanteViolencePrevention;
-import static dlt.dltbackendmaster.util.ServiceCompletionRules.startedAvanteRapariga;
-import static dlt.dltbackendmaster.util.ServiceCompletionRules.startedAvanteRaparigaViolencePrevention;
-import static dlt.dltbackendmaster.util.ServiceCompletionRules.startedFinancialLiteracyAflateen;
-import static dlt.dltbackendmaster.util.ServiceCompletionRules.startedFinancialLiteracyAflatoun;
-import static dlt.dltbackendmaster.util.ServiceCompletionRules.startedGuiaFacilitacao;
-import static dlt.dltbackendmaster.util.ServiceCompletionRules.startedGuiaFacilitacaoSocialAssets15Plus;
-import static dlt.dltbackendmaster.util.ServiceCompletionRules.startedPostViolenceCare_CM;
-import static dlt.dltbackendmaster.util.ServiceCompletionRules.startedPostViolenceCare_US;
-import static dlt.dltbackendmaster.util.ServiceCompletionRules.startedSAAJEducationSessions;
-import static dlt.dltbackendmaster.util.ServiceCompletionRules.startedSimplifiedAvanteRapariga;
-import static dlt.dltbackendmaster.util.ServiceCompletionRules.startedSimplifiedGuiaFacilitacao;
-import static dlt.dltbackendmaster.util.ServiceCompletionRules.startedSocialAssetsOldCurriculum;
-import static dlt.dltbackendmaster.util.ServiceCompletionRules.startedViolencePrevention15Plus;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.*;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -70,8 +28,8 @@ import dlt.dltbackendmaster.service.DAOService;
 import dlt.dltbackendmaster.util.Utility;
 
 /**
- * Classe responsável pela manipulação e retorno dos dados para compor o
- * relatório
+ * Classe responsável pela manipulação e retorno dos dados para compor
+ * relatórios
  * 
  * @author Hamilton Mutaquiha
  *
@@ -320,7 +278,8 @@ public class AgywPrevReport {
 						&& (hadSchoolAllowance(agywPrev) || completedSocialAssetsOldCurriculum(agywPrev))
 						|| completedPostViolenceCare_US(agywPrev) || completedPostViolenceCare_CM(agywPrev)
 						|| completedCombinedSocioEconomicApproaches(agywPrev) || completedOtherSAAJServices(agywPrev)
-						|| completedPrep(agywPrev) || completedContraceptionsPromotionOrProvision(agywPrev)) {
+						|| completedPrep(agywPrev) || completedContraceptionsPromotionOrProvision(agywPrev)
+						|| completedSiyakhaLight(agywPrev) || completedSiyakhaComprehensive(agywPrev)) {
 					addBeneficiary(reportObject, agywPrev.getDistrict_id(),
 							getAgeBandIndex(agywPrev.getCurrent_age_band()), getEnrollmentTimeIndex(enrollmentTime),
 							COMPLETED_SECONDARY_SERVICE, agywPrev.getBeneficiary_id());
@@ -445,7 +404,8 @@ public class AgywPrevReport {
 							COMPLETED_PRIMARY_SERVICE, agywPrev.getBeneficiary_id());
 				}
 				if (hadSchoolAllowance(agywPrev) || completedCombinedSocioEconomicApproaches(agywPrev)
-						|| completedContraceptionsPromotionOrProvision(agywPrev)) {
+						|| completedContraceptionsPromotionOrProvision(agywPrev) || completedSiyakhaLight(agywPrev)
+						|| completedSiyakhaComprehensive(agywPrev)) {
 					addBeneficiary(reportObject, agywPrev.getDistrict_id(),
 							getAgeBandIndex(agywPrev.getCurrent_age_band()), getEnrollmentTimeIndex(enrollmentTime),
 							COMPLETED_SECONDARY_SERVICE, agywPrev.getBeneficiary_id());
@@ -1056,6 +1016,16 @@ public class AgywPrevReport {
 				.collect(Collectors.toList());
 
 		return sorterReportObjectList;
+	}
+
+	public List<Object> getBeneficiariesWithoutCommunityIntervention(Integer districts[], String startDate,
+			String endDate) {
+		// FIXME: Check why it is considering end date as first parameter... in shoulb
+		// be disctricts
+		List<Object> dataObjs = service.GetAllEntityByNamedNativeQuery(
+				"AgywPrev.findBeneficiariesWithoutCommunityInterventions", endDate, Arrays.asList(districts),
+				startDate);
+		return dataObjs;
 	}
 
 	// Method to retrieve value for a specific index from the reportObject

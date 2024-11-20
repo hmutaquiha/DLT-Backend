@@ -131,6 +131,7 @@ public class BeneficiaryInterventionController {
 				newInterv.setResult(intervention.getResult());
 				newInterv.setUs(intervention.getUs());
 				newInterv.setProvider(intervention.getProvider());
+				newInterv.setEndDate(intervention.getEndDate());
 				newInterv.setStatus(intervention.getStatus());
 				newInterv.setActivistId(intervention.getActivistId());
 				newInterv.setCreatedBy(currentIntervention.getCreatedBy());
@@ -169,6 +170,7 @@ public class BeneficiaryInterventionController {
 			currentIntervention.setEntryPoint(intervention.getEntryPoint());
 			currentIntervention.setResult(intervention.getResult());
 			currentIntervention.setProvider(intervention.getProvider());
+			currentIntervention.setEndDate(intervention.getEndDate());
 			currentIntervention.setStatus(intervention.getStatus());
 			currentIntervention.setActivistId(intervention.getActivistId());
 			currentIntervention.setDateUpdated(new Date());

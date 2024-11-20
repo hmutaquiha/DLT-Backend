@@ -23,6 +23,9 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -32,6 +35,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 
 import dlt.dltbackendmaster.domain.watermelondb.BeneficiaryInterventionSyncModel;
 import dlt.dltbackendmaster.serializers.BeneficiarySerializer;
@@ -154,6 +158,7 @@ public class BeneficiariesInterventions implements java.io.Serializable {
 	private String entryPoint;
 	private String provider;
 	private String remarks;
+	private LocalDate endDate;
 	private int status;
 	private int createdBy;
 	private Date dateCreated;
@@ -212,6 +217,8 @@ public class BeneficiariesInterventions implements java.io.Serializable {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate date = LocalDate.parse(model.getDate(), dtf);
         this.date = date;
+        LocalDate endDate = LocalDate.parse(model.getEnd_date(), dtf);
+        this.endDate = endDate;
         this.beneficiaryOfflineId = model.getBeneficiary_offline_id();
         this.id = new BeneficiariesInterventionsId(model.getBeneficiary_id(), model.getSub_service_id(), date);
         this.beneficiaries = new Beneficiaries(model.getBeneficiary_id());
@@ -334,6 +341,19 @@ public class BeneficiariesInterventions implements java.io.Serializable {
 		this.date = date;
 	}
 
+	@Column(name = "end_date", nullable = true, length = 10)
+	@JsonDeserialize(using = LocalDateDeserializer.class)
+	@JsonSerialize(using = LocalDateSerializer.class)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+	@DateTimeFormat(pattern = "yyyy-MM-dd", iso = ISO.DATE)
+	public LocalDate getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(LocalDate endDate) {
+		this.endDate = endDate;
+	}
+
 	@Transient
 	public String getBeneficiaryOfflineId() {
 		return beneficiaryOfflineId;
@@ -424,6 +444,7 @@ public class BeneficiariesInterventions implements java.io.Serializable {
             beneficiaryIntervention.put("entry_point", entryPoint);
             beneficiaryIntervention.put("provider", provider);
             beneficiaryIntervention.put("remarks", remarks);
+            beneficiaryIntervention.put("end_date", endDate == null ? null : endDate.toString());
             beneficiaryIntervention.put("status", status);
             beneficiaryIntervention.put("online_id", id.toString()); // flag to control if entity is synchronized with the backend
             beneficiaryIntervention.put("date_created", dateFormat.format(dateCreated));
@@ -451,6 +472,7 @@ public class BeneficiariesInterventions implements java.io.Serializable {
         this.entryPoint = model.getEntry_point();
         this.provider = model.getProvider();
         this.remarks = model.getRemarks();
+        this.endDate = model.getEnd_date() == null ? null : LocalDate.parse(model.getEnd_date(), dtf);
         this.status = model.getStatus();
 		this.dateCreated = model.getDate_created();
     }

@@ -1025,6 +1025,6 @@ public class AgywPrevQueries {
 			+ "and b.status = 1 \n"
 			+ "and v.vulnerable = 1\n"
 			+ "and b.community_interventions = 0\n"
-			+ "and b.date_created between :startDate and :endDate \n"
+			+ "and b.enrollment_date between :startDate and :endDate \n"
 			+ "order by pr.name, dt.name, b.nui";
 }

@@ -1348,6 +1348,7 @@ public class AgywPrevController {
 			Sheet sheet = workbook.createSheet(SHEET_LABEL);
 			// Create font for bold style
 			Font boldFont = workbook.createFont();
+			boldFont.setFontName("Liberation Sans");
 			boldFont.setBold(true);
 
 			// Apply bold font style to the cells in the header row
@@ -1358,6 +1359,7 @@ public class AgywPrevController {
 			CellStyle alignCellStyle = workbook.createCellStyle();
 			// alignCellStyle.setFont(boldFont);
 			alignCellStyle.setAlignment(HorizontalAlignment.CENTER);
+			alignCellStyle.setFont(boldFont);
 
 			// Define Title
 			String titleHeaders = "LISTA DE BENEFICIÁRIAS EM LISTA DE ESPERA (SEM SERVIÇOS COMUNITÁRIOS)";
@@ -1365,6 +1367,7 @@ public class AgywPrevController {
 			Row titleRow = sheet.createRow(0);
 			// Write Title
 			Cell titleCell = titleRow.createCell(0);
+			titleCell.setCellStyle(boldCellStyle);
 			titleCell.setCellValue(titleHeaders);
 
 			// Merge the cells for the title
@@ -1413,6 +1416,7 @@ public class AgywPrevController {
 			for (int i = 0; i < headers.length; i++) {
 				Cell cell = headerRow.createCell(i);
 				cell.setCellValue(headers[i]);
+				cell.setCellStyle(boldCellStyle);
 			}
 
 			int rowCount = 6; // start from row 1 (row 0 is for headers)

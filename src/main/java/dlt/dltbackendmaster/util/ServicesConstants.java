@@ -302,24 +302,30 @@ public class ServicesConstants
     
     public static final Integer SIYAKHA_LIGHT_EMPREENDEDORISMO = 239;
     
+    public static final Integer SIYAKHA_LIGHT_AUTO_EMPREGO = 240;
+    
+    public static final Integer SIYAKHA_LIGHT_POUPANCA = 241;
+    
+    public static final Integer SIYAKHA_LIGHT_SAIDA = 242;
+    
     // SIYAKHA COMPREHENSIVE
-    public static final Integer SIYAKHA_COMPREHENSIVE_INSCRICAO = 240;
+    public static final Integer SIYAKHA_COMPREHENSIVE_INSCRICAO = 243;
     
-    public static final Integer SIYAKHA_COMPREHENSIVE_HPV_PMT = 241;
+    public static final Integer SIYAKHA_COMPREHENSIVE_HPV_PMT = 244;
     
-    public static final Integer SIYAKHA_COMPREHENSIVE_VOCACIONAL = 242;
+    public static final Integer SIYAKHA_COMPREHENSIVE_VOCACIONAL = 245;
     
-    public static final Integer SIYAKHA_COMPREHENSIVE_EMPREENDEDORISMO = 243;
+    public static final Integer SIYAKHA_COMPREHENSIVE_EMPREENDEDORISMO = 246;
     
-    public static final Integer SIYAKHA_COMPREHENSIVE_ESTAGIO = 244;
+    public static final Integer SIYAKHA_COMPREHENSIVE_ESTAGIO = 247;
     
-    public static final Integer SIYAKHA_COMPREHENSIVE_EMPREGO = 245;
+    public static final Integer SIYAKHA_COMPREHENSIVE_EMPREGO = 248;
     
-    public static final Integer SIYAKHA_COMPREHENSIVE_AUTO_EMPREGO = 246;
+    public static final Integer SIYAKHA_COMPREHENSIVE_AUTO_EMPREGO = 249;
     
-    public static final Integer SIYAKHA_COMPREHENSIVE_POUPANCA = 247;
+    public static final Integer SIYAKHA_COMPREHENSIVE_POUPANCA = 250;
     
-    public static final Integer SIYAKHA_COMPREHENSIVE_SAIDA = 248;
+    public static final Integer SIYAKHA_COMPREHENSIVE_SAIDA = 251;
 
     public static final List<Integer> ESTUDANTES_RECURSOS_SOCIAIS_MANDATORY = Arrays.asList(ESTUDANTES_FALAR_ALTO,
                                                                                             ADULTOS_APOIANTES,
@@ -562,7 +568,10 @@ public class ServicesConstants
     public static final List<Integer> SIYAKHA_LIGHT_SERVICES = Arrays.asList(SIYAKHA_LIGHT_INSCRICAO,
     																			SIYAKHA_LIGHT_HPV_PMT, 
     																			SIYAKHA_LIGHT_VOCACIONAL, 
-    																			SIYAKHA_LIGHT_EMPREENDEDORISMO);
+    																			SIYAKHA_LIGHT_EMPREENDEDORISMO,
+    																			SIYAKHA_LIGHT_AUTO_EMPREGO,
+    																			SIYAKHA_LIGHT_POUPANCA,
+    																			SIYAKHA_LIGHT_SAIDA);
 
     public static final List<Integer> SIYAKHA_COMPREHENSIVE_SERVICES = Arrays.asList(SIYAKHA_COMPREHENSIVE_INSCRICAO,
     																			SIYAKHA_COMPREHENSIVE_HPV_PMT, 

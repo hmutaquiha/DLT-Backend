@@ -54,6 +54,7 @@ public class BeneficiarySyncModel extends BasicLifeCycleSyncModel {
 	private Byte vblt_is_migrant;
 	private Byte vblt_trafficking_victim;
 	private Byte vblt_sexual_exploitation;
+	private Byte vblt_sexual_exploitation_trafficking_victim;
 	private String vblt_sexploitation_time;
 	private Byte vblt_vbg_victim;
 	private String vblt_vbg_type;
@@ -406,6 +407,14 @@ public class BeneficiarySyncModel extends BasicLifeCycleSyncModel {
 
 	public void setVblt_sexual_exploitation(Byte vblt_sexual_exploitation) {
 		this.vblt_sexual_exploitation = vblt_sexual_exploitation;
+	}
+
+	public Byte getVblt_sexual_exploitation_trafficking_victim() {
+		return vblt_sexual_exploitation_trafficking_victim;
+	}
+
+	public void setVblt_sexual_exploitation_trafficking_victim(Byte vblt_sexual_exploitation_trafficking_victim) {
+		this.vblt_sexual_exploitation_trafficking_victim = vblt_sexual_exploitation_trafficking_victim;
 	}
 
 	public String getVblt_sexploitation_time() {

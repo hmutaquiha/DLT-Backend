@@ -53,6 +53,7 @@ import dlt.dltbackendmaster.domain.ReferencesServicesId;
 import dlt.dltbackendmaster.domain.Services;
 import dlt.dltbackendmaster.domain.SubServices;
 import dlt.dltbackendmaster.domain.Us;
+import dlt.dltbackendmaster.domain.UserDetails;
 import dlt.dltbackendmaster.domain.UserLastSync;
 import dlt.dltbackendmaster.domain.Users;
 import dlt.dltbackendmaster.domain.UsersBeneficiariesCustomSync;
@@ -62,6 +63,7 @@ import dlt.dltbackendmaster.domain.watermelondb.BeneficiarySyncModel;
 import dlt.dltbackendmaster.domain.watermelondb.ReferenceServicesSyncModel;
 import dlt.dltbackendmaster.domain.watermelondb.ReferenceSyncModel;
 import dlt.dltbackendmaster.domain.watermelondb.SyncObject;
+import dlt.dltbackendmaster.domain.watermelondb.UserDetailsSyncModel;
 import dlt.dltbackendmaster.domain.watermelondb.UsersSyncModel;
 import dlt.dltbackendmaster.serializers.SyncSerializer;
 import dlt.dltbackendmaster.service.DAOService;
@@ -591,6 +593,7 @@ public class SyncController {
 		SyncObject<BeneficiaryInterventionSyncModel> interventions;
 		SyncObject<ReferenceSyncModel> references;
 		SyncObject<ReferenceServicesSyncModel> referencesServices;
+		SyncObject<UserDetailsSyncModel> userDetails;
 
 		try {
 			users = SyncSerializer.readUsersSyncObject(changes);
@@ -598,6 +601,7 @@ public class SyncController {
 			interventions = SyncSerializer.readInterventionsSyncObject(changes);
 			references = SyncSerializer.readReferencesSyncObject(changes);
 			referencesServices = SyncSerializer.readReferenceServicesSyncObject(changes);
+			userDetails = SyncSerializer.readUserDetailsSyncObject(changes);
 
 			// created entities
 			if (beneficiaries != null && beneficiaries.getCreated().size() > 0) {
@@ -955,6 +959,40 @@ public class SyncController {
 							referenceServices.update(updated, lastPulledAt);
 							service.update(referenceServices);
 						}
+					}
+				}
+			}
+
+			// UserDetails Creation
+			if (userDetails != null && userDetails.getCreated().size() > 0) {
+				List<UserDetailsSyncModel> createdList = mapper.convertValue(userDetails.getCreated(),
+						new TypeReference<List<UserDetailsSyncModel>>() {
+						});
+
+				for (UserDetailsSyncModel created : createdList) {
+					try {
+						UserDetails createdUserDetail = new UserDetails(created, lastPulledAt);
+						service.Save(createdUserDetail);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}
+
+			// UserDetails Update
+			if (userDetails != null && userDetails.getUpdated().size() > 0) {
+				List<UserDetailsSyncModel> updatedList = mapper.convertValue(userDetails.getUpdated(),
+						new TypeReference<List<UserDetailsSyncModel>>() {
+						});
+
+				for (UserDetailsSyncModel updated : updatedList) {
+					try {
+						UserDetails updatedUserDetail = service.GetUniqueEntityByNamedQuery("UserDetails.findByUserId",
+								updated.getUser_id());
+						updatedUserDetail.update(updated, lastPulledAt);
+						service.update(updatedUserDetail);
+					} catch (Exception e) {
+						e.printStackTrace();
 					}
 				}
 			}

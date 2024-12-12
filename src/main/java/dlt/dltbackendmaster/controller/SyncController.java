@@ -971,8 +971,15 @@ public class SyncController {
 
 				for (UserDetailsSyncModel created : createdList) {
 					try {
-						UserDetails createdUserDetail = new UserDetails(created, lastPulledAt);
-						service.Save(createdUserDetail);
+						UserDetails updatedUserDetail = service.GetUniqueEntityByNamedQuery("UserDetails.findByUserId",
+						created.getUser_id());
+						if(updatedUserDetail != null){
+							updatedUserDetail.update(created, lastPulledAt);
+							service.update(updatedUserDetail);
+						}else{
+							UserDetails createdUserDetail = new UserDetails(created, lastPulledAt);
+							service.Save(createdUserDetail);
+						}
 					} catch (Exception e) {
 						e.printStackTrace();
 					}

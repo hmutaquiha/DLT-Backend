@@ -23,6 +23,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 
@@ -217,7 +218,7 @@ public class BeneficiariesInterventions implements java.io.Serializable {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate date = LocalDate.parse(model.getDate(), dtf);
         this.date = date;
-        LocalDate endDate = LocalDate.parse(model.getEnd_date(), dtf);
+		LocalDate endDate = model.getEnd_date() == StringUtils.EMPTY ? null : LocalDate.parse(model.getEnd_date(), dtf);
         this.endDate = endDate;
         this.beneficiaryOfflineId = model.getBeneficiary_offline_id();
         this.id = new BeneficiariesInterventionsId(model.getBeneficiary_id(), model.getSub_service_id(), date);
@@ -472,7 +473,8 @@ public class BeneficiariesInterventions implements java.io.Serializable {
         this.entryPoint = model.getEntry_point();
         this.provider = model.getProvider();
         this.remarks = model.getRemarks();
-        this.endDate = model.getEnd_date() == null ? null : LocalDate.parse(model.getEnd_date(), dtf);
+		this.endDate = model.getEnd_date() == null || model.getEnd_date() == StringUtils.EMPTY ? null
+				: LocalDate.parse(model.getEnd_date(), dtf);
         this.status = model.getStatus();
 		this.dateCreated = model.getDate_created();
     }

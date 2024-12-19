@@ -138,8 +138,8 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter{
         mailSender.setPort(587);
         // FIXME: Put valid credentials for e-mail and follow instructions on the link 
         // https://roytuts.com/gmail-smtp-and-security-settings-for-sending-email/
-        mailSender.setUsername("noreply@csaude.org.mz");
-        mailSender.setPassword("xdcukpqttzluatou");
+        mailSender.setUsername("change@email.here");
+        mailSender.setPassword("changepasswordhere");
 
         Properties javaMailProperties = new Properties();
         javaMailProperties.put("mail.smtp.auth", true);

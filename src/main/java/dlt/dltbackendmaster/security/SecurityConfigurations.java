@@ -86,11 +86,15 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter{
             .antMatchers(HttpMethod.POST, "/api/login").permitAll()
             .antMatchers(HttpMethod.OPTIONS, "/api/login").permitAll()
             .antMatchers(HttpMethod.OPTIONS, "/api/**").permitAll()
+            	// allow anonymous POSTs to authenticate
+            .antMatchers(HttpMethod.POST, "/authenticate").permitAll()
+            .antMatchers(HttpMethod.POST, "/authenticate/**").permitAll()
             	//allow anonymous GETs to API
             .antMatchers(HttpMethod.GET, "/api/**").authenticated()
             .antMatchers(HttpMethod.POST, "/api/**").permitAll()
             .antMatchers(HttpMethod.PUT, "/api/**").authenticated()
             .antMatchers(HttpMethod.OPTIONS).permitAll()
+            .antMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
             .regexMatchers(HttpMethod.OPTIONS, "").permitAll()
             .anyRequest().permitAll().and()
             	//all other request need to be authenticated
@@ -134,8 +138,8 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter{
         mailSender.setPort(587);
         // FIXME: Put valid credentials for e-mail and follow instructions on the link 
         // https://roytuts.com/gmail-smtp-and-security-settings-for-sending-email/
-        mailSender.setUsername("change@email.here");
-        mailSender.setPassword("changepasswordhere");
+        mailSender.setUsername("noreply@csaude.org.mz");
+        mailSender.setPassword("xdcukpqttzluatou");
 
         Properties javaMailProperties = new Properties();
         javaMailProperties.put("mail.smtp.auth", true);

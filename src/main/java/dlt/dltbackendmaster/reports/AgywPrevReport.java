@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
 import dlt.dltbackendmaster.domain.AgywPrev;
+import dlt.dltbackendmaster.reports.domain.BeneficiaryVulnerability;
 import dlt.dltbackendmaster.reports.domain.PrimaryPackageRO;
 import dlt.dltbackendmaster.reports.domain.ReportObject;
 import dlt.dltbackendmaster.reports.domain.ResultObject;
@@ -1026,6 +1027,56 @@ public class AgywPrevReport {
 				"AgywPrev.findBeneficiariesWithoutCommunityInterventions", endDate, Arrays.asList(districts),
 				startDate);
 		return dataObjs;
+	}
+
+	public List<BeneficiaryVulnerability> getBeneficiariesVulnerabilities(String startDate, String endDate) {
+		List<BeneficiaryVulnerability> beneficiariesVulnerabilities = new ArrayList<>();
+		List<Object> dataObjs = service.GetAllEntityByNamedNativeQuery("AgywPrev.findBeneficiariesVulnerabilities",
+				endDate, startDate);
+
+		for (Object object : dataObjs) {
+			BeneficiaryVulnerability beneficiaryVulnerability = new BeneficiaryVulnerability();
+			beneficiaryVulnerability.setProvincia((String) getValueAtIndex(object, 0));
+			beneficiaryVulnerability.setDistrito((String) getValueAtIndex(object, 1));
+			beneficiaryVulnerability.setOnde_mora((String) getValueAtIndex(object, 2));
+			beneficiaryVulnerability.setPonto_entrada((String) getValueAtIndex(object, 3));
+			beneficiaryVulnerability.setNome_ponto_entrada((String) getValueAtIndex(object, 4));
+			beneficiaryVulnerability.setOrganizacao((String) getValueAtIndex(object, 5));
+			beneficiaryVulnerability.setData_inscricao((String) getValueAtIndex(object, 6));
+			beneficiaryVulnerability.setData_registo((String) getValueAtIndex(object, 7));
+			beneficiaryVulnerability.setRegistado_por((String) getValueAtIndex(object, 8));
+			beneficiaryVulnerability.setData_actualizacao((String) getValueAtIndex(object, 9));
+			beneficiaryVulnerability.setActualizado_por((String) getValueAtIndex(object, 10));
+			beneficiaryVulnerability.setNui((String) getValueAtIndex(object, 11));
+			beneficiaryVulnerability.setSexo((String) getValueAtIndex(object, 12));
+			beneficiaryVulnerability.setIdade_registo((Integer) getValueAtIndex(object, 13));
+			beneficiaryVulnerability.setIdade_actual((Integer) getValueAtIndex(object, 14));
+			beneficiaryVulnerability.setFaixa_registo((String) getValueAtIndex(object, 15));
+			beneficiaryVulnerability.setFaixa_actual((String) getValueAtIndex(object, 16));
+			beneficiaryVulnerability.setData_nascimento((String) getValueAtIndex(object, 17));
+			beneficiaryVulnerability.setVulneravel((String) getValueAtIndex(object, 18));
+			beneficiaryVulnerability.setCom_quem_mora((String) getValueAtIndex(object, 19));
+			beneficiaryVulnerability.setSustenta_casa((String) getValueAtIndex(object, 20));
+			beneficiaryVulnerability.setVai_escola((String) getValueAtIndex(object, 21));
+			beneficiaryVulnerability.setTem_deficiencia((String) getValueAtIndex(object, 22));
+			beneficiaryVulnerability.setTipo_deficiencia((String) getValueAtIndex(object, 23));
+			beneficiaryVulnerability.setFoi_casada((String) getValueAtIndex(object, 24));
+			beneficiaryVulnerability.setIdp((String) getValueAtIndex(object, 25));
+			beneficiaryVulnerability.setTeste_hiv((String) getValueAtIndex(object, 26));
+			beneficiaryVulnerability.setSexualmente_activa((String) getValueAtIndex(object, 27));
+			beneficiaryVulnerability.setGravida_ou_tem_filhos((String) getValueAtIndex(object, 28));
+			beneficiaryVulnerability.setVitima_exploracao_sexual_trafico((String) getValueAtIndex(object, 29));
+			beneficiaryVulnerability.setTrabalhadora_sexo((String) getValueAtIndex(object, 30));
+			beneficiaryVulnerability.setRelacoes_multiplas_concorrentes((String) getValueAtIndex(object, 31));
+			beneficiaryVulnerability.setVitima_vbg((String) getValueAtIndex(object, 32));
+			beneficiaryVulnerability.setTipo_vbg((String) getValueAtIndex(object, 33));
+			beneficiaryVulnerability.setAbuso_alcool_drogas((String) getValueAtIndex(object, 34));
+			beneficiaryVulnerability.setHistorico_its((String) getValueAtIndex(object, 35));
+
+			beneficiariesVulnerabilities.add(beneficiaryVulnerability);
+		}
+
+		return beneficiariesVulnerabilities;
 	}
 
 	// Method to retrieve value for a specific index from the reportObject

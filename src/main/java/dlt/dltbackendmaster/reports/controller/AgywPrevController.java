@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
@@ -42,6 +43,7 @@ import dlt.dltbackendmaster.reports.domain.PrimaryPackageRO;
 import dlt.dltbackendmaster.reports.domain.ResultObject;
 import dlt.dltbackendmaster.service.BeneficiariyService;
 import dlt.dltbackendmaster.service.DAOService;
+import io.swagger.v3.oas.annotations.Hidden;
 
 /**
  * Controller resposável pela comunicação dos dados do relatório
@@ -51,6 +53,7 @@ import dlt.dltbackendmaster.service.DAOService;
  */
 @RestController
 @RequestMapping("/api/agyw-prev")
+@Hidden
 public class AgywPrevController {
 	private static final int MAX_ROWS_NUMBER = 1000000;
 

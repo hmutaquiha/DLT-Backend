@@ -1,5 +1,7 @@
 package dlt.dltbackendmaster.security;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +22,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import dlt.dltbackendmaster.domain.Account;
+import dlt.dltbackendmaster.domain.UserDetails;
 import dlt.dltbackendmaster.domain.Users;
 import dlt.dltbackendmaster.service.DAOService;
 
@@ -31,32 +34,48 @@ import dlt.dltbackendmaster.service.DAOService;
 @Component
 public class UserDetailsServiceImpl implements UserDetailsService {
 	Logger logger = LoggerFactory.getLogger(UserDetailsServiceImpl.class);
-	
+
 	private static final String QUERY_FIND_USER_BY_USERNAME = "select u from Users u where u.username = :username";
-	
+
 	private final AccountStatusUserDetailsChecker detailsChecker = new AccountStatusUserDetailsChecker();
-	
+
 	@Autowired
 	DAOService service;
 
 	@Override
 	public Account loadUserByUsername(String username) throws UsernameNotFoundException {
 		Map<String, Object> todo = new HashMap<String, Object>();
-        todo.put("username", username);
- 
+		todo.put("username", username);
+
 		try {
 			List<Users> users = service.findByJPQuery(QUERY_FIND_USER_BY_USERNAME, todo);
-			
-			if(users != null && !users.isEmpty()) {
+
+			if (users != null && !users.isEmpty()) {
 				Users user = users.get(0);
 				Account account = new Account(user);
 				detailsChecker.check(account);
+
+				UserDetails userDetail = service.GetUniqueEntityByNamedQuery("UserDetails.findByUserId", String.valueOf(user.getId()));
 				
-				Date now = new Date();
-				user.setLastLoginDate(now);
-				user.setDateUpdated(now);
-				
-				service.update(user);
+				if(userDetail != null) {
+					LocalDateTime now = LocalDateTime.now();
+					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+					String formattedNow = now.format(formatter);
+					
+					userDetail.setLastLoginDate(formattedNow);
+					
+					service.update(userDetail);
+				}else {
+					UserDetails newUserDetail = new UserDetails();
+					LocalDateTime now = LocalDateTime.now();
+					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+					String formattedNow = now.format(formatter);
+					
+					newUserDetail.setUserId(String.valueOf(user.getId()));
+					newUserDetail.setLastLoginDate(formattedNow);
+					
+					service.Save(newUserDetail);
+				}
 
 				return account;
 			}

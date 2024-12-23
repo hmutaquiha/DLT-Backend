@@ -413,6 +413,22 @@ public class ServiceCompletionRules {
 		return subServices.contains(ServicesConstants.PAPO_FAMILIA);
 	}
 
+	public static boolean completedSiyakhaLight(List<Integer> subServices) {
+		return containsAny(ServicesConstants.SIYAKHA_LIGHT_SERVICES, subServices);
+	}
+
+	public static boolean completedSiyakhaLight(AgywPrev agywPrev) {
+		return agywPrev.getSiyakha_light() > 0;
+	}
+
+	public static boolean completedSiyakhaComprehensive(List<Integer> subServices) {
+		return containsAny(ServicesConstants.SIYAKHA_COMPREHENSIVE_SERVICES, subServices);
+	}
+
+	public static boolean completedSiyakhaComprehensive(AgywPrev agywPrev) {
+		return agywPrev.getSiyakha_comprehensive() > 0;
+	}
+
 	public static boolean completedViolencePrevention15Plus(AgywPrev agywPrev) {
 		return agywPrev.getViolence_prevention_15_plus() > 2;
 	}
@@ -539,6 +555,10 @@ public class ServiceCompletionRules {
 			return completedFinancialLiteracyAflateen(subServices) ? ReferencesStatus.ADDRESSED
 					: startedFinancialLiteracyAflateen(subServices) ? ReferencesStatus.PARTIALLY_ADDRESSED
 							: ReferencesStatus.PENDING;
+		case 59:
+			return completedSiyakhaLight(subServices) ? ReferencesStatus.ADDRESSED : ReferencesStatus.PENDING;
+		case 60:
+			return completedSiyakhaComprehensive(subServices) ? ReferencesStatus.ADDRESSED : ReferencesStatus.PENDING;
 
 		default:
 			return ReferencesStatus.PENDING;
@@ -552,30 +572,46 @@ public class ServiceCompletionRules {
 	 * @param reference
 	 * @return
 	 */
-	public static Integer getReferenceStatus(References reference,
-			Collection<BeneficiariesInterventions> interventions) {
+	public static Integer getReferenceStatus(
+	        References referenceDB,
+	        Collection<BeneficiariesInterventions> interventions
+	) {
 		int pendingServices = 0;
+		int declinedServices = 0;
 		int completedServices = 0;
+		
+		Set<ReferencesServices> referencesServiceses = referenceDB.getReferencesServiceses(); 
+		
 
-		Set<ReferencesServices> referencesServiceses = reference.getReferencesServiceses();
-
-		for (ReferencesServices referencesServices : referencesServiceses) {
+		for (ReferencesServices referencesService : referencesServiceses) {
 			Integer referenceServiceStatus = getReferenceServiceStatus(interventions,
-					referencesServices.getServices().getId());
+					referencesService.getServices().getId());
 
-			if (referenceServiceStatus == ReferencesStatus.PENDING) {
+			if(referencesService.getStatus() ==ReferencesStatus.CANCELLED) {
+				declinedServices++;
+			} else if (referenceServiceStatus == ReferencesStatus.PENDING) {
 				pendingServices++;
 			} else if (referenceServiceStatus != ReferencesStatus.PARTIALLY_ADDRESSED) {
 				completedServices++;
 			}
 		}
 
-		if (pendingServices == referencesServiceses.size()) {
-			return ReferencesStatus.PENDING;
-		} else if (completedServices == referencesServiceses.size()) {
-			return ReferencesStatus.ADDRESSED;
-		} else {
-			return ReferencesStatus.PARTIALLY_ADDRESSED;
+		if(declinedServices==0) {
+			if (pendingServices == referencesServiceses.size()) {
+				return ReferencesStatus.PENDING;
+			} else if (completedServices == referencesServiceses.size()) {
+				return ReferencesStatus.ADDRESSED;
+			} else {
+				return ReferencesStatus.PARTIALLY_ADDRESSED;
+			}
+		}else{
+			if (completedServices == referencesServiceses.size() 
+					|| declinedServices==referencesServiceses.size() 
+					|| (completedServices + declinedServices)== referencesServiceses.size()) {
+				return ReferencesStatus.ADDRESSED;
+			} else {
+				return ReferencesStatus.PARTIALLY_ADDRESSED;
+			}
 		}
 	}
 

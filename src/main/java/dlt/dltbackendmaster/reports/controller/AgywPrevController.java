@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
@@ -28,6 +29,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -40,6 +43,7 @@ import dlt.dltbackendmaster.reports.domain.PrimaryPackageRO;
 import dlt.dltbackendmaster.reports.domain.ResultObject;
 import dlt.dltbackendmaster.service.BeneficiariyService;
 import dlt.dltbackendmaster.service.DAOService;
+import io.swagger.v3.oas.annotations.Hidden;
 
 /**
  * Controller resposável pela comunicação dos dados do relatório
@@ -49,6 +53,7 @@ import dlt.dltbackendmaster.service.DAOService;
  */
 @RestController
 @RequestMapping("/api/agyw-prev")
+@Hidden
 public class AgywPrevController {
 	private static final int MAX_ROWS_NUMBER = 1000000;
 
@@ -67,6 +72,10 @@ public class AgywPrevController {
 	private static final String VULNERABILITIES_AND_SERVICES_SUMMARY_REPORT_NAME = "DLT2.0_BENEFICIARIAS_VULNERABILIDADES_E_SERVICOS_RESUMO_POR";
 
 	private static final String BENEFICIARIES_WITHOUT_PP_COMPLETED = "DLT2.0_BENEFICIARIAS_NAO_COMPLETARAM_PACOTE_PRIMARIO";
+
+	private static final String AGYW_PREV_BENEFICIARIES = "PEPFAR_MER_2.8_AGYW_PREV_Beneficiaries";
+
+	private static final String BENEFICIARIES_WAITING_LIST = "DLT2.0_BENEFICIARIAS_EM_LISTA_ESPERA_PROVINCIA";
 
 	private final DAOService service;
 	private final BeneficiariyService beneficiariyService;
@@ -171,16 +180,14 @@ public class AgywPrevController {
 		boolean isEndOfCycle = false;
 
 		Date today = new Date();
-		SimpleDateFormat sdfToday = new SimpleDateFormat("yyyy-MM-dd");
-		String formattedToday = sdfToday.format(today);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		String formattedToday = sdf.format(today);
 
 		Date initialDate = new Date(startDate);
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		String formattedInitialDate = sdf.format(initialDate);
 
 		Date finalDate = new Date(endDate);
-		SimpleDateFormat sdfFinal = new SimpleDateFormat("yyyy-MM-dd");
-		String formattedFinalDate = sdfFinal.format(finalDate);
+		String formattedFinalDate = sdf.format(finalDate);
 
 		createDirectory(REPORTS_HOME + "/" + username);
 
@@ -217,7 +224,7 @@ public class AgywPrevController {
 			titleCell.setCellValue(titleHeaders);
 
 			// Merge the cells for the title
-			sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 16));
+			sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 17));
 
 			// Define Initial Date
 			String initialDateHeaders[] = { "Data de Início:", formattedInitialDate };
@@ -248,11 +255,11 @@ public class AgywPrevController {
 			cell1.setCellStyle(alignCellStyle);
 
 			// Merge cells for session headers
-			sheet.addMergedRegion(new CellRangeAddress(4, 4, 0, 16)); // Merge first 17 columns
+			sheet.addMergedRegion(new CellRangeAddress(4, 4, 0, 17)); // Merge first 17 columns
 
 			// Define headers
-			String[] headers = { "Província", "Distrito", "Onde Mora", "Ponto de Entrada", "Organização",
-					"Data de Inscrição", "Data de Registo", "Registado Por", "Data da Última Actualização",
+			String[] headers = { "Província", "Distrito", "Onde Mora", "Ponto de Entrada", "Nome do Ponto de Entrada", 
+					"Organização", "Data de Inscrição", "Data de Registo", "Registado Por", "Data da Última Actualização",
 					"Actualizado Por", "NUI", "Sexo", "Idade (Registo)", "Idade (Actual)", "Faixa Etária (Registo)",
 					"Faixa Etária (Actual)", "Data de Nascimento" };
 
@@ -316,6 +323,171 @@ public class AgywPrevController {
 		return new ResponseEntity<>(generatedFilePath, HttpStatus.OK);
 	}
 
+	@GetMapping(path = "/getNewlyEnrolledAgywAndServices")
+	public ResponseEntity<String> getNewlyEnrolledAgywAndServices(@RequestParam(name = "province") String province,
+			@RequestParam(name = "districts") Integer[] districts, @RequestParam(name = "startDate") Long startDate,
+			@RequestParam(name = "endDate") Long endDate, @RequestParam(name = "pageSize") int pageSize,
+			@RequestParam(name = "username") String username) throws IOException {
+
+		AgywPrevReport report = new AgywPrevReport(service);
+
+		boolean isEndOfCycle = false;
+
+		Date initialDate = new Date(startDate);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		String formattedInitialDate = sdf.format(initialDate);
+
+		Date finalDate = new Date(endDate);
+		String formattedFinalDate = sdf.format(finalDate); // Using the same formatter for final date
+
+		String generationDate = sdf.format(new Date());
+
+		createDirectory(REPORTS_HOME + "/" + username);
+
+		String generatedFilePath = REPORTS_HOME + "/" + username + "/" + NEW_ENROLLED_REPORT_NAME + "_"
+				+ province.toUpperCase() + "_" + formattedInitialDate + "_" + formattedFinalDate + "_" + generationDate
+				+ ".xlsx";
+
+		try {
+			// Set up streaming workbook
+			SXSSFWorkbook workbook = new SXSSFWorkbook();
+			workbook.setCompressTempFiles(true); // Enable compression of temporary files
+
+			// Create a sheet
+			Sheet sheet = workbook.createSheet(SHEET_LABEL);
+			// Create font for bold style
+			Font boldFont = workbook.createFont();
+			boldFont.setBold(true);
+
+			// Apply bold font style to the cells in the header row
+			CellStyle boldCellStyle = workbook.createCellStyle();
+			boldCellStyle.setFont(boldFont);
+
+			// Apply bold font style to the cells in the header row
+			CellStyle alignCellStyle = workbook.createCellStyle();
+			// alignCellStyle.setFont(boldFont);
+			alignCellStyle.setAlignment(HorizontalAlignment.CENTER);
+
+			// Define Title
+			String titleHeaders = "LISTA DE RAMJ REGISTADAS NO DLT NO PERÍODO EM CONSIDERAÇÃO, SUAS VULNERABILIDADES E SERVIÇOS RECEBIDOS ";
+			// Create a header row
+			Row titleRow = sheet.createRow(0);
+			// Write Title
+			Cell titleCell = titleRow.createCell(0);
+			titleCell.setCellValue(titleHeaders);
+
+			// Merge the cells for the title
+			sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 36));
+
+			// Define Initial Date
+			String initialDateHeaders[] = { "Data de Início:", formattedInitialDate };
+			// Create a header row
+			Row initialHeaderRow = sheet.createRow(1);
+			// Write headers
+			for (int i = 0; i < initialDateHeaders.length; i++) {
+				Cell cell = initialHeaderRow.createCell(i);
+				cell.setCellValue(initialDateHeaders[i]);
+			}
+
+			// Define Final Date
+			String finalDateHeaders[] = { "Data de Fim:", formattedFinalDate };
+			// Create a header row
+			Row finalHeaderRow = sheet.createRow(2);
+			// Write headers
+			for (int i = 0; i < finalDateHeaders.length; i++) {
+				Cell cell = finalHeaderRow.createCell(i);
+				cell.setCellValue(finalDateHeaders[i]);
+			}
+
+			// Create a header row
+			Row sessionRow = sheet.createRow(3);
+			// Write Title and Merge cells for session headers
+
+			Cell cell1 = sessionRow.createCell(0);
+			cell1.setCellValue("Informação Demográfica");
+			cell1.setCellStyle(alignCellStyle);
+
+			Cell cell2 = sessionRow.createCell(18);
+			cell2.setCellValue("Vulnerabilidades Gerais");
+			cell2.setCellStyle(alignCellStyle);
+
+			Cell cell3 = sessionRow.createCell(27);
+			cell3.setCellValue("Serviços e Sub-Serviços");
+			cell3.setCellStyle(alignCellStyle);
+
+			// Merge cells for session headers
+			sheet.addMergedRegion(new CellRangeAddress(3, 3, 0, 17)); // Merge first 18 columns
+			sheet.addMergedRegion(new CellRangeAddress(3, 3, 18, 26)); // Merge next 9 columns
+			sheet.addMergedRegion(new CellRangeAddress(3, 3, 27, 36)); // Merge last 10 columns
+
+			// Define headers
+			String[] headers = { "Província", "Distrito", "Onde Mora", "Ponto de Entrada", "Nome do Ponto de Entrada",
+					"Organização", "Data de Inscrição", "Data de Registo", "Registado Por",
+					"Data da Última Actualização", "Actualizado Por", "NUI", "Sexo", "Idade (Registo)",
+					"Idade (Actual)", "Faixa Etária (Registo)", "Faixa Etária (Actual)", "Data de Nascimento",
+					"Incluida no Indicador AGYW_PREV / Beneficiaria DREAMS?", "Com Quem Mora", "Deslocado Interno / IDP",
+					 "Sustenta a Casa", "Vai à escola", "Tem Deficiência", "Tipo de Deficiência", "É ou Já foi casada",
+					"Já fez teste de HIV", "Área de Serviço", "Serviço", "Sub-Serviço",
+					"Pacote de Serviço", "Ponto de Entrada de Serviço", "Localização do Serviço", "Data do Serviço",
+					"Provedor do Serviço", "Outras Observações", "Status" };
+
+			// Create a header row
+			Row headerRow = sheet.createRow(4);
+			// Write headers
+			for (int i = 0; i < headers.length; i++) {
+				Cell cell = headerRow.createCell(i);
+				cell.setCellValue(headers[i]);
+			}
+
+			int rowCount = 5; // start from row 1 (row 0 is for headers)
+			int currentSheet;
+
+			for (currentSheet = 0; currentSheet < currentSheet + 1; currentSheet++) {
+				if (!isEndOfCycle) {
+					List<Object> reportObjectList = report.getNewlyEnrolledAgywAndServices(districts,
+							new Date(startDate), new Date(endDate), currentSheet, pageSize);
+
+					if (reportObjectList.size() < MAX_ROWS_NUMBER) {
+						isEndOfCycle = true;
+					}
+					if (currentSheet != 0) {
+						rowCount = 0;
+						sheet = workbook.createSheet(SHEET_LABEL + currentSheet);
+					}
+					for (Object reportObject : reportObjectList) {
+						Row row = sheet.createRow(rowCount++);
+						// Write values to cells based on headers
+						for (int i = 0; i < headers.length; i++) {
+							Object value = getValueAtIndex(reportObject, i); // You need to implement this method
+							if (value != null) {
+								row.createCell(i).setCellValue(String.valueOf(value));
+							}
+						}
+					}
+				} else {
+					break;
+				}
+			}
+			// Write the workbook content to a file
+			FileOutputStream fileOut = new FileOutputStream(generatedFilePath);
+			workbook.write(fileOut);
+			fileOut.close();
+
+			// Dispose of temporary files backing this workbook on disk
+			workbook.dispose();
+
+			// Close the workbook
+			workbook.close();
+
+			System.out.println("Excel file has been created successfully ! - path: " + generatedFilePath);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+		return new ResponseEntity<>(generatedFilePath, HttpStatus.OK);
+	}
+
 	@GetMapping(produces = "application/json", path = "/getNewlyEnrolledAgywAndServicesSummary")
 	public ResponseEntity<String> getNewlyEnrolledAgywAndServicesSummary(
 			@RequestParam(name = "province") String province, @RequestParam(name = "districts") Integer[] districts,
@@ -334,10 +506,13 @@ public class AgywPrevController {
 		SimpleDateFormat sdfFinal = new SimpleDateFormat("yyyy-MM-dd");
 		String formattedFinalDate = sdfFinal.format(finalDate);
 
+		String generationDate = sdf.format(new Date());
+
 		createDirectory(REPORTS_HOME + "/" + username);
 
 		String generatedFilePath = REPORTS_HOME + "/" + username + "/" + NEW_ENROLLED_SUMMARY_REPORT_NAME + "_"
-				+ province.toUpperCase() + "_" + formattedInitialDate + "_" + formattedFinalDate + "_" + ".xlsx";
+				+ province.toUpperCase() + "_" + formattedInitialDate + "_" + formattedFinalDate + "_" + generationDate
+				+ ".xlsx";
 
 		try {
 			// Set up streaming workbook
@@ -368,7 +543,7 @@ public class AgywPrevController {
 			titleCell.setCellValue(titleHeaders);
 
 			// Merge the cells for the title
-			sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 39));
+			sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 37));
 
 			// Define Initial Date
 			String initialDateHeaders[] = { "Data de Início:", formattedInitialDate };
@@ -398,22 +573,22 @@ public class AgywPrevController {
 			cell1.setCellValue("Dados da Beneficiária");
 			cell1.setCellStyle(alignCellStyle);
 
-			Cell cell2 = sessionRow.createCell(9);
+			Cell cell2 = sessionRow.createCell(10);
 			cell2.setCellValue("Serviços Primários");
 			cell2.setCellStyle(alignCellStyle);
 
-			Cell cell3 = sessionRow.createCell(23);
+			Cell cell3 = sessionRow.createCell(24);
 			cell3.setCellValue("Serviços Secundários");
 			cell3.setCellStyle(alignCellStyle);
 
 			// Merge cells for session headers
-			sheet.addMergedRegion(new CellRangeAddress(3, 3, 0, 8)); // Merge first 17 columns
-			sheet.addMergedRegion(new CellRangeAddress(3, 3, 9, 22)); // Merge next 13 columns
-			sheet.addMergedRegion(new CellRangeAddress(3, 3, 23, 36)); // Merge last 10 columns
+			sheet.addMergedRegion(new CellRangeAddress(3, 3, 0, 9)); // Merge first 10 columns
+			sheet.addMergedRegion(new CellRangeAddress(3, 3, 10, 23)); // Merge next 13 columns
+			sheet.addMergedRegion(new CellRangeAddress(3, 3, 24, 37)); // Merge last 10 columns
 
 			// Define headers
-			String[] headers = { "Província", "Distrito", "NUI", "Idade Actual", "Faixa Etária Actual",
-					"Número de Vulnerabilidades", "Incluida no Indicador AGYW_PREV / Beneficiaria DREAMS ?",
+			String[] headers = { "Província", "Distrito", "Local Registo", "NUI", "Idade Actual", "Faixa Etária Actual",
+					"Número de Vulnerabilidades", "Incluida no Indicador AGYW_PREV / Beneficiaria DREAMS?",
 					"Referências Clinicas não atendidas", "Referências Comunitárias não atendidas",
 					"Sessões de Recursos Sociais", "Data da Última Sessão: Recursos Sociais",
 					"Sessões de Prevenção do HIV", "Data da Última Sessão: HIV", "Sessões de Prevenção do VBG",
@@ -511,10 +686,13 @@ public class AgywPrevController {
 		SimpleDateFormat sdfFinal = new SimpleDateFormat("yyyy-MM-dd");
 		String formattedFinalDate = sdfFinal.format(finalDate);
 
+		String generationDate = sdf.format(new Date());
+
 		createDirectory(REPORTS_HOME + "/" + username);
 
 		String generatedFilePath = REPORTS_HOME + "/" + username + "/" + VULNERABILITIES_AND_SERVICES_REPORT_NAME + "_"
-				+ province.toUpperCase() + "_" + formattedInitialDate + "_" + formattedFinalDate + "_" + ".xlsx";
+				+ province.toUpperCase() + "_" + formattedInitialDate + "_" + formattedFinalDate + "_" + generationDate
+				+ ".xlsx";
 
 		try {
 			// Set up streaming workbook
@@ -545,7 +723,7 @@ public class AgywPrevController {
 			titleCell.setCellValue(titleHeaders);
 
 			// Merge the cells for the title
-			sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 39));
+			sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 36));
 
 			// Define Initial Date
 			String initialDateHeaders[] = { "Data de Início:", formattedInitialDate };
@@ -575,30 +753,29 @@ public class AgywPrevController {
 			cell1.setCellValue("Informação Demográfica");
 			cell1.setCellStyle(alignCellStyle);
 
-			Cell cell2 = sessionRow.createCell(17);
+			Cell cell2 = sessionRow.createCell(18);
 			cell2.setCellValue("Vulnerabilidades Gerais");
 			cell2.setCellStyle(alignCellStyle);
 
-			Cell cell3 = sessionRow.createCell(30);
+			Cell cell3 = sessionRow.createCell(27);
 			cell3.setCellValue("Serviços e Sub-Serviços");
 			cell3.setCellStyle(alignCellStyle);
 
 			// Merge cells for session headers
-			sheet.addMergedRegion(new CellRangeAddress(3, 3, 0, 16)); // Merge first 17 columns
-			sheet.addMergedRegion(new CellRangeAddress(3, 3, 17, 29)); // Merge next 13 columns
-			sheet.addMergedRegion(new CellRangeAddress(3, 3, 30, 39)); // Merge last 10 columns
+			sheet.addMergedRegion(new CellRangeAddress(3, 3, 0, 17)); // Merge first 18 columns
+			sheet.addMergedRegion(new CellRangeAddress(3, 3, 18, 26)); // Merge next 9 columns
+			sheet.addMergedRegion(new CellRangeAddress(3, 3, 27, 36)); // Merge last 10 columns
 
 			// Define headers
-			String[] headers = { "Província", "Distrito", "Onde Mora", "Ponto de Entrada", "Organização",
-					"Data de Inscrição", "Data de Registo", "Registado Por", "Data da Última Actualização",
-					"Actualizado Por", "NUI", "Sexo", "Idade (Registo)", "Idade (Actual)", "Faixa Etária (Registo)",
-					"Faixa Etária (Actual)", "Data de Nascimento",
-					"Incluida no Indicador AGYW_PREV / Beneficiaria DREAMS ?", "Com Quem Mora", "Sustenta a Casa",
-					"É Órfã?", "Vai à escola", "Tem Deficiência", "Tipo de Deficiência", "Já foi casada",
-					"Já esteve grávida", "Tem filhos", "Está Grávida ou a Amamentar", "Trabalha", "Já fez teste de HIV",
-					"Área de Serviço", "Serviço", "Sub-Serviço", "Pacote de Serviço", "Ponto de Entrada de Serviço",
-					"Localização do Serviço", "Data do Serviço", "Provedor do Serviço", "Outras Observações",
-					"Status" };
+			String[] headers = { "Província", "Distrito", "Onde Mora", "Ponto de Entrada", "Nome do Ponto de Entrada",
+					"Organização", "Data de Inscrição", "Data de Registo", "Registado Por",
+					"Data da Última Actualização", "Actualizado Por", "NUI", "Sexo", "Idade (Registo)",
+					"Idade (Actual)", "Faixa Etária (Registo)", "Faixa Etária (Actual)", "Data de Nascimento",
+					"Incluida no Indicador AGYW_PREV / Beneficiaria DREAMS?", "Com Quem Mora", "Deslocado Interno / IDP",
+					"Sustenta a Casa", "Vai à escola", "Tem Deficiência", "Tipo de Deficiência", "É ou Já foi casada",
+					"Já fez teste de HIV", "Área de Serviço", "Serviço", "Sub-Serviço",
+					"Pacote de Serviço", "Ponto de Entrada de Serviço", "Localização do Serviço", "Data do Serviço",
+					"Provedor do Serviço", "Outras Observações", "Status" };
 
 			// Create a header row
 			Row headerRow = sheet.createRow(4);
@@ -676,11 +853,13 @@ public class AgywPrevController {
 		SimpleDateFormat sdfFinal = new SimpleDateFormat("yyyy-MM-dd");
 		String formattedFinalDate = sdfFinal.format(finalDate);
 
+		String generationDate = sdf.format(new Date());
+
 		createDirectory(REPORTS_HOME + "/" + username);
 
 		String generatedFilePath = REPORTS_HOME + "/" + username + "/"
 				+ VULNERABILITIES_AND_SERVICES_SUMMARY_REPORT_NAME + "_" + province.toUpperCase() + "_"
-				+ formattedInitialDate + "_" + formattedFinalDate + "_" + ".xlsx";
+				+ formattedInitialDate + "_" + formattedFinalDate + "_" + generationDate + ".xlsx";
 
 		try {
 			// Set up streaming workbook
@@ -711,7 +890,7 @@ public class AgywPrevController {
 			titleCell.setCellValue(titleHeaders);
 
 			// Merge the cells for the title
-			sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 39));
+			sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 37));
 
 			// Define Initial Date
 			String initialDateHeaders[] = { "Data de Início:", formattedInitialDate };
@@ -741,22 +920,22 @@ public class AgywPrevController {
 			cell1.setCellValue("Dados da Beneficiária");
 			cell1.setCellStyle(alignCellStyle);
 
-			Cell cell2 = sessionRow.createCell(9);
+			Cell cell2 = sessionRow.createCell(10);
 			cell2.setCellValue("Serviços Primários");
 			cell2.setCellStyle(alignCellStyle);
 
-			Cell cell3 = sessionRow.createCell(23);
+			Cell cell3 = sessionRow.createCell(24);
 			cell3.setCellValue("Serviços Secundários");
 			cell3.setCellStyle(alignCellStyle);
 
 			// Merge cells for session headers
-			sheet.addMergedRegion(new CellRangeAddress(3, 3, 0, 8)); // Merge first 17 columns
-			sheet.addMergedRegion(new CellRangeAddress(3, 3, 9, 22)); // Merge next 13 columns
-			sheet.addMergedRegion(new CellRangeAddress(3, 3, 23, 36)); // Merge last 10 columns
+			sheet.addMergedRegion(new CellRangeAddress(3, 3, 0, 9)); // Merge first 17 columns
+			sheet.addMergedRegion(new CellRangeAddress(3, 3, 10, 23)); // Merge next 13 columns
+			sheet.addMergedRegion(new CellRangeAddress(3, 3, 24, 37)); // Merge last 10 columns
 
 			// Define headers
-			String[] headers = { "Província", "Distrito", "NUI", "Idade Actual", "Faixa Etária Actual",
-					"Número de Vulnerabilidades", "Incluida no Indicador AGYW_PREV / Beneficiaria DREAMS ?",
+			String[] headers = { "Província", "Distrito", "Local Registo", "NUI", "Idade Actual", "Faixa Etária Actual",
+					"Número de Vulnerabilidades", "Incluida no Indicador AGYW_PREV / Beneficiaria DREAMS?",
 					"Referências Clinicas não atendidas", "Referências Comunitárias não atendidas",
 					"Sessões de Recursos Sociais", "Data da Última Sessão: Recursos Sociais",
 					"Sessões de Prevenção do HIV", "Data da Última Sessão: HIV", "Sessões de Prevenção do VBG",
@@ -809,169 +988,6 @@ public class AgywPrevController {
 				}
 			}
 
-			// Write the workbook content to a file
-			FileOutputStream fileOut = new FileOutputStream(generatedFilePath);
-			workbook.write(fileOut);
-			fileOut.close();
-
-			// Dispose of temporary files backing this workbook on disk
-			workbook.dispose();
-
-			// Close the workbook
-			workbook.close();
-
-			System.out.println("Excel file has been created successfully ! - path: " + generatedFilePath);
-		} catch (IOException e) {
-			e.printStackTrace();
-			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-
-		return new ResponseEntity<>(generatedFilePath, HttpStatus.OK);
-	}
-
-	@GetMapping(path = "/getNewlyEnrolledAgywAndServices")
-	public ResponseEntity<String> getNewlyEnrolledAgywAndServices(@RequestParam(name = "province") String province,
-			@RequestParam(name = "districts") Integer[] districts, @RequestParam(name = "startDate") Long startDate,
-			@RequestParam(name = "endDate") Long endDate, @RequestParam(name = "pageSize") int pageSize,
-			@RequestParam(name = "username") String username) throws IOException {
-
-		AgywPrevReport report = new AgywPrevReport(service);
-
-		boolean isEndOfCycle = false;
-
-		Date initialDate = new Date(startDate);
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		String formattedInitialDate = sdf.format(initialDate);
-
-		Date finalDate = new Date(endDate);
-		String formattedFinalDate = sdf.format(finalDate); // Using the same formatter for final date
-
-		createDirectory(REPORTS_HOME + "/" + username);
-
-		String generatedFilePath = REPORTS_HOME + "/" + username + "/" + NEW_ENROLLED_REPORT_NAME + "_"
-				+ province.toUpperCase() + "_" + formattedInitialDate + "_" + formattedFinalDate + "_" + ".xlsx";
-
-		try {
-			// Set up streaming workbook
-			SXSSFWorkbook workbook = new SXSSFWorkbook();
-			workbook.setCompressTempFiles(true); // Enable compression of temporary files
-
-			// Create a sheet
-			Sheet sheet = workbook.createSheet(SHEET_LABEL);
-			// Create font for bold style
-			Font boldFont = workbook.createFont();
-			boldFont.setBold(true);
-
-			// Apply bold font style to the cells in the header row
-			CellStyle boldCellStyle = workbook.createCellStyle();
-			boldCellStyle.setFont(boldFont);
-
-			// Apply bold font style to the cells in the header row
-			CellStyle alignCellStyle = workbook.createCellStyle();
-			// alignCellStyle.setFont(boldFont);
-			alignCellStyle.setAlignment(HorizontalAlignment.CENTER);
-
-			// Define Title
-			String titleHeaders = "LISTA DE RAMJ REGISTADAS NO DLT NO PERÍODO EM CONSIDERAÇÃO, SUAS VULNERABILIDADES E SERVIÇOS RECEBIDOS ";
-			// Create a header row
-			Row titleRow = sheet.createRow(0);
-			// Write Title
-			Cell titleCell = titleRow.createCell(0);
-			titleCell.setCellValue(titleHeaders);
-
-			// Merge the cells for the title
-			sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 39));
-
-			// Define Initial Date
-			String initialDateHeaders[] = { "Data de Início:", formattedInitialDate };
-			// Create a header row
-			Row initialHeaderRow = sheet.createRow(1);
-			// Write headers
-			for (int i = 0; i < initialDateHeaders.length; i++) {
-				Cell cell = initialHeaderRow.createCell(i);
-				cell.setCellValue(initialDateHeaders[i]);
-			}
-
-			// Define Final Date
-			String finalDateHeaders[] = { "Data de Fim:", formattedFinalDate };
-			// Create a header row
-			Row finalHeaderRow = sheet.createRow(2);
-			// Write headers
-			for (int i = 0; i < finalDateHeaders.length; i++) {
-				Cell cell = finalHeaderRow.createCell(i);
-				cell.setCellValue(finalDateHeaders[i]);
-			}
-
-			// Create a header row
-			Row sessionRow = sheet.createRow(3);
-			// Write Title and Merge cells for session headers
-
-			Cell cell1 = sessionRow.createCell(0);
-			cell1.setCellValue("Informação Demográfica");
-			cell1.setCellStyle(alignCellStyle);
-
-			Cell cell2 = sessionRow.createCell(17);
-			cell2.setCellValue("Vulnerabilidades Gerais");
-			cell2.setCellStyle(alignCellStyle);
-
-			Cell cell3 = sessionRow.createCell(30);
-			cell3.setCellValue("Serviços e Sub-Serviços");
-			cell3.setCellStyle(alignCellStyle);
-
-			// Merge cells for session headers
-			sheet.addMergedRegion(new CellRangeAddress(3, 3, 0, 16)); // Merge first 17 columns
-			sheet.addMergedRegion(new CellRangeAddress(3, 3, 17, 29)); // Merge next 13 columns
-			sheet.addMergedRegion(new CellRangeAddress(3, 3, 30, 39)); // Merge last 10 columns
-
-			// Define headers
-			String[] headers = { "Província", "Distrito", "Onde Mora", "Ponto de Entrada", "Organização",
-					"Data de Inscrição", "Data de Registo", "Registado Por", "Data da Última Actualização",
-					"Actualizado Por", "NUI", "Sexo", "Idade (Registo)", "Idade (Actual)", "Faixa Etária (Registo)",
-					"Faixa Etária (Actual)", "Data de Nascimento",
-					"Incluida no Indicador AGYW_PREV / Beneficiaria DREAMS ?", "Com Quem Mora", "Sustenta a Casa",
-					"É Órfã?", "Vai à escola", "Tem Deficiência", "Tipo de Deficiência", "Já foi casada",
-					"Já esteve grávida", "Tem filhos", "Está Grávida ou a Amamentar", "Trabalha", "Já fez teste de HIV",
-					"Área de Serviço", "Serviço", "Sub-Serviço", "Pacote de Serviço", "Ponto de Entrada de Serviço",
-					"Localização do Serviço", "Data do Serviço", "Provedor do Serviço", "Outras Observações",
-					"Status" };
-
-			// Create a header row
-			Row headerRow = sheet.createRow(4);
-			// Write headers
-			for (int i = 0; i < headers.length; i++) {
-				Cell cell = headerRow.createCell(i);
-				cell.setCellValue(headers[i]);
-			}
-
-			int rowCount = 5; // start from row 1 (row 0 is for headers)
-			int currentSheet;
-
-			for (currentSheet = 0; currentSheet < currentSheet + 1; currentSheet++) {
-				if (!isEndOfCycle) {
-					List<Object> reportObjectList = report.getNewlyEnrolledAgywAndServices(districts,
-							new Date(startDate), new Date(endDate), currentSheet, pageSize);
-
-					if (reportObjectList.size() < MAX_ROWS_NUMBER) {
-						isEndOfCycle = true;
-					}
-					if (currentSheet != 0) {
-						rowCount = 0;
-						sheet = workbook.createSheet(SHEET_LABEL + currentSheet);
-					}
-					for (Object reportObject : reportObjectList) {
-						Row row = sheet.createRow(rowCount++);
-						// Write values to cells based on headers
-						for (int i = 0; i < headers.length; i++) {
-							Object value = getValueAtIndex(reportObject, i); // You need to implement this method
-							if (value != null) {
-								row.createCell(i).setCellValue(String.valueOf(value));
-							}
-						}
-					}
-				} else {
-					break;
-				}
-			}
 			// Write the workbook content to a file
 			FileOutputStream fileOut = new FileOutputStream(generatedFilePath);
 			workbook.write(fileOut);
@@ -1155,6 +1171,109 @@ public class AgywPrevController {
 		return new ResponseEntity<>(generatedFilePath, HttpStatus.OK);
 	}
 
+	@PostMapping(path = "/agywPrevBeneficiaries")
+	public ResponseEntity<String> getAgywPrevBeneficiaries(
+			@RequestBody Integer[] beneficiariesIds ,
+			@RequestParam(name = "username") String username) throws IOException {
+
+		AgywPrevReport report = new AgywPrevReport(service);
+
+		boolean isEndOfCycle = false;
+
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_hhmmss");
+
+		String generationDate = sdf.format(new Date());
+
+		createDirectory(REPORTS_HOME + "/" + username);
+
+		String generatedFilePath = REPORTS_HOME + "/" + username + "/" + AGYW_PREV_BENEFICIARIES + "_" + generationDate
+				+ ".xlsx";
+
+		try {
+			// Set up streaming workbook
+			SXSSFWorkbook workbook = new SXSSFWorkbook();
+			workbook.setCompressTempFiles(true); // Enable compression of temporary files
+
+			// Create a sheet
+			Sheet sheet = workbook.createSheet(SHEET_LABEL);
+			// Create font for bold style
+			Font boldFont = workbook.createFont();
+			boldFont.setFontName("Liberation Sans");
+			boldFont.setBold(true);
+
+			// Apply bold font style to the cells in the header row
+			CellStyle boldCellStyle = workbook.createCellStyle();
+			boldCellStyle.setFont(boldFont);
+
+			// Apply bold font style to the cells in the header row
+			CellStyle alignCellStyle = workbook.createCellStyle();
+			// alignCellStyle.setFont(boldFont);
+			alignCellStyle.setAlignment(HorizontalAlignment.CENTER);
+
+			// Define headers
+			String[] headers = { "Província", "Distrito", "Onde Mora", "Ponto de Entrada", "Organização",
+					"Data de Inscrição", "Data de Registo", "NUI", "Idade de Registo", "Idade Actual",
+					"Faixa Etária de Registo", "Faixa Etária Actual", "Data de Nascimento",
+					"Número de Vulnerabilidades", "Tipo de Serviço", "Serviço", "Sub-Serviço", "Pacote Serviço",
+					"Ponto de Entrada Serviço", "Local Serviço", "Data Serviço", "Provedor", "Observações" };
+
+			// Create a header row
+			Row headerRow = sheet.createRow(0);
+			// Write headers
+			for (int i = 0; i < headers.length; i++) {
+				Cell cell = headerRow.createCell(i);
+				cell.setCellValue(headers[i]);
+				cell.setCellStyle(boldCellStyle);
+			}
+
+			int rowCount = 1; // start from row 1 (row 0 is for headers)
+			int currentSheet;
+
+			for (currentSheet = 0; currentSheet < currentSheet + 1; currentSheet++) {
+				if (!isEndOfCycle) {
+					List<Object> reportObjectList = report.getAgywPrevBeneficiaries(beneficiariesIds);
+
+					if (reportObjectList.size() < MAX_ROWS_NUMBER) {
+						isEndOfCycle = true;
+					}
+					if (currentSheet != 0) {
+						rowCount = 0;
+						sheet = workbook.createSheet(SHEET_LABEL + currentSheet);
+					}
+					for (Object reportObject : reportObjectList) {
+						Row row = sheet.createRow(rowCount++);
+						// Write values to cells based on headers
+						for (int i = 0; i < headers.length; i++) {
+							Object value = getValueAtIndex(reportObject, i); // You need to implement this method
+							if (value != null) {
+								row.createCell(i).setCellValue(String.valueOf(value));
+							}
+						}
+					}
+				} else {
+					break;
+				}
+			}
+			// Write the workbook content to a file
+			FileOutputStream fileOut = new FileOutputStream(generatedFilePath);
+			workbook.write(fileOut);
+			fileOut.close();
+
+			// Dispose of temporary files backing this workbook on disk
+			workbook.dispose();
+
+			// Close the workbook
+			workbook.close();
+
+			System.out.println("Excel file has been created successfully ! - path: " + generatedFilePath);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+		return new ResponseEntity<>(generatedFilePath, HttpStatus.OK);
+	}
+
 	// Method to retrieve value for a specific index from the reportObject
 	private static Object getValueAtIndex(Object reportObject, int index) {
 		// Assuming reportObject is an array
@@ -1171,28 +1290,25 @@ public class AgywPrevController {
 	@GetMapping(path = "/saveCompletionStatus")
 	public ResponseEntity<Map<Integer, Map<String, ResultObject>>> saveCompletionStatus(
 			@RequestParam(name = "districts") Integer[] districts, @RequestParam(name = "startDate") String startDate,
-			@RequestParam(name = "endDate") String endDate){
+			@RequestParam(name = "endDate") String endDate) {
 		AgywPrevReport report = new AgywPrevReport(service, beneficiariyService);
 
 		try {
 			Integer[] simplifiedDistrictsIds = { 44, 45 };
 			Integer[] completeDistrictsIds = Arrays.stream(districts)
-	                .filter(item -> !Arrays.asList(simplifiedDistrictsIds).contains(item))
-	                .toArray(Integer[]::new);
-			
+					.filter(item -> !Arrays.asList(simplifiedDistrictsIds).contains(item)).toArray(Integer[]::new);
+
 			report.getAgywPrevResultObject(completeDistrictsIds, startDate, endDate, 1, true);
-			
-			List<Integer> simplifiedFoundDistrictsIds= new ArrayList<>();
-			for(int i : simplifiedDistrictsIds) {
-				if(Arrays.asList(districts).contains(i))
-				{
+
+			List<Integer> simplifiedFoundDistrictsIds = new ArrayList<>();
+			for (int i : simplifiedDistrictsIds) {
+				if (Arrays.asList(districts).contains(i)) {
 					simplifiedFoundDistrictsIds.add(i);
 				}
 			}
-			
-			Integer[]simplifiedFoundDistrictsArrayIds = simplifiedFoundDistrictsIds.toArray(new Integer[0]);
-			if(!simplifiedFoundDistrictsIds.isEmpty())
-			{
+
+			Integer[] simplifiedFoundDistrictsArrayIds = simplifiedFoundDistrictsIds.toArray(new Integer[0]);
+			if (!simplifiedFoundDistrictsIds.isEmpty()) {
 				report.getAgywPrevResultObject(simplifiedFoundDistrictsArrayIds, startDate, endDate, 2, true);
 			}
 
@@ -1201,5 +1317,161 @@ public class AgywPrevController {
 			e.printStackTrace();
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+	}
+
+	@GetMapping(path = "/beneficiaries-in-waiting-list")
+	public ResponseEntity<String> getBeneficiariesInWaitingList(
+			@RequestParam(name = "province") String province, @RequestParam(name = "districts") Integer[] districts,
+			@RequestParam(name = "startDate") Long startDate, @RequestParam(name = "endDate") Long endDate,
+			@RequestParam(name = "username") String username) throws IOException {
+
+		AgywPrevReport report = new AgywPrevReport(service);
+
+		boolean isEndOfCycle = false;
+
+		Date initialDate = new Date(startDate);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		String formattedInitialDate = sdf.format(initialDate);
+
+		Date finalDate = new Date(endDate);
+		String formattedFinalDate = sdf.format(finalDate); // Using the same formatter for final date
+
+		String generationDate = sdf.format(new Date());
+
+		createDirectory(REPORTS_HOME + "/" + username);
+
+		String generatedFilePath = REPORTS_HOME + "/" + username + "/" + BENEFICIARIES_WAITING_LIST + "_"
+				+ province.toUpperCase() + "_" + formattedInitialDate + "_" + formattedFinalDate + "_" + generationDate
+				+ ".xlsx";
+
+		try {
+			// Set up streaming workbook
+			SXSSFWorkbook workbook = new SXSSFWorkbook();
+			workbook.setCompressTempFiles(true); // Enable compression of temporary files
+
+			// Create a sheet
+			Sheet sheet = workbook.createSheet(SHEET_LABEL);
+			// Create font for bold style
+			Font boldFont = workbook.createFont();
+			boldFont.setFontName("Liberation Sans");
+			boldFont.setBold(true);
+
+			// Apply bold font style to the cells in the header row
+			CellStyle boldCellStyle = workbook.createCellStyle();
+			boldCellStyle.setFont(boldFont);
+
+			// Apply bold font style to the cells in the header row
+			CellStyle alignCellStyle = workbook.createCellStyle();
+			// alignCellStyle.setFont(boldFont);
+			alignCellStyle.setAlignment(HorizontalAlignment.CENTER);
+			alignCellStyle.setFont(boldFont);
+
+			// Define Title
+			String titleHeaders = "LISTA DE BENEFICIÁRIAS EM LISTA DE ESPERA (SEM SERVIÇOS COMUNITÁRIOS)";
+			// Create a header row
+			Row titleRow = sheet.createRow(0);
+			// Write Title
+			Cell titleCell = titleRow.createCell(0);
+			titleCell.setCellStyle(boldCellStyle);
+			titleCell.setCellValue(titleHeaders);
+
+			// Merge the cells for the title
+			sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 17));
+
+			// Define Initial Date
+			String initialDateHeaders[] = { "Data de Início:", formattedInitialDate };
+			// Create a header row
+			Row initialHeaderRow = sheet.createRow(2);
+			// Write headers
+			for (int i = 0; i < initialDateHeaders.length; i++) {
+				Cell cell = initialHeaderRow.createCell(i);
+				cell.setCellValue(initialDateHeaders[i]);
+			}
+
+			// Define Final Date
+			String finalDateHeaders[] = { "Data de Fim:", formattedFinalDate };
+			// Create a header row
+			Row finalHeaderRow = sheet.createRow(3);
+			// Write headers
+			for (int i = 0; i < finalDateHeaders.length; i++) {
+				Cell cell = finalHeaderRow.createCell(i);
+				cell.setCellValue(finalDateHeaders[i]);
+			}
+
+			// Create a header row
+			Row sessionRow = sheet.createRow(4);
+			// Write Title and Merge cells for session headers
+
+			Cell cell1 = sessionRow.createCell(0);
+			cell1.setCellValue("Informação Demográfica");
+			cell1.setCellStyle(alignCellStyle);
+
+			// Merge cells for session headers
+			sheet.addMergedRegion(new CellRangeAddress(4, 4, 0, 17)); // Merge first 17 columns
+
+			// Define headers
+			String[] headers = { "Província", "Distrito", "Onde Mora", "Ponto de Entrada", "Nome do Ponto de Entrada", 
+					"Organização", "Data de Inscrição", "Data de Registo", "Registado Por", "Data da Última Actualização",
+					"Actualizado Por", "NUI", "Sexo", "Idade (Registo)", "Idade (Actual)", "Faixa Etária (Registo)",
+					"Faixa Etária (Actual)", "Data de Nascimento" };
+
+			// Create a header row
+			Row headerRow = sheet.createRow(5);
+			// Write headers
+			for (int i = 0; i < headers.length; i++) {
+				Cell cell = headerRow.createCell(i);
+				cell.setCellValue(headers[i]);
+				cell.setCellStyle(boldCellStyle);
+			}
+
+			int rowCount = 6; // start from row 1 (row 0 is for headers)
+			int currentSheet;
+
+			for (currentSheet = 0; currentSheet < currentSheet + 1; currentSheet++) {
+				if (!isEndOfCycle) {
+					// Insert data rows from the reportObjectList
+					List<Object> reportObjectList = report.getBeneficiariesWithoutCommunityIntervention(districts, formattedInitialDate, formattedFinalDate);
+
+					if (reportObjectList.size() < MAX_ROWS_NUMBER) {
+						isEndOfCycle = true;
+					}
+
+					if (currentSheet != 0) {
+						rowCount = 0;
+						sheet = workbook.createSheet(SHEET_LABEL + currentSheet);
+					}
+					for (Object reportObject : reportObjectList) {
+						Row row = sheet.createRow(rowCount++);
+						// Write values to cells based on headers
+						for (int i = 0; i < headers.length; i++) {
+							Object value = getValueAtIndex(reportObject, i); // You need to implement this method
+							if (value != null) {
+								row.createCell(i).setCellValue(String.valueOf(value));
+							}
+						}
+					}
+				} else {
+					break;
+				}
+			}
+
+			// Write the workbook content to a file
+			FileOutputStream fileOut = new FileOutputStream(generatedFilePath);
+			workbook.write(fileOut);
+			fileOut.close();
+
+			// Dispose of temporary files backing this workbook on disk
+			workbook.dispose();
+
+			// Close the workbook
+			workbook.close();
+
+			System.out.println("Excel file has been created successfully ! - path: " + generatedFilePath);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+		return new ResponseEntity<>(generatedFilePath, HttpStatus.OK);
 	}
 }

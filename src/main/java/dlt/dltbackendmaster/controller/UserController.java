@@ -80,7 +80,7 @@ public class UserController {
 			@RequestParam(name = "searchUsername", required = false) @Nullable String searchUsername,
 			@RequestParam(name = "searchUserCreator", required = false) @Nullable Integer searchUserCreator,
 			@RequestParam(name = "searchDistrict", required = false) @Nullable Integer searchDistrict) {
-		
+
 		searchName = searchName.replaceAll(" ", "%");
 
 		try {
@@ -172,6 +172,12 @@ public class UserController {
 		}
 
 		try {
+			if (user.getRecoverPassword() != null) {
+				boolean passwordUsedBefore = isPasswordUsedBefore(user.getRecoverPassword(), user.getId());
+				if (passwordUsedBefore) {
+					return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+				}
+			}
 			Users u = service.find(Users.class, user.getId());
 			user.setDateUpdated(new Date());
 			user.setPassword(u.getPassword());
@@ -199,6 +205,10 @@ public class UserController {
 		}
 
 		try {
+			boolean passwordUsedBefore = isPasswordUsedBefore(users.getRecoverPassword(), user.getId());
+			if (passwordUsedBefore) {
+				return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+			}
 			String encodedPassword = passwordEncoder.encode(users.getRecoverPassword());
 			user.setNewPassword(0);
 			user.setPassword(encodedPassword);
@@ -373,5 +383,14 @@ public class UserController {
 			e.printStackTrace();
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+	}
+
+	private boolean isPasswordUsedBefore(String newPassword, int id) {
+		List<OldPasswords> oldPasswords = service.GetAllEntityByNamedQuery("OldPasswords.findByUserId", id);
+
+		for (OldPasswords oldPassword : oldPasswords) {
+			return passwordEncoder.matches(newPassword, oldPassword.getPassword());
+		}
+		return false;
 	}
 }

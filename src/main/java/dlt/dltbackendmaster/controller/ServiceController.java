@@ -100,6 +100,16 @@ public class ServiceController {
 				}
 			}
 
+			if ((beneficiaryAge < 15 || beneficiaryAge > 19) && serviceType == ServiceType.COMMUNITY) {
+				// Retirar Siyakha Light
+				services = services.stream().filter(s -> s.getId() != 59).collect(Collectors.toList());
+				
+				// Retirar Siyakha Conprehensive
+				if (beneficiaryAge < 15) {
+					services = services.stream().filter(s -> s.getId() != 60).collect(Collectors.toList());
+				}
+			}
+
 			if (beneficiaryAge < 15 || is15AndStartedAvante) {
 
 				if ((beneficiaryAge < 14 || is15AndStartedAvante) && serviceType == ServiceType.COMMUNITY) {

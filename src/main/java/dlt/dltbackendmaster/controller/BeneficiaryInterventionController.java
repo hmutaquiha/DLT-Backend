@@ -5,6 +5,7 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.data.gemfire.config.annotation.EnableCompression;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.mysql.cj.x.protobuf.MysqlxCrud.Collection;
 
 import dlt.dltbackendmaster.domain.Beneficiaries;
 import dlt.dltbackendmaster.domain.BeneficiariesInterventions;
@@ -131,6 +134,7 @@ public class BeneficiaryInterventionController {
 				newInterv.setResult(intervention.getResult());
 				newInterv.setUs(intervention.getUs());
 				newInterv.setProvider(intervention.getProvider());
+				newInterv.setEndDate(intervention.getEndDate());
 				newInterv.setStatus(intervention.getStatus());
 				newInterv.setActivistId(intervention.getActivistId());
 				newInterv.setCreatedBy(currentIntervention.getCreatedBy());
@@ -169,6 +173,7 @@ public class BeneficiaryInterventionController {
 			currentIntervention.setEntryPoint(intervention.getEntryPoint());
 			currentIntervention.setResult(intervention.getResult());
 			currentIntervention.setProvider(intervention.getProvider());
+			currentIntervention.setEndDate(intervention.getEndDate());
 			currentIntervention.setStatus(intervention.getStatus());
 			currentIntervention.setActivistId(intervention.getActivistId());
 			currentIntervention.setDateUpdated(new Date());
@@ -223,7 +228,8 @@ public class BeneficiaryInterventionController {
 				referenceServices = service.update(referenceServices);
 
 				// Actualizar o status da referências
-				Integer referenceStatus = ServiceCompletionRules.getReferenceStatus(reference, interventions);
+				References referenceDB = service.find(References.class, reference.getId());
+				Integer referenceStatus = ServiceCompletionRules.getReferenceStatus(referenceDB, interventions);
 
 				if (referenceStatus.intValue() != reference.getStatus()) {
 					reference.setStatus(referenceStatus);

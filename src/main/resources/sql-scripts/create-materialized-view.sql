@@ -36,14 +36,19 @@ CREATE TABLE agyw_prev_mview
    vblt_sexual_exploitation int,
    vblt_is_migrant int,
    vblt_trafficking_victim int,
+   vblt_sexual_exploitation_trafficking_victim int,
    vblt_sexually_active int,
    vblt_pregnant_or_has_children int,
    vblt_multiple_partners int,
    vblt_gbv_victim int,
+   vblt_gbv_type varchar(250),
    vblt_sex_worker int,
    vblt_alcohol_drugs_use int,
    vblt_sti_history int,
+   clinical_interventions int DEFAULT 0,
+   community_interventions int DEFAULT 0,
    completion_status int,
+   flag_vulnerable int not null DEFAULT 0,
    service_type int,
    service_id int,
    sub_service_id int,
@@ -58,9 +63,9 @@ CREATE TABLE agyw_prev_mview
    registration_age_band int,
    current_age_band int,
    service_date varchar(25),
-   general_vulnerabilities int DEFAULT 0,
-   specific_vulnerabilities int DEFAULT 0,
-   vulnerable int,
+   general_vulnerabilities int not null DEFAULT 0,
+   specific_vulnerabilities int not null DEFAULT 0,
+   vulnerable int not null DEFAULT 0,
    level int,
    PRIMARY KEY (`id`)
 );
@@ -71,7 +76,7 @@ set @counter=0;
 
 INSERT INTO agyw_prev_mview
 select a.*,
-   if (current_age between 15 and 17,general_vulnerabilities>1 or specific_vulnerabilities>0,general_vulnerabilities>0 or specific_vulnerabilities>0) vulnerable,
+   if (a.flag_vulnerable = 1, 1, if (current_age between 15 and 17,general_vulnerabilities>1 or specific_vulnerabilities>0,general_vulnerabilities>0 or specific_vulnerabilities>0)) vulnerable,
    sab.level
 from
 (
@@ -79,10 +84,10 @@ from
       if(registration_age between 9 and 14,1,if (registration_age between 15 and 19,2,if (registration_age between 20 and 24,3,if (registration_age between 25 and 29,4,5)))) registration_age_band,
       if(current_age between 9 and 14,1,if (current_age between 15 and 19,2,if (current_age between 20 and 24,3,if (current_age between 25 and 29,4,5)))) current_age_band,
       max(intervention_date) service_date,
-      if (current_age between 9 and 17,vblt_house_sustainer+!vblt_is_student+vblt_is_deficient+vblt_pregnant_or_has_children+vblt_idp,
-         if (current_age between 18 and 24,vblt_is_deficient+vblt_idp,0)) general_vulnerabilities,
-      if (current_age between 9 and 17,current_age<15 and vblt_sexually_active+vblt_pregnant_or_breastfeeding+vblt_multiple_partners+vblt_sexual_exploitation+vblt_gbv_victim+vblt_alcohol_drugs_use+vblt_sti_history,
-         if (current_age between 18 and 24,vblt_multiple_partners+vblt_sexual_exploitation+vblt_sex_worker+vblt_gbv_victim+vblt_alcohol_drugs_use+vblt_sti_history,0)) specific_vulnerabilities
+      if (current_age between 9 and 17,vblt_house_sustainer+!vblt_is_student+vblt_is_deficient+vblt_married_before+coalesce(vblt_idp,0),
+         if (current_age between 18 and 24,vblt_is_deficient+coalesce(vblt_idp,0),0)) general_vulnerabilities,
+      if (current_age between 9 and 17,(current_age<15 and vblt_sexually_active)+vblt_pregnant_or_has_children+vblt_multiple_partners+vblt_sexual_exploitation_trafficking_victim+vblt_gbv_victim+vblt_alcohol_drugs_use+vblt_sti_history,
+         if (current_age between 18 and 24,vblt_multiple_partners+vblt_sexual_exploitation_trafficking_victim+coalesce(vblt_sex_worker,0)+vblt_gbv_victim+vblt_alcohol_drugs_use+vblt_sti_history,0)) specific_vulnerabilities
    from
    (
       select @counter:=@counter+1 id, 
@@ -119,14 +124,19 @@ from
          b.vblt_sexual_exploitation,
          b.vblt_is_migrant,
          b.vblt_trafficking_victim,
+         b.vblt_sexual_exploitation_trafficking_victim,
          b.vblt_sexually_active,
          b.vblt_pregnant_or_has_children,
          b.vblt_multiple_partners,
          b.vblt_vbg_victim vblt_gbv_victim,
+         b.vblt_vbg_type vblt_gbv_type,
          b.vblt_sex_worker,
          b.vblt_alcohol_drugs_use,
          b.vblt_sti_history,
+         b.clinical_interventions,
+         b.community_interventions,
          b.completion_status,
+         b.vulnerable flag_vulnerable,
          s.service_type,
          s.id service_id,
          ss.id sub_service_id,

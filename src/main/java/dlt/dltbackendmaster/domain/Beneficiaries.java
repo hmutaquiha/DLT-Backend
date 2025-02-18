@@ -399,6 +399,7 @@ public class Beneficiaries implements java.io.Serializable
     private Set<BeneficiariesInterventions> beneficiariesInterventionses = new HashSet<BeneficiariesInterventions>(0);
     private Set<References> referenceses = new HashSet<References>(0);
 	private int completionStatus;
+	private int vulnerable;
 	
 	public Beneficiaries() {}
 
@@ -1188,7 +1189,16 @@ public class Beneficiaries implements java.io.Serializable
 		this.completionStatus = completionStatus;
 	}
 
-    public ObjectNode toObjectNode(String lastPulledAt) {
+	@Column(name = "vulnerable")
+    public int getVulnerable() {
+		return vulnerable;
+	}
+
+	public void setVulnerable(int vulnerable) {
+		this.vulnerable = vulnerable;
+	}
+
+	public ObjectNode toObjectNode(String lastPulledAt) {
         ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule())
                                                 .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         mapper.setSerializationInclusion(Include.NON_NULL);

@@ -36,7 +36,7 @@ public class Account extends Users implements Serializable, UserDetails {
 		super(id, locality, partner, profiles, provinces, districts, surname, name,
 				phoneNumber, email, username, password, newPassword, entryPoint, us, status,
 				isLocked, isExpired, isCredentialsExpired, isEnabled, createdBy, dateCreated,
-				updatedBy, dateUpdated, lastLoginDate, passwordLastChangeDate);
+				updatedBy, dateUpdated, passwordLastChangeDate);
 
 		this.isaccountenabled = isEnabled == 0 ? false : true;
 		this.isaccountexpired = isExpired == 0 ? false : true;
@@ -51,7 +51,7 @@ public class Account extends Users implements Serializable, UserDetails {
 				user.getNewPassword(), user.getEntryPoint(), user.getUs(),
 				user.getStatus(), user.getIsLocked(), user.getIsExpired(), user.getIsCredentialsExpired(),
 				user.getIsEnabled(), user.getCreatedBy(), user.getDateCreated(), user.getUpdatedBy(), 
-				user.getDateUpdated(), user.getLastLoginDate(), user.getPasswordLastChangeDate());
+				user.getDateUpdated(), user.getPasswordLastChangeDate());
 
 		this.setNewPassword(user.getNewPassword());
 		this.isaccountenabled = user.getIsEnabled() == 0 ? false : true;
@@ -93,7 +93,7 @@ public class Account extends Users implements Serializable, UserDetails {
 		return new Users(getId(), getLocalities(), getPartners(), getProfiles(), getProvinces(), getDistricts(), 
 				getSurname(), getName(), getPhoneNumber(), getEmail(), getUsername(), getPassword(), getNewPassword(),
 				getEntryPoint(), getUs(), getStatus(), getIsLocked(), getIsExpired(), getIsCredentialsExpired(),
-				getIsEnabled(), getCreatedBy(), getDateCreated(), getUpdatedBy(), getDateUpdated(), getLastLoginDate(), getPasswordLastChangeDate());
+				getIsEnabled(), getCreatedBy(), getDateCreated(), getUpdatedBy(), getDateUpdated(), getPasswordLastChangeDate());
 	}
 
 }

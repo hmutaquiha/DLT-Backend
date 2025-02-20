@@ -14,4 +14,6 @@ public interface ReferenceServiceService {
 
 	List<ReferencesServices> findByReferenceId(Integer referenceId);
 
+	ReferencesServices findByReferenceIdAndServiceId(Integer referenceId, Integer serviceId);
+
 }

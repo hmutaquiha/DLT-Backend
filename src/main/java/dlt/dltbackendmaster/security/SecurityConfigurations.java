@@ -86,11 +86,15 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter{
             .antMatchers(HttpMethod.POST, "/api/login").permitAll()
             .antMatchers(HttpMethod.OPTIONS, "/api/login").permitAll()
             .antMatchers(HttpMethod.OPTIONS, "/api/**").permitAll()
+            	// allow anonymous POSTs to authenticate
+            .antMatchers(HttpMethod.POST, "/authenticate").permitAll()
+            .antMatchers(HttpMethod.POST, "/authenticate/**").permitAll()
             	//allow anonymous GETs to API
             .antMatchers(HttpMethod.GET, "/api/**").authenticated()
             .antMatchers(HttpMethod.POST, "/api/**").permitAll()
             .antMatchers(HttpMethod.PUT, "/api/**").authenticated()
             .antMatchers(HttpMethod.OPTIONS).permitAll()
+            .antMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
             .regexMatchers(HttpMethod.OPTIONS, "").permitAll()
             .anyRequest().permitAll().and()
             	//all other request need to be authenticated

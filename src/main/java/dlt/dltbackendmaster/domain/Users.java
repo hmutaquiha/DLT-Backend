@@ -156,8 +156,6 @@ public class Users implements java.io.Serializable {
 
 	private String recoverPasswordToken;
 
-	private Date lastLoginDate;
-
 	private Date passwordLastChangeDate;
 
 	private Set<Locality> localities = new HashSet<Locality>(0);
@@ -227,7 +225,7 @@ public class Users implements java.io.Serializable {
 			Set<District> district, String surname, String name, String phoneNumber, String email, String username,
 			String password, Integer newPassword, String entryPoint, Set<Us> us, int status, Byte isLocked,
 			Byte isExpired, Byte isCredentialsExpired, Byte isEnabled, int createdBy, Date dateCreated,
-			Integer updatedBy, Date dateUpdated, Date lastLoginDate, Date passwordLastChangeDate) {
+			Integer updatedBy, Date dateUpdated,  Date passwordLastChangeDate) {
 		super();
 		this.id = id;
 		this.localities = locality;
@@ -253,7 +251,6 @@ public class Users implements java.io.Serializable {
 		this.dateCreated = dateCreated;
 		this.updatedBy = updatedBy;
 		this.dateUpdated = dateUpdated;
-		this.lastLoginDate = lastLoginDate;
 		this.passwordLastChangeDate = passwordLastChangeDate;
 	}
 
@@ -281,18 +278,7 @@ public class Users implements java.io.Serializable {
 		this.offlineId = model.getId();
 		this.dateCreated = regDate;
 		this.dateUpdated = regDate;
-		this.passwordLastChangeDate = lastChangeDate;
-
-		try {
-			String dateString = model.getLast_login_date();
-			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-			Date lastLoginDate = dateFormat.parse(dateString);
-			this.lastLoginDate = lastLoginDate;
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+		this.passwordLastChangeDate = lastChangeDate;	
 	}
 
 	@Id
@@ -523,16 +509,6 @@ public class Users implements java.io.Serializable {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "last_login_at", length = 19)
-	public Date getLastLoginDate() {
-		return lastLoginDate;
-	}
-
-	public void setLastLoginDate(Date lastLoginDate) {
-		this.lastLoginDate = lastLoginDate;
-	}
-
-	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "password_last_change_date", length = 19)
 	public Date getPasswordLastChangeDate() {
 		return passwordLastChangeDate;
@@ -631,7 +607,6 @@ public class Users implements java.io.Serializable {
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			String dateString = dateFormat
 					.format(passwordLastChangeDate != null ? passwordLastChangeDate : dateCreated);
-		    String lastLoginDate = dateFormat.format(this.lastLoginDate);
 
 			int[] localitiesIds = localities.stream().mapToInt(Locality::getId).toArray();
 
@@ -651,7 +626,6 @@ public class Users implements java.io.Serializable {
 			user.put("profile_id", profiles.getId());
 			user.put("online_id", id); // flag to control if entity is synchronized with the backend
 			user.put("organization_name", partners == null ? null : partners.getName());
-			user.put("last_login_date", lastLoginDate);
 			user.put("password_last_change_date", dateString);
 
 		} else { // ensure online_id is updated first
@@ -675,17 +649,12 @@ public class Users implements java.io.Serializable {
 		this.profiles.setId(model.getProfile_id());
 
 		String dateString = model.getPassword_last_change_date();
-		String lastLogin = model.getLast_login_date();
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		try {
 			Date date = dateFormat.parse(dateString);
 			long lastChangeTimestamp = date.getTime();
 			Date lastChangeDate = new Date(lastChangeTimestamp);
 			this.passwordLastChangeDate = lastChangeDate;
-			
-			Date lastLoginDate = lastLogin == null ? null : dateFormat.parse(lastLogin);
-			this.lastLoginDate = lastLoginDate;
-
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}

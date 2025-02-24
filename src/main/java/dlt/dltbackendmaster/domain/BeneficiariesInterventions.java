@@ -218,7 +218,8 @@ public class BeneficiariesInterventions implements java.io.Serializable {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate date = LocalDate.parse(model.getDate(), dtf);
         this.date = date;
-		LocalDate endDate = model.getEnd_date() == StringUtils.EMPTY ? null : LocalDate.parse(model.getEnd_date(), dtf);
+		LocalDate endDate = model.getEnd_date() == null || model.getEnd_date() == StringUtils.EMPTY ? null
+				: LocalDate.parse(model.getEnd_date(), dtf);
         this.endDate = endDate;
         this.beneficiaryOfflineId = model.getBeneficiary_offline_id();
         this.id = new BeneficiariesInterventionsId(model.getBeneficiary_id(), model.getSub_service_id(), date);

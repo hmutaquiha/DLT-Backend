@@ -36,9 +36,6 @@ public class PasswordUpdateController {
     private AppConfig appConfig;
 
 	@Autowired
-	private AppConfig appConfig;
-
-	@Autowired
 	public PasswordUpdateController(DAOService service, PasswordEncoder passwordEncoder) {
 		this.service = service;
 		this.passwordEncoder = passwordEncoder;

@@ -132,6 +132,14 @@ public class ServiceCompletionRules {
 		return agywPrev.getMandatory_social_assets() > 17 && agywPrev.getOther_social_assets() > 5;
 	}
 
+	public static boolean completedAvanteEstudanteSocialAssets(AgywPrev agywPrev) {
+		return agywPrev.getMandatory_social_assetss() > 2 && agywPrev.getOther_social_assets() > 5;
+	}
+
+	public static boolean completedAvanteEstudanteHivPrevention(AgywPrev agywPrev) {
+		return agywPrev.getMandatory_hiv_prevention() > 11;
+	}
+
 	public static boolean startedAvanteEstudante(List<Integer> subServices) {
 		return containsAny(ServicesConstants.ESTUDANTES_MANDATORY, subServices)
 				|| containsAny(ServicesConstants.ESTUDANTES_NON_MANDATORY, subServices);
@@ -153,8 +161,24 @@ public class ServiceCompletionRules {
 		return agywPrev.getMandatory_social_assets() > 10 && agywPrev.getOther_social_assets() > 4;
 	}
 
+	public static boolean completedAvanteRaparigaSocialAssets(AgywPrev agywPrev) {
+		return agywPrev.getMandatory_social_assetss() > 0 && agywPrev.getOther_social_assets() > 4;
+	}
+
+	public static boolean completedAvanteRaparigaHivPrevention(AgywPrev agywPrev) {
+		return agywPrev.getMandatory_hiv_prevention() > 4;
+	}
+
 	public static boolean completedSimplifiedAvanteRapariga(AgywPrev agywPrev) {
 		return agywPrev.getMandatory_social_assets() >= 9;
+	}
+
+	public static boolean completedSimplifiedAvanteRaparigaSocialAssets(AgywPrev agywPrev) {
+		return agywPrev.getMandatory_social_assetss() > 0;
+	}
+
+	public static boolean completedSimplifiedAvanteRaparigaHivPrevention(AgywPrev agywPrev) {
+		return agywPrev.getMandatory_hiv_prevention() > 4;
 	}
 
 	public static boolean startedAvanteRapariga(List<Integer> subServices) {
@@ -195,8 +219,33 @@ public class ServiceCompletionRules {
 		}
 	}
 
+	public static boolean completedGuiaFacilitacaoHivPrevention(AgywPrev agywPrev) {
+		SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
+		try {
+			Date cop22StartDate = df.parse(COP_22_START_DATE);
+			return agywPrev.getGuiao_hiv_sessions() > 5 && (agywPrev.getDate_created().before(cop22StartDate)
+					|| agywPrev.getDate_created().compareTo(cop22StartDate) >= 0
+							&& agywPrev.getHiv_gbv_sessions_prep() > 0);
+		} catch (ParseException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	public static boolean completedGuiaFacilitacaoViolencePrevention(AgywPrev agywPrev) {
+		return agywPrev.getGuiao_gbv_sessions() > 2;
+	}
+
 	public static boolean completedSimplifiedGuiaFacilitacao(AgywPrev agywPrev) {
 		return agywPrev.getHiv_gbv_sessions() >= 8;
+	}
+
+	public static boolean completedSimplifiedGuiaFacilitacaoHivPrevention(AgywPrev agywPrev) {
+			return agywPrev.getGuiao_hiv_sessions() > 5;
+	}
+
+	public static boolean completedSimplifiedGuiaFacilitacaoViolencePrevention(AgywPrev agywPrev) {
+		return agywPrev.getGuiao_gbv_sessions() > 1;
 	}
 
 	public static boolean startedGuiaFacilitacao(List<Integer> subServices) {
@@ -572,22 +621,19 @@ public class ServiceCompletionRules {
 	 * @param reference
 	 * @return
 	 */
-	public static Integer getReferenceStatus(
-	        References referenceDB,
-	        Collection<BeneficiariesInterventions> interventions
-	) {
+	public static Integer getReferenceStatus(References referenceDB,
+			Collection<BeneficiariesInterventions> interventions) {
 		int pendingServices = 0;
 		int declinedServices = 0;
 		int completedServices = 0;
-		
-		Set<ReferencesServices> referencesServiceses = referenceDB.getReferencesServiceses(); 
-		
+
+		Set<ReferencesServices> referencesServiceses = referenceDB.getReferencesServiceses();
 
 		for (ReferencesServices referencesService : referencesServiceses) {
 			Integer referenceServiceStatus = getReferenceServiceStatus(interventions,
 					referencesService.getServices().getId());
 
-			if(referencesService.getStatus() ==ReferencesStatus.CANCELLED) {
+			if (referencesService.getStatus() == ReferencesStatus.CANCELLED) {
 				declinedServices++;
 			} else if (referenceServiceStatus == ReferencesStatus.PENDING) {
 				pendingServices++;
@@ -596,7 +642,7 @@ public class ServiceCompletionRules {
 			}
 		}
 
-		if(declinedServices==0) {
+		if (declinedServices == 0) {
 			if (pendingServices == referencesServiceses.size()) {
 				return ReferencesStatus.PENDING;
 			} else if (completedServices == referencesServiceses.size()) {
@@ -604,10 +650,9 @@ public class ServiceCompletionRules {
 			} else {
 				return ReferencesStatus.PARTIALLY_ADDRESSED;
 			}
-		}else{
-			if (completedServices == referencesServiceses.size() 
-					|| declinedServices==referencesServiceses.size() 
-					|| (completedServices + declinedServices)== referencesServiceses.size()) {
+		} else {
+			if (completedServices == referencesServiceses.size() || declinedServices == referencesServiceses.size()
+					|| (completedServices + declinedServices) == referencesServiceses.size()) {
 				return ReferencesStatus.ADDRESSED;
 			} else {
 				return ReferencesStatus.PARTIALLY_ADDRESSED;

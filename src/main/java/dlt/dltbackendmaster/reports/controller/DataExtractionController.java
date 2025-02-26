@@ -52,7 +52,8 @@ public class DataExtractionController {
 			@ApiResponse(responseCode = "400", description = "Bad Request", content = @Content),
 			@ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content), })
 	public ResponseEntity<List<BeneficiaryVulnerability>> getBeneficiariesVulnerabilitiesAndServices(
-			@RequestParam(name = "startDate") String startDate, @RequestParam(name = "endDate") String endDate)
+			@RequestParam(name = "startDate", defaultValue = "yyyy-mm-dd") String startDate, 
+			@RequestParam(name = "endDate", defaultValue = "yyyy-mm-dd") String endDate)
 			throws IOException {
 
 		AgywPrevReport report = new AgywPrevReport(service);

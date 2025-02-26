@@ -39,7 +39,7 @@ import dlt.dltbackendmaster.service.DAOService;
 @EnableCompression
 @RequestMapping("/api/users")
 public class UserController {
-	Logger logger = LoggerFactory.getLogger(BeneficiaryController.class);
+	Logger logger = LoggerFactory.getLogger(UserController.class);
 
 	private static final String QUERY_FIND_USER_BY_USERNAME = "select u from Users u where u.username = :username";
 

@@ -13,6 +13,7 @@ public class ResultObject {
 	private Map<String, Map<String, Integer>> totals;
 	private Map<String, Map<String, List<Integer>>> beneficiaries;
 	private Integer total;
+	private List<Integer> beneficiariesIds;
 
 	public ResultObject() {
 		totals = new TotalsEnrollmentTimes().getTime();
@@ -25,7 +26,12 @@ public class ResultObject {
 		this.totals = totals;
 		this.beneficiaries = beneficiaries;
 	}
-
+	
+	public ResultObject(Map<String, Map<String, Integer>> totals,
+			List<Integer> beneficiariesIds) {
+		this.totals = totals;
+		this.beneficiariesIds = beneficiariesIds;
+	}
 	public Map<String, Map<String, Integer>> getTotals() {
 		return totals;
 	}
@@ -49,5 +55,15 @@ public class ResultObject {
 	public void setTotal(Integer total) {
 		this.total = total;
 	}
+
+	public List<Integer> getBeneficiariesIds() {
+		return beneficiariesIds;
+	}
+
+	public void setBeneficiariesIds(List<Integer> beneficiariesIds) {
+		this.beneficiariesIds = beneficiariesIds;
+	}
+	
+	
 
 }

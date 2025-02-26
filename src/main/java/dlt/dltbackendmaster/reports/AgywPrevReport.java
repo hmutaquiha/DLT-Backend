@@ -52,9 +52,25 @@ public class AgywPrevReport {
 		this.beneficiariyService = beneficiariyService;
 	}
 
+	private List<AgywPrev> getData(Integer[] districts, String startDate, String endDate, int reportType) {
+
+		if (reportType == 1) {
+			return service.GetAllEntityByNamedNativeQuery("AgywPrev.findByDistricts", Arrays.asList(districts),
+					startDate, endDate);
+		} else {
+			return service.GetAllEntityByNamedNativeQuery("AgywPrev.findSimplifiedByDistricts",
+					Arrays.asList(districts), startDate, endDate);
+		}
+	}
+
 	public Map<Integer, Map<String, ResultObject>> getAgywPrevResultObject(Integer[] districts, String startDate,
 			String endDate, int reportType, boolean isFlagWriter) {
 		Map<Integer, Map<String, ResultObject>> agywPrevResultObject = new HashMap<>();
+
+		List<AgywPrev> data = getData(districts, startDate, endDate, reportType);
+
+		Map<Integer, List<Integer>> groupedByDistrict = data.stream().collect(Collectors.groupingBy(
+				AgywPrev::getDistrict_id, Collectors.mapping(AgywPrev::getBeneficiary_id, Collectors.toList())));
 
 		ReportObject reportObject = reportType == 1 ? process(districts, startDate, endDate)
 				: processSimplified(districts, startDate, endDate);
@@ -84,17 +100,20 @@ public class AgywPrevReport {
 					computeDiggregationCompletedSocialEconomicAllowance(reportObject, district));
 
 			// Process District Summary
-			ResultObject ro = getTotalResultObject();
+
+			List<Integer> allIds = groupedByDistrict.get(district);
+
+			ResultObject ro = getTotalResultObject(allIds);
 			ro.setTotal(completedOnlyPrimaryPackage.getTotal() + completedPrimaryPackageAndSecondaryService.getTotal()
 					+ completedOnlyServiceNotPrimaryPackage.getTotal() + startedServiceDidNotComplete.getTotal());
 			districtAgywPrevResultObject.put("all-disaggregations-total", ro);
-			ro = getTotalResultObject();
+			ro = getTotalResultObject(allIds);
 			ro.setTotal(districtSummary.get("totalBeneficiaries").intValue());
 			districtAgywPrevResultObject.put("total-beneficiaries", ro);
-			ro = getTotalResultObject();
+			ro = getTotalResultObject(allIds);
 			ro.setTotal(districtSummary.get("maleBeneficiaries").intValue());
 			districtAgywPrevResultObject.put("male-beneficiaries", ro);
-			ro = getTotalResultObject();
+			ro = getTotalResultObject(allIds);
 			ro.setTotal(districtSummary.get("femaleBeneficiaries").intValue());
 			districtAgywPrevResultObject.put("female-beneficiaries", ro);
 
@@ -109,9 +128,7 @@ public class AgywPrevReport {
 		ReportObject reportObject = new ReportObject(districts);
 
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
-		List<AgywPrev> data = service.GetAllEntityByNamedNativeQuery("AgywPrev.findByDistricts",
-				Arrays.asList(districts), startDate, endDate);
+		List<AgywPrev> data = getData(districts, startDate, endDate, 1);
 
 		LocalDate eDate = LocalDate.parse(endDate, formatter);
 
@@ -341,8 +358,7 @@ public class AgywPrevReport {
 
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-		List<AgywPrev> data = service.GetAllEntityByNamedNativeQuery("AgywPrev.findSimplifiedByDistricts",
-				Arrays.asList(districts), startDate, endDate);
+		List<AgywPrev> data =  getData(districts, startDate, endDate, 2);
 
 		LocalDate eDate = LocalDate.parse(endDate, formatter);
 
@@ -903,9 +919,10 @@ public class AgywPrevReport {
 		}
 	}
 
-	private ResultObject getTotalResultObject() {
+	private ResultObject getTotalResultObject(List<Integer> allIds) {
 		ResultObject ro = new ResultObject();
 		ro.setBeneficiaries(null);
+		ro.setBeneficiariesIds(allIds);
 		ro.setTotals(null);
 
 		return ro;

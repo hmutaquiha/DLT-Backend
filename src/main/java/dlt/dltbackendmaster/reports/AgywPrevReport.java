@@ -479,8 +479,7 @@ public class AgywPrevReport {
 									|| agywPrev.getVblt_sexually_active() != null
 											&& agywPrev.getVblt_sexually_active() == 1
 											&& completedHIVTestingServices(agywPrev)
-											&& completedCondomsPromotionOrProvision(agywPrev))) // Não completou o
-																								// pacote primário
+											&& completedCondomsPromotionOrProvision(agywPrev))) // Não completou o pacote primário
 							&& (startedAvanteEstudante(agywPrev) || startedSAAJEducationSessions(agywPrev)
 									|| startedAvanteEstudanteViolencePrevention(agywPrev)
 									|| startedPostViolenceCare_US(agywPrev) || startedPostViolenceCare_CM(agywPrev)
@@ -493,8 +492,14 @@ public class AgywPrevReport {
 						if (!startedAvanteEstudante(agywPrev) && startedGuiaFacilitacao(agywPrev)) {
 							primaryPackageRO.setServicePackage(SERVICE_PACKAGES[2]);
 						}
-						if (completedAvanteEstudante(agywPrev)) {
+						if (completedAvanteEstudanteSocialAssets(agywPrev)) {
 							primaryPackageRO.setCompletedSocialAsset(COMPLETION_STATUSES[1]);
+						}
+						if (completedAvanteEstudanteHivPrevention(agywPrev)) {
+							primaryPackageRO.setCompletedHivPrevention(COMPLETION_STATUSES[1]);
+						}
+						if (completedAvanteEstudanteViolencePrevention(agywPrev)) {
+							primaryPackageRO.setCompletedViolencePrevention(COMPLETION_STATUSES[1]);
 						}
 						if (ageOnEndDate == 14 && completedGuiaFacilitacao(agywPrev)) {
 							primaryPackageRO.setCompletedSocialAsset(COMPLETION_STATUSES[1]);
@@ -532,8 +537,7 @@ public class AgywPrevReport {
 									|| agywPrev.getVblt_sexually_active() != null
 											&& agywPrev.getVblt_sexually_active() == 1
 											&& completedHIVTestingServices(agywPrev)
-											&& completedCondomsPromotionOrProvision(agywPrev))) // Não completou o
-																								// pacote primário
+											&& completedCondomsPromotionOrProvision(agywPrev))) // Não completou o pacote primário
 							&& (startedAvanteRapariga(agywPrev) || startedSAAJEducationSessions(agywPrev)
 									|| startedAvanteRaparigaViolencePrevention(agywPrev)
 									|| startedPostViolenceCare_US(agywPrev) || startedPostViolenceCare_CM(agywPrev)
@@ -546,8 +550,14 @@ public class AgywPrevReport {
 						if (!startedAvanteRapariga(agywPrev) && startedGuiaFacilitacao(agywPrev)) {
 							primaryPackageRO.setServicePackage(SERVICE_PACKAGES[2]);
 						}
-						if (completedAvanteRapariga(agywPrev)) {
+						if (completedAvanteRaparigaSocialAssets(agywPrev)) {
 							primaryPackageRO.setCompletedSocialAsset(COMPLETION_STATUSES[1]);
+						}
+						if (completedAvanteRaparigaHivPrevention(agywPrev)) {
+							primaryPackageRO.setCompletedHivPrevention(COMPLETION_STATUSES[1]);
+						}
+						if (completedAvanteRaparigaViolencePrevention(agywPrev)) {
+							primaryPackageRO.setCompletedViolencePrevention(COMPLETION_STATUSES[1]);
 						}
 						if (ageOnEndDate == 14 && completedGuiaFacilitacao(agywPrev)) {
 							primaryPackageRO.setCompletedSocialAsset(COMPLETION_STATUSES[1]);
@@ -577,9 +587,7 @@ public class AgywPrevReport {
 			} else { // 15-24
 				if (!(completedCondomsPromotionOrProvision(agywPrev) && completedGuiaFacilitacao(agywPrev)
 						&& completedHIVTestingServices(agywPrev)
-						&& (completedFinancialLiteracy(agywPrev) || completedFinancialLiteracyAflateen(agywPrev))) // Não
-																													// completou
-																													// opacoteprimário
+						&& (completedFinancialLiteracy(agywPrev) || completedFinancialLiteracyAflateen(agywPrev))) // Não completou opacoteprimário
 						&& (startedGuiaFacilitacaoSocialAssets15Plus(agywPrev) || startedGuiaFacilitacao(agywPrev)
 								|| startedViolencePrevention15Plus(agywPrev)
 								|| (currentAgeBand == 2 && startedSocialAssetsOldCurriculum(agywPrev)
@@ -591,8 +599,97 @@ public class AgywPrevReport {
 					if (completedCondomsPromotionOrProvision(agywPrev)) {
 						primaryPackageRO.setCompletedCondoms(COMPLETION_STATUSES[1]);
 					}
-					if (completedGuiaFacilitacao(agywPrev)) {
+					primaryPackageRO.setCompletedSocialAsset(COMPLETION_STATUSES[2]);
+					if (completedGuiaFacilitacaoHivPrevention(agywPrev)) {
+						primaryPackageRO.setCompletedHivPrevention(COMPLETION_STATUSES[1]);
+					}
+					if (completedGuiaFacilitacaoViolencePrevention(agywPrev)) {
+						primaryPackageRO.setCompletedViolencePrevention(COMPLETION_STATUSES[1]);
+					}
+					if (completedHIVTestingServices(agywPrev)) {
+						primaryPackageRO.setCompletedHivTesting(COMPLETION_STATUSES[1]);
+					}
+					if (completedFinancialLiteracy(agywPrev) || completedFinancialLiteracyAflateen(agywPrev)) {
+						primaryPackageRO.setCompletedFinancialLiteracy(COMPLETION_STATUSES[1]);
+					}
+				}
+			}
+			if (primaryPackageRO != null) {
+				reportObjects.put(primaryPackageRO.getBeneficiaryId(), primaryPackageRO);
+			}
+		}
+
+		return reportObjects;
+	}
+
+	public Map<Integer, PrimaryPackageRO> processSimplifiedPPCompletion(Integer[] districts, String startDate,
+			String endDate) {
+
+		Map<Integer, PrimaryPackageRO> reportObjects = new HashMap<>();
+
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+		List<AgywPrev> data = service.GetAllEntityByNamedNativeQuery("AgywPrev.findSimplifiedByDistricts",
+				Arrays.asList(districts), startDate, endDate);
+
+		LocalDate eDate = LocalDate.parse(endDate, formatter);
+
+		for (AgywPrev agywPrev : data) {
+
+			LocalDate birthDate = agywPrev.getDate_of_birth().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+			int ageOnEndDate = Math.abs(Period.between(birthDate, eDate).getYears());
+
+			PrimaryPackageRO primaryPackageRO = null;
+
+			Integer currentAgeBand = agywPrev.getCurrent_age_band();
+			int ageBandIndex = getAgeBandIndex(currentAgeBand);
+			if (currentAgeBand == 1) { // 9-14
+				// AVANTE RAPARIGA
+				if (!(completedSimplifiedAvanteRapariga(agywPrev) && completedSimplifiedSAAJEducationSessions(agywPrev)) // Não completou o pacote primário
+						&& (startedSimplifiedAvanteRapariga(agywPrev) || startedSAAJEducationSessions(agywPrev)
+								|| startedAvanteRaparigaViolencePrevention(agywPrev)
+								|| startedPostViolenceCare_US(agywPrev) || startedPostViolenceCare_CM(agywPrev))) { // Iniciou serviço
+					primaryPackageRO = new PrimaryPackageRO(agywPrev.getBeneficiary_id(), ageOnEndDate,
+							AGE_BANDS[ageBandIndex], agywPrev.getVulnerabilities(), SERVICE_PACKAGES[1]);
+					if (completedSimplifiedAvanteRaparigaSocialAssets(agywPrev)) {
 						primaryPackageRO.setCompletedSocialAsset(COMPLETION_STATUSES[1]);
+					}
+					if (completedSimplifiedAvanteRaparigaHivPrevention(agywPrev)) {
+						primaryPackageRO.setCompletedHivPrevention(COMPLETION_STATUSES[1]);
+					}
+					if (completedSimplifiedAvanteRaparigaViolencePrevention(agywPrev)) {
+						primaryPackageRO.setCompletedViolencePrevention(COMPLETION_STATUSES[1]);
+					}
+					if (completedSimplifiedSAAJEducationSessions(agywPrev)) {
+						primaryPackageRO.setCompletedSAAJ(COMPLETION_STATUSES[1]);
+					}
+					primaryPackageRO.setCompletedFinancialLiteracy(COMPLETION_STATUSES[2]);
+					primaryPackageRO.setCompletedHivTesting(COMPLETION_STATUSES[2]);
+					primaryPackageRO.setCompletedCondoms(COMPLETION_STATUSES[2]);
+				}
+
+			} else { // 15-24
+				if (!(completedCondomsPromotionOrProvision(agywPrev) && completedSimplifiedGuiaFacilitacao(agywPrev)
+						&& completedHIVTestingServices(agywPrev)) // Não completou o acote primário
+						&& (startedGuiaFacilitacaoSocialAssets15Plus(agywPrev)
+								|| startedSimplifiedGuiaFacilitacao(agywPrev)
+								|| startedViolencePrevention15Plus(agywPrev)
+								|| (currentAgeBand == 2 && startedSocialAssetsOldCurriculum(agywPrev)
+										|| startedPostViolenceCare_US(agywPrev)
+										|| startedPostViolenceCare_CM(agywPrev)))) { // Iniciou serviço
+					primaryPackageRO = new PrimaryPackageRO(agywPrev.getBeneficiary_id(), ageOnEndDate,
+							AGE_BANDS[ageBandIndex], agywPrev.getVulnerabilities(), SERVICE_PACKAGES[2]);
+					primaryPackageRO.setCompletedSAAJ(COMPLETION_STATUSES[2]);
+					if (completedCondomsPromotionOrProvision(agywPrev)) {
+						primaryPackageRO.setCompletedCondoms(COMPLETION_STATUSES[1]);
+					}
+					primaryPackageRO.setCompletedSocialAsset(COMPLETION_STATUSES[2]);
+					if (completedSimplifiedGuiaFacilitacaoHivPrevention(agywPrev)) {
+						primaryPackageRO.setCompletedHivPrevention(COMPLETION_STATUSES[1]);
+					}
+					if (completedSimplifiedGuiaFacilitacaoViolencePrevention(agywPrev)) {
+						primaryPackageRO.setCompletedViolencePrevention(COMPLETION_STATUSES[1]);
 					}
 					if (completedHIVTestingServices(agywPrev)) {
 						primaryPackageRO.setCompletedHivTesting(COMPLETION_STATUSES[1]);
@@ -990,9 +1087,11 @@ public class AgywPrevReport {
 	}
 
 	public List<PrimaryPackageRO> getBeneficiariesWithoutPrimaryPackageCompleted(Integer[] districts, String startDate,
-			String endDate) {
+			String endDate, int reportType) {
 
-		Map<Integer, PrimaryPackageRO> ppCompletion = processPPCompletion(districts, startDate, endDate);
+		Map<Integer, PrimaryPackageRO> ppCompletion = reportType == 1
+				? processPPCompletion(districts, startDate, endDate)
+				: processSimplifiedPPCompletion(districts, startDate, endDate);
 		List<PrimaryPackageRO> reportObjects = new ArrayList<>();
 
 		List<Object> dataObjs = service.GetAllEntityByNamedNativeQuery("AgywPrev.findBeneficiariesByIds",
@@ -1006,7 +1105,6 @@ public class AgywPrevReport {
 			primaryPackageRO.setDistrict((String) getValueAtIndex(object, 3));
 			primaryPackageRO.setNui((String) getValueAtIndex(object, 1));
 
-//			ppCompletion.put(beneficiaryId, primaryPackageRO);
 			reportObjects.add(primaryPackageRO);
 		}
 

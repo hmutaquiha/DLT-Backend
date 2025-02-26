@@ -13,6 +13,8 @@ public class PrimaryPackageRO {
 	private String servicePackage;
 	private Integer vulnerabilitiesCount;
 	private String completedSocialAsset;
+	private String completedHivPrevention;
+	private String completedViolencePrevention;
 	private String completedSAAJ;
 	private String completedFinancialLiteracy;
 	private String completedHivTesting;
@@ -27,6 +29,8 @@ public class PrimaryPackageRO {
 		this.vulnerabilitiesCount = vulnerabilities;
 		this.servicePackage = servicePackage;
 		this.completedSocialAsset = COMPLETION_STATUSES[0];
+		this.completedHivPrevention = COMPLETION_STATUSES[0];
+		this.completedViolencePrevention = COMPLETION_STATUSES[0];
 		this.completedSAAJ = COMPLETION_STATUSES[0];
 		this.completedFinancialLiteracy = COMPLETION_STATUSES[0];
 		this.completedHivTesting = COMPLETION_STATUSES[0];
@@ -103,6 +107,22 @@ public class PrimaryPackageRO {
 
 	public void setCompletedSocialAsset(String completedSocialAsset) {
 		this.completedSocialAsset = completedSocialAsset;
+	}
+
+	public String getCompletedHivPrevention() {
+		return completedHivPrevention;
+	}
+
+	public void setCompletedHivPrevention(String completedHivPrevention) {
+		this.completedHivPrevention = completedHivPrevention;
+	}
+
+	public String getCompletedViolencePrevention() {
+		return completedViolencePrevention;
+	}
+
+	public void setCompletedViolencePrevention(String completedViolencePrevention) {
+		this.completedViolencePrevention = completedViolencePrevention;
 	}
 
 	public String getCompletedSAAJ() {

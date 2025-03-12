@@ -109,7 +109,7 @@ public class AgywPrevReport {
 	private BeneficiariyService beneficiariyService;
 
 	private List<Integer> beneficiariesIds = new ArrayList<>();
-	
+
 	public AgywPrevReport(DAOService service) {
 		this.service = service;
 	}
@@ -160,7 +160,6 @@ public class AgywPrevReport {
 					computeDiggregationHasSchoolAllowance(reportObject, district));
 			districtAgywPrevResultObject.put("completed-social-economic-approaches",
 					computeDiggregationCompletedSocialEconomicAllowance(reportObject, district));
-			
 
 			// Process District Summary
 
@@ -419,7 +418,7 @@ public class AgywPrevReport {
 
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-		List<AgywPrev> data =  getData(districts, startDate, endDate, 2);
+		List<AgywPrev> data = getData(districts, startDate, endDate, 2);
 
 		LocalDate eDate = LocalDate.parse(endDate, formatter);
 
@@ -556,7 +555,8 @@ public class AgywPrevReport {
 									|| agywPrev.getVblt_sexually_active() != null
 											&& agywPrev.getVblt_sexually_active() == 1
 											&& completedHIVTestingServices(agywPrev)
-											&& completedCondomsPromotionOrProvision(agywPrev))) // Não completou o pacote primário
+											&& completedCondomsPromotionOrProvision(agywPrev))) // Não completou o
+																								// pacote primário
 							&& (startedAvanteEstudante(agywPrev) || startedSAAJEducationSessions(agywPrev)
 									|| startedAvanteEstudanteViolencePrevention(agywPrev)
 									|| startedPostViolenceCare_US(agywPrev) || startedPostViolenceCare_CM(agywPrev)
@@ -614,7 +614,8 @@ public class AgywPrevReport {
 									|| agywPrev.getVblt_sexually_active() != null
 											&& agywPrev.getVblt_sexually_active() == 1
 											&& completedHIVTestingServices(agywPrev)
-											&& completedCondomsPromotionOrProvision(agywPrev))) // Não completou o pacote primário
+											&& completedCondomsPromotionOrProvision(agywPrev))) // Não completou o
+																								// pacote primário
 							&& (startedAvanteRapariga(agywPrev) || startedSAAJEducationSessions(agywPrev)
 									|| startedAvanteRaparigaViolencePrevention(agywPrev)
 									|| startedPostViolenceCare_US(agywPrev) || startedPostViolenceCare_CM(agywPrev)
@@ -664,7 +665,9 @@ public class AgywPrevReport {
 			} else { // 15-24
 				if (!(completedCondomsPromotionOrProvision(agywPrev) && completedGuiaFacilitacao(agywPrev)
 						&& completedHIVTestingServices(agywPrev)
-						&& (completedFinancialLiteracy(agywPrev) || completedFinancialLiteracyAflateen(agywPrev))) // Não completou opacoteprimário
+						&& (completedFinancialLiteracy(agywPrev) || completedFinancialLiteracyAflateen(agywPrev))) // Não
+																													// completou
+																													// opacoteprimário
 						&& (startedGuiaFacilitacaoSocialAssets15Plus(agywPrev) || startedGuiaFacilitacao(agywPrev)
 								|| startedViolencePrevention15Plus(agywPrev)
 								|| (currentAgeBand == 2 && startedSocialAssetsOldCurriculum(agywPrev)
@@ -723,10 +726,15 @@ public class AgywPrevReport {
 			int ageBandIndex = getAgeBandIndex(currentAgeBand);
 			if (currentAgeBand == 1) { // 9-14
 				// AVANTE RAPARIGA
-				if (!(completedSimplifiedAvanteRapariga(agywPrev) && completedSimplifiedSAAJEducationSessions(agywPrev)) // Não completou o pacote primário
+				if (!(completedSimplifiedAvanteRapariga(agywPrev) && completedSimplifiedSAAJEducationSessions(agywPrev)) // Não
+																															// completou
+																															// o
+																															// pacote
+																															// primário
 						&& (startedSimplifiedAvanteRapariga(agywPrev) || startedSAAJEducationSessions(agywPrev)
 								|| startedAvanteRaparigaViolencePrevention(agywPrev)
-								|| startedPostViolenceCare_US(agywPrev) || startedPostViolenceCare_CM(agywPrev))) { // Iniciou serviço
+								|| startedPostViolenceCare_US(agywPrev) || startedPostViolenceCare_CM(agywPrev))) { // Iniciou
+																													// serviço
 					primaryPackageRO = new PrimaryPackageRO(agywPrev.getBeneficiary_id(), ageOnEndDate,
 							AGE_BANDS[ageBandIndex], agywPrev.getVulnerabilities(), SERVICE_PACKAGES[1]);
 					if (completedSimplifiedAvanteRaparigaSocialAssets(agywPrev)) {
@@ -786,9 +794,8 @@ public class AgywPrevReport {
 
 	private void addBeneficiary(ReportObject reportObject, Integer district, Integer ageBand, Integer enrollmentTime,
 			Integer layering, Integer beneficiary) {
-		if(!beneficiariesIds.contains(beneficiary))
-		{
-			beneficiariesIds .add(beneficiary);
+		if (!beneficiariesIds.contains(beneficiary)) {
+			beneficiariesIds.add(beneficiary);
 		}
 		reportObject.getReportObject().get(district).get(AGE_BANDS[ageBand]).get(ENROLLMENT_TIMES[enrollmentTime])
 				.get(DISAGGREGATIONS[layering]).add(beneficiary);
@@ -1093,8 +1100,8 @@ public class AgywPrevReport {
 	public List<Object> getNewlyEnrolledAgywAndServices(Integer[] districts, Date startDate, Date endDate,
 			int pageIndex, int pageSize) {
 		List<Object> dataObjs = service.GetAllPagedEntityByNamedNativeQuery(
-				"AgywPrev.findByNewlyEnrolledAgywAndServices", pageIndex, pageSize, startDate, endDate,
-				Arrays.asList(districts));
+				"AgywPrev.findByNewlyEnrolledAgywAndServices", pageIndex, pageSize, Utility.atStartOfDay(startDate),
+				Utility.atEndOfDay(endDate), Arrays.asList(districts));
 
 		return dataObjs;
 	}
@@ -1102,8 +1109,8 @@ public class AgywPrevReport {
 	public List<Object> getNewlyEnrolledAgywAndServicesSummary(Integer[] districts, Date startDate, Date endDate,
 			int pageIndex, int pageSize) {
 		List<Object> dataObjs = service.GetAllPagedEntityByNamedNativeQuery(
-				"AgywPrev.findByNewlyEnrolledAgywAndServicesSummary", pageIndex, pageSize, startDate, endDate,
-				Arrays.asList(districts));
+				"AgywPrev.findByNewlyEnrolledAgywAndServicesSummary", pageIndex, pageSize,
+				Utility.atStartOfDay(startDate), Utility.atEndOfDay(endDate), Arrays.asList(districts));
 
 		return dataObjs;
 	}
@@ -1132,8 +1139,8 @@ public class AgywPrevReport {
 	public List<Object> getBeneficiariesNoVulnerabilities(Integer[] districts, Date startDate, Date endDate,
 			int pageIndex, int pageSize) {
 		List<Object> dataObjs = service.GetAllPagedEntityByNamedNativeQuery(
-				"AgywPrev.findByBeneficiariesNoVulnerabilities", pageIndex, pageSize, startDate, endDate,
-				Arrays.asList(districts));
+				"AgywPrev.findByBeneficiariesNoVulnerabilities", pageIndex, pageSize, Utility.atStartOfDay(startDate),
+				Utility.atEndOfDay(endDate), Arrays.asList(districts));
 
 		return dataObjs;
 	}

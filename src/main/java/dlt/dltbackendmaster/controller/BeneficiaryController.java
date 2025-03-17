@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.gemfire.config.annotation.EnableCompression;
 import org.springframework.http.HttpStatus;
@@ -27,164 +29,176 @@ import dlt.dltbackendmaster.domain.Users;
 import dlt.dltbackendmaster.service.DAOService;
 import dlt.dltbackendmaster.service.SequenceGenerator;
 import dlt.dltbackendmaster.service.VulnerabilityHistoryService;
+import dlt.dltbackendmaster.service.VulnerabilityService;
 
 @RestController
 @EnableCompression
 @RequestMapping("/api/beneficiaries")
-public class BeneficiaryController
-{
-    private final DAOService service;
+public class BeneficiaryController {
 
-    private SequenceGenerator generator;
-    
-    @Autowired
-    private VulnerabilityHistoryService vulnerabilityHistoryService;
+	Logger logger = LoggerFactory.getLogger(BeneficiaryController.class);
 
-    public BeneficiaryController(DAOService service) {
-        this.service = service;
-        this.generator = new SequenceGenerator(service);
-    }
+	private final DAOService service;
 
-    @GetMapping(produces = "application/json")
-    public ResponseEntity<List<Beneficiaries>> get(
-    		@RequestParam(name = "userId") Integer userId, 
-    		@RequestParam(name = "level") String level, 
-    		@RequestParam(name = "params",required = false) @Nullable Integer[] params,
-    		@RequestParam(name = "pageIndex") int pageIndex,
-    		@RequestParam(name = "pageSize") int pageSize,
-    		@RequestParam(name = "searchNui", required = false) @Nullable String searchNui,
-    		@RequestParam(name = "searchName", required = false) @Nullable String searchName,
-    		@RequestParam(name = "searchUserCreator", required = false) @Nullable Integer searchUserCreator,
-    		@RequestParam(name = "searchDistrict", required = false) @Nullable Integer searchDistrict
-    		) {
+	private SequenceGenerator generator;
 
-        try {
-            List<Beneficiaries> beneficiaries = null;
-            
-            searchName = searchName.replaceAll(" ", "%");
+	@Autowired
+	private VulnerabilityHistoryService vulnerabilityHistoryService;
 
-            if (level.equals("CENTRAL")) {
-                beneficiaries = service.GetAllPagedEntityByNamedQuery("Beneficiary.findAll", pageIndex, pageSize, searchNui, searchName, searchUserCreator, searchDistrict);
-            } else if (level.equals("PROVINCIAL")) {
-                beneficiaries = service.GetAllPagedEntityByNamedQuery("Beneficiary.findByProvinces", pageIndex, pageSize, searchNui, searchName, searchUserCreator, searchDistrict, Arrays.asList(params));
-            } else if (level.equals("DISTRITAL")) {
-                beneficiaries = service.GetAllPagedEntityByNamedQuery("Beneficiary.findByDistricts", pageIndex, pageSize, searchNui, searchName, searchUserCreator, searchDistrict, Arrays.asList(params));
-            } else {
-                beneficiaries = service.GetAllPagedEntityByNamedQuery("Beneficiary.findByLocalitiesOrReferenceNotifyTo", pageIndex, pageSize, searchNui, searchName,  searchUserCreator, searchDistrict, Arrays.asList(params), userId);
-            }
+	@Autowired
+	private VulnerabilityService vulnerabilityService;
 
-            return new ResponseEntity<List<Beneficiaries>>(beneficiaries, HttpStatus.OK);
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            System.out.println(e.getMessage());
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-    
+	public BeneficiaryController(DAOService service) {
+		this.service = service;
+		this.generator = new SequenceGenerator(service);
+	}
+
+	@GetMapping(produces = "application/json")
+	public ResponseEntity<List<Beneficiaries>> get(@RequestParam(name = "userId") Integer userId,
+			@RequestParam(name = "level") String level,
+			@RequestParam(name = "params", required = false) @Nullable Integer[] params,
+			@RequestParam(name = "pageIndex") int pageIndex, @RequestParam(name = "pageSize") int pageSize,
+			@RequestParam(name = "searchNui", required = false) @Nullable String searchNui,
+			@RequestParam(name = "searchName", required = false) @Nullable String searchName,
+			@RequestParam(name = "searchUserCreator", required = false) @Nullable Integer searchUserCreator,
+			@RequestParam(name = "searchDistrict", required = false) @Nullable Integer searchDistrict) {
+
+		try {
+			List<Beneficiaries> beneficiaries = null;
+
+			searchName = searchName.replaceAll(" ", "%");
+
+			if (level.equals("CENTRAL")) {
+				beneficiaries = service.GetAllPagedEntityByNamedQuery("Beneficiary.findAll", pageIndex, pageSize,
+						searchNui, searchName, searchUserCreator, searchDistrict);
+			} else if (level.equals("PROVINCIAL")) {
+				beneficiaries = service.GetAllPagedEntityByNamedQuery("Beneficiary.findByProvinces", pageIndex,
+						pageSize, searchNui, searchName, searchUserCreator, searchDistrict, Arrays.asList(params));
+			} else if (level.equals("DISTRITAL")) {
+				beneficiaries = service.GetAllPagedEntityByNamedQuery("Beneficiary.findByDistricts", pageIndex,
+						pageSize, searchNui, searchName, searchUserCreator, searchDistrict, Arrays.asList(params));
+			} else {
+				beneficiaries = service.GetAllPagedEntityByNamedQuery("Beneficiary.findByLocalitiesOrReferenceNotifyTo",
+						pageIndex, pageSize, searchNui, searchName, searchUserCreator, searchDistrict,
+						Arrays.asList(params), userId);
+			}
+
+			return new ResponseEntity<List<Beneficiaries>>(beneficiaries, HttpStatus.OK);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			System.out.println(e.getMessage());
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
 	@GetMapping(path = "/any", produces = "application/json")
-    public ResponseEntity<List<Beneficiaries>> getAny(
-    		@RequestParam(name = "userId") Integer userId, 
-    		@RequestParam(name = "level") String level, 
-    		@RequestParam(name = "params",required = false) @Nullable Integer[] params,
-    		@RequestParam(name = "pageIndex") int pageIndex,
-    		@RequestParam(name = "pageSize") int pageSize,
-    		@RequestParam(name = "searchNui", required = false) @Nullable String searchNui,
-    		@RequestParam(name = "searchName", required = false) @Nullable String searchName,
-    		@RequestParam(name = "searchUserCreator", required = false) @Nullable Integer searchUserCreator,
-    		@RequestParam(name = "searchDistrict", required = false) @Nullable Integer searchDistrict
-    		) {
+	public ResponseEntity<List<Beneficiaries>> getAny(@RequestParam(name = "userId") Integer userId,
+			@RequestParam(name = "level") String level,
+			@RequestParam(name = "params", required = false) @Nullable Integer[] params,
+			@RequestParam(name = "pageIndex") int pageIndex, @RequestParam(name = "pageSize") int pageSize,
+			@RequestParam(name = "searchNui", required = false) @Nullable String searchNui,
+			@RequestParam(name = "searchName", required = false) @Nullable String searchName,
+			@RequestParam(name = "searchUserCreator", required = false) @Nullable Integer searchUserCreator,
+			@RequestParam(name = "searchDistrict", required = false) @Nullable Integer searchDistrict) {
 
-        try {
-            List<Beneficiaries> beneficiaries = null;
-            
-            searchName = searchName.replaceAll(" ", "%");
+		try {
+			List<Beneficiaries> beneficiaries = null;
 
-            if (level.equals("CENTRAL")) {
-                beneficiaries = service.GetAllPagedEntityByNamedQuery("Beneficiary.findAny", pageIndex, pageSize, searchNui, searchName, searchUserCreator, searchDistrict);
-            } else if (level.equals("PROVINCIAL")) {
-                beneficiaries = service.GetAllPagedEntityByNamedQuery("Beneficiary.findAnyByProvinces", pageIndex, pageSize, searchNui, searchName, searchUserCreator, searchDistrict, Arrays.asList(params));
-            } else if (level.equals("DISTRITAL")) {
-                beneficiaries = service.GetAllPagedEntityByNamedQuery("Beneficiary.findAnyByDistricts", pageIndex, pageSize, searchNui, searchName, searchUserCreator, searchDistrict, Arrays.asList(params));
-            } else {
-                beneficiaries = service.GetAllPagedEntityByNamedQuery("Beneficiary.findAnyByLocalitiesOrReferenceNotifyTo", pageIndex, pageSize, searchNui, searchName,  searchUserCreator, searchDistrict, Arrays.asList(params), userId);
-            }
+			searchName = searchName.replaceAll(" ", "%");
 
-            return new ResponseEntity<List<Beneficiaries>>(beneficiaries, HttpStatus.OK);
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            System.out.println(e.getMessage());
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+			if (level.equals("CENTRAL")) {
+				beneficiaries = service.GetAllPagedEntityByNamedQuery("Beneficiary.findAny", pageIndex, pageSize,
+						searchNui, searchName, searchUserCreator, searchDistrict);
+			} else if (level.equals("PROVINCIAL")) {
+				beneficiaries = service.GetAllPagedEntityByNamedQuery("Beneficiary.findAnyByProvinces", pageIndex,
+						pageSize, searchNui, searchName, searchUserCreator, searchDistrict, Arrays.asList(params));
+			} else if (level.equals("DISTRITAL")) {
+				beneficiaries = service.GetAllPagedEntityByNamedQuery("Beneficiary.findAnyByDistricts", pageIndex,
+						pageSize, searchNui, searchName, searchUserCreator, searchDistrict, Arrays.asList(params));
+			} else {
+				beneficiaries = service.GetAllPagedEntityByNamedQuery(
+						"Beneficiary.findAnyByLocalitiesOrReferenceNotifyTo", pageIndex, pageSize, searchNui,
+						searchName, searchUserCreator, searchDistrict, Arrays.asList(params), userId);
+			}
 
-    @GetMapping(path = "/{id}", produces = "application/json")
-    public ResponseEntity<Beneficiaries> get(@PathVariable Integer id) {
+			return new ResponseEntity<List<Beneficiaries>>(beneficiaries, HttpStatus.OK);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			System.out.println(e.getMessage());
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
-        if (id == null) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        }
+	@GetMapping(path = "/{id}", produces = "application/json")
+	public ResponseEntity<Beneficiaries> get(@PathVariable Integer id) {
 
-        try {
-            Beneficiaries beneficiary = service.find(Beneficiaries.class, id);
-            return new ResponseEntity<>(beneficiary, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+		if (id == null) {
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		}
 
-    @PostMapping(consumes = "application/json")
-    public ResponseEntity<Beneficiaries> save(@RequestBody Beneficiaries beneficiary) {
+		try {
+			Beneficiaries beneficiary = service.find(Beneficiaries.class, id);
+			return new ResponseEntity<>(beneficiary, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
-        if (beneficiary == null) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        }
+	@PostMapping(consumes = "application/json")
+	public ResponseEntity<Beneficiaries> save(@RequestBody Beneficiaries beneficiary) {
 
-        try {
-            String partnerNUI = beneficiary.getPartnerNUI();
+		if (beneficiary == null) {
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		}
 
-            if (partnerNUI != null && partnerNUI != "") {
-                Beneficiaries partner = service.GetUniqueEntityByNamedQuery("Beneficiary.findByNui", partnerNUI);
-                // TODO: Throw exception for NUI not found
-                if (partner != null)
-                    beneficiary.setPartnerId(partner.getId());
-            }
-            NumericSequence nextNUI = generator.getNextNumericSequence();
-            beneficiary.setNui(nextNUI.getSequence());
-            Integer beneficiaryId = (Integer) service.Save(beneficiary);
-            Beneficiaries createdBeneficiary = service.find(Beneficiaries.class, beneficiaryId);
-            
-            vulnerabilityHistoryService.saveVulnerabilityHistory(createdBeneficiary);
-            
-            return new ResponseEntity<>(createdBeneficiary, HttpStatus.OK);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+		try {
+			String partnerNUI = beneficiary.getPartnerNUI();
 
-    @PutMapping(consumes = "application/json", produces = "application/json")
-    public ResponseEntity<Beneficiaries> update(@RequestBody Beneficiaries beneficiary) {
+			if (partnerNUI != null && partnerNUI != "") {
+				Beneficiaries partner = service.GetUniqueEntityByNamedQuery("Beneficiary.findByNui", partnerNUI);
+				// TODO: Throw exception for NUI not found
+				if (partner != null)
+					beneficiary.setPartnerId(partner.getId());
+			}
+			NumericSequence nextNUI = generator.getNextNumericSequence();
+			beneficiary.setNui(nextNUI.getSequence());
+			beneficiary.setVulnerable(vulnerabilityService.isVulnerable(beneficiary) ? 1 : 0);
+			Integer beneficiaryId = (Integer) service.Save(beneficiary);
+			Beneficiaries createdBeneficiary = service.find(Beneficiaries.class, beneficiaryId);
 
-        if (beneficiary == null) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        }
+			vulnerabilityHistoryService.saveVulnerabilityHistory(createdBeneficiary);
 
-        try {
-            String partnerNUI = beneficiary.getPartnerNUI();
+			return new ResponseEntity<>(createdBeneficiary, HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
-            if (partnerNUI != null && partnerNUI != "") {
-                Beneficiaries partner = service.GetUniqueEntityByNamedQuery("Beneficiary.findByNui", partnerNUI);
-                // TODO: Throw exception for NUI not found
-                if (partner != null)
-                    beneficiary.setPartnerId(partner.getId());
-            } else {
+	@PutMapping(consumes = "application/json", produces = "application/json")
+	public ResponseEntity<Beneficiaries> update(@RequestBody Beneficiaries beneficiary) {
+
+		if (beneficiary == null) {
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		}
+
+		try {
+			String partnerNUI = beneficiary.getPartnerNUI();
+
+			if (partnerNUI != null && partnerNUI != "") {
+				Beneficiaries partner = service.GetUniqueEntityByNamedQuery("Beneficiary.findByNui", partnerNUI);
+				// TODO: Throw exception for NUI not found
+				if (partner != null)
+					beneficiary.setPartnerId(partner.getId());
+			} else {
 				beneficiary.setPartnerId(null);
 			}
-            
-            // setting interventions counts from database before update
-            Beneficiaries benefToUpdate = service.find(Beneficiaries.class, beneficiary.getId());
-            beneficiary.setClinicalInterventions(benefToUpdate.getClinicalInterventions());
-            beneficiary.setCommunityInterventions(benefToUpdate.getCommunityInterventions());
+
+			// setting interventions counts from database before update
+			Beneficiaries benefToUpdate = service.find(Beneficiaries.class, beneficiary.getId());
+			beneficiary.setClinicalInterventions(benefToUpdate.getClinicalInterventions());
+			beneficiary.setCommunityInterventions(benefToUpdate.getCommunityInterventions());
+			beneficiary.setVulnerable(vulnerabilityService.isVulnerable(beneficiary) ? 1 : 0);
 			Beneficiaries updatedBeneficiary = service.update(beneficiary);
 
 			vulnerabilityHistoryService.saveVulnerabilityHistory(updatedBeneficiary);
@@ -196,100 +210,130 @@ public class BeneficiaryController
 	}
 
 	@GetMapping(path = "/countByFilters", produces = "application/json")
-	public ResponseEntity<Long> countByBeneficiary(
-			@RequestParam(name = "userId") Integer userId, 
-			@RequestParam(name = "level") String level, 
+	public ResponseEntity<Long> countByBeneficiary(@RequestParam(name = "userId") Integer userId,
+			@RequestParam(name = "level") String level,
 			@RequestParam(name = "params", required = false) @Nullable Integer[] params,
 			@RequestParam(name = "searchNui", required = false) @Nullable String searchNui,
 			@RequestParam(name = "searchName", required = false) @Nullable String searchName,
-    		@RequestParam(name = "searchUserCreator", required = false) @Nullable Integer searchUserCreator,
-    		@RequestParam(name = "searchDistrict", required = false) @Nullable Integer searchDistrict
-			) {
+			@RequestParam(name = "searchUserCreator", required = false) @Nullable Integer searchUserCreator,
+			@RequestParam(name = "searchDistrict", required = false) @Nullable Integer searchDistrict) {
 		try {
 			Long beneficiariesTotal;
-            
-            searchName = searchName.replaceAll(" ", "%");
-			
+
+			searchName = searchName.replaceAll(" ", "%");
+
 			if (level.equals("CENTRAL")) {
-				beneficiariesTotal = service.GetUniqueEntityByNamedQuery("Beneficiary.findCountAll", searchNui, searchName, searchUserCreator, searchDistrict);
-            } else if (level.equals("PROVINCIAL")) {
-            	beneficiariesTotal = service.GetUniqueEntityByNamedQuery("Beneficiary.findCountByProvinces", searchNui, searchName, searchUserCreator, searchDistrict, Arrays.asList(params));
-            } else if (level.equals("DISTRITAL")) {
-            	beneficiariesTotal = service.GetUniqueEntityByNamedQuery("Beneficiary.findCountByDistricts", searchNui, searchName, searchUserCreator, searchDistrict, Arrays.asList(params));
-            } else {
-            	beneficiariesTotal = service.GetUniqueEntityByNamedQuery("Beneficiary.findCountByLocalitiesOrReferenceNotifyTo", searchNui, searchName, searchUserCreator, searchDistrict, Arrays.asList(params), userId);
-            }
-		
+				beneficiariesTotal = service.GetUniqueEntityByNamedQuery("Beneficiary.findCountAll", searchNui,
+						searchName, searchUserCreator, searchDistrict);
+			} else if (level.equals("PROVINCIAL")) {
+				beneficiariesTotal = service.GetUniqueEntityByNamedQuery("Beneficiary.findCountByProvinces", searchNui,
+						searchName, searchUserCreator, searchDistrict, Arrays.asList(params));
+			} else if (level.equals("DISTRITAL")) {
+				beneficiariesTotal = service.GetUniqueEntityByNamedQuery("Beneficiary.findCountByDistricts", searchNui,
+						searchName, searchUserCreator, searchDistrict, Arrays.asList(params));
+			} else {
+				beneficiariesTotal = service.GetUniqueEntityByNamedQuery(
+						"Beneficiary.findCountByLocalitiesOrReferenceNotifyTo", searchNui, searchName,
+						searchUserCreator, searchDistrict, Arrays.asList(params), userId);
+			}
+
 			return new ResponseEntity<>(beneficiariesTotal, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
+
 	@GetMapping(path = "/findByNui", produces = "application/json")
-	public ResponseEntity<List<Beneficiaries>> getBeneficiariesByNui(@RequestParam(name = "nui") String nui,@RequestParam(name = "userId") Integer userId) {
+	public ResponseEntity<List<Beneficiaries>> getBeneficiariesByNui(@RequestParam(name = "nui") String nui,
+			@RequestParam(name = "userId") Integer userId) {
 		try {
-			List<Users> users = service.GetAllEntityByNamedQuery("Users.findById",userId);
-			List <Integer> localitiesIds = new ArrayList<>();
+			List<Users> users = service.GetAllEntityByNamedQuery("Users.findById", userId);
+			List<Integer> localitiesIds = new ArrayList<>();
 			Set<Locality> localities = users.get(0).getLocalities();
-			localities.forEach(locality->{
+			localities.forEach(locality -> {
 				localitiesIds.add(locality.getId());
-				});
-			
-			List<Beneficiaries> beneficiaries = service.GetAllEntityByNamedQuery("Beneficiary.getBeneficiariesByNui",nui, localitiesIds);
-		
+			});
+
+			List<Beneficiaries> beneficiaries = service.GetAllEntityByNamedQuery("Beneficiary.getBeneficiariesByNui",
+					nui, localitiesIds);
+
 			return new ResponseEntity<List<Beneficiaries>>(beneficiaries, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
+
 	@GetMapping(path = "ids", produces = "application/json")
-    public ResponseEntity<List<Beneficiaries>> getByIds(
-    		@RequestParam(name = "pageIndex") int pageIndex,
-    		@RequestParam(name = "pageSize") int pageSize,
-    		@RequestParam(name = "params") Integer[] params
-    		) {
+	public ResponseEntity<List<Beneficiaries>> getByIds(@RequestParam(name = "pageIndex") int pageIndex,
+			@RequestParam(name = "pageSize") int pageSize, @RequestParam(name = "params") Integer[] params) {
 
-        if (params.length < 1) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        }
+		if (params.length < 1) {
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		}
 
-        try {
-            List<Beneficiaries> beneficiaries = service.GetByParamsPagedEntityByNamedQuery("Beneficiary.findByIds", pageIndex, pageSize, Arrays.asList(params));
-    
-            return new ResponseEntity<List<Beneficiaries>>(beneficiaries, HttpStatus.OK);
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            System.out.println(e.getMessage());
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-	
+		try {
+			List<Beneficiaries> beneficiaries = service.GetByParamsPagedEntityByNamedQuery("Beneficiary.findByIds",
+					pageIndex, pageSize, Arrays.asList(params));
+
+			return new ResponseEntity<List<Beneficiaries>>(beneficiaries, HttpStatus.OK);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			System.out.println(e.getMessage());
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
 	@GetMapping(path = "/findByPartnerId", produces = "application/json")
-	public ResponseEntity<List<Beneficiaries>> getBeneficiariesByPartnerId(@RequestParam(name = "partnerId") int partnerId) {
-		try {			
-			List<Beneficiaries> beneficiaries = service.GetAllEntityByNamedQuery("Beneficiary.getBeneficiariesByPartnerId",partnerId);
-		
+	public ResponseEntity<List<Beneficiaries>> getBeneficiariesByPartnerId(
+			@RequestParam(name = "partnerId") int partnerId) {
+		try {
+			List<Beneficiaries> beneficiaries = service
+					.GetAllEntityByNamedQuery("Beneficiary.getBeneficiariesByPartnerId", partnerId);
+
 			return new ResponseEntity<List<Beneficiaries>>(beneficiaries, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-
 
 	@GetMapping(path = "/findByNameAndDateOfBirthAndLocality", produces = "application/json")
-	public ResponseEntity<List<Beneficiaries>> findByNameAndDateOfBirthAndLocality(@RequestParam(name = "name") String name,
-			@RequestParam(name = "dateOfBirth") Long dateOfBirth,
+	public ResponseEntity<List<Beneficiaries>> findByNameAndDateOfBirthAndLocality(
+			@RequestParam(name = "name") String name, @RequestParam(name = "dateOfBirth") Long dateOfBirth,
 			@RequestParam(name = "locality") int locality) {
 		try {
 			List<Beneficiaries> beneficiaries = service.GetEntityByNamedQuery(
-					"Beneficiary.findByNameAndDateOfBirthAndLocality", name, new Date(dateOfBirth),
-					locality);
+					"Beneficiary.findByNameAndDateOfBirthAndLocality", name, new Date(dateOfBirth), locality);
 
 			return new ResponseEntity<List<Beneficiaries>>(beneficiaries, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+	}
+
+	@PutMapping(path = "/set-past-cop-beneficiaries-vulnerable-flag")
+	public void setPastCopBeneficiariesVulnerableFlag() {
+
+		logger.warn("Fetching past COPs beneficiaries");
+		List<Beneficiaries> beneficiaries = service.GetAllEntityByNamedQuery("Beneficiary.findByPastCops");
+		int beneficiariesCount = beneficiaries.size();
+		logger.warn("Found " + beneficiariesCount + " beneficiaries");
+
+		int count = 0;
+
+		logger.warn("Starting updating beneficiaries");
+		for (Beneficiaries beneficiary : beneficiaries) {
+			int vulnerable = vulnerabilityService.isVulnerablePastCops(beneficiary) ? 1 : 0;
+			if (vulnerable == 1) {
+				beneficiary.setVulnerable(vulnerable);
+				service.update(beneficiary);
+			}
+			count++;
+
+			if (count % 1000 == 0) {
+				logger.warn("Processed " + count + " beneficiaries of " + beneficiariesCount);
+			}
+		}
+		logger.warn("Processed " + count + " beneficiaries of " + beneficiariesCount);
+		logger.warn("Finished updating beneficiaries");
 	}
 }

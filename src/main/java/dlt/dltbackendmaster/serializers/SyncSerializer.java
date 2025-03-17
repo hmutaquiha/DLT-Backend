@@ -625,7 +625,7 @@ public class SyncSerializer {
 		JsonNode root = mapper.readTree(changes);
 		JsonNode changesNode = root.path("changes");
 
-		if (!changesNode.isMissingNode()) {
+		if (!changesNode.isMissingNode() && changesNode.has("user_details")) {
 			JsonNode userDetailsNode = changesNode.path("user_details");
 			@SuppressWarnings("unchecked")
 			SyncObject<UserDetailsSyncModel> userDetails = mapper.treeToValue(userDetailsNode,

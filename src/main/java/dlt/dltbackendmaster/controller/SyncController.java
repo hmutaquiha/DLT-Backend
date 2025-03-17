@@ -71,6 +71,7 @@ import dlt.dltbackendmaster.service.SequenceGenerator;
 import dlt.dltbackendmaster.service.UserLastSyncService;
 import dlt.dltbackendmaster.service.UsersBeneficiariesCustomSyncService;
 import dlt.dltbackendmaster.service.VulnerabilityHistoryService;
+import dlt.dltbackendmaster.service.VulnerabilityService;
 import dlt.dltbackendmaster.util.ServiceCompletionRules;
 import dlt.dltbackendmaster.util.Utility;
 
@@ -90,6 +91,9 @@ public class SyncController {
 
 	@Autowired
 	private VulnerabilityHistoryService vulnerabilityHistoryService;
+
+	@Autowired
+	private VulnerabilityService vulnerabilityService;
 
 	@Autowired
 	private UserLastSyncService userLastSyncService;
@@ -616,6 +620,7 @@ public class SyncController {
 							setPartner(created, beneficiary);
 							beneficiary.setCreatedBy(userId);
 							beneficiary.setDateUpdated(new Date());
+							beneficiary.setVulnerable(vulnerabilityService.isVulnerable(beneficiary) ? 1 : 0);
 							Integer beneficiaryId = (Integer) service.Save(beneficiary);
 							vulnerabilityHistoryService.saveVulnerabilityHistory(beneficiary);
 							beneficiariesIds.put(created.getId(), beneficiaryId);
@@ -640,6 +645,7 @@ public class SyncController {
 							Beneficiaries beneficiary = new Beneficiaries(updated, lastPulledAt);
 							beneficiary.setCreatedBy(userId);
 							setPartner(updated, beneficiary);
+							beneficiary.setVulnerable(vulnerabilityService.isVulnerable(beneficiary) ? 1 : 0);
 							Integer beneficiaryId = (Integer) service.Save(beneficiary);
 							vulnerabilityHistoryService.saveVulnerabilityHistory(beneficiary);
 							beneficiariesIds.put(updated.getId(), beneficiaryId);
@@ -653,6 +659,7 @@ public class SyncController {
 						beneficiary.setUpdatedBy(userId);
 						setPartner(updated, beneficiary);
 						beneficiary.update(updated, lastPulledAt);
+						beneficiary.setVulnerable(vulnerabilityService.isVulnerable(beneficiary) ? 1 : 0);
 						service.update(beneficiary);
 						vulnerabilityHistoryService.saveVulnerabilityHistory(beneficiary);
 						beneficiariesIds.put(updated.getId(), updated.getOnline_id());

@@ -1,7 +1,72 @@
 package dlt.dltbackendmaster.reports;
 
-import static dlt.dltbackendmaster.reports.utils.ReportsConstants.*;
-import static dlt.dltbackendmaster.util.ServiceCompletionRules.*;
+import static dlt.dltbackendmaster.reports.utils.ReportsConstants.AGE_BANDS;
+import static dlt.dltbackendmaster.reports.utils.ReportsConstants.COMPLETED_PRIMARY_PACKAGE;
+import static dlt.dltbackendmaster.reports.utils.ReportsConstants.COMPLETED_PRIMARY_SERVICE;
+import static dlt.dltbackendmaster.reports.utils.ReportsConstants.COMPLETED_SECONDARY_SERVICE;
+import static dlt.dltbackendmaster.reports.utils.ReportsConstants.COMPLETED_VIOLENCE_SERVICE;
+import static dlt.dltbackendmaster.reports.utils.ReportsConstants.COMPLETION_STATUSES;
+import static dlt.dltbackendmaster.reports.utils.ReportsConstants.DISAGGREGATIONS;
+import static dlt.dltbackendmaster.reports.utils.ReportsConstants.ENROLLMENT_TIMES;
+import static dlt.dltbackendmaster.reports.utils.ReportsConstants.HAD_SCHOLL_ALLOWANCE;
+import static dlt.dltbackendmaster.reports.utils.ReportsConstants.HAD_SOCIAL_ECONOMIC_APPROACHES;
+import static dlt.dltbackendmaster.reports.utils.ReportsConstants.SERVICE_PACKAGES;
+import static dlt.dltbackendmaster.reports.utils.ReportsConstants.STARTED_SERVICE;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedAvanteEstudante;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedAvanteEstudanteHivPrevention;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedAvanteEstudanteSocialAssets;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedAvanteEstudanteViolencePrevention;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedAvanteRapariga;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedAvanteRaparigaHivPrevention;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedAvanteRaparigaSocialAssets;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedAvanteRaparigaViolencePrevention;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedCombinedSocioEconomicApproaches;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedCondomsPromotionOrProvision;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedContraceptionsPromotionOrProvision;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedDisagCombinedSocioEconomicApproaches;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedFinancialLiteracy;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedFinancialLiteracyAflateen;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedFinancialLiteracyAflatoun;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedGbvSessions;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedGuiaFacilitacao;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedGuiaFacilitacaoHivPrevention;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedGuiaFacilitacaoViolencePrevention;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedHIVTestingServices;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedHivSessions;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedOtherSAAJServices;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedPostViolenceCare_CM;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedPostViolenceCare_US;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedPrep;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedSAAJEducationSessions;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedSimplifiedAvanteRapariga;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedSimplifiedAvanteRaparigaHivPrevention;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedSimplifiedAvanteRaparigaSocialAssets;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedSimplifiedAvanteRaparigaViolencePrevention;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedSimplifiedGuiaFacilitacao;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedSimplifiedGuiaFacilitacaoHivPrevention;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedSimplifiedGuiaFacilitacaoViolencePrevention;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedSimplifiedSAAJEducationSessions;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedSimplifiedViolencePrevention15Plus;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedSiyakhaComprehensive;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedSiyakhaLight;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedSocialAssetsOldCurriculum;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.completedViolencePrevention15Plus;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.hadSchoolAllowance;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.startedAvanteEstudante;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.startedAvanteEstudanteViolencePrevention;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.startedAvanteRapariga;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.startedAvanteRaparigaViolencePrevention;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.startedFinancialLiteracyAflateen;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.startedFinancialLiteracyAflatoun;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.startedGuiaFacilitacao;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.startedGuiaFacilitacaoSocialAssets15Plus;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.startedPostViolenceCare_CM;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.startedPostViolenceCare_US;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.startedSAAJEducationSessions;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.startedSimplifiedAvanteRapariga;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.startedSimplifiedGuiaFacilitacao;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.startedSocialAssetsOldCurriculum;
+import static dlt.dltbackendmaster.util.ServiceCompletionRules.startedViolencePrevention15Plus;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -43,6 +108,8 @@ public class AgywPrevReport {
 
 	private BeneficiariyService beneficiariyService;
 
+	private List<Integer> beneficiariesIds = new ArrayList<>();
+
 	public AgywPrevReport(DAOService service) {
 		this.service = service;
 	}
@@ -50,6 +117,17 @@ public class AgywPrevReport {
 	public AgywPrevReport(DAOService service, BeneficiariyService beneficiariyService) {
 		this.service = service;
 		this.beneficiariyService = beneficiariyService;
+	}
+
+	private List<AgywPrev> getData(Integer[] districts, String startDate, String endDate, int reportType) {
+
+		if (reportType == 1) {
+			return service.GetAllEntityByNamedNativeQuery("AgywPrev.findByDistricts", Arrays.asList(districts),
+					startDate, endDate);
+		} else {
+			return service.GetAllEntityByNamedNativeQuery("AgywPrev.findSimplifiedByDistricts",
+					Arrays.asList(districts), startDate, endDate);
+		}
 	}
 
 	public Map<Integer, Map<String, ResultObject>> getAgywPrevResultObject(Integer[] districts, String startDate,
@@ -82,8 +160,10 @@ public class AgywPrevReport {
 					computeDiggregationHasSchoolAllowance(reportObject, district));
 			districtAgywPrevResultObject.put("completed-social-economic-approaches",
 					computeDiggregationCompletedSocialEconomicAllowance(reportObject, district));
+			
 
 			// Process District Summary
+
 			ResultObject ro = getTotalResultObject();
 			ro.setTotal(completedOnlyPrimaryPackage.getTotal() + completedPrimaryPackageAndSecondaryService.getTotal()
 					+ completedOnlyServiceNotPrimaryPackage.getTotal() + startedServiceDidNotComplete.getTotal());
@@ -109,9 +189,7 @@ public class AgywPrevReport {
 		ReportObject reportObject = new ReportObject(districts);
 
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
-		List<AgywPrev> data = service.GetAllEntityByNamedNativeQuery("AgywPrev.findByDistricts",
-				Arrays.asList(districts), startDate, endDate);
+		List<AgywPrev> data = getData(districts, startDate, endDate, 1);
 
 		LocalDate eDate = LocalDate.parse(endDate, formatter);
 
@@ -341,8 +419,7 @@ public class AgywPrevReport {
 
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-		List<AgywPrev> data = service.GetAllEntityByNamedNativeQuery("AgywPrev.findSimplifiedByDistricts",
-				Arrays.asList(districts), startDate, endDate);
+		List<AgywPrev> data = getData(districts, startDate, endDate, 2);
 
 		LocalDate eDate = LocalDate.parse(endDate, formatter);
 
@@ -479,8 +556,7 @@ public class AgywPrevReport {
 									|| agywPrev.getVblt_sexually_active() != null
 											&& agywPrev.getVblt_sexually_active() == 1
 											&& completedHIVTestingServices(agywPrev)
-											&& completedCondomsPromotionOrProvision(agywPrev))) // Não completou o
-																								// pacote primário
+											&& completedCondomsPromotionOrProvision(agywPrev))) // Não completou o pacote primário
 							&& (startedAvanteEstudante(agywPrev) || startedSAAJEducationSessions(agywPrev)
 									|| startedAvanteEstudanteViolencePrevention(agywPrev)
 									|| startedPostViolenceCare_US(agywPrev) || startedPostViolenceCare_CM(agywPrev)
@@ -493,8 +569,14 @@ public class AgywPrevReport {
 						if (!startedAvanteEstudante(agywPrev) && startedGuiaFacilitacao(agywPrev)) {
 							primaryPackageRO.setServicePackage(SERVICE_PACKAGES[2]);
 						}
-						if (completedAvanteEstudante(agywPrev)) {
+						if (completedAvanteEstudanteSocialAssets(agywPrev)) {
 							primaryPackageRO.setCompletedSocialAsset(COMPLETION_STATUSES[1]);
+						}
+						if (completedAvanteEstudanteHivPrevention(agywPrev)) {
+							primaryPackageRO.setCompletedHivPrevention(COMPLETION_STATUSES[1]);
+						}
+						if (completedAvanteEstudanteViolencePrevention(agywPrev)) {
+							primaryPackageRO.setCompletedViolencePrevention(COMPLETION_STATUSES[1]);
 						}
 						if (ageOnEndDate == 14 && completedGuiaFacilitacao(agywPrev)) {
 							primaryPackageRO.setCompletedSocialAsset(COMPLETION_STATUSES[1]);
@@ -532,8 +614,7 @@ public class AgywPrevReport {
 									|| agywPrev.getVblt_sexually_active() != null
 											&& agywPrev.getVblt_sexually_active() == 1
 											&& completedHIVTestingServices(agywPrev)
-											&& completedCondomsPromotionOrProvision(agywPrev))) // Não completou o
-																								// pacote primário
+											&& completedCondomsPromotionOrProvision(agywPrev))) // Não completou o pacote primário
 							&& (startedAvanteRapariga(agywPrev) || startedSAAJEducationSessions(agywPrev)
 									|| startedAvanteRaparigaViolencePrevention(agywPrev)
 									|| startedPostViolenceCare_US(agywPrev) || startedPostViolenceCare_CM(agywPrev)
@@ -546,8 +627,14 @@ public class AgywPrevReport {
 						if (!startedAvanteRapariga(agywPrev) && startedGuiaFacilitacao(agywPrev)) {
 							primaryPackageRO.setServicePackage(SERVICE_PACKAGES[2]);
 						}
-						if (completedAvanteRapariga(agywPrev)) {
+						if (completedAvanteRaparigaSocialAssets(agywPrev)) {
 							primaryPackageRO.setCompletedSocialAsset(COMPLETION_STATUSES[1]);
+						}
+						if (completedAvanteRaparigaHivPrevention(agywPrev)) {
+							primaryPackageRO.setCompletedHivPrevention(COMPLETION_STATUSES[1]);
+						}
+						if (completedAvanteRaparigaViolencePrevention(agywPrev)) {
+							primaryPackageRO.setCompletedViolencePrevention(COMPLETION_STATUSES[1]);
 						}
 						if (ageOnEndDate == 14 && completedGuiaFacilitacao(agywPrev)) {
 							primaryPackageRO.setCompletedSocialAsset(COMPLETION_STATUSES[1]);
@@ -577,9 +664,7 @@ public class AgywPrevReport {
 			} else { // 15-24
 				if (!(completedCondomsPromotionOrProvision(agywPrev) && completedGuiaFacilitacao(agywPrev)
 						&& completedHIVTestingServices(agywPrev)
-						&& (completedFinancialLiteracy(agywPrev) || completedFinancialLiteracyAflateen(agywPrev))) // Não
-																													// completou
-																													// opacoteprimário
+						&& (completedFinancialLiteracy(agywPrev) || completedFinancialLiteracyAflateen(agywPrev))) // Não completou opacoteprimário
 						&& (startedGuiaFacilitacaoSocialAssets15Plus(agywPrev) || startedGuiaFacilitacao(agywPrev)
 								|| startedViolencePrevention15Plus(agywPrev)
 								|| (currentAgeBand == 2 && startedSocialAssetsOldCurriculum(agywPrev)
@@ -591,8 +676,97 @@ public class AgywPrevReport {
 					if (completedCondomsPromotionOrProvision(agywPrev)) {
 						primaryPackageRO.setCompletedCondoms(COMPLETION_STATUSES[1]);
 					}
-					if (completedGuiaFacilitacao(agywPrev)) {
+					primaryPackageRO.setCompletedSocialAsset(COMPLETION_STATUSES[2]);
+					if (completedGuiaFacilitacaoHivPrevention(agywPrev)) {
+						primaryPackageRO.setCompletedHivPrevention(COMPLETION_STATUSES[1]);
+					}
+					if (completedGuiaFacilitacaoViolencePrevention(agywPrev)) {
+						primaryPackageRO.setCompletedViolencePrevention(COMPLETION_STATUSES[1]);
+					}
+					if (completedHIVTestingServices(agywPrev)) {
+						primaryPackageRO.setCompletedHivTesting(COMPLETION_STATUSES[1]);
+					}
+					if (completedFinancialLiteracy(agywPrev) || completedFinancialLiteracyAflateen(agywPrev)) {
+						primaryPackageRO.setCompletedFinancialLiteracy(COMPLETION_STATUSES[1]);
+					}
+				}
+			}
+			if (primaryPackageRO != null) {
+				reportObjects.put(primaryPackageRO.getBeneficiaryId(), primaryPackageRO);
+			}
+		}
+
+		return reportObjects;
+	}
+
+	public Map<Integer, PrimaryPackageRO> processSimplifiedPPCompletion(Integer[] districts, String startDate,
+			String endDate) {
+
+		Map<Integer, PrimaryPackageRO> reportObjects = new HashMap<>();
+
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+		List<AgywPrev> data = service.GetAllEntityByNamedNativeQuery("AgywPrev.findSimplifiedByDistricts",
+				Arrays.asList(districts), startDate, endDate);
+
+		LocalDate eDate = LocalDate.parse(endDate, formatter);
+
+		for (AgywPrev agywPrev : data) {
+
+			LocalDate birthDate = agywPrev.getDate_of_birth().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+			int ageOnEndDate = Math.abs(Period.between(birthDate, eDate).getYears());
+
+			PrimaryPackageRO primaryPackageRO = null;
+
+			Integer currentAgeBand = agywPrev.getCurrent_age_band();
+			int ageBandIndex = getAgeBandIndex(currentAgeBand);
+			if (currentAgeBand == 1) { // 9-14
+				// AVANTE RAPARIGA
+				if (!(completedSimplifiedAvanteRapariga(agywPrev) && completedSimplifiedSAAJEducationSessions(agywPrev)) // Não completou o pacote primário
+						&& (startedSimplifiedAvanteRapariga(agywPrev) || startedSAAJEducationSessions(agywPrev)
+								|| startedAvanteRaparigaViolencePrevention(agywPrev)
+								|| startedPostViolenceCare_US(agywPrev) || startedPostViolenceCare_CM(agywPrev))) { // Iniciou serviço
+					primaryPackageRO = new PrimaryPackageRO(agywPrev.getBeneficiary_id(), ageOnEndDate,
+							AGE_BANDS[ageBandIndex], agywPrev.getVulnerabilities(), SERVICE_PACKAGES[1]);
+					if (completedSimplifiedAvanteRaparigaSocialAssets(agywPrev)) {
 						primaryPackageRO.setCompletedSocialAsset(COMPLETION_STATUSES[1]);
+					}
+					if (completedSimplifiedAvanteRaparigaHivPrevention(agywPrev)) {
+						primaryPackageRO.setCompletedHivPrevention(COMPLETION_STATUSES[1]);
+					}
+					if (completedSimplifiedAvanteRaparigaViolencePrevention(agywPrev)) {
+						primaryPackageRO.setCompletedViolencePrevention(COMPLETION_STATUSES[1]);
+					}
+					if (completedSimplifiedSAAJEducationSessions(agywPrev)) {
+						primaryPackageRO.setCompletedSAAJ(COMPLETION_STATUSES[1]);
+					}
+					primaryPackageRO.setCompletedFinancialLiteracy(COMPLETION_STATUSES[2]);
+					primaryPackageRO.setCompletedHivTesting(COMPLETION_STATUSES[2]);
+					primaryPackageRO.setCompletedCondoms(COMPLETION_STATUSES[2]);
+				}
+
+			} else { // 15-24
+				if (!(completedCondomsPromotionOrProvision(agywPrev) && completedSimplifiedGuiaFacilitacao(agywPrev)
+						&& completedHIVTestingServices(agywPrev)) // Não completou o acote primário
+						&& (startedGuiaFacilitacaoSocialAssets15Plus(agywPrev)
+								|| startedSimplifiedGuiaFacilitacao(agywPrev)
+								|| startedViolencePrevention15Plus(agywPrev)
+								|| (currentAgeBand == 2 && startedSocialAssetsOldCurriculum(agywPrev)
+										|| startedPostViolenceCare_US(agywPrev)
+										|| startedPostViolenceCare_CM(agywPrev)))) { // Iniciou serviço
+					primaryPackageRO = new PrimaryPackageRO(agywPrev.getBeneficiary_id(), ageOnEndDate,
+							AGE_BANDS[ageBandIndex], agywPrev.getVulnerabilities(), SERVICE_PACKAGES[2]);
+					primaryPackageRO.setCompletedSAAJ(COMPLETION_STATUSES[2]);
+					if (completedCondomsPromotionOrProvision(agywPrev)) {
+						primaryPackageRO.setCompletedCondoms(COMPLETION_STATUSES[1]);
+					}
+					primaryPackageRO.setCompletedSocialAsset(COMPLETION_STATUSES[2]);
+					if (completedSimplifiedGuiaFacilitacaoHivPrevention(agywPrev)) {
+						primaryPackageRO.setCompletedHivPrevention(COMPLETION_STATUSES[1]);
+					}
+					if (completedSimplifiedGuiaFacilitacaoViolencePrevention(agywPrev)) {
+						primaryPackageRO.setCompletedViolencePrevention(COMPLETION_STATUSES[1]);
 					}
 					if (completedHIVTestingServices(agywPrev)) {
 						primaryPackageRO.setCompletedHivTesting(COMPLETION_STATUSES[1]);
@@ -612,6 +786,9 @@ public class AgywPrevReport {
 
 	private void addBeneficiary(ReportObject reportObject, Integer district, Integer ageBand, Integer enrollmentTime,
 			Integer layering, Integer beneficiary) {
+		if (!beneficiariesIds.contains(beneficiary)) {
+			beneficiariesIds.add(beneficiary);
+		}
 		reportObject.getReportObject().get(district).get(AGE_BANDS[ageBand]).get(ENROLLMENT_TIMES[enrollmentTime])
 				.get(DISAGGREGATIONS[layering]).add(beneficiary);
 	}
@@ -907,6 +1084,7 @@ public class AgywPrevReport {
 		ResultObject ro = new ResultObject();
 		ro.setBeneficiaries(null);
 		ro.setTotals(null);
+		ro.setBeneficiariesIds(beneficiariesIds);
 
 		return ro;
 	}
@@ -914,8 +1092,8 @@ public class AgywPrevReport {
 	public List<Object> getNewlyEnrolledAgywAndServices(Integer[] districts, Date startDate, Date endDate,
 			int pageIndex, int pageSize) {
 		List<Object> dataObjs = service.GetAllPagedEntityByNamedNativeQuery(
-				"AgywPrev.findByNewlyEnrolledAgywAndServices", pageIndex, pageSize, startDate, endDate,
-				Arrays.asList(districts));
+				"AgywPrev.findByNewlyEnrolledAgywAndServices", pageIndex, pageSize, Utility.atStartOfDay(startDate),
+				Utility.atEndOfDay(endDate), Arrays.asList(districts));
 
 		return dataObjs;
 	}
@@ -923,8 +1101,8 @@ public class AgywPrevReport {
 	public List<Object> getNewlyEnrolledAgywAndServicesSummary(Integer[] districts, Date startDate, Date endDate,
 			int pageIndex, int pageSize) {
 		List<Object> dataObjs = service.GetAllPagedEntityByNamedNativeQuery(
-				"AgywPrev.findByNewlyEnrolledAgywAndServicesSummary", pageIndex, pageSize, startDate, endDate,
-				Arrays.asList(districts));
+				"AgywPrev.findByNewlyEnrolledAgywAndServicesSummary", pageIndex, pageSize,
+				Utility.atStartOfDay(startDate), Utility.atEndOfDay(endDate), Arrays.asList(districts));
 
 		return dataObjs;
 	}
@@ -953,8 +1131,8 @@ public class AgywPrevReport {
 	public List<Object> getBeneficiariesNoVulnerabilities(Integer[] districts, Date startDate, Date endDate,
 			int pageIndex, int pageSize) {
 		List<Object> dataObjs = service.GetAllPagedEntityByNamedNativeQuery(
-				"AgywPrev.findByBeneficiariesNoVulnerabilities", pageIndex, pageSize, startDate, endDate,
-				Arrays.asList(districts));
+				"AgywPrev.findByBeneficiariesNoVulnerabilities", pageIndex, pageSize, Utility.atStartOfDay(startDate),
+				Utility.atEndOfDay(endDate), Arrays.asList(districts));
 
 		return dataObjs;
 	}
@@ -990,9 +1168,11 @@ public class AgywPrevReport {
 	}
 
 	public List<PrimaryPackageRO> getBeneficiariesWithoutPrimaryPackageCompleted(Integer[] districts, String startDate,
-			String endDate) {
+			String endDate, int reportType) {
 
-		Map<Integer, PrimaryPackageRO> ppCompletion = processPPCompletion(districts, startDate, endDate);
+		Map<Integer, PrimaryPackageRO> ppCompletion = reportType == 1
+				? processPPCompletion(districts, startDate, endDate)
+				: processSimplifiedPPCompletion(districts, startDate, endDate);
 		List<PrimaryPackageRO> reportObjects = new ArrayList<>();
 
 		List<Object> dataObjs = service.GetAllEntityByNamedNativeQuery("AgywPrev.findBeneficiariesByIds",
@@ -1006,7 +1186,6 @@ public class AgywPrevReport {
 			primaryPackageRO.setDistrict((String) getValueAtIndex(object, 3));
 			primaryPackageRO.setNui((String) getValueAtIndex(object, 1));
 
-//			ppCompletion.put(beneficiaryId, primaryPackageRO);
 			reportObjects.add(primaryPackageRO);
 		}
 

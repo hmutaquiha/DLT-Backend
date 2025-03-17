@@ -331,7 +331,11 @@ import dlt.dltbackendmaster.serializers.UsSerializer;
 										+ ""),
 				@NamedQuery(name = "Beneficiary.findByIdAndBeforeCompletedAServiceButNotFullPrimaryPackage", query = "SELECT b FROM Beneficiaries b where b.id = :beneficiary_id and b.completionStatus < 1"),
 				@NamedQuery(name = "Beneficiary.findByIdAndBeforeCompletedExactlyPrimaryPackage", query = "SELECT b FROM Beneficiaries b where b.id = :beneficiary_id and b.completionStatus < 2"),
-				@NamedQuery(name = "Beneficiary.findByIdAndBeforeCompletedPrimaryPackageAndAdditionalServices", query = "SELECT b FROM Beneficiaries b where b.id = :beneficiary_id and b.completionStatus < 3"), 
+				@NamedQuery(name = "Beneficiary.findByIdAndBeforeCompletedPrimaryPackageAndAdditionalServices", query = "SELECT b FROM Beneficiaries b where b.id = :beneficiary_id and b.completionStatus < 3"),
+                @NamedQuery(name = "Beneficiary.findByPastCops",query = "select b from Beneficiaries b "
+						+ " where b.dateCreated < '2024-09-21' "
+						+ " and b.status = 1"
+						+ ""), 
 })
 public class Beneficiaries implements java.io.Serializable
 {
@@ -399,6 +403,7 @@ public class Beneficiaries implements java.io.Serializable
     private Set<BeneficiariesInterventions> beneficiariesInterventionses = new HashSet<BeneficiariesInterventions>(0);
     private Set<References> referenceses = new HashSet<References>(0);
 	private int completionStatus;
+	private int vulnerable;
 	
 	public Beneficiaries() {}
 
@@ -1188,7 +1193,16 @@ public class Beneficiaries implements java.io.Serializable
 		this.completionStatus = completionStatus;
 	}
 
-    public ObjectNode toObjectNode(String lastPulledAt) {
+	@Column(name = "vulnerable")
+    public int getVulnerable() {
+		return vulnerable;
+	}
+
+	public void setVulnerable(int vulnerable) {
+		this.vulnerable = vulnerable;
+	}
+
+	public ObjectNode toObjectNode(String lastPulledAt) {
         ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule())
                                                 .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         mapper.setSerializationInclusion(Include.NON_NULL);

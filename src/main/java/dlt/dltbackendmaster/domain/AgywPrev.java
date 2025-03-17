@@ -52,6 +52,9 @@ public class AgywPrev implements Serializable {
 	private Integer current_age_band;
 	private Integer vulnerabilities;
 	private Integer mandatory_social_assets;
+	private Integer mandatory_social_assetss;
+	private Integer mandatory_hiv_prevention;
+	private Integer mandatory_violence_prevention;
 	private Integer other_social_assets;
 	private Integer old_social_assets;
 	private Integer saaj_educational_sessions;
@@ -60,6 +63,8 @@ public class AgywPrev implements Serializable {
 	private Integer condoms;
 	private Integer contraception;
 	private Integer hiv_gbv_sessions;
+	private Integer guiao_hiv_sessions;
+	private Integer guiao_gbv_sessions;
 	private Integer hiv_gbv_sessions_prep;
 	private Integer hiv_sessions;
 	private Integer gbv_sessions;
@@ -196,6 +201,30 @@ public class AgywPrev implements Serializable {
 		this.mandatory_social_assets = mandatory_social_assets;
 	}
 
+	public Integer getMandatory_social_assetss() {
+		return mandatory_social_assetss;
+	}
+
+	public void setMandatory_social_assetss(Integer mandatory_social_assetss) {
+		this.mandatory_social_assetss = mandatory_social_assetss;
+	}
+
+	public Integer getMandatory_hiv_prevention() {
+		return mandatory_hiv_prevention;
+	}
+
+	public void setMandatory_hiv_prevention(Integer mandatory_hiv_prevention) {
+		this.mandatory_hiv_prevention = mandatory_hiv_prevention;
+	}
+
+	public Integer getMandatory_violence_prevention() {
+		return mandatory_violence_prevention;
+	}
+
+	public void setMandatory_violence_prevention(Integer mandatory_violence_prevention) {
+		this.mandatory_violence_prevention = mandatory_violence_prevention;
+	}
+
 	public Integer getOther_social_assets() {
 		return other_social_assets;
 	}
@@ -258,6 +287,22 @@ public class AgywPrev implements Serializable {
 
 	public void setHiv_gbv_sessions(Integer hiv_gbv_sessions) {
 		this.hiv_gbv_sessions = hiv_gbv_sessions;
+	}
+
+	public Integer getGuiao_hiv_sessions() {
+		return guiao_hiv_sessions;
+	}
+
+	public void setGuiao_hiv_sessions(Integer guiao_hiv_sessions) {
+		this.guiao_hiv_sessions = guiao_hiv_sessions;
+	}
+
+	public Integer getGuiao_gbv_sessions() {
+		return guiao_gbv_sessions;
+	}
+
+	public void setGuiao_gbv_sessions(Integer guiao_gbv_sessions) {
+		this.guiao_gbv_sessions = guiao_gbv_sessions;
 	}
 
 	public Integer getHiv_gbv_sessions_prep() {

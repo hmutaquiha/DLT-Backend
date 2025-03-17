@@ -14,7 +14,7 @@ BEGIN
 
     INSERT INTO agyw_prev_mview
     select a.*,
-      if (current_age between 15 and 17,general_vulnerabilities>1 or specific_vulnerabilities>0,general_vulnerabilities>0 or specific_vulnerabilities>0) vulnerable,
+      if (a.flag_vulnerable = 1, 1, if (current_age between 15 and 17,general_vulnerabilities>1 or specific_vulnerabilities>0,general_vulnerabilities>0 or specific_vulnerabilities>0)) vulnerable,
       sab.level
    from
    (
@@ -22,10 +22,10 @@ BEGIN
          if(registration_age between 9 and 14,1,if (registration_age between 15 and 19,2,if (registration_age between 20 and 24,3,if (registration_age between 25 and 29,4,5)))) registration_age_band,
          if(current_age between 9 and 14,1,if (current_age between 15 and 19,2,if (current_age between 20 and 24,3,if (current_age between 25 and 29,4,5)))) current_age_band,
          max(intervention_date) service_date,
-         if (current_age between 9 and 17,vblt_house_sustainer+!vblt_is_student+vblt_is_deficient+vblt_pregnant_or_has_children+vblt_idp,
-            if (current_age between 18 and 24,vblt_is_deficient+vblt_idp,0)) general_vulnerabilities,
-         if (current_age between 9 and 17,current_age<15 and vblt_sexually_active+vblt_pregnant_or_breastfeeding+vblt_multiple_partners+vblt_sexual_exploitation+vblt_gbv_victim+vblt_alcohol_drugs_use+vblt_sti_history,
-            if (current_age between 18 and 24,vblt_multiple_partners+vblt_sexual_exploitation+vblt_sex_worker+vblt_gbv_victim+vblt_alcohol_drugs_use+vblt_sti_history,0)) specific_vulnerabilities
+         if (current_age between 9 and 17,vblt_house_sustainer+!vblt_is_student+vblt_is_deficient+vblt_married_before+coalesce(vblt_idp,0),
+            if (current_age between 18 and 24,vblt_is_deficient+coalesce(vblt_idp,0),0)) general_vulnerabilities,
+         if (current_age between 9 and 17,(current_age<15 and vblt_sexually_active)+vblt_pregnant_or_has_children+vblt_multiple_partners+vblt_sexual_exploitation_trafficking_victim+vblt_gbv_victim+vblt_alcohol_drugs_use+vblt_sti_history,
+            if (current_age between 18 and 24,vblt_multiple_partners+vblt_sexual_exploitation_trafficking_victim+coalesce(vblt_sex_worker,0)+vblt_gbv_victim+vblt_alcohol_drugs_use+vblt_sti_history,0)) specific_vulnerabilities
       from
       (
          select @counter:=@counter+1 id, 
@@ -62,14 +62,19 @@ BEGIN
             b.vblt_sexual_exploitation,
             b.vblt_is_migrant,
             b.vblt_trafficking_victim,
+            b.vblt_sexual_exploitation_trafficking_victim,
             b.vblt_sexually_active,
             b.vblt_pregnant_or_has_children,
             b.vblt_multiple_partners,
             b.vblt_vbg_victim vblt_gbv_victim,
+            b.vblt_vbg_type vblt_gbv_type,
             b.vblt_sex_worker,
             b.vblt_alcohol_drugs_use,
             b.vblt_sti_history,
+            b.clinical_interventions,
+            b.community_interventions,
             b.completion_status,
+            b.vulnerable flag_vulnerable,
             s.service_type,
             s.id service_id,
             ss.id sub_service_id,

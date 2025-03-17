@@ -591,8 +591,8 @@ public class AgywPrevController {
 					"Número de Vulnerabilidades", "Incluida no Indicador AGYW_PREV / Beneficiaria DREAMS?",
 					"Referências Clinicas não atendidas", "Referências Comunitárias não atendidas",
 					"Sessões de Recursos Sociais", "Data da Última Sessão: Recursos Sociais",
-					"Sessões de Prevenção do HIV", "Data da Última Sessão: HIV", "Sessões de Prevenção do VBG",
-					"Data da Última Sessão: VBG", "Sessões Educativas Incluindo SSR (No SAAJ) Primário para: 10-14",
+					"Sessões de Prevenção do HIV", "Data da Última Sessão: HIV", "Sessões de Prevenção de Violência",
+					"Data da Última Sessão: Violência", "Sessões Educativas Incluindo SSR (No SAAJ) Primário para: 10-14",
 					"Data da Última Sessão: SAAJ", "Sessões de Literacia Financeira",
 					"Data da Última Sessão: Literacia Financeira",
 					"Aconselhamento e Testagem em Saúde Primário para: 15+ ou Sexualmente Activas",
@@ -938,8 +938,8 @@ public class AgywPrevController {
 					"Número de Vulnerabilidades", "Incluida no Indicador AGYW_PREV / Beneficiaria DREAMS?",
 					"Referências Clinicas não atendidas", "Referências Comunitárias não atendidas",
 					"Sessões de Recursos Sociais", "Data da Última Sessão: Recursos Sociais",
-					"Sessões de Prevenção do HIV", "Data da Última Sessão: HIV", "Sessões de Prevenção do VBG",
-					"Data da Última Sessão: VBG", "Sessões Educativas Incluindo SSR (No SAAJ) Primário para: 10-14",
+					"Sessões de Prevenção do HIV", "Data da Última Sessão: HIV", "Sessões de Prevenção de Violência",
+					"Data da Última Sessão: Violência", "Sessões Educativas Incluindo SSR (No SAAJ) Primário para: 10-14",
 					"Data da Última Sessão: SAAJ", "Sessões de Literacia Financeira",
 					"Data da Última Sessão: Literacia Financeira",
 					"Aconselhamento e Testagem em Saúde Primário para: 15+ ou Sexualmente Activas",
@@ -1012,7 +1012,8 @@ public class AgywPrevController {
 	public ResponseEntity<String> getBeneficiariesWithoutPrimaryPackageCompleted(
 			@RequestParam(name = "province") String province, @RequestParam(name = "districts") Integer[] districts,
 			@RequestParam(name = "startDate") Long startDate, @RequestParam(name = "endDate") Long endDate,
-			@RequestParam(name = "username") String username) throws IOException {
+			@RequestParam(name = "username") String username,
+			@RequestParam(name = "reportType") int reportType) throws IOException {
 
 		AgywPrevReport report = new AgywPrevReport(service);
 
@@ -1103,10 +1104,10 @@ public class AgywPrevController {
 
 			// Define headers
 			String[] headers = { "Província", "Distrito", "NUI", "Idade Actual", "Faixa Etária Actual",
-					"Número de Vulnerabilidades", "Sessões de Recursos Sociais, Prevenção do HIV e VBG",
-					"Completude Recursos Sociais, Prevenção do HIV e VBG", "Sessões Educativas Incluindo SSR (No SAAJ)",
-					"Sessões de Literacia Financeira", "Aconselhamento e Testagem em Saúde",
-					"Promoção e Provisão de Preservativos" };
+					"Número de Vulnerabilidades", "Sessões de Recursos Sociais, Prevenção do HIV e Violência",
+					"Completude Recursos Sociais", "Completude Prevenção do HIV", "Completude Prevenção Violência", 
+					"Sessões Educativas Incluindo SSR (No SAAJ)", "Sessões de Literacia Financeira", 
+					"Aconselhamento e Testagem em Saúde", "Promoção e Provisão de Preservativos" };
 
 			// Create a header row
 			Row headerRow = sheet.createRow(4);
@@ -1122,7 +1123,7 @@ public class AgywPrevController {
 			for (currentSheet = 0; currentSheet < currentSheet + 1; currentSheet++) {
 				if (!isEndOfCycle) {
 					List<PrimaryPackageRO> reportObjectList = report.getBeneficiariesWithoutPrimaryPackageCompleted(
-							districts, formattedInitialDate, formattedFinalDate);
+							districts, formattedInitialDate, formattedFinalDate, reportType);
 
 					if (reportObjectList.size() < MAX_ROWS_NUMBER) {
 						isEndOfCycle = true;
@@ -1142,10 +1143,12 @@ public class AgywPrevController {
 						row.createCell(5).setCellValue(object.getVulnerabilitiesCount());
 						row.createCell(6).setCellValue(object.getServicePackage());
 						row.createCell(7).setCellValue(object.getCompletedSocialAsset());
-						row.createCell(8).setCellValue(object.getCompletedSAAJ());
-						row.createCell(9).setCellValue(object.getCompletedFinancialLiteracy());
-						row.createCell(10).setCellValue(object.getCompletedHivTesting());
-						row.createCell(11).setCellValue(object.getCompletedCondoms());
+						row.createCell(8).setCellValue(object.getCompletedHivPrevention());
+						row.createCell(9).setCellValue(object.getCompletedViolencePrevention());
+						row.createCell(10).setCellValue(object.getCompletedSAAJ());
+						row.createCell(11).setCellValue(object.getCompletedFinancialLiteracy());
+						row.createCell(12).setCellValue(object.getCompletedHivTesting());
+						row.createCell(13).setCellValue(object.getCompletedCondoms());
 					}
 				} else {
 					break;

@@ -85,6 +85,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
 import dlt.dltbackendmaster.domain.AgywPrev;
+import dlt.dltbackendmaster.reports.domain.AgywPrevData;
 import dlt.dltbackendmaster.reports.domain.BeneficiaryVulnerability;
 import dlt.dltbackendmaster.reports.domain.PrimaryPackageRO;
 import dlt.dltbackendmaster.reports.domain.ReportObject;
@@ -1267,6 +1268,11 @@ public class AgywPrevReport {
 				return dataArray[index];
 			}
 		}
+		return null;
+	}
+
+	public List<AgywPrevData> getAgywPrevReportData(String startDate, String endDate) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 }

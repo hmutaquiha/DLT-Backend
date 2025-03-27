@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import dlt.dltbackendmaster.reports.AgywPrevReport;
+import dlt.dltbackendmaster.reports.domain.AgywPrevData;
 import dlt.dltbackendmaster.reports.domain.BeneficiaryVulnerability;
 import dlt.dltbackendmaster.service.DAOService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -52,9 +53,8 @@ public class DataExtractionController {
 			@ApiResponse(responseCode = "400", description = "Bad Request", content = @Content),
 			@ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content), })
 	public ResponseEntity<List<BeneficiaryVulnerability>> getBeneficiariesVulnerabilitiesAndServices(
-			@RequestParam(name = "startDate", defaultValue = "yyyy-mm-dd") String startDate, 
-			@RequestParam(name = "endDate", defaultValue = "yyyy-mm-dd") String endDate)
-			throws IOException {
+			@RequestParam(name = "startDate", defaultValue = "yyyy-mm-dd") String startDate,
+			@RequestParam(name = "endDate", defaultValue = "yyyy-mm-dd") String endDate) throws IOException {
 
 		AgywPrevReport report = new AgywPrevReport(service);
 
@@ -78,5 +78,32 @@ public class DataExtractionController {
 			e.printStackTrace();
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+	}
+
+	public ResponseEntity<List<AgywPrevData>> getAgywPrevData(
+			@RequestParam(name = "startDate", defaultValue = "yyyy-mm-dd") String startDate,
+			@RequestParam(name = "endDate", defaultValue = "yyyy-mm-dd") String endDate) {
+		AgywPrevReport report = new AgywPrevReport(service);
+
+		try {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			sdf.parse(startDate);
+			sdf.parse(endDate);
+		} catch (ParseException e) {
+			logger.warn("Start date: " + startDate + " or End date: "
+					+ " has wrong format, please correct to allowed format: YYYY-MM-DD");
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		}
+
+		try {
+			List<AgywPrevData> reportObjectList = report.getAgywPrevReportData(startDate, endDate);
+
+			return new ResponseEntity<>(reportObjectList, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.warn("System ran into an unknown error while trying to fecth data");
+			e.printStackTrace();
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
 	}
 }

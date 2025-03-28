@@ -80,6 +80,7 @@ public class DataExtractionController {
 		}
 	}
 
+	@GetMapping(path = "/agyw-prev")
 	public ResponseEntity<List<AgywPrevData>> getAgywPrevData(
 			@RequestParam(name = "startDate", defaultValue = "yyyy-mm-dd") String startDate,
 			@RequestParam(name = "endDate", defaultValue = "yyyy-mm-dd") String endDate) {

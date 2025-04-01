@@ -27,22 +27,22 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
- * Controller resposável pela comunicação dos dados do relatório
+ * Controller resposável por disponibilizar recursos para alimentar dashboards
  * 
  * @author Hamilton Mutaquiha
  *
  */
 @RestController
-@Tag(name = "Data Extractions", description = "DLT Data Extractions APIs")
-@RequestMapping("/api/data-extaction")
-public class DataExtractionController {
+@Tag(name = "Dashboards Links", description = "DLT Dashboards Links APIs")
+@RequestMapping("/api/dashboards-links")
+public class DashboardsLinksController {
 
-	Logger logger = LoggerFactory.getLogger(DataExtractionController.class);
+	Logger logger = LoggerFactory.getLogger(DashboardsLinksController.class);
 
 	private final DAOService service;
 
 	@Autowired
-	public DataExtractionController(DAOService service) {
+	public DashboardsLinksController(DAOService service) {
 		this.service = service;
 	}
 
@@ -81,6 +81,12 @@ public class DataExtractionController {
 	}
 
 	@GetMapping(path = "/agyw-prev")
+	@Operation(operationId = "agywprev", summary = "Retorna indicadores AGYW_Prev", description = "Retorna os valores agregados do indicador AGYW_Prev")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Executado com sucesso", content = {
+					@Content(mediaType = "application/json", schema = @Schema(implementation = AgywPrevData.class)) }),
+			@ApiResponse(responseCode = "400", description = "Bad Request", content = @Content),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content), })
 	public ResponseEntity<List<AgywPrevData>> getAgywPrevData(
 			@RequestParam(name = "startDate", defaultValue = "yyyy-mm-dd") String startDate,
 			@RequestParam(name = "endDate", defaultValue = "yyyy-mm-dd") String endDate) {

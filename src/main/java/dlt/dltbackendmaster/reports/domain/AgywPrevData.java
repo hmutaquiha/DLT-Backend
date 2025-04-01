@@ -1,27 +1,33 @@
 package dlt.dltbackendmaster.reports.domain;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class AgywPrevData {
 
+	private String reportingPeriod;
 	private String province;
 	private String district;
-	private String layering;
-	private String enrollemtTime;
-	private String ageBand;
-	private Integer value;
+	private Map<String, Integer> disaggregations;
 
 	public AgywPrevData() {
 		super();
 	}
 
-	public AgywPrevData(String province, String district, String layering, String enrollemtTime, String ageBand,
-			Integer value) {
+	public AgywPrevData(String reportingPeriod, String province, String district) {
 		super();
+		this.reportingPeriod = reportingPeriod;
 		this.province = province;
 		this.district = district;
-		this.layering = layering;
-		this.enrollemtTime = enrollemtTime;
-		this.ageBand = ageBand;
-		this.value = value;
+		this.disaggregations = new HashMap<>();
+	}
+
+	public String getReportingPeriod() {
+		return reportingPeriod;
+	}
+
+	public void setReportingPeriod(String reportingPeriod) {
+		this.reportingPeriod = reportingPeriod;
 	}
 
 	public String getProvince() {
@@ -40,36 +46,12 @@ public class AgywPrevData {
 		this.district = district;
 	}
 
-	public String getLayering() {
-		return layering;
+	public Map<String, Integer> getDisaggregations() {
+		return disaggregations;
 	}
 
-	public void setLayering(String layering) {
-		this.layering = layering;
-	}
-
-	public String getEnrollemtTime() {
-		return enrollemtTime;
-	}
-
-	public void setEnrollemtTime(String enrollemtTime) {
-		this.enrollemtTime = enrollemtTime;
-	}
-
-	public String getAgeBand() {
-		return ageBand;
-	}
-
-	public void setAgeBand(String ageBand) {
-		this.ageBand = ageBand;
-	}
-
-	public Integer getValue() {
-		return value;
-	}
-
-	public void setValue(Integer value) {
-		this.value = value;
+	public void setDisaggregations(Map<String, Integer> disaggregations) {
+		this.disaggregations = disaggregations;
 	}
 
 }

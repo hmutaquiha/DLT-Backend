@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
 import dlt.dltbackendmaster.domain.AgywPrev;
+import dlt.dltbackendmaster.domain.District;
 import dlt.dltbackendmaster.reports.domain.AgywPrevData;
 import dlt.dltbackendmaster.reports.domain.BeneficiaryVulnerability;
 import dlt.dltbackendmaster.reports.domain.PrimaryPackageRO;
@@ -1215,27 +1216,53 @@ public class AgywPrevReport {
 		agywPrevResults.putAll(getAgywPrevResultObject(SIMPLIFIED_DISTRICTS, startDate, endDate, 2, false));
 
 		for (Entry<Integer, Map<String, ResultObject>> result : agywPrevResults.entrySet()) {
-			Integer district = result.getKey();
+			Integer districtId = result.getKey();
+
+			District district = service.find(District.class, districtId);
+
+			AgywPrevData agywPrevData = new AgywPrevData(startDate + " - " + endDate, district.getProvince().getName(),
+					district.getName());
+			Map<String, Integer> disaggretationsValues = agywPrevData.getDisaggregations();
 			Map<String, ResultObject> districtResults = result.getValue();
 
 			for (Entry<String, ResultObject> districtResult : districtResults.entrySet()) {
 				String layering = districtResult.getKey();
+				int layeringTotal = 0;
 				ResultObject resultObject = districtResult.getValue();
 
-				for (Entry<String, Map<String, Integer>> enrollmentTimes : resultObject.getTotals().entrySet()) {
+				Map<String, Map<String, Integer>> totals = resultObject.getTotals();
+
+				if (totals == null) {
+					disaggretationsValues.put(layering, resultObject.getTotal());
+					continue;
+				}
+
+				for (Entry<String, Map<String, Integer>> enrollmentTimes : totals.entrySet()) {
 					String enrollmentTime = enrollmentTimes.getKey();
 					Map<String, Integer> enrollmentTimeResult = enrollmentTimes.getValue();
 
 					for (Entry<String, Integer> ageBands : enrollmentTimeResult.entrySet()) {
 						String ageBand = ageBands.getKey();
-						Integer value = ageBands.getValue();
-
-						AgywPrevData agywPrevData = new AgywPrevData(startDate, String.valueOf(district), layering,
-								enrollmentTime, ageBand, value);
-						agywPrevReportData.add(agywPrevData);
+						if (layering.matches(
+								"had-school-allowance|completed-social-economic-approaches|completed-violence-service")) {
+							if (ageBand.equals("Subtotal")) {
+								layeringTotal += ageBands.getValue();
+							} else {
+								continue;
+							}
+						} else {
+							disaggretationsValues.put(layering + "_" + enrollmentTime + "_" + ageBand,
+									ageBands.getValue());
+						}
 					}
 				}
+				if (layering.matches(
+						"had-school-allowance|completed-social-economic-approaches|completed-violence-service")) {
+					disaggretationsValues.put(layering, layeringTotal);
+				}
+
 			}
+			agywPrevReportData.add(agywPrevData);
 		}
 
 		return agywPrevReportData;

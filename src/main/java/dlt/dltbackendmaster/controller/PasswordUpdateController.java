@@ -33,7 +33,7 @@ public class PasswordUpdateController {
 	private EmailSender emailSender;
 	
 	@Autowired
-    private AppConfig appConfig;
+	private AppConfig appConfig;
 
 	@Autowired
 	public PasswordUpdateController(DAOService service, PasswordEncoder passwordEncoder) {

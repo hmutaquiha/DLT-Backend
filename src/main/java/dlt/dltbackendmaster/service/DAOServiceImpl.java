@@ -270,9 +270,9 @@ public class DAOServiceImpl implements DAOService {
 		return referenceServiceObject;
 
 	}
-
+	
 	@Transactional
-	public <T> List<T> GetAllEntityByNamedQuery(String query, int profileId, List<Integer> localities){
-		return repository.GetAllEntityByNamedQuery(query, profileId, localities);
+	public <T> List<T> GetAllEntitiesByNamedQuery(String query, int profileId, List<Integer> localities){
+		return repository.GetAllEntitiesByNamedQuery(query, profileId, localities);
 	}
 }

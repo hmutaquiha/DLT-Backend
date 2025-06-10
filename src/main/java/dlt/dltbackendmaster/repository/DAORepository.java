@@ -80,6 +80,6 @@ public interface DAORepository {
 	<T> void delete(T klass);
 	
 	<T> int UpdateEntitiesByNamedQuery(String query, Object... params);
-
-	<T> List<T> GetAllEntityByNamedQuery(String query, int profileId, List<Integer>localities);
+	
+	<T> List<T> GetAllEntitiesByNamedQuery(String query, int profileId, List<Integer>localities);
 }

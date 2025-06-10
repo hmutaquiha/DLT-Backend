@@ -80,7 +80,7 @@ import dlt.dltbackendmaster.serializers.UssSerializer;
 				+ "LEFT JOIN users_localities ul on ul.user_id = u.id "
 				+ "where ul.locality_id in (:localities)"
 				+ "and u.profile_id = :profileId", resultClass = Users.class),		
-			})
+})
 
 @NamedQueries({ @NamedQuery(name = "Users.findAll", query = "SELECT distinct u FROM Users u "
 				+ " LEFT JOIN u.districts d " 
